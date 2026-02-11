@@ -1,28 +1,35 @@
 /* ============================================
    📱 DASHBOARD RESPONSIVE - KXON
-   ✅ Breakpoints para cards compactas
+   ✅ FIX: Sidebar móvil + Perfil visible
+   + Scroll correcto + Cards compactas
    ============================================ */
 
 /* ── TABLET (1024px) ── */
 @media (max-width: 1024px) {
     .sidebar {
         transform: translateX(-100%);
+        z-index: 100;
     }
 
     .sidebar.open {
         transform: translateX(0);
+        box-shadow: 10px 0 40px rgba(0,0,0,0.8);
     }
 
     .main-content {
-        margin-left: 0;
+        margin-left: 0 !important;
+        width: 100% !important;
     }
 
     .btn-hamburger {
-        display: flex;
+        display: flex !important;
     }
 
     .content-area {
         padding: 20px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 120px;
     }
 
     .stats-grid {
@@ -44,6 +51,11 @@
     }
 
     .docu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+    }
+
+    .market-grid {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: 12px;
     }
@@ -79,12 +91,65 @@
     .main-header-title {
         font-size: .95rem;
     }
+
+    /* Perfil responsive */
+    .perfil-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .perfil-cuenta-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .perfil-avatar-section {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 
 /* ── MÓVIL (768px) ── */
 @media (max-width: 768px) {
+    /* ✅ FIX: Sidebar completamente oculta */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        height: 100dvh;
+        transform: translateX(-100%);
+        z-index: 100;
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        z-index: 95;
+    }
+
+    /* ✅ FIX: Main content ocupa toda la pantalla */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        height: 100vh;
+        height: 100dvh;
+    }
+
+    .btn-hamburger {
+        display: flex !important;
+    }
+
+    /* ✅ FIX: Content area con scroll correcto */
     .content-area {
         padding: 16px;
+        padding-bottom: 140px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        height: calc(100vh - var(--header-height, 64px));
+        height: calc(100dvh - var(--header-height, 64px));
     }
 
     .stats-grid {
@@ -121,6 +186,11 @@
     }
 
     .docu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .market-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
@@ -180,6 +250,29 @@
         line-clamp: 1;
     }
 
+    .market-card-body {
+        padding: 8px 10px 10px;
+    }
+
+    .market-card-title {
+        font-size: .7rem;
+    }
+
+    .market-card-desc {
+        display: none;
+    }
+
+    .market-card-actions {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .market-btn-listen,
+    .market-btn-buy {
+        font-size: .55rem;
+        padding: 6px 8px;
+    }
+
     .panel-title {
         font-size: 1.1rem;
     }
@@ -235,7 +328,6 @@
         font-size: 1.2rem;
     }
 
-    /* Episodios compactos en móvil */
     .episodio-thumb {
         width: 50px;
     }
@@ -248,12 +340,15 @@
         display: none;
     }
 
-    /* Player bar móvil */
+    /* ✅ FIX: Player bar móvil */
     .player-bar {
         flex-wrap: wrap;
         height: auto;
         padding: 8px 12px;
         gap: 8px;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
 
     .player-volume {
@@ -294,7 +389,7 @@
     /* Notifications */
     .notif-dropdown {
         position: fixed;
-        top: calc(var(--header-height) + 4px);
+        top: calc(var(--header-height, 64px) + 4px);
         right: 12px;
         left: 12px;
         width: auto;
@@ -354,12 +449,169 @@
     .pl-detail-actions {
         justify-content: center;
     }
+
+    /* ✅ FIX: Perfil visible en móvil */
+    .perfil-section {
+        margin-bottom: 24px;
+    }
+
+    .perfil-card {
+        padding: 18px;
+    }
+
+    .perfil-avatar-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .perfil-avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .perfil-avatar-letter {
+        font-size: 2rem;
+    }
+
+    .perfil-nombre-display {
+        font-size: 1.2rem;
+    }
+
+    .perfil-form-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .perfil-cuenta-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .perfil-cuenta-item {
+        padding: 12px;
+    }
+
+    .perfil-danger-zone {
+        flex-direction: column;
+        text-align: center;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .perfil-danger-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .perfil-btn-delete {
+        width: 100%;
+    }
+
+    .perfil-form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .perfil-btn-save {
+        width: 100%;
+    }
+
+    /* Archivo responsive */
+    .archivo-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .archivo-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .archivo-stat-card {
+        padding: 12px;
+    }
+
+    .archivo-stat-value {
+        font-size: 1rem;
+    }
+
+    /* Tabs responsive */
+    .market-tabs,
+    .archivo-tabs {
+        width: 100%;
+    }
+
+    .market-tab,
+    .archivo-tab {
+        flex: 1;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: .62rem;
+    }
+
+    /* Historial */
+    .historial-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    /* Solicitudes */
+    .solicitud-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .solicitud-row-price {
+        min-width: auto;
+        text-align: left;
+    }
+
+    .solicitud-detail-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .solicitud-detail-product {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Market detail */
+    .market-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .market-detail-cover {
+        width: 120px;
+        height: 120px;
+    }
 }
 
 /* ── MÓVIL PEQUEÑO (480px) ── */
 @media (max-width: 480px) {
     .content-area {
         padding: 12px;
+        padding-bottom: 140px;
+    }
+
+    .main-header {
+        padding: 0 12px;
+        height: 56px;
+    }
+
+    .main-header-title {
+        font-size: .85rem;
+    }
+
+    .btn-admin-add {
+        padding: 7px 12px;
+        font-size: .62rem;
+    }
+
+    #btnAdminText {
+        display: none;
     }
 
     .stats-grid {
@@ -395,6 +647,11 @@
     }
 
     .docu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .market-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
     }
@@ -443,24 +700,6 @@
         font-size: 1rem;
     }
 
-    .main-header {
-        padding: 0 12px;
-        height: 56px;
-    }
-
-    .main-header-title {
-        font-size: .85rem;
-    }
-
-    .btn-admin-add {
-        padding: 7px 12px;
-        font-size: .62rem;
-    }
-
-    #btnAdminText {
-        display: none;
-    }
-
     .album-detail-cover {
         width: 100px;
         height: 100px;
@@ -483,10 +722,105 @@
         font-size: .78rem;
     }
 
+    /* ✅ FIX: Perfil en móvil pequeño */
+    .perfil-card {
+        padding: 14px;
+    }
+
+    .perfil-avatar {
+        width: 70px;
+        height: 70px;
+    }
+
+    .perfil-avatar-letter {
+        font-size: 1.6rem;
+    }
+
+    .perfil-nombre-display {
+        font-size: 1rem;
+    }
+
+    .perfil-section-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .perfil-section-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .perfil-btn-save {
+        padding: 11px 20px;
+        font-size: .7rem;
+    }
+
     /* Historial */
     .historial-stats {
         grid-template-columns: repeat(2, 1fr);
         gap: 6px;
+    }
+
+    /* Archivo */
+    .archivo-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .archivo-stat-card {
+        padding: 10px;
+    }
+
+    .archivo-stat-value {
+        font-size: .9rem;
+    }
+
+    .archivo-stat-label {
+        font-size: .55rem;
+    }
+
+    /* Market card */
+    .market-card-body {
+        padding: 6px 8px 8px;
+    }
+
+    .market-card-title {
+        font-size: .65rem;
+    }
+
+    .market-card-actions {
+        gap: 3px;
+    }
+
+    .market-btn-listen,
+    .market-btn-buy {
+        font-size: .5rem;
+        padding: 5px 6px;
+        letter-spacing: .5px;
+    }
+
+    .market-card-badge {
+        top: 5px;
+        left: 5px;
+        padding: 2px 6px;
+        font-size: .5rem;
+    }
+
+    .market-card-price {
+        bottom: 5px;
+        right: 5px;
+        padding: 3px 8px;
+        font-size: .62rem;
+    }
+
+    /* Sidebar footer visible */
+    .sidebar-footer {
+        padding: 12px;
+    }
+
+    .sidebar-user {
+        padding: 8px 10px;
     }
 }
 
@@ -506,6 +840,10 @@
 
     .docu-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .market-grid {
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     }
 }
 
