@@ -13,13 +13,13 @@
        La tabla tiene columnas separadas:
        cancion, album, beat (en vez de item_id)
        ══════════════════════════════════════════ */
-    var columnMap = {
-        'cancion': 'cancion',
-        'album': 'album',
-        'beat': 'beat',
-        'video': 'cancion',       // videos se guardan en columna cancion (o ajustar si tienes columna video)
-        'documental': 'cancion',  // igual
-        'noticia': 'cancion'      // igual
+        var columnMap = {
+        'cancion': 'cancion_id',
+        'album': 'album_id',
+        'beat': 'beat_id',
+        'video': 'cancion_id',
+        'documental': 'cancion_id',
+        'noticia': 'cancion_id'
     };
 
     function getColumn(tipo) {
@@ -38,8 +38,8 @@
     K.loadUserFavorites = async function () {
         if (!K.currentUser) return;
         try {
-            var r = await db.from('favoritos')
-                .select('tipo, cancion, album, beat')
+                        var r = await db.from('favoritos')
+                .select('tipo, cancion_id, album_id, beat_id')
                 .eq('usuario_id', K.currentUser.id);
             if (r.error) throw r.error;
             userFavs = {};
