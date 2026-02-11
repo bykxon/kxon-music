@@ -1,6 +1,7 @@
 /* ============================================
    🏠 LANDING CSS - PÁGINA DE INICIO KXON
-   Header, Hero, Noticias, Álbumes, Footer, Modales Landing
+   Header, Hero, App Download, Noticias,
+   Álbumes, Footer, Modales Landing
    ============================================ */
 
 /* ──────────────────────────────────
@@ -11,7 +12,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: var(--z-sidebar, 100);
+    z-index: 100;
     padding: 18px 0;
     background: rgba(5, 5, 5, 0.85);
     backdrop-filter: blur(20px);
@@ -82,6 +83,7 @@ body {
     overflow-y: auto;
     min-height: 100vh;
 }
+
 /* ──────────────────────────────────
    🔘 BOTONES HEADER
    ────────────────────────────────── */
@@ -106,6 +108,7 @@ body {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .btn-login:hover {
@@ -129,6 +132,7 @@ body {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .btn-register:hover {
@@ -246,6 +250,15 @@ body {
     animation: shimmer 4s linear infinite;
 }
 
+.gradient-text {
+    background: linear-gradient(135deg, #f0f0f0 0%, #888888 40%, #c0c0c0 60%, #f0f0f0 100%);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+}
+
 .hero-subtitle {
     font-family: var(--font-cuerpo, 'Inter', sans-serif);
     font-size: clamp(0.95rem, 2vw, 1.15rem);
@@ -282,6 +295,7 @@ body {
     align-items: center;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
 }
 
 .btn-hero-primary::before {
@@ -318,6 +332,7 @@ body {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .btn-hero-outline:hover {
@@ -327,7 +342,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Scroll indicator */
 .scroll-indicator {
     position: absolute;
     bottom: 40px;
@@ -405,6 +419,325 @@ body {
     max-width: 500px;
     margin: 0 auto;
     font-weight: 300;
+}
+
+/* ============================================
+   📱 SECCIÓN DESCARGA APP
+   ============================================ */
+.app-download-section {
+    background: linear-gradient(180deg, var(--negro-base, #0a0a0a) 0%, #0d0d0d 50%, var(--negro-base, #0a0a0a) 100%);
+    overflow: hidden;
+}
+
+.app-download-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(192, 192, 192, 0.025) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.app-download-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.app-download-content {
+    flex: 1;
+}
+
+.app-download-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    background: rgba(192, 192, 192, 0.06);
+    border: 1px solid rgba(192, 192, 192, 0.12);
+    border-radius: 50px;
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--plata-clara, #b8b8b8);
+    margin-bottom: 24px;
+    animation: fadeInUp 0.6s ease;
+}
+
+.app-download-title {
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 900;
+    color: var(--plata-blanca, #f0f0f0);
+    margin-bottom: 16px;
+    line-height: 1.2;
+    animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+.app-download-desc {
+    font-size: 1rem;
+    color: var(--plata-media, #888888);
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    max-width: 480px;
+    animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.app-download-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin-bottom: 36px;
+    animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+.app-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: var(--plata-clara, #b8b8b8);
+    font-weight: 400;
+}
+
+.app-feature-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.app-download-buttons {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.6s ease 0.4s both;
+}
+
+.app-download-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 200px;
+}
+
+.app-btn-primary {
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    border: 1px solid rgba(192, 192, 192, 0.25);
+    color: var(--plata-blanca, #f0f0f0);
+}
+
+.app-btn-primary:hover {
+    background: linear-gradient(135deg, #c0c0c0, #888);
+    color: var(--negro-base, #0a0a0a);
+    border-color: var(--acento-principal, #c0c0c0);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(192, 192, 192, 0.2);
+}
+
+.app-btn-secondary {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--plata-clara, #b8b8b8);
+}
+
+.app-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(192, 192, 192, 0.15);
+    transform: translateY(-3px);
+}
+
+.app-btn-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.app-btn-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-btn-small {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+}
+
+.app-btn-big {
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.app-download-hint {
+    font-size: 0.72rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 420px;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.6s ease 0.5s both;
+}
+
+.app-download-version {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.68rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    animation: fadeInUp 0.6s ease 0.6s both;
+}
+
+/* ── Phone Mockup ── */
+.app-download-mockup {
+    flex-shrink: 0;
+    animation: fadeInUp 0.8s ease 0.3s both;
+    position: relative;
+}
+
+.phone-mockup {
+    width: 260px;
+    height: 530px;
+    background: #111;
+    border-radius: 40px;
+    border: 3px solid rgba(192, 192, 192, 0.12);
+    padding: 10px;
+    position: relative;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(192, 192, 192, 0.03),
+        inset 0 0 30px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.phone-notch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 28px;
+    background: #000;
+    border-radius: 0 0 18px 18px;
+    z-index: 5;
+}
+
+.phone-notch::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--negro-base, #0a0a0a);
+    border-radius: 30px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.phone-screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.phone-screen-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    padding: 50px 20px 20px;
+}
+
+.phone-logo {
+    font-family: var(--font-logo, 'Oswald', sans-serif);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+    margin-bottom: 4px;
+}
+
+.phone-tagline {
+    font-size: 0.65rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+}
+
+.phone-fake-ui {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.phone-fake-bar {
+    height: 32px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+}
+
+.phone-fake-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    flex: 1;
+}
+
+.phone-fake-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px;
+}
+
+.phone-fake-player {
+    height: 50px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+}
+
+.phone-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(192, 192, 192, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 1;
 }
 
 /* ──────────────────────────────────
@@ -639,16 +972,68 @@ body {
    🦶 FOOTER
    ────────────────────────────────── */
 .footer {
-    padding: 40px 0;
-    text-align: center;
+    padding: 48px 0 32px;
     border-top: 1px solid rgba(255,255,255,0.04);
 }
 
-.footer-text {
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.footer-logo {
+    font-family: var(--font-logo, 'Oswald', sans-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+}
+
+.footer-tagline {
+    font-size: 0.72rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.footer-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.footer-link {
     font-size: 0.78rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 500;
+    transition: color 0.3s ease;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.footer-link:hover {
+    color: var(--plata-blanca, #f0f0f0);
+}
+
+.footer-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.04);
+    margin-bottom: 20px;
+}
+
+.footer-text {
+    font-size: 0.72rem;
     color: var(--plata-oscura, #555555);
     font-weight: 400;
     letter-spacing: 1px;
+    text-align: center;
 }
 
 .footer-text span {
@@ -666,26 +1051,10 @@ body {
     border-radius: 8px;
 }
 
-.skeleton-img {
-    width: 100%;
-    height: 220px;
-}
-
-.skeleton-title {
-    height: 20px;
-    width: 70%;
-    margin-bottom: 10px;
-}
-
-.skeleton-text {
-    height: 14px;
-    width: 100%;
-    margin-bottom: 8px;
-}
-
-.skeleton-text.short {
-    width: 50%;
-}
+.skeleton-img { width: 100%; height: 220px; }
+.skeleton-title { height: 20px; width: 70%; margin-bottom: 10px; }
+.skeleton-text { height: 14px; width: 100%; margin-bottom: 8px; }
+.skeleton-text.short { width: 50%; }
 
 /* ──────────────────────────────────
    🫙 ESTADO VACÍO (LANDING)
@@ -784,8 +1153,7 @@ body {
 }
 
 .modal-landing-img img {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
     display: block;
 }
@@ -986,6 +1354,67 @@ body {
         justify-content: center;
     }
 
+    /* ── App Download responsive ── */
+    .app-download-container {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .app-download-desc {
+        max-width: 100%;
+    }
+
+    .app-download-features {
+        grid-template-columns: 1fr;
+        text-align: left;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .app-download-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .app-download-btn {
+        justify-content: center;
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .app-download-hint {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .app-download-version {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .phone-mockup {
+        width: 210px;
+        height: 430px;
+        border-radius: 32px;
+    }
+
+    .phone-notch {
+        width: 80px;
+        height: 22px;
+    }
+
+    .phone-screen {
+        border-radius: 24px;
+    }
+
+    .phone-logo {
+        font-size: 1.4rem;
+    }
+
+    /* ── Noticias ── */
     .noticias-grid {
         grid-template-columns: 1fr;
     }
@@ -1023,6 +1452,19 @@ body {
     .modal-album-landing-cover {
         width: 130px; height: 130px;
     }
+
+    /* ── Footer ── */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1046,4 +1488,56 @@ body {
     .container {
         padding: 0 16px;
     }
+
+    .app-download-title {
+        font-size: 1.6rem;
+    }
+
+    .phone-mockup {
+        width: 180px;
+        height: 370px;
+        border-radius: 28px;
+    }
+
+    .phone-notch {
+        width: 65px;
+        height: 18px;
+        border-radius: 0 0 14px 14px;
+    }
+
+    .phone-screen {
+        border-radius: 20px;
+    }
+
+    .app-feature {
+        font-size: 0.82rem;
+    }
+}
+
+/* ──────────────────────────────────
+   🎬 ANIMACIONES
+   ────────────────────────────────── */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(192,192,192,0.3); }
+    50% { box-shadow: 0 0 15px rgba(192,192,192,0.6); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
 }
