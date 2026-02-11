@@ -1,0 +1,268 @@
+/* ============================================
+   💿 DASHBOARD-ALBUMES.JS — KXON
+   Álbumes, detalle, canciones, CRUD
+   ============================================ */
+(function () {
+
+    var db = window.db;
+    var K = window.KXON;
+
+    /* ══════════════════════════════════════════
+       💿 CARGAR ÁLBUMES
+       ══════════════════════════════════════════ */
+    K.loadAlbumes = async function () {
+        try {
+            var r = await db.from('albumes').select('*, canciones(id)').order('created_at', { ascending: false });
+            if (r.error) throw r.error;
+            var data = r.data || [];
+            renderAlbums(data, 'albumesGrid');
+            renderAlbums(data.slice(0, 5), 'inicioAlbumes');
+        } catch (e) { console.error(e); }
+    };
+
+    function renderAlbums(albums, cid) {
+        var c = document.getElementById(cid);
+        if (!albums || !albums.length) {
+            c.innerHTML = '<div class="empty-state"><div class="empty-icon">💿</div><div class="empty-title">Sin álbumes</div></div>';
+            return;
+        }
+        var h = '';
+        for (var i = 0; i < albums.length; i++) {
+            var a = albums[i];
+            var img = a.imagen_url || 'https://placehold.co/400x400/111/333?text=♪';
+            var cnt = a.canciones ? a.canciones.length : 0;
+            h += '<div class="card" onclick="window._openAlbum(\'' + a.id + '\')">';
+            h += '<div class="card-img square"><img src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/400x400/111/333?text=♪\'">';
+            h += '<div class="card-overlay"><div class="card-overlay-icon">▶</div></div>';
+            if (K.isAdmin) h += '<button class="card-admin-delete visible" onclick="event.stopPropagation();window._deleteAlbum(\'' + a.id + '\')">✕</button>';
+            h += '</div><div class="card-body"><div class="card-title">' + a.titulo + '</div><div class="card-subtitle">♪ ' + cnt + ' canciones</div></div></div>';
+        }
+        c.innerHTML = h;
+    }
+
+    /* ══════════════════════════════════════════
+       💿 ALBUM DETAIL
+       ══════════════════════════════════════════ */
+    window._openAlbum = async function (aid) {
+        K.currentAlbumId = aid;
+        try {
+            var r = await db.from('albumes').select('*').eq('id', aid).single();
+            if (r.error) throw r.error;
+            var album = r.data;
+            K.currentAlbumCover = album.imagen_url || 'https://placehold.co/400x400/111/333?text=♪';
+            document.getElementById('detailTitle').textContent = album.titulo;
+            document.getElementById('detailDesc').textContent = album.descripcion || 'Sin descripción';
+            document.getElementById('detailCover').src = K.currentAlbumCover;
+
+            var btnAdd = document.getElementById('btnAddTrack');
+            if (K.isAdmin) btnAdd.classList.add('visible'); else btnAdd.classList.remove('visible');
+
+            await loadAlbumTracks(aid);
+
+            document.getElementById('albumesListView').style.display = 'none';
+            document.getElementById('albumDetailView').classList.add('show');
+        } catch (e) { console.error(e); K.showToast('Error al cargar álbum', 'error'); }
+    };
+
+    async function loadAlbumTracks(aid) {
+        var sr = await db.from('canciones').select('*').eq('album_id', aid).order('created_at', { ascending: true });
+        var songs = sr.data || [];
+        document.getElementById('detailMeta').textContent = songs.length + ' CANCIONES';
+        K.currentPlaylist = songs;
+
+        if (!songs.length) {
+            document.getElementById('detailTracks').innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones</div></div>';
+            return;
+        }
+        var h = '';
+        for (var i = 0; i < songs.length; i++) {
+            var s = songs[i];
+            h += '<div class="track-item" onclick="window._playTrack(' + i + ')">';
+            h += '<span class="track-num">' + (i + 1) + '</span>';
+            h += '<button class="track-play-btn">▶</button>';
+            h += '<div class="track-info"><div class="track-title">' + s.titulo + '</div></div>';
+            h += '<span class="track-duration">' + (s.duracion || '--:--') + '</span>';
+            if (K.isAdmin) h += '<button class="track-delete visible" onclick="event.stopPropagation();window._deleteTrack(\'' + s.id + '\')">🗑</button>';
+            h += '</div>';
+        }
+        document.getElementById('detailTracks').innerHTML = h;
+    }
+
+    /* ══════════════════════════════════════════
+       🎵 TODAS LAS CANCIONES
+       ══════════════════════════════════════════ */
+    K.loadAllCanciones = async function () {
+        try {
+            var r = await db.from('canciones').select('*, albumes(titulo, imagen_url)').order('created_at', { ascending: false });
+            if (r.error) throw r.error;
+            var data = r.data || [];
+            renderAllCanciones(data, 'allCancionesGrid');
+            renderAllCanciones(data.slice(0, 5), 'inicioCanciones');
+        } catch (e) { console.error(e); }
+    };
+
+    function renderAllCanciones(canciones, cid) {
+        var c = document.getElementById(cid);
+        if (!canciones || !canciones.length) {
+            c.innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones</div></div>';
+            return;
+        }
+        var h = '';
+        for (var i = 0; i < canciones.length; i++) {
+            var s = canciones[i];
+            var albumName = s.albumes ? s.albumes.titulo : 'Sin álbum';
+            var coverImg = s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '';
+            h += '<div class="track-item" onclick="window._playFromAll(' + i + ',\'' + cid + '\')">';
+            h += '<span class="track-num">' + (i + 1) + '</span>';
+            if (coverImg) { h += '<div class="track-cover"><img src="' + coverImg + '" alt=""></div>'; }
+            else { h += '<button class="track-play-btn">▶</button>'; }
+            h += '<div class="track-info"><div class="track-title">' + s.titulo + '</div><div class="track-album-name">' + albumName + '</div></div>';
+            h += '<span class="track-duration">' + (s.duracion || '--:--') + '</span>';
+            if (K.isAdmin) h += '<button class="track-delete visible" onclick="event.stopPropagation();window._deleteTrackGlobal(\'' + s.id + '\')">🗑</button>';
+            h += '</div>';
+        }
+        c.innerHTML = h;
+    }
+
+    window._playFromAll = function (idx, cid) {
+        db.from('canciones').select('*, albumes(titulo, imagen_url)').order('created_at', { ascending: false }).then(function (r) {
+            if (r.data) {
+                var list = cid === 'inicioCanciones' ? r.data.slice(0, 5) : r.data;
+                K.currentPlaylist = list.map(function (s) {
+                    return {
+                        id: s.id, titulo: s.titulo, archivo_url: s.archivo_url,
+                        imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '',
+                        duracion: s.duracion, reproducciones: s.reproducciones
+                    };
+                });
+                K.currentAlbumCover = '';
+                K.playTrack(idx);
+            }
+        });
+    };
+
+    window._deleteTrackGlobal = async function (tid) {
+        if (!confirm('¿Eliminar esta canción?')) return;
+        try {
+            var r = await db.from('canciones').delete().eq('id', tid);
+            if (r.error) throw r.error;
+            K.showToast('Canción eliminada', 'success');
+            K.loadAllCanciones(); K.loadAlbumes(); K.loadStats();
+        } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
+    };
+
+    /* ══════════════════════════════════════════
+       💿 CREAR ÁLBUM
+       ══════════════════════════════════════════ */
+    K._selectedCoverFile = null;
+
+    document.getElementById('albumCoverFile').addEventListener('change', function (e) {
+        var f = e.target.files[0]; if (!f) return;
+        K._selectedCoverFile = f;
+        document.getElementById('albumCoverArea').classList.add('has-file');
+        document.getElementById('albumCoverArea').querySelector('.file-upload-text').textContent = f.name;
+        var rd = new FileReader();
+        rd.onload = function (ev) {
+            document.getElementById('albumCoverImg').src = ev.target.result;
+            document.getElementById('albumCoverPreview').classList.add('show');
+        };
+        rd.readAsDataURL(f);
+    });
+
+    document.getElementById('formAlbum').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var titulo = document.getElementById('albumTitulo').value.trim();
+        var desc = document.getElementById('albumDesc').value.trim();
+        if (!titulo) { K.showToast('Ingresa un título', 'error'); return; }
+
+        var btn = document.getElementById('btnAlbumSubmit');
+        btn.classList.add('loading'); btn.disabled = true;
+
+        try {
+            var imageUrl = '';
+            if (K._selectedCoverFile) {
+                var fn = Date.now() + '_' + K._selectedCoverFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
+                var up = await db.storage.from('imagenes').upload('covers/' + fn, K._selectedCoverFile, { contentType: K._selectedCoverFile.type });
+                if (up.error) throw up.error;
+                imageUrl = db.storage.from('imagenes').getPublicUrl('covers/' + fn).data.publicUrl;
+            }
+            var ins = await db.from('albumes').insert({ titulo: titulo, descripcion: desc, imagen_url: imageUrl, autor_id: K.currentUser.id });
+            if (ins.error) throw ins.error;
+
+            K.showToast('¡Álbum creado!', 'success');
+            K.closeModal('modalAlbum');
+            K.loadAlbumes(); K.loadStats();
+        } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
+        btn.classList.remove('loading'); btn.disabled = false;
+    });
+
+    window._deleteAlbum = async function (aid) {
+        if (!confirm('¿Eliminar este álbum y todas sus canciones?')) return;
+        try {
+            await db.from('canciones').delete().eq('album_id', aid);
+            var r = await db.from('albumes').delete().eq('id', aid);
+            if (r.error) throw r.error;
+            K.showToast('Álbum eliminado', 'success');
+            K.loadAlbumes(); K.loadAllCanciones(); K.loadStats();
+        } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
+    };
+
+    /* ══════════════════════════════════════════
+       🎵 CREAR CANCIÓN
+       ══════════════════════════════════════════ */
+    K._selectedAudioFile = null;
+
+    document.getElementById('cancionAudioFile').addEventListener('change', function (e) {
+        var f = e.target.files[0]; if (!f) return;
+        K._selectedAudioFile = f;
+        document.getElementById('cancionAudioArea').classList.add('has-file');
+        document.getElementById('cancionAudioArea').querySelector('.file-upload-text').textContent = f.name;
+    });
+
+    document.getElementById('formCancion').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var titulo = document.getElementById('cancionTitulo').value.trim();
+        if (!titulo) { K.showToast('Ingresa el título', 'error'); return; }
+        if (!K._selectedAudioFile) { K.showToast('Selecciona un archivo de audio', 'error'); return; }
+        if (!K.currentAlbumId) { K.showToast('Error: álbum no seleccionado', 'error'); return; }
+
+        var btn = document.getElementById('btnCancionSubmit');
+        btn.classList.add('loading'); btn.disabled = true;
+        var prog = document.getElementById('uploadProgress');
+        prog.classList.add('show');
+        document.getElementById('uploadText').textContent = 'Subiendo audio...';
+        document.getElementById('uploadBarFill').style.width = '30%';
+
+        try {
+            var fn = Date.now() + '_' + K._selectedAudioFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
+            document.getElementById('uploadBarFill').style.width = '50%';
+            var up = await db.storage.from('audio').upload('songs/' + fn, K._selectedAudioFile, { contentType: K._selectedAudioFile.type });
+            if (up.error) throw up.error;
+            document.getElementById('uploadBarFill').style.width = '80%';
+            var audioUrl = db.storage.from('audio').getPublicUrl('songs/' + fn).data.publicUrl;
+            document.getElementById('uploadText').textContent = 'Guardando...';
+            var ins = await db.from('canciones').insert({ titulo: titulo, archivo_url: audioUrl, imagen_url: K.currentAlbumCover, album_id: K.currentAlbumId, autor_id: K.currentUser.id });
+            if (ins.error) throw ins.error;
+            document.getElementById('uploadBarFill').style.width = '100%';
+            document.getElementById('uploadText').textContent = '¡Completado!';
+            K.showToast('¡Canción agregada!', 'success');
+            K.closeModal('modalCancion');
+            await loadAlbumTracks(K.currentAlbumId);
+            K.loadAllCanciones(); K.loadStats();
+        } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
+        btn.classList.remove('loading'); btn.disabled = false;
+        setTimeout(function () { prog.classList.remove('show'); document.getElementById('uploadBarFill').style.width = '0%'; }, 1500);
+    });
+
+    window._deleteTrack = async function (tid) {
+        if (!confirm('¿Eliminar esta canción?')) return;
+        try {
+            var r = await db.from('canciones').delete().eq('id', tid);
+            if (r.error) throw r.error;
+            K.showToast('Canción eliminada', 'success');
+            await loadAlbumTracks(K.currentAlbumId);
+            K.loadAllCanciones(); K.loadStats();
+        } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
+    };
+
+})();

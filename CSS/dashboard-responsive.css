@@ -1,0 +1,140 @@
+/* ============================================
+   📱 DASHBOARD RESPONSIVE CSS - KXON
+   Todos los @media queries del dashboard
+   ============================================ */
+
+/* ──────────────────────────────────
+   📱 TABLET (max-width: 768px)
+   ────────────────────────────────── */
+@media (max-width: 768px) {
+
+    /* Layout */
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; }
+    .btn-hamburger { display: block; }
+    .content-area { padding: 20px 16px; }
+
+    /* Stats */
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Content grids */
+    .content-grid { grid-template-columns: 1fr; }
+    .content-grid-albums { grid-template-columns: repeat(2, 1fr); }
+
+    /* Player */
+    .player-bar { left: 0; }
+    .player-progress { display: none; }
+    .player-volume { display: none; }
+
+    /* Album detail */
+    .album-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .album-detail-cover { width: 180px; height: 180px; }
+
+    /* Radio */
+    .radio-disc { width: 200px; height: 200px; }
+    .radio-disc-inner { width: 85px; height: 85px; }
+    .radio-track-title { font-size: 1.1rem; }
+    .radio-btn-main { width: 56px; height: 56px; font-size: 1.1rem; }
+    .radio-btn-secondary { width: 40px; height: 40px; }
+
+    /* Marketplace */
+    .market-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .market-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .market-detail-cover { width: 140px; height: 140px; }
+    .solicitud-info-grid { grid-template-columns: 1fr; }
+
+    /* Archivo */
+    .archivo-grid { grid-template-columns: 1fr; }
+    .archivo-stats { grid-template-columns: repeat(2, 1fr); }
+    .archivo-card-header { padding: 16px; }
+    .archivo-card-cover { width: 65px; height: 65px; }
+    .archivo-card-actions { padding: 0 16px 16px; }
+    .archivo-card-audios { padding: 0 16px 12px; }
+    .archivo-pending-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Videos */
+    .videos-grid { grid-template-columns: 1fr; }
+    .video-player-wrapper { border-radius: 8px; margin: 0 12px; }
+    .video-player-header { padding: 0 12px; }
+    .video-player-info { padding: 0 12px; }
+
+    /* Documentales */
+    .docu-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .docu-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .docu-detail-cover { width: 200px; }
+    .episodio-thumb { width: 60px; }
+
+    /* Perfil */
+    .perfil-avatar-section {
+        flex-direction: column;
+        text-align: center;
+    }
+    .perfil-avatar-info { align-items: center; }
+    .perfil-form-grid { grid-template-columns: 1fr; }
+    .perfil-cuenta-grid { grid-template-columns: 1fr; }
+    .perfil-danger-zone {
+        flex-direction: column;
+        text-align: center;
+    }
+    .perfil-danger-header { flex-direction: column; }
+    .perfil-card { padding: 20px; }
+}
+
+/* ──────────────────────────────────
+   📱 MOBILE (max-width: 480px)
+   ────────────────────────────────── */
+@media (max-width: 480px) {
+
+    /* Stats */
+    .stats-grid { grid-template-columns: 1fr; }
+
+    /* Albums */
+    .content-grid-albums {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    /* Radio */
+    .radio-disc { width: 170px; height: 170px; }
+    .radio-disc-inner { width: 70px; height: 70px; }
+    .radio-volume-wrapper { max-width: 200px; }
+
+    /* Marketplace */
+    .market-grid { grid-template-columns: 1fr; }
+
+    /* Archivo */
+    .archivo-stats { grid-template-columns: 1fr; }
+    .archivo-tabs { width: 100%; }
+    .archivo-tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px 12px;
+        font-size: .68rem;
+    }
+
+    /* Documentales */
+    .docu-grid { grid-template-columns: 1fr; }
+    .episodio-item { padding: 12px 14px; }
+    .episodio-thumb { display: none; }
+
+    /* Perfil */
+    .perfil-avatar { width: 80px; height: 80px; }
+    .perfil-avatar-letter { font-size: 2rem; }
+    .perfil-nombre-display { font-size: 1.2rem; }
+}

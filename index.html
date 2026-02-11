@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KXON — Music Platform</title>
+    <!-- SEO & META -->
+<meta name="description" content="KXON — Plataforma musical exclusiva. Álbumes, canciones, beats y contenido audiovisual de producción propia para artistas y fans.">
+<meta name="keywords" content="KXON, música, beats, artista digital, plataforma musical, álbumes, canciones">
+<meta name="author" content="KXON">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph (Facebook, WhatsApp) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="KXON — Music Platform">
+<meta property="og:description" content="El nuevo artista digital en un universo sonoro exclusivo. Álbumes, canciones y beats de producción propia.">
+<meta property="og:image" content="https://placehold.co/1200x630/0a0a0a/c0c0c0?text=KXON+MUSIC">
+<meta property="og:url" content="">
+<meta property="og:site_name" content="KXON">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KXON — Music Platform">
+<meta name="twitter:description" content="Plataforma musical exclusiva para artistas y fans.">
+<meta name="twitter:image" content="https://placehold.co/1200x630/0a0a0a/c0c0c0?text=KXON+MUSIC">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/landing.css">
+
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+</head>
+<body>
+
+    <!-- ============================================
+         📌 HEADER
+         ============================================ -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-text"><span>KXON</span></div>
+                <div class="logo-dot"></div>
+            </a>
+            <div class="header-actions">
+                <a href="login.html" class="btn-login">Iniciar Sesión</a>
+                <a href="register.html" class="btn-register">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================
+         🦸 HERO
+         ============================================ -->
+    <section class="hero">
+        <div class="hero-circle-2"></div>
+        <div class="hero-circle-3"></div>
+        <div class="hero-content">
+            <div class="hero-badge">Kinross worldwide inc</div>
+            <h1 class="hero-title"><span class="gradient-text">KXON</span></h1>
+            <p class="hero-subtitle">
+                El nuevo artista digital en un universo sonoro exclusivo. Álbumes, canciones y beats
+                de producción propia en una plataforma diseñada para artistas y fans.
+            </p>
+            <div class="hero-actions">
+                <a href="register.html" class="btn-hero-primary">Comenzar Ahora</a>
+                <a href="#noticias" class="btn-hero-outline">Explorar</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         📰 NOTICIAS
+         ============================================ -->
+    <section class="section" id="noticias">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Últimas Publicaciones</div>
+                <h2 class="section-title">Noticias</h2>
+                <p class="section-desc">Mantente al día con las novedades, lanzamientos y anuncios</p>
+            </div>
+            <div class="noticias-grid" id="noticias-grid"></div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         💿 ÁLBUMES DESTACADOS
+         ============================================ -->
+    <section class="section" id="albumes">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Últimos Lanzamientos</div>
+                <h2 class="section-title">Álbumes Destacados</h2>
+                <p class="section-desc">Los álbumes más recientes de nuestra colección exclusiva</p>
+            </div>
+            <div class="albumes-grid" id="albumes-grid"></div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         🦶 FOOTER
+         ============================================ -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">© 2025 <span>KXON</span> — Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         📰 MODAL: DETALLE NOTICIA
+         ============================================ -->
+    <div class="modal-overlay-landing" id="modalNoticiaLanding">
+        <div class="modal-landing">
+            <button class="modal-landing-close" onclick="document.getElementById('modalNoticiaLanding').classList.remove('show')">✕</button>
+            <div class="modal-landing-img" id="noticiaLandingImgWrap" style="display:none;">
+                <img id="noticiaLandingImg" src="" alt="">
+            </div>
+            <div class="modal-landing-body">
+                <span class="modal-landing-fecha" id="noticiaLandingFecha"></span>
+                <h2 class="modal-landing-title" id="noticiaLandingTitulo"></h2>
+                <p class="modal-landing-desc" id="noticiaLandingDesc"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         💿 MODAL: DETALLE ÁLBUM
+         ============================================ -->
+    <div class="modal-overlay-landing" id="modalAlbumLanding">
+        <div class="modal-landing">
+            <button class="modal-landing-close" onclick="document.getElementById('modalAlbumLanding').classList.remove('show')">✕</button>
+            <div class="modal-album-landing-header">
+                <div class="modal-album-landing-cover">
+                    <img id="albumLandingCover" src="" alt="">
+                </div>
+                <div class="modal-album-landing-info">
+                    <h2 class="modal-landing-title" id="albumLandingTitulo"></h2>
+                    <p class="modal-album-landing-desc" id="albumLandingDesc"></p>
+                    <span class="modal-album-landing-meta" id="albumLandingMeta"></span>
+                </div>
+            </div>
+            <div class="modal-album-landing-tracks">
+                <h4 class="modal-album-landing-tracks-title">🎵 Canciones</h4>
+                <div class="modal-album-landing-list" id="albumLandingTracks"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         📦 SCRIPTS
+         ============================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/landing.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+}
+</script>
+
+</body>
+</html>

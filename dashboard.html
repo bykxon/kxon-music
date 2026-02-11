@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KXON — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard-layout.css">
+    <link rel="stylesheet" href="css/dashboard-panels.css">
+    <link rel="stylesheet" href="css/dashboard-player.css">
+    <link rel="stylesheet" href="css/dashboard-modals.css">
+    <link rel="stylesheet" href="css/dashboard-marketplace.css">
+    <link rel="stylesheet" href="css/dashboard-videos.css">
+    <link rel="stylesheet" href="css/dashboard-perfil.css">
+    <link rel="stylesheet" href="css/dashboard-responsive.css">
+    <link rel="stylesheet" href="css/dashboard-favs-share.css">
+    <link rel="stylesheet" href="css/dashboard-analytics.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KXON">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <style>
+    /* ============================================
+       🎶 PLAYLISTS - ESTILOS
+       ============================================ */
+    .pl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+    .pl-card{background:var(--negro-card);border:1px solid rgba(255,255,255,.06);border-radius:var(--radio-md);overflow:hidden;transition:var(--trans-suave);animation:fadeInUp .5s ease both;cursor:pointer}
+    .pl-card:hover{border-color:rgba(192,192,192,.12);box-shadow:0 0 20px rgba(192,192,192,.06);transform:translateY(-4px)}
+    .pl-card-new{border:2px dashed rgba(255,255,255,.08);background:transparent;display:flex;align-items:center;justify-content:center;min-height:200px}
+    .pl-card-new:hover{border-color:rgba(192,192,192,.25);background:rgba(192,192,192,.03)}
+    .pl-card-new-inner{display:flex;flex-direction:column;align-items:center;gap:12px}
+    .pl-card-new-icon{font-size:2rem;color:var(--plata-oscura);width:50px;height:50px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:var(--trans-normal)}
+    .pl-card-new:hover .pl-card-new-icon{color:var(--plata-blanca);background:rgba(192,192,192,.1);border-color:rgba(192,192,192,.3)}
+    .pl-card-new-text{font-family:var(--font-titulo);font-size:.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--plata-oscura);transition:color .3s ease}
+    .pl-card-new:hover .pl-card-new-text{color:var(--plata-clara)}
+    .pl-card-cover{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
+    .pl-card-cover img{width:100%;height:100%;object-fit:cover;transition:var(--trans-lenta)}
+    .pl-card:hover .pl-card-cover img{transform:scale(1.05)}
+    .pl-card-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(5,5,5,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--trans-normal)}
+    .pl-card:hover .pl-card-overlay{opacity:1}
+    .pl-card-overlay-icon{width:46px;height:46px;background:rgba(5,5,5,.7);border:1px solid rgba(192,192,192,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--plata-blanca);backdrop-filter:blur(10px)}
+    .pl-card-del{position:absolute;top:10px;right:10px;width:28px;height:28px;background:rgba(255,71,87,.8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;z-index:5;transition:var(--trans-normal);backdrop-filter:blur(5px);cursor:pointer;border:none;opacity:0}
+    .pl-card:hover .pl-card-del{opacity:1}
+    .pl-card-del:hover{background:var(--acento-error);transform:scale(1.1)}
+    .pl-card-body{padding:16px}
+    .pl-card-title{font-family:var(--font-titulo);font-size:.95rem;font-weight:700;color:var(--plata-titulo);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pl-card-meta{font-size:.72rem;color:var(--plata-oscura);font-weight:500}
+
+    /* ── Detalle Playlist ── */
+    .pl-detail{display:none;animation:fadeIn .4s ease}.pl-detail.show{display:block}
+    .pl-detail-header{display:flex;gap:24px;margin-bottom:24px;align-items:flex-start}
+    .pl-detail-cover{width:180px;height:180px;border-radius:var(--radio-md);overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.08)}
+    .pl-detail-cover img{width:100%;height:100%;object-fit:cover}
+    .pl-detail-info{flex:1}
+    .pl-detail-label{font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--plata-oscura);margin-bottom:8px;font-family:var(--font-titulo)}
+    .pl-detail-title{font-family:var(--font-titulo);font-size:1.6rem;font-weight:800;color:var(--plata-blanca);margin-bottom:6px}
+    .pl-detail-desc{font-size:.85rem;color:var(--plata-media);font-weight:300;margin-bottom:12px;line-height:1.5}
+    .pl-detail-meta{font-size:.72rem;color:var(--plata-oscura);font-weight:500;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+    .pl-detail-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .pl-detail-btn{padding:10px 20px;border-radius:var(--radio-sm);font-family:var(--font-titulo);font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:var(--trans-suave);display:flex;align-items:center;gap:8px;border:none}
+    .pl-btn-play{background:linear-gradient(135deg,#2a2a2a,#1a1a1a);color:var(--plata-blanca);border:1px solid rgba(192,192,192,.2)}
+    .pl-btn-play:hover{background:linear-gradient(135deg,#c0c0c0,#888);color:var(--negro-base);border-color:var(--acento-principal);transform:translateY(-1px)}
+    .pl-btn-shuffle{background:rgba(255,255,255,.04);color:var(--plata-clara);border:1px solid rgba(255,255,255,.08)}
+    .pl-btn-shuffle:hover{background:rgba(255,255,255,.08);border-color:rgba(192,192,192,.2)}
+    .pl-btn-edit{background:rgba(255,255,255,.04);color:var(--plata-clara);border:1px solid rgba(255,255,255,.08)}
+    .pl-btn-edit:hover{background:rgba(255,255,255,.08);border-color:rgba(192,192,192,.2)}
+
+    /* ── Modal agregar a playlist ── */
+    .atp-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:var(--radio-sm);margin-bottom:6px;transition:var(--trans-normal);cursor:pointer}
+    .atp-item:hover{background:rgba(255,255,255,.05);border-color:rgba(192,192,192,.12)}
+    .atp-item.atp-added{opacity:.5;cursor:default}
+    .atp-item.atp-added:hover{background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.04)}
+    .atp-icon{font-size:1.1rem;flex-shrink:0}
+    .atp-name{flex:1;font-size:.88rem;font-weight:600;color:var(--plata-titulo)}
+    .atp-badge{font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:50px;background:rgba(46,213,115,.1);color:var(--acento-exito);border:1px solid rgba(46,213,115,.2);flex-shrink:0}
+
+    /* ── Responsive Playlists ── */
+    @media(max-width:768px){.pl-grid{grid-template-columns:repeat(2,1fr);gap:12px}.pl-detail-header{flex-direction:column;align-items:center;text-align:center}.pl-detail-cover{width:160px;height:160px}.pl-detail-actions{justify-content:center}}
+    @media(max-width:480px){.pl-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pl-card-body{padding:12px}.pl-card-title{font-size:.82rem}}
+
+    /* ============================================
+       💬 COMENTARIOS - ESTILOS
+       ============================================ */
+    .cmt-section{margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}
+    .cmt-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .cmt-title{font-family:var(--font-titulo);font-size:.88rem;font-weight:700;color:var(--plata-titulo)}
+    .cmt-count{padding:2px 10px;background:rgba(192,192,192,.08);border:1px solid rgba(192,192,192,.12);border-radius:50px;font-family:var(--font-titulo);font-size:.65rem;font-weight:700;color:var(--plata-media)}
+    .cmt-input-wrap{display:flex;gap:12px;margin-bottom:20px;align-items:flex-start}
+    .cmt-input-avatar{width:36px;height:36px;border-radius:50%;background:var(--negro-hover);border:1px solid rgba(192,192,192,.1);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--plata-media);overflow:hidden;flex-shrink:0}
+    .cmt-input-box{flex:1}
+    .cmt-textarea{width:100%;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:var(--radio-sm);color:var(--plata-blanca);font-family:var(--font-cuerpo);font-size:.85rem;resize:vertical;min-height:56px;max-height:150px;transition:var(--trans-suave);outline:none}
+    .cmt-textarea::placeholder{color:var(--plata-oscura);font-weight:300}
+    .cmt-textarea:focus{border-color:rgba(192,192,192,.3);background:rgba(255,255,255,.05);box-shadow:0 0 0 3px rgba(192,192,192,.05)}
+    .cmt-input-actions{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+    .cmt-chars{font-size:.68rem;color:var(--plata-oscura);font-weight:500;font-family:var(--font-titulo)}
+    .cmt-send-btn{padding:8px 18px;background:linear-gradient(135deg,#2a2a2a,#1a1a1a);border:1px solid rgba(192,192,192,.2);border-radius:6px;color:var(--plata-blanca);font-family:var(--font-titulo);font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:var(--trans-suave)}
+    .cmt-send-btn:hover{background:linear-gradient(135deg,#c0c0c0,#888);color:var(--negro-base);border-color:var(--acento-principal);transform:translateY(-1px)}
+    .cmt-list{display:flex;flex-direction:column;gap:4px;max-height:350px;overflow-y:auto}
+    .cmt-loading,.cmt-empty{text-align:center;padding:24px;font-size:.82rem;color:var(--plata-oscura);font-weight:300}
+    .cmt-item{display:flex;gap:12px;padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:var(--radio-sm);transition:var(--trans-normal);animation:fadeIn .3s ease}
+    .cmt-item:hover{border-color:rgba(192,192,192,.08);background:rgba(255,255,255,.03)}
+    .cmt-avatar{width:34px;height:34px;border-radius:50%;background:var(--negro-hover);border:1px solid rgba(192,192,192,.1);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--plata-media);overflow:hidden;flex-shrink:0}
+    .cmt-avatar img{width:100%;height:100%;object-fit:cover}
+    .cmt-content{flex:1;min-width:0}
+    .cmt-item-header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+    .cmt-author{font-family:var(--font-titulo);font-size:.78rem;font-weight:700;color:var(--plata-titulo)}
+    .cmt-time{font-size:.65rem;color:var(--plata-oscura)}
+    .cmt-del-btn{margin-left:auto;background:none;border:none;font-size:.72rem;cursor:pointer;opacity:0;transition:var(--trans-normal);padding:2px 6px;border-radius:4px}
+    .cmt-item:hover .cmt-del-btn{opacity:.5}
+    .cmt-del-btn:hover{opacity:1!important;background:rgba(255,71,87,.1)}
+    .cmt-text{font-size:.85rem;color:var(--plata-clara);font-weight:300;line-height:1.6;word-break:break-word}
+    @media(max-width:480px){.cmt-input-wrap{flex-direction:column}.cmt-input-avatar{display:none}.cmt-avatar{width:28px;height:28px}}
+
+    /* ============================================
+       📊 PANEL HISTORIAL - ESTILOS
+       ============================================ */
+    .historial-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    .historial-clear-btn {
+        padding: 8px 18px;
+        background: rgba(255,71,87,0.08);
+        border: 1px solid rgba(255,71,87,0.2);
+        border-radius: var(--radio-sm);
+        color: var(--acento-error);
+        font-family: var(--font-titulo);
+        font-weight: 600;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: var(--trans-suave);
+    }
+    .historial-clear-btn:hover {
+        background: rgba(255,71,87,0.15);
+        border-color: rgba(255,71,87,0.35);
+        transform: translateY(-1px);
+    }
+    .historial-date-group {
+        margin-bottom: 24px;
+    }
+    .historial-date-label {
+        font-family: var(--font-titulo);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--plata-oscura);
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .historial-date-label::before {
+        content: '📅';
+        font-size: 0.85rem;
+    }
+    .historial-track-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        background: var(--negro-card);
+        border: 1px solid rgba(255,255,255,0.04);
+        border-radius: var(--radio-sm);
+        transition: var(--trans-suave);
+        cursor: pointer;
+        margin-bottom: 3px;
+    }
+    .historial-track-item:hover {
+        background: rgba(255,255,255,0.03);
+        border-color: rgba(192,192,192,0.1);
+    }
+    .historial-track-cover {
+        width: 42px;
+        height: 42px;
+        border-radius: 6px;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .historial-track-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .historial-track-info {
+        flex: 1;
+        min-width: 0;
+    }
+    .historial-track-title {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--plata-titulo);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .historial-track-meta {
+        font-size: 0.7rem;
+        color: var(--plata-oscura);
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .historial-track-time {
+        font-size: 0.68rem;
+        color: var(--plata-oscura);
+        font-weight: 500;
+        flex-shrink: 0;
+        font-family: var(--font-titulo);
+        letter-spacing: 0.5px;
+    }
+
+    /* ── CONTADOR REPRODUCCIONES VISIBLE ── */
+    .track-plays {
+        font-size: 0.65rem;
+        color: var(--plata-oscura);
+        font-weight: 600;
+        font-family: var(--font-titulo);
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+        min-width: 55px;
+        justify-content: flex-end;
+    }
+    .track-plays .plays-fire {
+        font-size: 0.7rem;
+    }
+    .track-plays.popular {
+        color: var(--acento-dorado);
+    }
+    .radio-queue-plays {
+        font-size: 0.62rem;
+        color: var(--plata-oscura);
+        font-weight: 500;
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    /* ── HISTORIAL STATS ── */
+    .historial-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 28px;
+    }
+    .historial-stat {
+        background: var(--negro-card);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: var(--radio-md);
+        padding: 18px;
+        text-align: center;
+        transition: var(--trans-suave);
+    }
+    .historial-stat:hover {
+        border-color: rgba(192,192,192,0.1);
+    }
+    .historial-stat-value {
+        font-family: var(--font-titulo);
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--plata-blanca);
+        margin-bottom: 4px;
+    }
+    .historial-stat-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--plata-oscura);
+    }
+
+    /* ── RESPONSIVE HISTORIAL ── */
+    @media (max-width: 768px) {
+        .historial-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .historial-header-actions {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    @media (max-width: 480px) {
+        .historial-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <!-- ⏳ LOADING -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo"><span>KXON</span></div>
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ══════════════════════════════════════════
+         🔲 MODALES
+         ══════════════════════════════════════════ -->
+
+    <!-- 🔲 MODAL: NUEVO ÁLBUM -->
+    <div class="modal-overlay" id="modalAlbum">
+        <div class="modal">
+            <div class="modal-header"><h3 class="modal-title">Nuevo Álbum</h3><button class="modal-close" id="modalAlbumClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formAlbum">
+                    <div class="form-group"><label class="form-label">Título del álbum</label><input type="text" class="form-input" id="albumTitulo" placeholder="Nombre del álbum" required></div>
+                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="albumDesc" placeholder="Descripción (opcional)"></textarea></div>
+                    <div class="form-group"><label class="form-label">Portada</label><div class="file-upload"><div class="file-upload-area" id="albumCoverArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="albumCoverFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="albumCoverPreview"><img id="albumCoverImg" src="" alt=""></div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalAlbumCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnAlbumSubmit">Crear Álbum</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: NUEVA CANCIÓN -->
+    <div class="modal-overlay" id="modalCancion">
+        <div class="modal">
+            <div class="modal-header"><h3 class="modal-title">Agregar Canción al Álbum</h3><button class="modal-close" id="modalCancionClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formCancion">
+                    <div class="form-group"><label class="form-label">Título de la canción</label><input type="text" class="form-input" id="cancionTitulo" placeholder="Nombre de la canción" required></div>
+                    <div class="form-group"><label class="form-label">Archivo de audio</label><div class="file-upload"><div class="file-upload-area" id="cancionAudioArea"><div class="file-upload-icon">🎵</div><div class="file-upload-text">Click para subir audio</div><div class="file-upload-hint">MP3, WAV, OGG — Máx 50MB</div></div><input type="file" id="cancionAudioFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"></div><div class="upload-progress" id="uploadProgress"><div class="upload-bar"><div class="upload-bar-fill" id="uploadBarFill"></div></div><div class="upload-text" id="uploadText">Subiendo...</div></div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalCancionCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnCancionSubmit">Subir Canción</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: NUEVA NOTICIA -->
+    <div class="modal-overlay" id="modalNoticia">
+        <div class="modal">
+            <div class="modal-header"><h3 class="modal-title">Nueva Noticia</h3><button class="modal-close" id="modalNoticiaClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formNoticia">
+                    <div class="form-group"><label class="form-label">Título de la noticia</label><input type="text" class="form-input" id="noticiaTitulo" placeholder="Título" required></div>
+                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="noticiaDesc" placeholder="Contenido de la noticia" required></textarea></div>
+                    <div class="form-group"><label class="form-label">Imagen</label><div class="file-upload"><div class="file-upload-area" id="noticiaCoverArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="noticiaCoverFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="noticiaCoverPreview"><img id="noticiaCoverImg" src="" alt=""></div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalNoticiaCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnNoticiaSubmit">Publicar</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: DETALLE NOTICIA -->
+    <div class="modal-overlay" id="modalNoticiaDetalle">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header"><h3 class="modal-title" id="noticiaDetalleTitulo">Noticia</h3><button class="modal-close" onclick="document.getElementById('modalNoticiaDetalle').classList.remove('show')">✕</button></div>
+            <div class="modal-body" style="padding-top:16px;">
+                <div id="noticiaDetalleImgWrap" style="width:100%;border-radius:10px;overflow:hidden;margin-bottom:20px;border:1px solid rgba(255,255,255,.06);display:none;"><img id="noticiaDetalleImg" src="" alt="" style="width:100%;height:auto;max-height:350px;object-fit:cover;display:block;"></div>
+                <div style="margin-bottom:16px;"><span id="noticiaDetalleFecha" style="font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--plata-oscura);font-family:var(--font-titulo);background:rgba(255,255,255,.04);padding:5px 12px;border-radius:50px;border:1px solid rgba(255,255,255,.06);"></span></div>
+                <p id="noticiaDetalleDesc" style="font-size:.92rem;color:var(--plata-clara);font-weight:300;line-height:1.8;white-space:pre-wrap;"></p>
+                <!-- 💬 COMENTARIOS EN NOTICIA -->
+                <div id="noticiaDetalleComments"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: NUEVO PRODUCTO MARKETPLACE -->
+    <div class="modal-overlay" id="modalMarketAdd">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header"><h3 class="modal-title" id="modalMarketTitle">Nuevo Producto</h3><button class="modal-close" onclick="window._closeMarketModal()">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formMarketAdd">
+                    <div class="form-group"><label class="form-label">Tipo de producto</label><div class="market-tabs" style="margin-bottom:0;"><div class="market-tab active" id="addTypeBeat" onclick="window._setAddType('beat')">🎹 Beat</div><div class="market-tab" id="addTypeCancion" onclick="window._setAddType('cancion')">🎤 Canción</div></div></div>
+                    <input type="hidden" id="marketAddTipo" value="beat">
+                    <div class="form-group"><label class="form-label">Título</label><input type="text" class="form-input" id="marketAddTitulo" placeholder="Nombre del beat o canción" required></div>
+                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="marketAddDesc" placeholder="Descripción (opcional)"></textarea></div>
+                    <div class="form-group"><label class="form-label">Precio (COP $)</label><input type="number" class="form-input" id="marketAddPrecio" placeholder="50000" min="0" step="1000" required></div>
+                    <div class="form-group"><label class="form-label">Portada</label><div class="file-upload"><div class="file-upload-area" id="marketImgArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="marketImgFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="marketImgPreview"><img id="marketImgPrev" src="" alt=""></div></div>
+                    <div class="form-group" id="groupAudioMain"><label class="form-label" id="labelAudioMain">Archivo de audio (Beat)</label><div class="file-upload"><div class="file-upload-area" id="marketAudioMainArea"><div class="file-upload-icon">🎵</div><div class="file-upload-text">Click para subir audio</div><div class="file-upload-hint">MP3, WAV — Máx 50MB</div></div><input type="file" id="marketAudioMainFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"></div></div>
+                    <div class="form-group" id="groupAudioVoz" style="display:none;"><label class="form-label">Archivo de Voz (solo voz)</label><div class="file-upload"><div class="file-upload-area" id="marketAudioVozArea"><div class="file-upload-icon">🎤</div><div class="file-upload-text">Click para subir voz</div><div class="file-upload-hint">MP3, WAV — Máx 50MB</div></div><input type="file" id="marketAudioVozFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"></div></div>
+                    <div class="form-group" id="groupAudioBeat" style="display:none;"><label class="form-label">Archivo de Beat (solo beat)</label><div class="file-upload"><div class="file-upload-area" id="marketAudioBeatArea"><div class="file-upload-icon">🎹</div><div class="file-upload-text">Click para subir beat separado</div><div class="file-upload-hint">MP3, WAV — Máx 50MB</div></div><input type="file" id="marketAudioBeatFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"></div></div>
+                    <div class="upload-progress" id="marketUploadProgress"><div class="upload-bar"><div class="upload-bar-fill" id="marketUploadFill"></div></div><div class="upload-text" id="marketUploadText">Subiendo...</div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" onclick="window._closeMarketModal()">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnMarketSubmit">Publicar</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: DETALLE PRODUCTO MARKETPLACE -->
+    <div class="market-detail-overlay" id="marketDetailOverlay">
+        <div class="market-detail-modal">
+            <button class="market-detail-close" onclick="document.getElementById('marketDetailOverlay').classList.remove('show')">✕</button>
+            <div class="market-detail-header"><div class="market-detail-cover"><img id="marketDetCover" src="" alt=""></div><div class="market-detail-info"><div class="market-detail-badge" id="marketDetBadge">BEAT</div><h2 class="market-detail-title" id="marketDetTitle"></h2><p class="market-detail-desc" id="marketDetDesc"></p><div><span class="market-detail-price-label">Precio</span><div class="market-detail-price" id="marketDetPrice"></div></div></div></div>
+            <div class="market-detail-audios" id="marketDetAudios"></div>
+            <div class="market-detail-actions" id="marketDetActions"><button class="market-detail-buy-btn" id="marketDetBuyBtn" onclick="window._initPurchase()">🛒 Comprar Ahora</button></div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: DETALLE SOLICITUD -->
+    <div class="solicitud-detail-overlay" id="solicitudDetailOverlay">
+        <div class="solicitud-detail-modal">
+            <button class="solicitud-detail-close" onclick="document.getElementById('solicitudDetailOverlay').classList.remove('show')">✕</button>
+            <div class="solicitud-detail-product"><div class="solicitud-detail-cover"><img id="solDetCover" src="" alt=""></div><div class="solicitud-detail-product-info"><div class="solicitud-detail-product-type market-badge-beat" id="solDetType">BEAT</div><div class="solicitud-detail-product-title" id="solDetTitle"></div><div class="solicitud-detail-product-price" id="solDetPrice"></div></div></div>
+            <div class="solicitud-detail-info"><div class="solicitud-detail-info-grid"><div class="solicitud-detail-info-item"><div class="solicitud-detail-info-label">Comprador</div><div class="solicitud-detail-info-value" id="solDetBuyer"></div></div><div class="solicitud-detail-info-item"><div class="solicitud-detail-info-label">Email</div><div class="solicitud-detail-info-value" id="solDetEmail"></div></div><div class="solicitud-detail-info-item"><div class="solicitud-detail-info-label">Fecha</div><div class="solicitud-detail-info-value" id="solDetFecha"></div></div><div class="solicitud-detail-info-item"><div class="solicitud-detail-info-label">Estado</div><div class="solicitud-detail-info-value" id="solDetEstado">⏳ Pendiente</div></div></div></div>
+            <div class="solicitud-detail-comprobante" id="solDetCompWrap"><div class="solicitud-detail-comprobante-title">📸 Comprobante de pago</div><img class="solicitud-detail-comprobante-img" id="solDetCompImg" src="" alt="Comprobante" onclick="window.open(this.src,'_blank')"></div>
+            <div class="solicitud-detail-actions" id="solDetActions"><button class="btn-confirm-purchase" id="solDetBtnConfirm">✅ Confirmar Compra</button><button class="btn-reject-purchase" id="solDetBtnReject">❌ Rechazar</button></div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: FORMULARIO DE COMPRA -->
+    <div class="purchase-form-overlay" id="purchaseOverlay">
+        <div class="purchase-form-modal">
+            <div class="purchase-header"><h3 class="purchase-title">💳 Confirmar Compra</h3><button class="purchase-close" onclick="window._closePurchase()">✕</button></div>
+            <div class="purchase-body">
+                <div class="purchase-info-card"><div class="purchase-info-row"><span class="purchase-info-label">Usuario</span><span class="purchase-info-value" id="purchaseUser"></span></div><div class="purchase-info-row"><span class="purchase-info-label">Producto</span><span class="purchase-info-value" id="purchaseProduct"></span></div><div class="purchase-info-row"><span class="purchase-info-label">Precio</span><span class="purchase-info-value price" id="purchasePrice"></span></div></div>
+                <div class="nequi-box"><div class="nequi-label">Pagar con Nequi al número</div><div class="nequi-number">318 453 0020</div><div class="nequi-hint">Realiza la transferencia y sube el comprobante</div></div>
+                <a href="#" target="_blank" class="btn-whatsapp" id="btnWhatsapp">💬 Ir a WhatsApp para confirmar</a>
+                <div class="form-group"><label class="form-label">Subir comprobante de pago</label><div class="file-upload"><div class="file-upload-area" id="purchaseCompArea"><div class="file-upload-icon">📸</div><div class="file-upload-text">Click para subir comprobante</div><div class="file-upload-hint">JPG, PNG — Máx 5MB</div></div><input type="file" id="purchaseCompFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="purchaseCompPreview"><img id="purchaseCompImg" src="" alt=""></div></div>
+                <div class="purchase-actions"><button type="button" class="btn-modal-cancel" onclick="window._closePurchase()">Cancelar</button><button type="button" class="btn-send-purchase" id="btnSendPurchase" onclick="window._sendPurchase()">Enviar Solicitud</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: NUEVO VIDEO -->
+    <div class="modal-overlay" id="modalVideo">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header"><h3 class="modal-title">Nuevo Video</h3><button class="modal-close" id="modalVideoClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formVideo">
+                    <div class="form-group"><label class="form-label">Título del video</label><input type="text" class="form-input" id="videoTitulo" placeholder="Nombre del video" required></div>
+                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="videoDesc" placeholder="Descripción (opcional)"></textarea></div>
+                    <div class="form-group"><label class="form-label">Miniatura / Thumbnail</label><div class="file-upload"><div class="file-upload-area" id="videoThumbArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="videoThumbFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="videoThumbPreview"><img id="videoThumbImg" src="" alt=""></div></div>
+                    <div class="form-group"><label class="form-label">Archivo de Video</label><div class="file-upload"><div class="file-upload-area" id="videoFileArea"><div class="file-upload-icon">🎬</div><div class="file-upload-text">Click para subir video</div><div class="file-upload-hint">MP4, WebM, MOV — Máx 500MB</div></div><input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime"></div></div>
+                    <div class="upload-progress" id="videoUploadProgress"><div class="upload-bar"><div class="upload-bar-fill" id="videoUploadFill"></div></div><div class="upload-text" id="videoUploadText">Subiendo...</div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalVideoCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnVideoSubmit">Subir Video</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: NUEVO DOCUMENTAL -->
+    <div class="modal-overlay" id="modalDocumental">
+        <div class="modal">
+            <div class="modal-header"><h3 class="modal-title">Nuevo Documental</h3><button class="modal-close" id="modalDocumentalClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formDocumental">
+                    <div class="form-group"><label class="form-label">Título del documental</label><input type="text" class="form-input" id="docuTitulo" placeholder="Nombre del documental" required></div>
+                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="docuDesc" placeholder="Sinopsis o descripción"></textarea></div>
+                    <div class="form-group"><label class="form-label">Portada</label><div class="file-upload"><div class="file-upload-area" id="docuCoverArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="docuCoverFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="docuCoverPreview"><img id="docuCoverImg" src="" alt=""></div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalDocumentalCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnDocuSubmit">Crear Documental</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: NUEVO EPISODIO -->
+    <div class="modal-overlay" id="modalEpisodio">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header"><h3 class="modal-title">Agregar Episodio</h3><button class="modal-close" id="modalEpisodioClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formEpisodio">
+                    <div class="form-group"><label class="form-label">Título del episodio</label><input type="text" class="form-input" id="episodioTitulo" placeholder="Ej: Episodio 1 — El inicio" required></div>
+                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="episodioDesc" placeholder="Descripción del episodio (opcional)"></textarea></div>
+                    <div class="form-group"><label class="form-label">Número de episodio</label><input type="number" class="form-input" id="episodioNumero" placeholder="1" min="1" value="1" required></div>
+                    <div class="form-group"><label class="form-label">Miniatura del episodio</label><div class="file-upload"><div class="file-upload-area" id="episodioThumbArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="episodioThumbFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="episodioThumbPreview"><img id="episodioThumbImg" src="" alt=""></div></div>
+                    <div class="form-group"><label class="form-label">Archivo de Video</label><div class="file-upload"><div class="file-upload-area" id="episodioVideoArea"><div class="file-upload-icon">🎬</div><div class="file-upload-text">Click para subir video</div><div class="file-upload-hint">MP4, WebM, MOV — Máx 500MB</div></div><input type="file" id="episodioVideoFile" accept="video/mp4,video/webm,video/quicktime"></div></div>
+                    <div class="upload-progress" id="episodioUploadProgress"><div class="upload-bar"><div class="upload-bar-fill" id="episodioUploadFill"></div></div><div class="upload-text" id="episodioUploadText">Subiendo...</div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalEpisodioCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnEpisodioSubmit">Subir Episodio</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎬 REPRODUCTOR DE VIDEO -->
+    <div class="video-player-overlay" id="videoPlayerOverlay">
+        <div class="video-player-header"><h3 class="video-player-title" id="videoPlayerTitle">Video</h3><div class="video-player-controls"><button class="video-player-btn fullscreen-btn" id="videoFullscreenBtn" title="Pantalla completa">⛶</button><button class="video-player-btn close-btn" id="videoPlayerCloseBtn" title="Cerrar">✕</button></div></div>
+        <div class="video-player-wrapper" id="videoPlayerWrapper"><video id="videoPlayerEl" controls preload="metadata"></video></div>
+        <div class="video-player-info"><p class="video-player-desc" id="videoPlayerDesc"></p><div class="video-player-meta"><span class="video-player-meta-item" id="videoPlayerViews">👁 0 vistas</span><span class="video-player-meta-item" id="videoPlayerDate">📅 —</span></div></div>
+    </div>
+
+    <!-- 🔲 MODAL: SUSCRIPCIÓN -->
+    <div class="purchase-form-overlay" id="subOverlay">
+        <div class="purchase-form-modal">
+            <div class="purchase-header"><h3 class="purchase-title">🎫 Suscribirse al Plan</h3><button class="purchase-close" onclick="window._closeSubModal()">✕</button></div>
+            <div class="purchase-body">
+                <div class="purchase-info-card"><div class="purchase-info-row"><span class="purchase-info-label">Usuario</span><span class="purchase-info-value" id="subUser"></span></div><div class="purchase-info-row"><span class="purchase-info-label">Plan</span><span class="purchase-info-value" id="subPlanName"></span></div><div class="purchase-info-row"><span class="purchase-info-label">Precio</span><span class="purchase-info-value price" id="subPlanPrice"></span></div><div class="purchase-info-row"><span class="purchase-info-label">Duración</span><span class="purchase-info-value" id="subPlanDuration">30 días</span></div></div>
+                <div class="nequi-box"><div class="nequi-label">Pagar con Nequi al número</div><div class="nequi-number">318 453 0020</div><div class="nequi-hint">Realiza la transferencia y sube el comprobante</div></div>
+                <a href="#" target="_blank" class="btn-whatsapp" id="subBtnWhatsapp">💬 Ir a WhatsApp para confirmar</a>
+                <div class="form-group"><label class="form-label">Subir comprobante de pago</label><div class="file-upload"><div class="file-upload-area" id="subCompArea"><div class="file-upload-icon">📸</div><div class="file-upload-text">Click para subir comprobante</div><div class="file-upload-hint">JPG, PNG — Máx 5MB</div></div><input type="file" id="subCompFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="subCompPreview"><img id="subCompImg" src="" alt=""></div></div>
+                <div class="purchase-actions"><button type="button" class="btn-modal-cancel" onclick="window._closeSubModal()">Cancelar</button><button type="button" class="btn-send-purchase" id="btnSendSub" onclick="window._sendSubscription()">Enviar Solicitud</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔲 MODAL: EDITAR PLAN -->
+    <div class="modal-overlay" id="modalEditPlan">
+        <div class="modal">
+            <div class="modal-header"><h3 class="modal-title">Editar Plan</h3><button class="modal-close" onclick="window._closeEditPlan()">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formEditPlan">
+                    <input type="hidden" id="editPlanId">
+                    <div class="form-group"><label class="form-label">Nombre del plan</label><input type="text" class="form-input" id="editPlanNombre" required></div>
+                    <div class="form-group"><label class="form-label">Precio (COP $)</label><input type="number" class="form-input" id="editPlanPrecio" min="0" step="1000" required></div>
+                    <div class="form-group"><label class="form-label">Duración (días)</label><input type="number" class="form-input" id="editPlanDuracion" min="1" value="30" required></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" onclick="window._closeEditPlan()">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnEditPlanSubmit">Guardar</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         🔲 MODAL: CREAR/EDITAR PLAYLIST
+         ============================================ -->
+    <div class="modal-overlay" id="modalPlaylist">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="plModalTitle">Nueva Playlist</h3>
+                <button class="modal-close" onclick="window._closePlaylistModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" onsubmit="window._submitPlaylist(event)">
+                    <input type="hidden" id="plModalEditId" value="">
+                    <div class="form-group">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-input" id="plNombre" placeholder="Mi playlist favorita" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción (opcional)</label>
+                        <textarea class="form-textarea" id="plDesc" placeholder="Describe tu playlist..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+                            <input type="checkbox" id="plPublica" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span class="form-label" style="margin:0;">Playlist pública</span>
+                        </label>
+                        <span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;">Las playlists públicas pueden ser vistas por otros usuarios</span>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-modal-cancel" onclick="window._closePlaylistModal()">Cancelar</button>
+                        <button type="submit" class="btn-modal-submit" id="plBtnSubmit"><span id="plBtnSubmitText">🎶 Crear Playlist</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         🔲 MODAL: AGREGAR A PLAYLIST
+         ============================================ -->
+    <div class="modal-overlay" id="modalAddToPlaylist">
+        <div class="modal" style="max-width:420px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Agregar a Playlist</h3>
+                <button class="modal-close" onclick="window._closeAddToPlaylist()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:.82rem;color:var(--plata-media);margin-bottom:16px;">Selecciona una playlist:</p>
+                <div id="addToPlList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── DROPDOWN COMPARTIR ── -->
+    <div class="share-dropdown" id="shareDropdown">
+        <div class="share-dropdown-title">Compartir en</div>
+        <button class="share-option whatsapp" onclick="window._shareVia('whatsapp')"><span class="share-option-icon">💬</span><span class="share-option-label">WhatsApp</span></button>
+        <button class="share-option twitter" onclick="window._shareVia('twitter')"><span class="share-option-icon">🐦</span><span class="share-option-label">Twitter / X</span></button>
+        <button class="share-option facebook" onclick="window._shareVia('facebook')"><span class="share-option-icon">📘</span><span class="share-option-label">Facebook</span></button>
+        <button class="share-option telegram" onclick="window._shareVia('telegram')"><span class="share-option-icon">✈️</span><span class="share-option-label">Telegram</span></button>
+        <button class="share-option copy" onclick="window._shareVia('copy')"><span class="share-option-icon">📋</span><span class="share-option-label">Copiar enlace</span></button>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         📐 APP LAYOUT
+         ══════════════════════════════════════════ -->
+    <div class="app-layout">
+
+        <!-- ── SIDEBAR ── -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><a href="index.html" class="sidebar-logo"><span class="sidebar-logo-text"><span>KXON</span></span><span class="sidebar-logo-dot"></span></a></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Principal</div>
+                <div class="nav-item active" data-panel="inicio"><span class="nav-icon">🏠</span><span class="nav-text">Inicio</span></div>
+                <div class="nav-item" data-panel="albumes"><span class="nav-icon">💿</span><span class="nav-text">Álbumes</span></div>
+                <div class="nav-item" data-panel="canciones"><span class="nav-icon">🎵</span><span class="nav-text">Canciones</span></div>
+                <div class="nav-item" data-panel="radio"><span class="nav-icon">📻</span><span class="nav-text">Radio</span></div>
+                <div class="nav-item" data-panel="playlists"><span class="nav-icon">🎶</span><span class="nav-text">Playlists</span></div>
+                <div class="nav-section-label">Contenido</div>
+                <div class="nav-item" data-panel="videos"><span class="nav-icon">🎬</span><span class="nav-text">Videos</span></div>
+                <div class="nav-item" data-panel="documentales"><span class="nav-icon">🎞️</span><span class="nav-text">Documentales</span></div>
+                <div class="nav-section-label">Tienda</div>
+                <div class="nav-item" data-panel="marketplace"><span class="nav-icon">🛒</span><span class="nav-text">Marketplace</span></div>
+                <div class="nav-item" data-panel="archivo"><span class="nav-icon">📁</span><span class="nav-text">Archivo</span></div>
+                <div class="nav-item" data-panel="planes"><span class="nav-icon">🎫</span><span class="nav-text">Planes</span></div>
+                <div class="nav-item" data-panel="historial"><span class="nav-icon">📊</span><span class="nav-text">Historial</span></div>
+                <div class="nav-section-label">Cuenta</div>
+                <div class="nav-item" data-panel="favoritos"><span class="nav-icon">❤️</span><span class="nav-text">Favoritos</span></div>
+                <div class="nav-item" data-panel="perfil"><span class="nav-icon">👤</span><span class="nav-text">Perfil</span></div>
+                <div class="nav-item nav-admin-only" data-panel="analytics"><span class="nav-icon">📊</span><span class="nav-text">Analytics</span></div>
+            </nav>
+            <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="sidebarAvatar">👤</div><div class="sidebar-user-info"><div class="sidebar-user-name" id="sidebarName">...</div><div class="sidebar-user-role" id="sidebarRole">...</div></div><button class="btn-logout-small" id="btnLogout" title="Cerrar sesión">🚪</button></div></div>
+        </aside>
+
+        <!-- ── MAIN CONTENT ── -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="main-header-left">
+                    <button class="btn-hamburger" id="btnHamburger">☰</button>
+                    <h2 class="main-header-title" id="headerTitle">Inicio</h2>
+                </div>
+                <div class="search-wrapper" id="searchWrapper">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Buscar canciones, álbumes, beats..." autocomplete="off">
+                    <span class="search-icon">🔍</span>
+                    <button class="search-clear" id="searchClear">✕</button>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+                <div class="main-header-actions">
+                    <div class="notif-wrapper" id="notifWrapper">
+                        <button class="notif-btn" id="notifBtn" title="Notificaciones">🔔<span class="notif-badge" id="notifBadge">0</span></button>
+                        <div class="notif-dropdown" id="notifDropdown">
+                            <div class="notif-header"><span class="notif-header-title">Notificaciones</span><div class="notif-header-actions"><button class="notif-mark-all" id="notifMarkAll">Marcar todas leídas</button></div></div>
+                            <div class="notif-list" id="notifList"><div class="notif-empty"><div class="notif-empty-icon">🔔</div><div class="notif-empty-text">Sin notificaciones</div></div></div>
+                        </div>
+                    </div>
+                    <button class="btn-admin-add" id="btnAdminAdd"><span class="plus-icon">+</span><span id="btnAdminText">Agregar</span></button>
+                </div>
+            </header>
+
+            <div class="content-area">
+
+                <!-- 🏠 PANEL: INICIO -->
+                <div class="panel active" id="panel-inicio">
+                    <div class="panel-header"><h1 class="panel-title">Bienvenido a KXON</h1><p class="panel-desc">Tu resumen de la plataforma</p></div>
+                    <div class="stats-grid"><div class="stat-card"><div class="stat-icon">💿</div><div class="stat-value" id="statAlbumes">0</div><div class="stat-label">Álbumes</div></div><div class="stat-card"><div class="stat-icon">🎵</div><div class="stat-value" id="statCanciones">0</div><div class="stat-label">Canciones</div></div><div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-value" id="statBeats">0</div><div class="stat-label">Beats</div></div><div class="stat-card"><div class="stat-icon">📰</div><div class="stat-value" id="statNoticias">0</div><div class="stat-label">Noticias</div></div></div>
+                    <div class="panel-section"><div class="panel-section-title">📰 Últimas Noticias</div><div class="content-grid" id="inicioNoticias"></div></div>
+                    <div class="panel-section"><div class="panel-section-title">🎵 Canciones Recientes</div><div class="track-list" id="inicioCanciones"></div></div>
+                    <div class="panel-section"><div class="panel-section-title">💿 Últimos Álbumes</div><div class="content-grid content-grid-albums" id="inicioAlbumes"></div></div>
+                </div>
+
+                <!-- 💿 PANEL: ÁLBUMES -->
+                <div class="panel" id="panel-albumes">
+                    <div id="albumesListView"><div class="panel-header"><h1 class="panel-title">Álbumes</h1><p class="panel-desc">Colección completa</p></div><div class="content-grid content-grid-albums" id="albumesGrid"></div></div>
+                    <div class="album-detail" id="albumDetailView"><button class="btn-back" id="btnBackAlbums">← Volver</button><div class="album-detail-header"><div class="album-detail-cover"><img id="detailCover" src="" alt=""></div><div class="album-detail-info"><h1 class="album-detail-title" id="detailTitle"></h1><p class="album-detail-desc" id="detailDesc"></p><span class="album-detail-meta" id="detailMeta"></span></div></div><div class="section-header-row"><div class="panel-section-title">🎵 Canciones del álbum</div><button class="btn-add-track" id="btnAddTrack"><span>+</span> Agregar Canción</button></div><div class="track-list" id="detailTracks"></div></div>
+                </div>
+
+                <!-- 🎵 PANEL: CANCIONES -->
+                <div class="panel" id="panel-canciones"><div class="panel-header"><h1 class="panel-title">Canciones</h1><p class="panel-desc">Todas las canciones disponibles</p></div><div class="track-list" id="allCancionesGrid"></div></div>
+
+                <!-- 📻 PANEL: RADIO -->
+                <div class="panel" id="panel-radio">
+                    <div class="panel-header"><h1 class="panel-title">Radio KXON</h1><p class="panel-desc">Emisora continua — Todas las canciones en reproducción aleatoria</p></div>
+                    <div class="radio-container">
+                        <div class="radio-disc-wrapper"><div class="radio-disc" id="radioDisc"><div class="radio-disc-inner"><img id="radioDiscImg" src="https://placehold.co/300x300/111/333?text=♪" alt=""></div><div class="radio-disc-hole"></div><div class="radio-disc-groove groove-1"></div><div class="radio-disc-groove groove-2"></div><div class="radio-disc-groove groove-3"></div></div><div class="radio-on-air" id="radioOnAir"><span class="on-air-dot"></span><span class="on-air-text">ON AIR</span></div></div>
+                        <div class="radio-info"><div class="radio-frequency"><span class="freq-label">KXON</span><span class="freq-number">FM</span></div><h2 class="radio-track-title" id="radioTrackTitle">Esperando...</h2><p class="radio-track-album" id="radioTrackAlbum">Presiona play para iniciar</p><div class="radio-progress-wrapper"><span class="radio-time" id="radioCurrentTime">0:00</span><div class="radio-progress-bar" id="radioProgressBar"><div class="radio-progress-fill" id="radioProgressFill"></div><div class="radio-progress-glow" id="radioProgressGlow"></div></div><span class="radio-time" id="radioDuration">0:00</span></div><div class="radio-controls"><button class="radio-btn radio-btn-secondary" id="radioPrev" title="Anterior"><span>⏮</span></button><button class="radio-btn radio-btn-main" id="radioPlayBtn" title="Play"><span id="radioPlayIcon">▶</span></button><button class="radio-btn radio-btn-secondary" id="radioNext" title="Siguiente"><span>⏭</span></button><button class="radio-btn radio-btn-small active" id="radioShuffle" title="Aleatorio"><span>🔀</span></button></div><div class="radio-volume-wrapper"><span class="radio-volume-icon" id="radioVolIcon">🔊</span><div class="radio-volume-bar" id="radioVolumeBar"><div class="radio-volume-fill" id="radioVolumeFill" style="width:70%"></div></div><span class="radio-volume-pct" id="radioVolPct">70%</span></div>
+                            <!-- ❤️ NUEVO: Radio fav + share -->
+                            <div class="radio-fav-share">
+                                <div class="fav-wrapper">
+                                    <button class="btn-fav" id="radioFavBtn" onclick="window._toggleRadioFav()" title="Favorito"><span>🤍</span><span class="fav-burst"></span></button>
+                                    <span class="fav-count" id="radioFavCount"></span>
+                                </div>
+                                <button class="btn-share" onclick="window._shareFromRadio(event)" title="Compartir">↗</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="radio-queue-section"><div class="radio-queue-header"><h3 class="panel-section-title">📋 Cola de reproducción</h3><span class="radio-queue-count" id="radioQueueCount">0 canciones</span></div><div class="radio-queue-list" id="radioQueueList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Cargando...</div></div></div></div>
+                </div>
+
+                <!-- ============================================
+                     🎶 PANEL: PLAYLISTS
+                     ============================================ -->
+                <div class="panel" id="panel-playlists">
+                    <div id="plListView">
+                        <div class="panel-header">
+                            <h1 class="panel-title">Mis Playlists</h1>
+                            <p class="panel-desc">Tus listas de reproducción personalizadas</p>
+                        </div>
+                        <div class="pl-grid" id="playlistsGrid">
+                            <div class="empty-state"><div class="empty-icon">🎶</div><div class="empty-title">Cargando playlists...</div></div>
+                        </div>
+                    </div>
+                    <div class="pl-detail" id="plDetailView">
+                        <button class="btn-back" onclick="window._backToPlaylists()">← Volver a Playlists</button>
+                        <div class="pl-detail-header">
+                            <div class="pl-detail-cover"><img id="plDetailCover" src="" alt=""></div>
+                            <div class="pl-detail-info">
+                                <div class="pl-detail-label">Playlist</div>
+                                <h1 class="pl-detail-title" id="plDetailTitle"></h1>
+                                <p class="pl-detail-desc" id="plDetailDesc"></p>
+                                <span class="pl-detail-meta" id="plDetailMeta">0 canciones</span>
+                                <div class="pl-detail-actions">
+                                    <button class="pl-detail-btn pl-btn-play" onclick="window._playAllPlaylist()">▶ Reproducir</button>
+                                    <button class="pl-detail-btn pl-btn-shuffle" onclick="window._shufflePlaylist()">🔀 Aleatorio</button>
+                                    <button class="pl-detail-btn pl-btn-edit" onclick="window._openEditPlaylist()">✏️ Editar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-section-title">🎵 Canciones</div>
+                        <div class="track-list" id="plTrackList">
+                            <div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Playlist vacía</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🎬 PANEL: VIDEOS -->
+                <div class="panel" id="panel-videos"><div class="panel-header"><h1 class="panel-title">Videos</h1><p class="panel-desc">Contenido audiovisual exclusivo de KXON</p></div><div class="videos-grid" id="videosGrid"><div class="empty-state"><div class="empty-icon">🎬</div><div class="empty-title">Cargando videos...</div></div></div></div>
+
+                <!-- 🎞️ PANEL: DOCUMENTALES -->
+                <div class="panel" id="panel-documentales">
+                    <div id="docuListView"><div class="panel-header"><h1 class="panel-title">Documentales</h1><p class="panel-desc">Series documentales exclusivas — Cada documental con sus episodios</p></div><div class="docu-grid" id="docuGrid"><div class="empty-state"><div class="empty-icon">🎞️</div><div class="empty-title">Cargando documentales...</div></div></div></div>
+                    <div class="docu-detail" id="docuDetailView"><button class="btn-back" id="btnBackDocu">← Volver a Documentales</button><div class="docu-detail-header"><div class="docu-detail-cover"><img id="docuDetailCover" src="" alt=""></div><div class="docu-detail-info"><h1 class="docu-detail-title" id="docuDetailTitle"></h1><p class="docu-detail-desc" id="docuDetailDesc"></p><span class="docu-detail-meta" id="docuDetailMeta"></span></div></div><div class="section-header-row"><div class="panel-section-title">🎬 Episodios</div><button class="btn-add-track" id="btnAddEpisodio"><span>+</span> Agregar Episodio</button></div><div class="episodio-list" id="episodioList"><div class="empty-state"><div class="empty-icon">🎬</div><div class="empty-title">Sin episodios</div></div></div></div>
+                </div>
+
+                <!-- 🛒 PANEL: MARKETPLACE -->
+                <div class="panel" id="panel-marketplace">
+                    <div class="panel-header"><h1 class="panel-title">Marketplace</h1><p class="panel-desc">Beats y canciones exclusivas para artistas</p></div>
+                    <div class="market-tabs"><div class="market-tab active" data-market-tab="beat" onclick="window._marketTab('beat')">🎹 Beats</div><div class="market-tab" data-market-tab="cancion" onclick="window._marketTab('cancion')">🎤 Canciones</div></div>
+                    <div class="market-grid" id="marketGrid"></div>
+                    <div class="solicitudes-section" id="solicitudesSection" style="display:none;"><div class="panel-section-title">📋 Solicitudes de Compra</div><div id="solicitudesList"></div></div>
+                </div>
+
+                <!-- 📁 PANEL: ARCHIVO -->
+                <div class="panel" id="panel-archivo">
+                    <div class="panel-header"><h1 class="panel-title">Mi Archivo</h1><p class="panel-desc">Tus beats y canciones compradas — Descarga y escucha sin límites</p></div>
+                    <div class="archivo-stats"><div class="archivo-stat-card"><div class="archivo-stat-icon">🎵</div><div class="archivo-stat-value" id="archivoStatTotal">0</div><div class="archivo-stat-label">Total comprados</div></div><div class="archivo-stat-card"><div class="archivo-stat-icon">🎹</div><div class="archivo-stat-value" id="archivoStatBeats">0</div><div class="archivo-stat-label">Beats</div></div><div class="archivo-stat-card"><div class="archivo-stat-icon">🎤</div><div class="archivo-stat-value" id="archivoStatCanciones">0</div><div class="archivo-stat-label">Canciones</div></div><div class="archivo-stat-card"><div class="archivo-stat-icon">💰</div><div class="archivo-stat-value" id="archivoStatInvertido">$0</div><div class="archivo-stat-label">Invertido</div></div></div>
+                    <div class="archivo-tabs"><div class="archivo-tab active" data-archivo-tab="todos" onclick="window._archivoTab('todos')">📦 Todos</div><div class="archivo-tab" data-archivo-tab="beat" onclick="window._archivoTab('beat')">🎹 Beats</div><div class="archivo-tab" data-archivo-tab="cancion" onclick="window._archivoTab('cancion')">🎤 Canciones</div></div>
+                    <div class="archivo-grid" id="archivoGrid"><div class="empty-state"><div class="empty-icon">📁</div><div class="empty-title">Cargando archivo...</div></div></div>
+                    <div class="archivo-pending-section" id="archivoPendingSection" style="display:none;"><div class="panel-section-title">⏳ Solicitudes Pendientes</div><p class="panel-desc" style="margin-bottom:16px;">Estas compras están esperando confirmación del administrador</p><div id="archivoPendingList"></div></div>
+                </div>
+
+                <!-- 🎫 PANEL: PLANES -->
+                <div class="panel" id="panel-planes">
+                    <div class="panel-header"><h1 class="panel-title">Planes de Suscripción</h1><p class="panel-desc">Accede a todo el contenido exclusivo de KXON</p></div>
+                    <div class="planes-grid" id="planesGrid"><div class="empty-state"><div class="empty-icon">🎫</div><div class="empty-title">Cargando planes...</div></div></div>
+                    <div class="solicitudes-section" id="subSolicitudesSection" style="display:none;"><div class="panel-section-title">📋 Solicitudes de Suscripción</div><div id="subSolicitudesList"></div></div>
+                </div>
+
+                <!-- ============================================
+                     📊 PANEL: HISTORIAL DE REPRODUCCIONES
+                     ============================================ -->
+                <div class="panel" id="panel-historial">
+                    <div class="panel-header">
+                        <h1 class="panel-title">Historial de Reproducciones</h1>
+                        <p class="panel-desc">Tu actividad musical reciente</p>
+                    </div>
+                    <div class="historial-stats">
+                        <div class="historial-stat">
+                            <div class="historial-stat-value" id="histStatTotal">0</div>
+                            <div class="historial-stat-label">Total reproducidas</div>
+                        </div>
+                        <div class="historial-stat">
+                            <div class="historial-stat-value" id="histStatHoy">0</div>
+                            <div class="historial-stat-label">Hoy</div>
+                        </div>
+                        <div class="historial-stat">
+                            <div class="historial-stat-value" id="histStatSemana">0</div>
+                            <div class="historial-stat-label">Esta semana</div>
+                        </div>
+                        <div class="historial-stat">
+                            <div class="historial-stat-value" id="histStatUnicas">0</div>
+                            <div class="historial-stat-label">Canciones únicas</div>
+                        </div>
+                    </div>
+                    <div class="historial-header-actions">
+                        <button class="historial-clear-btn" id="btnClearHistorial" onclick="window._clearHistorial()">
+                            🗑 Borrar historial
+                        </button>
+                    </div>
+                    <div id="historialList">
+                        <div class="empty-state">
+                            <div class="empty-icon">📊</div>
+                            <div class="empty-title">Cargando historial...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ❤️ PANEL: FAVORITOS -->
+                <div class="panel" id="panel-favoritos">
+                    <div class="panel-header"><h1 class="panel-title">Mis Favoritos</h1><p class="panel-desc">Tu colección personal de contenido favorito</p></div>
+                    <div class="favs-tabs">
+                        <div class="favs-tab active" data-favs-tab="todos" onclick="window._favsTab('todos')">❤️ Todos</div>
+                        <div class="favs-tab" data-favs-tab="cancion" onclick="window._favsTab('cancion')">🎵 Canciones</div>
+                        <div class="favs-tab" data-favs-tab="album" onclick="window._favsTab('album')">💿 Álbumes</div>
+                        <div class="favs-tab" data-favs-tab="beat" onclick="window._favsTab('beat')">🎹 Beats</div>
+                        <div class="favs-tab" data-favs-tab="video" onclick="window._favsTab('video')">🎬 Videos</div>
+                    </div>
+                    <div class="favs-stat" id="favsStat"></div>
+                    <div id="favsContent" class="content-grid content-grid-albums"></div>
+                </div>
+
+                <!-- 📊 PANEL: ANALYTICS (Admin) -->
+                <div class="panel" id="panel-analytics"></div>
+
+                <!-- 👤 PANEL: PERFIL -->
+                <div class="panel" id="panel-perfil">
+                    <div class="panel-header"><h1 class="panel-title">Mi Perfil</h1><p class="panel-desc">Gestiona tu información personal y configuración de cuenta</p></div>
+                    <div class="perfil-section"><div class="perfil-section-header"><span class="perfil-section-icon">👤</span><div><h3 class="perfil-section-title">Información Personal</h3><p class="perfil-section-desc">Tu foto, nombre y biografía</p></div></div>
+                        <div class="perfil-card"><div class="perfil-avatar-section"><div class="perfil-avatar-wrapper"><div class="perfil-avatar" id="perfilAvatar"><img id="perfilAvatarImg" src="" alt="" style="display:none;"><span id="perfilAvatarLetter" class="perfil-avatar-letter">K</span></div><div class="perfil-avatar-overlay" id="perfilAvatarOverlay"><span>📷</span><span class="perfil-avatar-overlay-text">Cambiar</span></div><input type="file" id="perfilAvatarFile" accept="image/jpeg,image/png,image/webp" style="display:none;"></div><div class="perfil-avatar-info"><div class="perfil-nombre-display" id="perfilNombreDisplay">Cargando...</div><div class="perfil-role-badge" id="perfilRoleBadge">fan</div><div class="perfil-email-display" id="perfilEmailDisplay">...</div></div></div><div class="perfil-divider"></div>
+                            <form class="perfil-form" id="formPerfil"><div class="perfil-form-grid"><div class="form-group"><label class="form-label">Nombre Completo</label><input type="text" class="form-input" id="perfilNombre" placeholder="Tu nombre artístico o real"></div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input perfil-input-disabled" id="perfilEmail" disabled><span class="perfil-field-hint">El email no se puede cambiar</span></div></div><div class="form-group"><label class="form-label">Biografía</label><textarea class="form-textarea" id="perfilBio" placeholder="Cuéntanos sobre ti..." rows="4"></textarea><span class="perfil-field-hint perfil-bio-counter"><span id="perfilBioCount">0</span>/500 caracteres</span></div><div class="perfil-form-actions"><button type="submit" class="perfil-btn-save" id="btnGuardarPerfil"><span id="btnGuardarPerfilText">💾 Guardar Cambios</span></button><span class="perfil-save-status" id="perfilSaveStatus"></span></div></form>
+                        </div>
+                    </div>
+                    <div class="perfil-section"><div class="perfil-section-header"><span class="perfil-section-icon">🔒</span><div><h3 class="perfil-section-title">Seguridad</h3><p class="perfil-section-desc">Cambia tu contraseña</p></div></div>
+                        <div class="perfil-card"><form class="perfil-form" id="formPassword"><div class="perfil-form-grid"><div class="form-group"><label class="form-label">Nueva Contraseña</label><div class="perfil-password-wrapper"><input type="password" class="form-input" id="perfilNewPass" placeholder="Mínimo 6 caracteres" minlength="6"><button type="button" class="perfil-pass-toggle" onclick="window._togglePerfilPass('perfilNewPass', this)">👁️</button></div></div><div class="form-group"><label class="form-label">Confirmar Contraseña</label><div class="perfil-password-wrapper"><input type="password" class="form-input" id="perfilConfirmPass" placeholder="Repite la contraseña" minlength="6"><button type="button" class="perfil-pass-toggle" onclick="window._togglePerfilPass('perfilConfirmPass', this)">👁️</button></div></div></div><div class="perfil-form-actions"><button type="submit" class="perfil-btn-save perfil-btn-password" id="btnCambiarPass"><span id="btnCambiarPassText">🔑 Cambiar Contraseña</span></button></div></form></div>
+                    </div>
+                    <div class="perfil-section"><div class="perfil-section-header"><span class="perfil-section-icon">⚙️</span><div><h3 class="perfil-section-title">Cuenta</h3><p class="perfil-section-desc">Información de tu cuenta y opciones avanzadas</p></div></div>
+                        <div class="perfil-card"><div class="perfil-cuenta-grid"><div class="perfil-cuenta-item"><div class="perfil-cuenta-label">Rol</div><div class="perfil-cuenta-value" id="perfilCuentaRol">fan</div></div><div class="perfil-cuenta-item"><div class="perfil-cuenta-label">Miembro desde</div><div class="perfil-cuenta-value" id="perfilCuentaFecha">...</div></div><div class="perfil-cuenta-item"><div class="perfil-cuenta-label">ID de usuario</div><div class="perfil-cuenta-value perfil-cuenta-id" id="perfilCuentaId">...</div></div><div class="perfil-cuenta-item"><div class="perfil-cuenta-label">Proveedor</div><div class="perfil-cuenta-value" id="perfilCuentaProvider">email</div></div></div><div class="perfil-divider"></div><div class="perfil-danger-zone"><div class="perfil-danger-header"><span class="perfil-danger-icon">⚠️</span><div><div class="perfil-danger-title">Zona de Peligro</div><div class="perfil-danger-desc">Esta acción no se puede deshacer</div></div></div><button type="button" class="perfil-btn-delete" id="btnEliminarCuenta">🗑️ Eliminar mi cuenta</button></div></div>
+                    </div>
+                </div>
+
+            </div><!-- /content-area -->
+        </main>
+    </div><!-- /app-layout -->
+
+    <!-- 🎶 PLAYER BAR -->
+    <div class="player-bar" id="playerBar">
+        <div class="player-cover"><img id="playerCover" src="" alt=""></div>
+        <div class="player-info"><div class="player-title" id="playerTitle">—</div><div class="player-artist">KXON</div></div>
+        <div class="player-controls"><button class="player-btn" id="playerPrev">⏮</button><button class="player-btn play-pause" id="playerPlayPause">▶</button><button class="player-btn" id="playerNext">⏭</button></div>
+        <div class="player-progress"><span class="player-time" id="playerCurrentTime">0:00</span><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div><span class="player-time" id="playerDuration">0:00</span></div>
+        <div class="player-volume"><span style="font-size:.8rem">🔊</span><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
+        <!-- ❤️ NUEVO: Player fav + share -->
+        <div class="player-fav-share">
+            <button class="btn-fav" id="playerFavBtn" onclick="window._togglePlayerFav()" title="Favorito"><span>🤍</span><span class="fav-burst"></span></button>
+            <button class="btn-share" id="playerShareBtn" onclick="window._shareFromPlayer(event)" title="Compartir">↗</button>
+        </div>
+        <button class="player-close-btn" id="playerCloseBtn" title="Cerrar reproductor">✕</button>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <!-- 📦 SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/dashboard-init.js"></script>
+    <script src="js/dashboard-albumes.js"></script>
+    <script src="js/dashboard-noticias.js"></script>
+    <script src="js/dashboard-radio.js"></script>
+    <script src="js/dashboard-marketplace.js"></script>
+    <script src="js/dashboard-archivo.js"></script>
+    <script src="js/dashboard-videos.js"></script>
+    <script src="js/dashboard-perfil.js"></script>
+    <script src="js/dashboard-planes.js"></script>
+    <script src="js/dashboard-modals.js"></script>
+    <script src="js/dashboard-search.js"></script>
+    <script src="js/dashboard-notifications.js"></script>
+    <script src="js/dashboard-favs-share.js"></script>
+    <script src="js/dashboard-analytics.js"></script>
+    <script src="js/dashboard-comments.js"></script>
+    <script src="js/dashboard-playlists.js"></script>
+
+    <!-- 📱 PWA Service Worker Registration -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js').then(function (reg) {
+                console.log('✅ KXON SW registered:', reg.scope);
+            }).catch(function (err) {
+                console.warn('⚠️ KXON SW failed:', err);
+            });
+        });
+    }
+    </script>
+</body>
+</html>

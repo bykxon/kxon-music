@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KXON — Página no encontrada</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0a0a0a">
+    <style>
+        :root{--negro-base:#0a0a0a;--plata-oscura:#555;--plata-media:#888;--plata-clara:#b8b8b8;--plata-titulo:#e0e0e0;--plata-blanca:#f0f0f0;--acento-principal:#c0c0c0;--font-titulo:'Montserrat',sans-serif;--font-cuerpo:'Inter',sans-serif;--font-logo:'Oswald',sans-serif;--trans-suave:all .3s cubic-bezier(.4,0,.2,1);--radio-sm:8px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-cuerpo);color:var(--plata-clara);background:var(--negro-base);min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;position:relative}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes glow{0%,100%{box-shadow:0 0 5px rgba(192,192,192,.1)}50%{box-shadow:0 0 20px rgba(192,192,192,.15)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        .bg-grid{position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(192,192,192,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(192,192,192,.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+        .content{position:relative;z-index:1;animation:fadeIn .8s ease;padding:20px}
+        .error-icon{font-size:5rem;margin-bottom:24px;animation:float 3s ease-in-out infinite}
+        .error-code{font-family:var(--font-logo);font-size:clamp(5rem,15vw,10rem);font-weight:700;letter-spacing:15px;line-height:1;margin-bottom:16px;background:linear-gradient(135deg,#f0f0f0 0%,#555 50%,#f0f0f0 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite}
+        .error-title{font-family:var(--font-titulo);font-size:1.3rem;font-weight:700;color:var(--plata-titulo);margin-bottom:12px}
+        .error-text{font-size:.92rem;color:var(--plata-media);font-weight:300;max-width:400px;margin:0 auto 32px;line-height:1.7}
+        .error-actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+        .btn-home{padding:14px 32px;background:linear-gradient(135deg,#2a2a2a,#1a1a1a);color:var(--plata-blanca);border:1px solid rgba(192,192,192,.2);border-radius:var(--radio-sm);font-family:var(--font-titulo);font-weight:700;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;transition:var(--trans-suave);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+        .btn-home:hover{background:linear-gradient(135deg,#c0c0c0,#888);color:var(--negro-base);border-color:var(--acento-principal);transform:translateY(-2px);box-shadow:0 0 30px rgba(192,192,192,.12)}
+        .btn-back{padding:14px 32px;background:transparent;color:var(--plata-clara);border:1px solid rgba(192,192,192,.2);border-radius:var(--radio-sm);font-family:var(--font-titulo);font-weight:600;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;transition:var(--trans-suave);text-decoration:none;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+        .btn-back:hover{background:rgba(192,192,192,.05);border-color:rgba(192,192,192,.4);color:var(--plata-blanca);transform:translateY(-2px)}
+        .logo-small{font-family:var(--font-logo);font-size:1rem;font-weight:700;letter-spacing:6px;color:var(--plata-oscura);margin-top:48px;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+        .logo-small span{background:linear-gradient(135deg,#888,#555,#888);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite}
+        .logo-dot-sm{width:5px;height:5px;background:var(--plata-oscura);border-radius:50%;animation:glow 2s ease-in-out infinite}
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="content">
+        <div class="error-icon">🎵</div>
+        <div class="error-code">404</div>
+        <h1 class="error-title">Página no encontrada</h1>
+        <p class="error-text">La página que buscas no existe o fue movida. Tal vez el beat se perdió en el mix.</p>
+        <div class="error-actions">
+            <a href="index.html" class="btn-home">🏠 Ir al Inicio</a>
+            <button class="btn-back" onclick="history.back()">← Volver Atrás</button>
+        </div>
+        <a href="index.html" class="logo-small"><span>KXON</span><span class="logo-dot-sm"></span></a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,501 @@
+/* ============================================
+   🌐 GLOBAL CSS - KXON MUSIC PLATFORM
+   Variables, Reset, Fuentes, Utilidades
+   Paleta: Negro & Plata
+   ============================================ */
+
+/* ──────────────────────────────────
+   📦 GOOGLE FONTS IMPORT
+   ────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap');
+
+/* ──────────────────────────────────
+   🎨 VARIABLES CSS - PALETA NEGRO & PLATA
+   ────────────────────────────────── */
+:root {
+    /* === NEGROS === */
+    --negro-profundo:    #050505;
+    --negro-base:        #0a0a0a;
+    --negro-card:        #0f0f0f;
+    --negro-suave:       #111111;
+    --negro-medio:       #1a1a1a;
+    --negro-claro:       #222222;
+    --negro-hover:       #2a2a2a;
+
+    /* === PLATAS === */
+    --plata-oscura:      #555555;
+    --plata-media:       #888888;
+    --plata-normal:      #a0a0a0;
+    --plata-clara:       #b8b8b8;
+    --plata-brillante:   #d0d0d0;
+    --plata-titulo:      #e0e0e0;
+    --plata-blanca:      #f0f0f0;
+
+    /* === ACENTOS === */
+    --acento-principal:  #c0c0c0;
+    --acento-hover:      #e8e8e8;
+    --acento-dorado:     #d4af37;
+    --acento-error:      #ff4757;
+    --acento-exito:      #2ed573;
+
+    /* === GRADIENTES === */
+    --grad-boton:        linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    --grad-boton-hover:  linear-gradient(135deg, #c0c0c0 0%, #888888 100%);
+    --grad-borde:        linear-gradient(135deg, #c0c0c0, #444444);
+    --grad-card:         linear-gradient(145deg, #111111 0%, #0a0a0a 100%);
+    --grad-hero:         linear-gradient(180deg, #0a0a0a 0%, #050505 50%, #0a0a0a 100%);
+    --grad-overlay:      linear-gradient(180deg, transparent 0%, rgba(5,5,5,0.95) 100%);
+
+    /* === SOMBRAS === */
+    --sombra-sm:         0 2px 8px rgba(0,0,0,0.5);
+    --sombra-md:         0 4px 20px rgba(0,0,0,0.6);
+    --sombra-lg:         0 8px 40px rgba(0,0,0,0.7);
+    --sombra-plata:      0 0 20px rgba(192,192,192,0.08);
+    --sombra-glow:       0 0 30px rgba(192,192,192,0.12);
+
+    /* === TIPOGRAFÍA === */
+    --font-titulo:       'Montserrat', sans-serif;
+    --font-cuerpo:       'Inter', sans-serif;
+    --font-logo:         'Oswald', sans-serif;
+
+    /* === BORDES === */
+    --borde-sutil:       1px solid rgba(255,255,255,0.06);
+    --borde-card:        1px solid rgba(255,255,255,0.08);
+    --borde-activo:      1px solid rgba(192,192,192,0.3);
+    --borde-hover:       1px solid rgba(192,192,192,0.2);
+    --radio-sm:          8px;
+    --radio-md:          12px;
+    --radio-lg:          16px;
+    --radio-xl:          24px;
+    --radio-full:        50%;
+
+    /* === TRANSICIONES === */
+    --trans-rapida:      all 0.2s ease;
+    --trans-normal:      all 0.3s ease;
+    --trans-lenta:       all 0.5s ease;
+    --trans-suave:       all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* === ESPACIADO === */
+    --espacio-xs:        4px;
+    --espacio-sm:        8px;
+    --espacio-md:        16px;
+    --espacio-lg:        24px;
+    --espacio-xl:        32px;
+    --espacio-2xl:       48px;
+    --espacio-3xl:       64px;
+
+    /* === Z-INDEX === */
+    --z-base:            1;
+    --z-card:            10;
+    --z-sidebar:         100;
+    --z-modal:           1000;
+    --z-toast:           2000;
+}
+
+/* ──────────────────────────────────
+   🔄 RESET COMPLETO
+   ────────────────────────────────── */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-cuerpo);
+    font-weight: 400;
+    color: var(--plata-clara);
+    background-color: var(--negro-base);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ──────────────────────────────────
+   🔗 LINKS
+   ────────────────────────────────── */
+a {
+    text-decoration: none;
+    color: var(--plata-clara);
+    transition: var(--trans-normal);
+}
+
+a:hover {
+    color: var(--acento-hover);
+}
+
+/* ──────────────────────────────────
+   📝 TIPOGRAFÍA BASE
+   ────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-titulo);
+    font-weight: 700;
+    color: var(--plata-titulo);
+    line-height: 1.2;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.5rem); }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); }
+h4 { font-size: clamp(1rem, 2vw, 1.3rem); }
+
+p {
+    color: var(--plata-normal);
+    font-weight: 300;
+    line-height: 1.7;
+}
+
+/* ──────────────────────────────────
+   📋 LISTAS
+   ────────────────────────────────── */
+ul, ol {
+    list-style: none;
+}
+
+/* ──────────────────────────────────
+   🖼️ IMÁGENES
+   ────────────────────────────────── */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ──────────────────────────────────
+   📥 INPUTS & FORMS
+   ────────────────────────────────── */
+input,
+textarea,
+select,
+button {
+    font-family: var(--font-cuerpo);
+    font-size: 0.95rem;
+    outline: none;
+    border: none;
+    background: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--plata-oscura);
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ──────────────────────────────────
+   🎯 SCROLLBAR PERSONALIZADO
+   ────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--negro-profundo);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--negro-hover);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--plata-oscura);
+}
+
+/* ──────────────────────────────────
+   ✨ SELECCIÓN DE TEXTO
+   ────────────────────────────────── */
+::selection {
+    background: rgba(192, 192, 192, 0.2);
+    color: var(--plata-blanca);
+}
+
+/* ──────────────────────────────────
+   🎬 ANIMACIONES GLOBALES
+   ────────────────────────────────── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(192,192,192,0.1); }
+    50%      { box-shadow: 0 0 20px rgba(192,192,192,0.15); }
+}
+
+@keyframes borderGlow {
+    0%, 100% { border-color: rgba(192,192,192,0.1); }
+    50%      { border-color: rgba(192,192,192,0.3); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes discSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes eqBounce {
+    0%, 100% { transform: scaleY(0.3); }
+    50%      { transform: scaleY(1); }
+}
+
+/* ──────────────────────────────────
+   🧩 UTILIDADES
+   ────────────────────────────────── */
+.container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 var(--espacio-lg);
+}
+
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.text-right  { text-align: right; }
+
+.flex        { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-col    { display: flex; flex-direction: column; }
+.flex-wrap   { flex-wrap: wrap; }
+.gap-sm      { gap: var(--espacio-sm); }
+.gap-md      { gap: var(--espacio-md); }
+.gap-lg      { gap: var(--espacio-lg); }
+.gap-xl      { gap: var(--espacio-xl); }
+
+.grid        { display: grid; }
+
+.hidden      { display: none !important; }
+.visible     { display: block; }
+
+.w-full      { width: 100%; }
+
+/* ──────────────────────────────────
+   🔘 BOTONES GLOBALES
+   ────────────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacio-sm);
+    padding: 12px 28px;
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: var(--radio-sm);
+    transition: var(--trans-suave);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transition: var(--trans-lenta);
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+/* Botón principal - Plata */
+.btn-primary {
+    background: var(--grad-boton);
+    color: var(--plata-blanca);
+    border: 1px solid rgba(192,192,192,0.2);
+}
+
+.btn-primary:hover {
+    background: var(--grad-boton-hover);
+    color: var(--negro-base);
+    border-color: var(--acento-principal);
+    box-shadow: var(--sombra-glow);
+    transform: translateY(-2px);
+}
+
+/* Botón outline */
+.btn-outline {
+    background: transparent;
+    color: var(--plata-clara);
+    border: 1px solid rgba(192,192,192,0.25);
+}
+
+.btn-outline:hover {
+    background: rgba(192,192,192,0.08);
+    border-color: var(--acento-principal);
+    color: var(--plata-blanca);
+    transform: translateY(-2px);
+}
+
+/* Botón pequeño */
+.btn-sm {
+    padding: 8px 18px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+/* Botón grande */
+.btn-lg {
+    padding: 16px 36px;
+    font-size: 0.95rem;
+}
+
+/* Botón icono redondo */
+.btn-icon {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: var(--radio-full);
+    font-size: 1.1rem;
+}
+
+/* ──────────────────────────────────
+   📦 CARDS GLOBALES
+   ────────────────────────────────── */
+.card {
+    background: var(--grad-card);
+    border: var(--borde-card);
+    border-radius: var(--radio-md);
+    overflow: hidden;
+    transition: var(--trans-suave);
+}
+
+.card:hover {
+    border-color: rgba(192,192,192,0.15);
+    box-shadow: var(--sombra-plata);
+    transform: translateY(-4px);
+}
+
+/* ──────────────────────────────────
+   📢 BADGE / ETIQUETAS
+   ────────────────────────────────── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 50px;
+    background: rgba(192,192,192,0.1);
+    color: var(--plata-clara);
+    border: 1px solid rgba(192,192,192,0.15);
+}
+
+.badge-gold {
+    background: rgba(212,175,55,0.15);
+    color: var(--acento-dorado);
+    border-color: rgba(212,175,55,0.3);
+}
+
+/* ──────────────────────────────────
+   🔔 TOAST NOTIFICACIONES
+   ────────────────────────────────── */
+.toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: var(--z-toast);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    padding: 16px 24px;
+    border-radius: var(--radio-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    animation: fadeIn 0.3s ease;
+    min-width: 280px;
+    border-left: 3px solid;
+}
+
+.toast-success {
+    background: rgba(46,213,115,0.1);
+    color: var(--acento-exito);
+    border-color: var(--acento-exito);
+}
+
+.toast-error {
+    background: rgba(255,71,87,0.1);
+    color: var(--acento-error);
+    border-color: var(--acento-error);
+}
+
+.toast-info {
+    background: rgba(192,192,192,0.1);
+    color: var(--plata-clara);
+    border-color: var(--plata-media);
+}
+
+/* ──────────────────────────────────
+   📱 RESPONSIVE BREAKPOINTS
+   ────────────────────────────────── */
+@media (max-width: 1200px) {
+    .container { max-width: 1000px; }
+}
+
+@media (max-width: 768px) {
+    .container { padding: 0 var(--espacio-md); }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+    .container { padding: 0 var(--espacio-sm); }
+    .btn { padding: 10px 20px; font-size: 0.8rem; }
+}

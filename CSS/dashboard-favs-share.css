@@ -1,0 +1,287 @@
+/* ============================================
+   ❤️ FAVORITOS + ↗ COMPARTIR — ESTILOS
+   KXON Platform
+   ============================================ */
+
+/* ── Botón Favorito (corazón) ── */
+.btn-fav {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--plata-oscura);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+.btn-fav:hover {
+    color: #ff6b8a;
+    background: rgba(255,107,138,0.08);
+    border-color: rgba(255,107,138,0.2);
+    transform: scale(1.1);
+}
+.btn-fav.active {
+    color: #ff4778;
+    background: rgba(255,71,120,0.12);
+    border-color: rgba(255,71,120,0.3);
+}
+.btn-fav.active:hover {
+    background: rgba(255,71,120,0.18);
+    transform: scale(1.1);
+}
+
+@keyframes likePopIn {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.35); }
+    60% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+.btn-fav.pop {
+    animation: likePopIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes likeBurst {
+    0% { opacity: 1; transform: scale(0) rotate(0deg); }
+    50% { opacity: 0.8; transform: scale(1.2) rotate(180deg); }
+    100% { opacity: 0; transform: scale(1.5) rotate(360deg); }
+}
+.btn-fav .fav-burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border-radius: 50%;
+    border: 2px solid #ff4778;
+    opacity: 0;
+    pointer-events: none;
+}
+.btn-fav.pop .fav-burst {
+    animation: likeBurst 0.5s ease-out;
+}
+
+.fav-count {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--plata-oscura);
+    font-family: var(--font-titulo);
+    letter-spacing: 0.5px;
+    min-width: 14px;
+    transition: color 0.3s ease;
+}
+.fav-count.active {
+    color: #ff6b8a;
+}
+
+.fav-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+/* ── Botón Compartir ── */
+.btn-share {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: var(--plata-oscura);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+.btn-share:hover {
+    color: var(--plata-clara);
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(192,192,192,0.15);
+    transform: scale(1.1);
+}
+
+/* ── Fila de acciones en cards ── */
+.card-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px 14px;
+}
+.card-actions-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.card-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Acciones en tracks ── */
+.track-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.track-actions .btn-fav,
+.track-actions .btn-share {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+}
+
+/* ── Dropdown Compartir ── */
+.share-dropdown {
+    display: none;
+    position: fixed;
+    z-index: 300;
+    background: var(--negro-suave);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radio-md);
+    padding: 8px;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    animation: slideDown 0.2s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+.share-dropdown.show {
+    display: block;
+}
+.share-dropdown::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(192,192,192,0.2), transparent);
+}
+.share-dropdown-title {
+    font-family: var(--font-titulo);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--plata-oscura);
+    padding: 8px 12px 6px;
+}
+.share-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    color: var(--plata-clara);
+    font-family: var(--font-cuerpo);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+.share-option:hover {
+    background: rgba(255,255,255,0.04);
+}
+.share-option-icon {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.share-option.whatsapp:hover { background: rgba(37,211,102,0.08); color: #25d366; }
+.share-option.twitter:hover { background: rgba(29,161,242,0.08); color: #1da1f2; }
+.share-option.facebook:hover { background: rgba(24,119,242,0.08); color: #1877f2; }
+.share-option.telegram:hover { background: rgba(0,136,204,0.08); color: #0088cc; }
+.share-option.copy:hover { background: rgba(192,192,192,0.06); color: var(--plata-blanca); }
+
+/* ── Player bar fav + share ── */
+.player-fav-share {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.player-fav-share .btn-fav,
+.player-fav-share .btn-share {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+}
+
+/* ── Radio fav + share ── */
+.radio-fav-share {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+/* ── Panel Favoritos ── */
+.favs-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    background: var(--negro-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radio-sm);
+    padding: 4px;
+    flex-wrap: wrap;
+    width: fit-content;
+}
+.favs-tab {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: var(--font-titulo);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--plata-oscura);
+    transition: var(--trans-suave);
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.favs-tab:hover {
+    color: var(--plata-clara);
+    background: rgba(255,255,255,0.03);
+}
+.favs-tab.active {
+    background: rgba(255,71,120,0.08);
+    color: #ff6b8a;
+    border-color: rgba(255,71,120,0.2);
+}
+.favs-stat {
+    text-align: center;
+    padding: 12px;
+    font-size: 0.72rem;
+    color: var(--plata-oscura);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .share-dropdown { min-width: 180px; }
+    .card-actions-row { padding: 0 14px 12px; }
+    .player-fav-share { display: none; }
+    .favs-tabs { width: 100%; }
+    .favs-tab { flex: 1; text-align: center; padding: 8px 10px; font-size: 0.65rem; }
+}
