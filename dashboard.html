@@ -1012,19 +1012,102 @@
         </main>
     </div><!-- /app-layout -->
 
-    <!-- 🎶 PLAYER BAR -->
+        <!-- 🎶 PLAYER BAR (Minimizado) -->
     <div class="player-bar" id="playerBar">
-        <div class="player-cover"><img id="playerCover" src="" alt=""></div>
-        <div class="player-info"><div class="player-title" id="playerTitle">—</div><div class="player-artist">KXON</div></div>
+        <div class="player-cover" id="playerBarClickZone"><img id="playerCover" src="" alt=""></div>
+        <div class="player-info" id="playerInfoClickZone"><div class="player-title" id="playerTitle">—</div><div class="player-artist">KXON</div></div>
+        <div class="player-expand-hint" id="playerExpandHint"><span class="player-expand-arrow">▲</span><span>Expandir</span></div>
         <div class="player-controls"><button class="player-btn" id="playerPrev">⏮</button><button class="player-btn play-pause" id="playerPlayPause">▶</button><button class="player-btn" id="playerNext">⏭</button></div>
         <div class="player-progress"><span class="player-time" id="playerCurrentTime">0:00</span><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div><span class="player-time" id="playerDuration">0:00</span></div>
-        <div class="player-volume"><span style="font-size:.8rem">🔊</span><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
-        <!-- ❤️ NUEVO: Player fav + share -->
+        <div class="player-volume"><span style="font-size:.8rem;cursor:pointer" id="playerVolIcon">🔊</span><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
         <div class="player-fav-share">
             <button class="btn-fav" id="playerFavBtn" onclick="window._togglePlayerFav()" title="Favorito"><span>🤍</span><span class="fav-burst"></span></button>
             <button class="btn-share" id="playerShareBtn" onclick="window._shareFromPlayer(event)" title="Compartir">↗</button>
         </div>
         <button class="player-close-btn" id="playerCloseBtn" title="Cerrar reproductor">✕</button>
+    </div>
+
+    <!-- 🎵 PLAYER EXPANDIDO (Fullscreen estilo Spotify) -->
+    <div class="player-expanded-overlay" id="playerExpanded">
+        <div class="player-expanded-bg" id="playerExpBg"></div>
+        <div class="player-expanded-bg-overlay"></div>
+
+        <!-- Swipe indicator -->
+        <div class="player-exp-swipe"><div class="player-exp-swipe-bar"></div></div>
+
+        <!-- Header -->
+        <div class="player-exp-header">
+            <button class="player-exp-minimize" id="playerExpMinimize" title="Minimizar">▼</button>
+            <span class="player-exp-source" id="playerExpSource">REPRODUCIENDO</span>
+            <button class="player-exp-menu" id="playerExpMenuBtn" title="Opciones">⋯</button>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="player-exp-content" id="playerExpContent">
+            <!-- Cover grande -->
+            <div class="player-exp-cover-wrapper">
+                <div class="player-exp-cover" id="playerExpCoverBox">
+                    <img id="playerExpCoverImg" src="" alt="">
+                </div>
+                <div class="player-exp-vinyl" id="playerExpVinyl">
+                    <div class="player-exp-vinyl-label">
+                        <div class="player-exp-vinyl-hole"></div>
+                        <span class="player-exp-vinyl-label-text">KXON</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info -->
+            <div class="player-exp-track-info">
+                <div class="player-exp-title" id="playerExpTitle">—</div>
+                <div class="player-exp-artist" id="playerExpArtist">KXON</div>
+                <div class="player-exp-eq" id="playerExpEq">
+                    <div class="player-exp-eq-bar"></div>
+                    <div class="player-exp-eq-bar"></div>
+                    <div class="player-exp-eq-bar"></div>
+                    <div class="player-exp-eq-bar"></div>
+                    <div class="player-exp-eq-bar"></div>
+                </div>
+            </div>
+
+            <!-- Progreso -->
+            <div class="player-exp-progress">
+                <div class="player-exp-progress-bar" id="playerExpProgressBar">
+                    <div class="player-exp-progress-fill" id="playerExpProgressFill">
+                        <div class="player-exp-progress-thumb"></div>
+                    </div>
+                </div>
+                <div class="player-exp-times">
+                    <span class="player-exp-time" id="playerExpCurrentTime">0:00</span>
+                    <span class="player-exp-time" id="playerExpDuration">0:00</span>
+                </div>
+            </div>
+
+            <!-- Controles -->
+            <div class="player-exp-controls">
+                <button class="player-exp-btn player-exp-btn-sm" id="playerExpShuffle" title="Aleatorio">🔀</button>
+                <button class="player-exp-btn player-exp-btn-md" id="playerExpPrev" title="Anterior">⏮</button>
+                <button class="player-exp-btn player-exp-btn-play" id="playerExpPlayPause" title="Play/Pause">▶</button>
+                <button class="player-exp-btn player-exp-btn-md" id="playerExpNext" title="Siguiente">⏭</button>
+                <button class="player-exp-btn player-exp-btn-sm" id="playerExpRepeat" title="Repetir">🔁</button>
+            </div>
+
+            <!-- Volumen -->
+            <div class="player-exp-volume">
+                <button class="player-exp-vol-icon" id="playerExpVolIcon">🔊</button>
+                <div class="player-exp-vol-bar" id="playerExpVolBar">
+                    <div class="player-exp-vol-fill" id="playerExpVolFill" style="width:70%"></div>
+                </div>
+                <span class="player-exp-vol-pct" id="playerExpVolPct">70%</span>
+            </div>
+
+            <!-- Acciones -->
+            <div class="player-exp-actions">
+                <button class="player-exp-action" id="playerExpFav" onclick="window._togglePlayerFav()" title="Favorito">🤍</button>
+                <button class="player-exp-action" id="playerExpAddPl" onclick="window._addCurrentToPlaylist()" title="Agregar a playlist">➕</button>
+                <button class="player-exp-action" id="playerExpShare" onclick="window._shareFromPlayer(event)" title="Compartir">↗️</button>
+            </div>
+        </div>
     </div>
 
     <audio id="audioPlayer"></audio>
@@ -1048,6 +1131,9 @@
     <script src="js/dashboard-analytics.js"></script>
     <script src="js/dashboard-comments.js"></script>
     <script src="js/dashboard-playlists.js"></script>
+    <script src="js/dashboard-player-expanded.js"></script>
+        <script src="js/dashboard-playlists.js"></script>
+    <script src="js/dashboard-player-expanded.js"></script>
 
     <!-- 📱 PWA Service Worker Registration -->
     <script>

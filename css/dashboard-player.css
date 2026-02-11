@@ -1,10 +1,10 @@
 /* ============================================
    🎶 DASHBOARD PLAYER CSS - KXON
-   Player Bar + Radio KXON estilos
+   Player Bar Minimizado + Vista Expandida Spotify
    ============================================ */
 
 /* ──────────────────────────────────
-   🎶 PLAYER BAR
+   🎶 PLAYER BAR MINIMIZADO
    ────────────────────────────────── */
 .player-bar {
     display: none;
@@ -13,27 +13,40 @@
     left: var(--sidebar-width);
     right: 0;
     height: 72px;
-    background: var(--negro-profundo);
+    background: linear-gradient(180deg, rgba(18,18,18,.97) 0%, rgba(10,10,10,.99) 100%);
     border-top: 1px solid rgba(255,255,255,.06);
-    padding: 0 24px;
+    padding: 0 20px;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     z-index: 60;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    cursor: pointer;
+    transition: all .3s cubic-bezier(.4,0,.2,1);
 }
 
 .player-bar.show {
     display: flex;
 }
 
+.player-bar:hover {
+    background: linear-gradient(180deg, rgba(25,25,25,.98) 0%, rgba(15,15,15,.99) 100%);
+}
+
 .player-cover {
     width: 48px;
     height: 48px;
-    border-radius: var(--radio-sm);
+    border-radius: 6px;
     overflow: hidden;
     flex-shrink: 0;
     border: 1px solid rgba(255,255,255,.08);
+    transition: transform .3s ease, box-shadow .3s ease;
+    position: relative;
+}
+
+.player-bar:hover .player-cover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,.4);
 }
 
 .player-cover img {
@@ -48,23 +61,59 @@
 }
 
 .player-title {
-    font-size: .82rem;
+    font-size: .85rem;
     font-weight: 600;
     color: var(--plata-titulo);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color .3s ease;
+}
+
+.player-bar:hover .player-title {
+    color: var(--plata-blanca);
 }
 
 .player-artist {
     font-size: .7rem;
     color: var(--plata-oscura);
+    font-weight: 400;
+}
+
+/* ── Expand hint ── */
+.player-expand-hint {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    font-size: .6rem;
+    color: var(--plata-oscura);
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity .3s ease;
+    flex-shrink: 0;
+}
+
+.player-bar:hover .player-expand-hint {
+    opacity: 1;
+}
+
+.player-expand-arrow {
+    font-size: .8rem;
+    animation: bounceUp 1.5s ease-in-out infinite;
+}
+
+@keyframes bounceUp {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
 }
 
 .player-controls {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .player-btn {
@@ -75,24 +124,29 @@
     align-items: center;
     justify-content: center;
     color: var(--plata-clara);
-    transition: var(--trans-normal);
+    transition: all .2s ease;
     font-size: .9rem;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .player-btn:hover {
-    background: rgba(255,255,255,.05);
+    background: rgba(255,255,255,.08);
     color: var(--plata-blanca);
+    transform: scale(1.1);
 }
 
 .player-btn.play-pause {
-    width: 42px;
-    height: 42px;
-    background: rgba(192,192,192,.1);
-    border: 1px solid rgba(192,192,192,.2);
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
 }
 
 .player-btn.play-pause:hover {
-    background: rgba(192,192,192,.2);
+    background: rgba(255,255,255,.2);
+    border-color: rgba(255,255,255,.3);
 }
 
 .player-progress {
@@ -107,15 +161,22 @@
     color: var(--plata-oscura);
     font-weight: 500;
     min-width: 35px;
+    font-family: var(--font-titulo);
 }
 
 .progress-bar {
     flex: 1;
     height: 4px;
-    background: var(--negro-hover);
+    background: rgba(255,255,255,.08);
     border-radius: 4px;
     cursor: pointer;
     overflow: hidden;
+    transition: height .2s ease;
+    position: relative;
+}
+
+.progress-bar:hover {
+    height: 6px;
 }
 
 .progress-fill {
@@ -124,6 +185,11 @@
     border-radius: 4px;
     width: 0%;
     transition: width .1s linear;
+    position: relative;
+}
+
+.progress-bar:hover .progress-fill {
+    background: linear-gradient(90deg, var(--acento-principal), #fff);
 }
 
 .player-volume {
@@ -135,10 +201,15 @@
 .volume-bar {
     width: 80px;
     height: 4px;
-    background: var(--negro-hover);
+    background: rgba(255,255,255,.08);
     border-radius: 4px;
     cursor: pointer;
     overflow: hidden;
+    transition: height .2s ease;
+}
+
+.volume-bar:hover {
+    height: 6px;
 }
 
 .volume-fill {
@@ -146,6 +217,11 @@
     background: var(--plata-oscura);
     border-radius: 4px;
     width: 70%;
+    transition: background .2s ease;
+}
+
+.volume-bar:hover .volume-fill {
+    background: var(--acento-principal);
 }
 
 .player-close-btn {
@@ -157,15 +233,548 @@
     justify-content: center;
     color: var(--plata-oscura);
     font-size: .75rem;
-    transition: var(--trans-normal);
+    transition: all .2s ease;
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .player-close-btn:hover {
     color: var(--acento-error);
     background: rgba(255,71,87,.1);
 }
+
+/* ──────────────────────────────────
+   🎵 PLAYER EXPANDIDO (FULLSCREEN SPOTIFY)
+   ────────────────────────────────── */
+.player-expanded-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: all .4s cubic-bezier(.4,0,.2,1);
+    overflow: hidden;
+}
+
+.player-expanded-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ── Background dinámico ── */
+.player-expanded-bg {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(80px) brightness(.3) saturate(1.5);
+    transform: scale(1.1);
+    transition: background-image 1s ease;
+    z-index: 0;
+}
+
+.player-expanded-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(0,0,0,.4) 0%,
+        rgba(0,0,0,.6) 30%,
+        rgba(0,0,0,.85) 70%,
+        rgba(0,0,0,.95) 100%
+    );
+    z-index: 1;
+}
+
+/* ── Header expandido ── */
+.player-exp-header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    flex-shrink: 0;
+}
+
+.player-exp-minimize {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--plata-clara);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all .2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.player-exp-minimize:hover {
+    background: rgba(255,255,255,.15);
+    transform: scale(1.1);
+}
+
+.player-exp-source {
+    font-family: var(--font-titulo);
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--plata-oscura);
+    padding: 5px 14px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+.player-exp-menu {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--plata-clara);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all .2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.player-exp-menu:hover {
+    background: rgba(255,255,255,.15);
+}
+
+/* ── Contenido principal expandido ── */
+.player-exp-content {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    gap: 32px;
+    overflow-y: auto;
+}
+
+/* ── Cover art grande ── */
+.player-exp-cover-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 1;
+}
+
+.player-exp-cover {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+        0 8px 40px rgba(0,0,0,.5),
+        0 2px 10px rgba(0,0,0,.3);
+    transition: transform .3s ease, box-shadow .3s ease;
+    position: relative;
+}
+
+.player-exp-cover.playing {
+    box-shadow:
+        0 12px 60px rgba(0,0,0,.6),
+        0 0 80px rgba(192,192,192,.05);
+}
+
+.player-exp-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Disco giratorio overlay */
+.player-exp-vinyl {
+    position: absolute;
+    top: 50%;
+    right: -25%;
+    width: 75%;
+    height: 75%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at center,
+        #333 0%, #111 25%, #222 26%, #111 50%,
+        #1a1a1a 51%, #111 75%, #222 76%, #111 100%
+    );
+    border: 2px solid rgba(255,255,255,.05);
+    opacity: 0;
+    transition: opacity .5s ease, right .5s ease;
+    z-index: -1;
+    box-shadow: 0 0 30px rgba(0,0,0,.5);
+}
+
+.player-exp-vinyl.show {
+    opacity: 1;
+    right: -20%;
+}
+
+.player-exp-vinyl.spinning {
+    animation: vinylSpin 3s linear infinite;
+}
+
+.player-exp-vinyl-hole {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #000;
+    border: 2px solid rgba(255,255,255,.1);
+}
+
+.player-exp-vinyl-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35%;
+    height: 35%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2a2a2a, #1a1a1a);
+    border: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-exp-vinyl-label-text {
+    font-family: var(--font-logo);
+    font-size: .5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--plata-oscura);
+}
+
+@keyframes vinylSpin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* ── Info de track ── */
+.player-exp-track-info {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.player-exp-title {
+    font-family: var(--font-titulo);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--plata-blanca);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.player-exp-artist {
+    font-size: .9rem;
+    color: var(--plata-media);
+    font-weight: 400;
+}
+
+/* ── Barra de progreso expandida ── */
+.player-exp-progress {
+    width: 100%;
+    max-width: 400px;
+}
+
+.player-exp-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,.12);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: height .2s ease;
+    margin-bottom: 8px;
+}
+
+.player-exp-progress-bar:hover {
+    height: 8px;
+}
+
+.player-exp-progress-fill {
+    height: 100%;
+    background: var(--plata-blanca);
+    border-radius: 4px;
+    width: 0%;
+    transition: width .1s linear;
+    position: relative;
+}
+
+.player-exp-progress-bar:hover .player-exp-progress-fill {
+    background: linear-gradient(90deg, var(--acento-principal), #fff);
+}
+
+.player-exp-progress-thumb {
+    position: absolute;
+    top: 50%;
+    right: -6px;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.player-exp-progress-bar:hover .player-exp-progress-thumb {
+    opacity: 1;
+}
+
+.player-exp-times {
+    display: flex;
+    justify-content: space-between;
+}
+
+.player-exp-time {
+    font-size: .7rem;
+    color: var(--plata-oscura);
+    font-weight: 500;
+    font-family: var(--font-titulo);
+}
+
+/* ── Controles expandidos ── */
+.player-exp-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+}
+
+.player-exp-btn {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s ease;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.player-exp-btn:hover {
+    transform: scale(1.15);
+}
+
+.player-exp-btn-sm {
+    width: 36px;
+    height: 36px;
+    color: var(--plata-oscura);
+    font-size: .85rem;
+}
+
+.player-exp-btn-sm:hover {
+    color: var(--plata-blanca);
+}
+
+.player-exp-btn-sm.active {
+    color: var(--acento-principal);
+}
+
+.player-exp-btn-md {
+    width: 44px;
+    height: 44px;
+    color: var(--plata-clara);
+    font-size: 1.1rem;
+}
+
+.player-exp-btn-md:hover {
+    color: var(--plata-blanca);
+}
+
+.player-exp-btn-play {
+    width: 64px;
+    height: 64px;
+    background: #fff;
+    color: #000;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 20px rgba(255,255,255,.15);
+}
+
+.player-exp-btn-play:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(255,255,255,.25);
+}
+
+/* ── Volumen expandido ── */
+.player-exp-volume {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+}
+
+.player-exp-vol-icon {
+    font-size: .85rem;
+    color: var(--plata-oscura);
+    cursor: pointer;
+    transition: color .2s ease;
+    background: none;
+    border: none;
+}
+
+.player-exp-vol-icon:hover {
+    color: var(--plata-blanca);
+}
+
+.player-exp-vol-bar {
+    width: 120px;
+    height: 4px;
+    background: rgba(255,255,255,.12);
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: height .2s ease;
+}
+
+.player-exp-vol-bar:hover {
+    height: 6px;
+}
+
+.player-exp-vol-fill {
+    height: 100%;
+    background: var(--plata-clara);
+    border-radius: 4px;
+    width: 70%;
+    transition: background .2s ease;
+}
+
+.player-exp-vol-bar:hover .player-exp-vol-fill {
+    background: var(--acento-principal);
+}
+
+.player-exp-vol-pct {
+    font-size: .65rem;
+    color: var(--plata-oscura);
+    font-weight: 600;
+    font-family: var(--font-titulo);
+    min-width: 28px;
+}
+
+/* ── Actions (fav, share, queue, playlist) ── */
+.player-exp-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+.player-exp-action {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--plata-oscura);
+    font-size: .95rem;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.player-exp-action:hover {
+    background: rgba(255,255,255,.12);
+    border-color: rgba(255,255,255,.2);
+    color: var(--plata-blanca);
+    transform: scale(1.1);
+}
+
+.player-exp-action.fav-active {
+    color: #ff4757;
+    border-color: rgba(255,71,87,.3);
+    background: rgba(255,71,87,.1);
+}
+
+/* ── Swipe indicator ── */
+.player-exp-swipe {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 4px;
+    flex-shrink: 0;
+}
+
+.player-exp-swipe-bar {
+    width: 40px;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(255,255,255,.2);
+}
+
+/* ── Equalizer expandido ── */
+.player-exp-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 24px;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.player-exp-eq.active {
+    opacity: 1;
+}
+
+.player-exp-eq-bar {
+    width: 4px;
+    background: var(--acento-principal);
+    border-radius: 2px;
+    animation: eqBounce .8s ease-in-out infinite;
+}
+
+.player-exp-eq-bar:nth-child(1) { height: 40%; animation-delay: 0s; }
+.player-exp-eq-bar:nth-child(2) { height: 70%; animation-delay: .15s; }
+.player-exp-eq-bar:nth-child(3) { height: 50%; animation-delay: .3s; }
+.player-exp-eq-bar:nth-child(4) { height: 90%; animation-delay: .1s; }
+.player-exp-eq-bar:nth-child(5) { height: 60%; animation-delay: .25s; }
 
 /* ──────────────────────────────────
    📻 RADIO KXON - ESTILOS
@@ -289,7 +898,6 @@
     color: var(--plata-clara);
 }
 
-/* ── RADIO INFO ── */
 .radio-info {
     display: flex;
     flex-direction: column;
@@ -340,7 +948,6 @@
     text-align: center;
 }
 
-/* ── RADIO PROGRESS ── */
 .radio-progress-wrapper {
     display: flex;
     align-items: center;
@@ -394,7 +1001,6 @@
     opacity: 1;
 }
 
-/* ── RADIO CONTROLS ── */
 .radio-controls {
     display: flex;
     align-items: center;
@@ -409,6 +1015,8 @@
     transition: all .3s cubic-bezier(.4, 0, .2, 1);
     color: var(--plata-clara);
     border: 1px solid transparent;
+    background: none;
+    cursor: pointer;
 }
 
 .radio-btn:hover {
@@ -429,7 +1037,6 @@
     color: var(--negro-base);
     border-color: var(--acento-principal);
     box-shadow: 0 0 30px rgba(192,192,192,.2);
-    transform: scale(1.1);
 }
 
 .radio-btn-main.playing {
@@ -473,7 +1080,6 @@
     background: rgba(192,192,192,.06);
 }
 
-/* ── RADIO VOLUME ── */
 .radio-volume-wrapper {
     display: flex;
     align-items: center;
@@ -517,7 +1123,6 @@
     letter-spacing: .5px;
 }
 
-/* ── RADIO QUEUE ── */
 .radio-queue-section {
     margin-top: 48px;
     width: 100%;
@@ -630,7 +1235,6 @@
     color: var(--plata-media);
 }
 
-/* ── RADIO EQUALIZER ── */
 .radio-eq {
     display: flex;
     align-items: flex-end;
@@ -650,3 +1254,120 @@
 .radio-eq-bar:nth-child(2) { height: 100%; animation-delay: .15s; }
 .radio-eq-bar:nth-child(3) { height: 40%; animation-delay: .3s; }
 .radio-eq-bar:nth-child(4) { height: 80%; animation-delay: .45s; }
+
+/* ──────────────────────────────────
+   📱 RESPONSIVE PLAYER
+   ────────────────────────────────── */
+@media (max-width: 1024px) {
+    .player-bar {
+        left: 0;
+    }
+    .player-expand-hint {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .player-bar {
+        left: 0;
+        height: 64px;
+        padding: 0 12px;
+        gap: 10px;
+    }
+    .player-progress {
+        display: none;
+    }
+    .player-volume {
+        display: none;
+    }
+    .player-cover {
+        width: 42px;
+        height: 42px;
+    }
+    .player-fav-share {
+        display: none;
+    }
+
+    /* Expanded mobile */
+    .player-exp-cover-wrapper {
+        max-width: 280px;
+    }
+    .player-exp-title {
+        font-size: 1.3rem;
+    }
+    .player-exp-vinyl {
+        display: none;
+    }
+    .player-exp-content {
+        gap: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .player-bar {
+        height: 60px;
+        padding: 0 10px;
+        gap: 8px;
+    }
+    .player-cover {
+        width: 38px;
+        height: 38px;
+    }
+    .player-title {
+        font-size: .78rem;
+    }
+    .player-btn {
+        width: 32px;
+        height: 32px;
+        font-size: .8rem;
+    }
+    .player-btn.play-pause {
+        width: 36px;
+        height: 36px;
+    }
+    .player-close-btn {
+        width: 24px;
+        height: 24px;
+    }
+
+    .player-exp-cover-wrapper {
+        max-width: 240px;
+    }
+    .player-exp-title {
+        font-size: 1.1rem;
+    }
+    .player-exp-btn-play {
+        width: 56px;
+        height: 56px;
+        font-size: 1.2rem;
+    }
+    .player-exp-controls {
+        gap: 14px;
+    }
+}
+
+/* ── Animaciones globales ── */
+@keyframes discSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes eqBounce {
+    0%, 100% { height: 20%; }
+    50% { height: 100%; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .4; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,.4); }
+    50% { box-shadow: 0 0 30px rgba(192,192,192,.15), 0 4px 20px rgba(0,0,0,.4); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
