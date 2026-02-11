@@ -1,7 +1,7 @@
 /* ============================================
    💿 DASHBOARD-ALBUMES.JS — KXON
    Álbumes, detalle, canciones, CRUD
-   Con sistema de lanzamiento programado 📅
+   Con sistema de lanzamiento programado
    ============================================ */
 (function () {
 
@@ -12,15 +12,14 @@
        📅 UTILIDADES DE FECHA
        ══════════════════════════════════════════ */
     function isReleased(fechaLanzamiento) {
-        if (!fechaLanzamiento) return true; // Sin fecha = publicado
+        if (!fechaLanzamiento) return true;
         return new Date(fechaLanzamiento) <= new Date();
     }
 
     function formatReleaseDate(fecha) {
         if (!fecha) return '';
         var d = new Date(fecha);
-        var meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        var meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
         return d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
     }
 
@@ -42,7 +41,7 @@
         var release = new Date(fecha);
         var now = new Date();
         var diffHours = (now - release) / (1000 * 60 * 60);
-        return diffHours >= 0 && diffHours <= 48; // "Nuevo" por 48 horas
+        return diffHours >= 0 && diffHours <= 48;
     }
 
     /* ══════════════════════════════════════════
@@ -72,11 +71,9 @@
             var cnt = a.canciones ? a.canciones.length : 0;
             var released = isReleased(a.fecha_lanzamiento);
             var locked = !released && !K.isAdmin;
-            var lockedClass = locked ? ' album-locked' : '';
 
             if (locked) {
-                // Álbum bloqueado para fans
-                h += '<div class="card' + lockedClass + '" onclick="window._albumLockedMsg(\'' + formatReleaseDate(a.fecha_lanzamiento) + '\')">';
+                h += '<div class="card album-locked" onclick="window._albumLockedMsg(\'' + formatReleaseDate(a.fecha_lanzamiento) + '\')">';
                 h += '<div class="card-img square"><img src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/400x400/111/333?text=♪\'">';
                 h += '<div class="album-lock-badge">';
                 h += '<div class="album-lock-icon">🔒</div>';
@@ -87,7 +84,6 @@
                 h += '</div>';
                 h += '<div class="card-body"><div class="card-title">' + a.titulo + '</div><div class="card-subtitle">🔒 Próximamente</div></div></div>';
             } else {
-                // Álbum disponible
                 h += '<div class="card" onclick="window._openAlbum(\'' + a.id + '\')">';
                 h += '<div class="card-img square"><img src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/400x400/111/333?text=♪\'">';
                 h += '<div class="card-overlay"><div class="card-overlay-icon">▶</div></div>';
@@ -98,7 +94,6 @@
         c.innerHTML = h;
     }
 
-    // Mensaje cuando fan hace click en álbum bloqueado
     window._albumLockedMsg = function (dateStr) {
         K.showToast('🔒 Este álbum se desbloquea el ' + dateStr, 'error');
     };
@@ -117,7 +112,6 @@
             document.getElementById('detailDesc').textContent = album.descripcion || 'Sin descripción';
             document.getElementById('detailCover').src = K.currentAlbumCover;
 
-            // Mostrar info de lanzamiento del álbum
             var existingRelease = document.getElementById('albumReleaseInfo');
             if (existingRelease) existingRelease.remove();
 
@@ -130,8 +124,8 @@
                     releaseDiv.innerHTML = '✅ Lanzado el ' + formatReleaseDate(album.fecha_lanzamiento);
                 } else {
                     releaseDiv.innerHTML = '📅 Lanzamiento: ' + formatReleaseDate(album.fecha_lanzamiento);
-                    var countdown = getCountdown(album.fecha_lanzamiento);
-                    if (countdown) releaseDiv.innerHTML += ' — ' + countdown;
+                    var cd = getCountdown(album.fecha_lanzamiento);
+                    if (cd) releaseDiv.innerHTML += ' — ' + cd;
                 }
                 var detailInfo = document.querySelector('.album-detail-info');
                 if (detailInfo) detailInfo.appendChild(releaseDiv);
@@ -162,6 +156,7 @@
         }
 
         var h = '';
+        var playIdx = 0;
         for (var i = 0; i < songs.length; i++) {
             var s = songs[i];
             var songReleased = isReleased(s.fecha_lanzamiento);
@@ -169,22 +164,19 @@
             var justReleased = isNewRelease(s.fecha_lanzamiento);
 
             if (songLocked && !K.isAdmin) {
-                // Canción bloqueada para fans
                 h += '<div class="track-item track-locked">';
                 h += '<span class="track-num">' + (i + 1) + '</span>';
                 h += '<div class="track-info"><div class="track-title">' + s.titulo + '</div></div>';
                 h += '<div class="track-lock-info">';
                 h += '<span class="track-lock-icon">🔒</span>';
                 h += '<span class="track-lock-date">' + formatReleaseDate(s.fecha_lanzamiento) + '</span>';
-                var countdown = getCountdown(s.fecha_lanzamiento);
-                if (countdown) h += '<span class="track-lock-date" style="color:var(--acento-dorado);border-color:rgba(255,215,0,.15)">' + countdown + '</span>';
+                var cd2 = getCountdown(s.fecha_lanzamiento);
+                if (cd2) h += '<span class="track-lock-date" style="color:var(--acento-dorado);border-color:rgba(255,215,0,.15)">' + cd2 + '</span>';
                 h += '</div>';
                 h += '</div>';
             } else if (songLocked && K.isAdmin) {
-                // Canción bloqueada PERO admin puede reproducir
                 releasedSongs.push(s);
-                var idx = releasedSongs.length - 1;
-                h += '<div class="track-item track-locked admin-override" onclick="window._playTrack(' + idx + ')">';
+                h += '<div class="track-item track-locked admin-override" onclick="window._playTrack(' + playIdx + ')">';
                 h += '<span class="track-num">' + (i + 1) + '</span>';
                 h += '<button class="track-play-btn">▶</button>';
                 h += '<div class="track-info"><div class="track-title">' + s.titulo + '</div></div>';
@@ -192,12 +184,11 @@
                 h += '<span class="track-duration">' + (s.duracion || '--:--') + '</span>';
                 h += '<button class="track-delete visible" onclick="event.stopPropagation();window._deleteTrack(\'' + s.id + '\')">🗑</button>';
                 h += '</div>';
+                playIdx++;
             } else {
-                // Canción disponible
                 releasedSongs.push(s);
-                var idx2 = releasedSongs.length - 1;
                 var justReleasedClass = justReleased ? ' track-just-released' : '';
-                h += '<div class="track-item' + justReleasedClass + '" onclick="window._playTrack(' + idx2 + ')">';
+                h += '<div class="track-item' + justReleasedClass + '" onclick="window._playTrack(' + playIdx + ')">';
                 h += '<span class="track-num">' + (i + 1) + '</span>';
                 h += '<button class="track-play-btn">▶</button>';
                 h += '<div class="track-info"><div class="track-title">' + s.titulo + '</div></div>';
@@ -205,16 +196,13 @@
                 h += '<span class="track-duration">' + (s.duracion || '--:--') + '</span>';
                 if (K.isAdmin) h += '<button class="track-delete visible" onclick="event.stopPropagation();window._deleteTrack(\'' + s.id + '\')">🗑</button>';
                 h += '</div>';
+                playIdx++;
             }
         }
 
         document.getElementById('detailTracks').innerHTML = h;
-
-        // Solo las canciones desbloqueadas van al playlist reproducible
         K.currentPlaylist = releasedSongs;
 
-        // Actualizar meta con info de desbloqueo
-        var lockedCount = totalSongs - releasedSongs.length + (K.isAdmin ? 0 : 0);
         var unreleasedCount = 0;
         for (var j = 0; j < songs.length; j++) {
             if (!isReleased(songs[j].fecha_lanzamiento)) unreleasedCount++;
@@ -235,7 +223,6 @@
             if (r.error) throw r.error;
             var data = r.data || [];
 
-            // Filtrar: fans solo ven canciones ya lanzadas
             var filtered = K.isAdmin ? data : data.filter(function (s) {
                 return isReleased(s.fecha_lanzamiento);
             });
@@ -260,7 +247,6 @@
             var songReleased = isReleased(s.fecha_lanzamiento);
             var justReleased = isNewRelease(s.fecha_lanzamiento);
 
-            // Si es admin y no lanzada, mostrar con indicador
             if (!songReleased && K.isAdmin) {
                 h += '<div class="track-item track-locked admin-override" onclick="window._playFromAll(' + i + ',\'' + cid + '\')">';
                 h += '<span class="track-num">' + (i + 1) + '</span>';
@@ -290,7 +276,6 @@
     window._playFromAll = function (idx, cid) {
         db.from('canciones').select('*, albumes(titulo, imagen_url)').order('created_at', { ascending: false }).then(function (r) {
             if (r.data) {
-                // Filtrar solo lanzadas (excepto admin)
                 var allData = r.data;
                 var filtered = K.isAdmin ? allData : allData.filter(function (s) {
                     return isReleased(s.fecha_lanzamiento);
@@ -320,7 +305,7 @@
     };
 
     /* ══════════════════════════════════════════
-       💿 CREAR ÁLBUM (con fecha lanzamiento)
+       💿 CREAR ÁLBUM
        ══════════════════════════════════════════ */
     K._selectedCoverFile = null;
 
@@ -341,7 +326,8 @@
         e.preventDefault();
         var titulo = document.getElementById('albumTitulo').value.trim();
         var desc = document.getElementById('albumDesc').value.trim();
-        var fechaInput = document.getElementById('albumFechaLanzamiento').value;
+        var fechaEl = document.getElementById('albumFechaLanzamiento');
+        var fechaInput = fechaEl ? fechaEl.value : '';
         if (!titulo) { K.showToast('Ingresa un título', 'error'); return; }
 
         var btn = document.getElementById('btnAlbumSubmit');
@@ -363,7 +349,6 @@
                 autor_id: K.currentUser.id
             };
 
-            // Agregar fecha de lanzamiento si se especificó
             if (fechaInput) {
                 insertData.fecha_lanzamiento = new Date(fechaInput).toISOString();
             }
@@ -371,15 +356,9 @@
             var ins = await db.from('albumes').insert(insertData);
             if (ins.error) throw ins.error;
 
-            var msg = fechaInput
-                ? '¡Álbum programado para el ' + formatReleaseDate(fechaInput) + '!'
-                : '¡Álbum creado!';
+            var msg = fechaInput ? '¡Álbum programado para el ' + formatReleaseDate(fechaInput) + '!' : '¡Álbum creado!';
             K.showToast(msg, 'success');
             K.closeModal('modalAlbum');
-
-            // Reset campo fecha
-            document.getElementById('albumFechaLanzamiento').value = '';
-
             K.loadAlbumes(); K.loadStats();
         } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
         btn.classList.remove('loading'); btn.disabled = false;
@@ -397,7 +376,7 @@
     };
 
     /* ══════════════════════════════════════════
-       🎵 CREAR CANCIÓN (con fecha lanzamiento)
+       🎵 CREAR CANCIÓN
        ══════════════════════════════════════════ */
     K._selectedAudioFile = null;
 
@@ -411,7 +390,8 @@
     document.getElementById('formCancion').addEventListener('submit', async function (e) {
         e.preventDefault();
         var titulo = document.getElementById('cancionTitulo').value.trim();
-        var fechaInput = document.getElementById('cancionFechaLanzamiento').value;
+        var fechaEl = document.getElementById('cancionFechaLanzamiento');
+        var fechaInput = fechaEl ? fechaEl.value : '';
         if (!titulo) { K.showToast('Ingresa el título', 'error'); return; }
         if (!K._selectedAudioFile) { K.showToast('Selecciona un archivo de audio', 'error'); return; }
         if (!K.currentAlbumId) { K.showToast('Error: álbum no seleccionado', 'error'); return; }
@@ -440,7 +420,6 @@
                 autor_id: K.currentUser.id
             };
 
-            // Agregar fecha de lanzamiento si se especificó
             if (fechaInput) {
                 insertData.fecha_lanzamiento = new Date(fechaInput).toISOString();
             }
@@ -450,15 +429,9 @@
             document.getElementById('uploadBarFill').style.width = '100%';
             document.getElementById('uploadText').textContent = '¡Completado!';
 
-            var msg = fechaInput
-                ? '¡Canción programada para el ' + formatReleaseDate(fechaInput) + '!'
-                : '¡Canción agregada!';
+            var msg = fechaInput ? '¡Canción programada para el ' + formatReleaseDate(fechaInput) + '!' : '¡Canción agregada!';
             K.showToast(msg, 'success');
             K.closeModal('modalCancion');
-
-            // Reset campo fecha
-            document.getElementById('cancionFechaLanzamiento').value = '';
-
             await loadAlbumTracks(K.currentAlbumId);
             K.loadAllCanciones(); K.loadStats();
         } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
@@ -477,11 +450,7 @@
         } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
     };
 
-    /* ══════════════════════════════════════════
-       🔄 AUTO-REFRESH COUNTDOWN (cada minuto)
-       ══════════════════════════════════════════ */
     setInterval(function () {
-        // Refrescar álbumes cada 60 segundos para actualizar countdowns
         var albumPanel = document.getElementById('panel-albumes');
         var inicioPanel = document.getElementById('panel-inicio');
         if ((albumPanel && albumPanel.classList.contains('active')) ||

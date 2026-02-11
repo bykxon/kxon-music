@@ -5,6 +5,7 @@
    + Sistema de verificación de suscripción
    + FIX: Conflicto radio/player resuelto
    + FIX: Playlists + Historial + Notificaciones
+   + FIX: Limpieza campos fecha lanzamiento
    ============================================ */
 (function () {
 
@@ -218,7 +219,7 @@
     };
 
     /* ══════════════════════════════════════════
-       🔲 MODALES — ABRIR / CERRAR
+       🔲 MODALES — ABRIR / CERRAR (FIX COMPLETO)
        ══════════════════════════════════════════ */
     window.KXON.openModal = function (id) {
         document.getElementById(id).classList.add('show');
@@ -230,6 +231,8 @@
         if (id === 'modalAlbum') {
             document.getElementById('albumTitulo').value = '';
             document.getElementById('albumDesc').value = '';
+            var fechaAlbum = document.getElementById('albumFechaLanzamiento');
+            if (fechaAlbum) fechaAlbum.value = '';
             K._selectedCoverFile = null;
             var area = document.getElementById('albumCoverArea');
             area.classList.remove('has-file');
@@ -239,6 +242,8 @@
         }
         if (id === 'modalCancion') {
             document.getElementById('cancionTitulo').value = '';
+            var fechaCancion = document.getElementById('cancionFechaLanzamiento');
+            if (fechaCancion) fechaCancion.value = '';
             K._selectedAudioFile = null;
             var area2 = document.getElementById('cancionAudioArea');
             area2.classList.remove('has-file');
@@ -344,7 +349,7 @@
     };
 
     /* ══════════════════════════════════════════
-       🔀 PANEL NAVIGATION — FIX: Playlists + Historial
+       🔀 PANEL NAVIGATION
        ══════════════════════════════════════════ */
     var panelTitles = {
         'inicio': 'Inicio', 'albumes': 'Álbumes', 'canciones': 'Canciones',
@@ -390,13 +395,11 @@
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('sidebarOverlay').classList.remove('show');
 
-        /* ── Verificar acceso a panel bloqueado ── */
         if (panelesBloqueados.indexOf(id) >= 0 && !K.checkAccess(id)) {
             renderLockedPanel(id);
             return;
         }
 
-        /* ── Si tiene acceso, restaurar HTML original ── */
         if (panelesBloqueados.indexOf(id) >= 0 && panelOriginalHTML[id]) {
             var currentHTML = document.getElementById('panel-' + id).innerHTML;
             if (currentHTML.indexOf('panel-locked') >= 0) {
@@ -424,23 +427,22 @@
         if (id === 'favoritos' && typeof K.loadFavsPanel === 'function') K.loadFavsPanel();
         if (id === 'analytics' && typeof K.loadAnalytics === 'function') K.loadAnalytics();
 
-        /* ── FIX: Cargar playlists cuando se navega al panel ── */
         if (id === 'playlists' && typeof window._loadPlaylists === 'function') {
             window._loadPlaylists();
         }
 
-        /* ── FIX: Cargar historial cuando se navega al panel ── */
         if (id === 'historial' && typeof window._loadHistorial === 'function') {
             window._loadHistorial();
         }
     };
 
     /* ══════════════════════════════════════════
-       🎶 PLAYER BAR — controles (FIX COMPLETO)
+       🎶 PLAYER BAR — controles
        ══════════════════════════════════════════ */
     var audioEl = K.audioEl;
 
-    document.getElementById('playerPlayPause').addEventListener('click', function () {
+    document.getElementById('playerPlayPause').addEventListener('click', function (e) {
+        e.stopPropagation();
         var self = this;
 
         if (K.isPlaying) {
@@ -482,7 +484,8 @@
         }
     });
 
-    document.getElementById('playerNext').addEventListener('click', function () {
+    document.getElementById('playerNext').addEventListener('click', function (e) {
+        e.stopPropagation();
         if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
             if (list.length === 0) return;
@@ -496,7 +499,8 @@
         }
     });
 
-    document.getElementById('playerPrev').addEventListener('click', function () {
+    document.getElementById('playerPrev').addEventListener('click', function (e) {
+        e.stopPropagation();
         if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
             if (list.length === 0) return;
@@ -526,6 +530,7 @@
     });
 
     document.getElementById('progressBar').addEventListener('click', function (e) {
+        e.stopPropagation();
         if (K.activeSource === 'radio') {
             if (K.radioAudio.duration) {
                 var r = this.getBoundingClientRect();
@@ -540,6 +545,7 @@
     });
 
     document.getElementById('volumeBar').addEventListener('click', function (e) {
+        e.stopPropagation();
         var r = this.getBoundingClientRect();
         var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
         if (K.activeSource === 'radio') {
@@ -551,7 +557,7 @@
         document.getElementById('volumeFill').style.width = (p * 100) + '%';
     });
 
-        window.KXON.playTrack = function (idx) {
+    window.KXON.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
         var track = K.currentPlaylist[idx];
 
@@ -580,8 +586,7 @@
             if (btn3) btn3.textContent = '⏸';
         }
 
-        // ✅ FIX: Usar RPC para incrementar atómicamente
-        db.rpc('increment_reproducciones', { song_id: track.id }).then(function(r) {
+        db.rpc('increment_reproducciones', { song_id: track.id }).then(function (r) {
             if (r.error) console.warn('Error updating plays:', r.error.message);
             else console.log('✅ Play registrado:', track.titulo);
         });
@@ -589,14 +594,12 @@
 
     window._playTrack = function (idx) { window.KXON.playTrack(idx); };
 
-    /* ── PLAY TRACK LIST (para playlists) ── */
     window.KXON.playTrackList = function (tracks, startIndex) {
         if (!tracks || !tracks.length) return;
 
         K.stopAllAudio('player');
         K.activeSource = 'player';
 
-        /* Convertir formato de playlist al formato del player */
         K.currentPlaylist = [];
         for (var i = 0; i < tracks.length; i++) {
             K.currentPlaylist.push({
@@ -623,7 +626,8 @@
         document.getElementById('playerPlayPause').textContent = '⏸';
     };
 
-    document.getElementById('playerCloseBtn').addEventListener('click', function () {
+    document.getElementById('playerCloseBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
         audioEl.pause(); audioEl.currentTime = 0;
         K.marketPreviewAudio.pause(); K.marketPreviewAudio.currentTime = 0;
         K.archivoPreviewAudio.pause(); K.archivoPreviewAudio.currentTime = 0;
@@ -733,7 +737,6 @@
         if (e.target === this && typeof window._closePurchase === 'function') window._closePurchase();
     });
 
-    /* ── FIX: Cerrar modales de playlist al click en overlay ── */
     document.getElementById('modalPlaylist').addEventListener('click', function (e) {
         if (e.target === this) window._closePlaylistModal();
     });
@@ -772,8 +775,6 @@
             if (typeof K.loadUserFavorites === 'function') await K.loadUserFavorites();
             K.loadStats();
 
-            /* ── FIX: Cargar notificaciones con delay para esperar
-                 que dashboard-notifications.js defina la función ── */
             setTimeout(function () {
                 if (typeof K.loadNotifications === 'function') {
                     K.loadNotifications();
