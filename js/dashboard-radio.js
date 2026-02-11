@@ -1,6 +1,7 @@
 /* ============================================
    📻 DASHBOARD-RADIO.JS — KXON
    Radio KXON: reproducción continua, cola, shuffle
+   FIX: Conflicto con player bar resuelto
    ============================================ */
 (function () {
 
@@ -52,11 +53,16 @@
         K.radioIndex = idx;
         var t = list[idx];
 
+        // ✅ FIX: Detener TODAS las otras fuentes de audio antes de reproducir radio
+        K.stopAllAudio('radio');
+        K.activeSource = 'radio';
+
         radioAudio.src = t.archivo_url;
         radioAudio.volume = K.radioVolume;
         radioAudio.play();
         K.radioIsPlaying = true;
 
+        // Actualizar UI del radio
         var d = document.getElementById('radioDisc'); if (d) d.classList.add('spinning');
         var di = document.getElementById('radioDiscImg'); if (di) di.src = t.imagen_url || 'https://placehold.co/300x300/111/333?text=♪';
         var oa = document.getElementById('radioOnAir'); if (oa) oa.classList.add('active');
@@ -68,11 +74,20 @@
 
         updateRQHighlight();
 
+        // ✅ FIX: Actualizar player bar con info de radio
         document.getElementById('playerBar').classList.add('show');
         document.getElementById('playerTitle').textContent = t.titulo;
         document.getElementById('playerCover').src = t.imagen_url || '';
         document.getElementById('playerPlayPause').textContent = '⏸';
         K.isPlaying = true;
+
+        // Actualizar fav state si existe la función
+        if (typeof K.updateRadioFavState === 'function') {
+            setTimeout(K.updateRadioFavState, 100);
+        }
+        if (typeof K.updatePlayerFavState === 'function') {
+            setTimeout(K.updatePlayerFavState, 100);
+        }
 
         db.from('canciones').update({ reproducciones: (t.reproducciones || 0) + 1 }).eq('id', t.id);
     }
@@ -80,19 +95,28 @@
     function radioToggle() {
         if (K.radioPlaylist.length === 0) { K.showToast('No hay canciones', 'error'); return; }
         if (K.radioIsPlaying) {
-            radioAudio.pause(); K.radioIsPlaying = false;
+            radioAudio.pause();
+            K.radioIsPlaying = false;
             var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
             var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
             var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
-            document.getElementById('playerPlayPause').textContent = '▶'; K.isPlaying = false;
+            document.getElementById('playerPlayPause').textContent = '▶';
+            K.isPlaying = false;
         } else {
-            if (K.radioIndex === -1) { radioPlay(0); }
-            else {
-                radioAudio.play(); K.radioIsPlaying = true;
+            if (K.radioIndex === -1) {
+                radioPlay(0);
+            } else {
+                // ✅ FIX: Detener otras fuentes antes de reanudar radio
+                K.stopAllAudio('radio');
+                K.activeSource = 'radio';
+
+                radioAudio.play();
+                K.radioIsPlaying = true;
                 var d2 = document.getElementById('radioDisc'); if (d2) d2.classList.add('spinning');
                 var pb2 = document.getElementById('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
                 var pi2 = document.getElementById('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
-                document.getElementById('playerPlayPause').textContent = '⏸'; K.isPlaying = true;
+                document.getElementById('playerPlayPause').textContent = '⏸';
+                K.isPlaying = true;
             }
         }
     }
@@ -131,13 +155,19 @@
     radioAudio.addEventListener('timeupdate', function () {
         if (!radioAudio.duration) return;
         var p = (radioAudio.currentTime / radioAudio.duration) * 100;
+
+        // Actualizar barra del radio
         var f = document.getElementById('radioProgressFill'); if (f) f.style.width = p + '%';
         var g = document.getElementById('radioProgressGlow'); if (g) g.style.left = p + '%';
         var ct = document.getElementById('radioCurrentTime'); if (ct) ct.textContent = K.formatTime(radioAudio.currentTime);
         var dt = document.getElementById('radioDuration'); if (dt) dt.textContent = K.formatTime(radioAudio.duration);
-        document.getElementById('progressFill').style.width = p + '%';
-        document.getElementById('playerCurrentTime').textContent = K.formatTime(radioAudio.currentTime);
-        document.getElementById('playerDuration').textContent = K.formatTime(radioAudio.duration);
+
+        // ✅ FIX: Solo actualizar player bar si la fuente activa es radio
+        if (K.activeSource === 'radio') {
+            document.getElementById('progressFill').style.width = p + '%';
+            document.getElementById('playerCurrentTime').textContent = K.formatTime(radioAudio.currentTime);
+            document.getElementById('playerDuration').textContent = K.formatTime(radioAudio.duration);
+        }
     });
 
     radioAudio.addEventListener('ended', function () { radioNextT(); });

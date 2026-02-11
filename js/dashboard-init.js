@@ -3,6 +3,7 @@
    Inicialización, sesión, sidebar, navegación,
    player bar, helpers, variables compartidas
    + Sistema de verificación de suscripción
+   + FIX: Conflicto radio/player resuelto
    ============================================ */
 (function () {
 
@@ -43,7 +44,9 @@
         radioReady: false,
         // ── SUSCRIPCIONES ──
         userSubscription: null,
-        userAccesos: []
+        userAccesos: [],
+        // ── FIX: Fuente activa de audio ──
+        activeSource: 'none' // 'player' | 'radio' | 'market' | 'archivo' | 'none'
     };
 
     var K = window.KXON;
@@ -76,6 +79,30 @@
 
     window.KXON.formatPrice = function (p) {
         return '$' + Number(p).toLocaleString('es-CO');
+    };
+
+    /* ══════════════════════════════════════════
+       🛑 HELPER: DETENER TODAS LAS FUENTES DE AUDIO
+       ══════════════════════════════════════════ */
+    window.KXON.stopAllAudio = function (except) {
+        if (except !== 'player') {
+            K.audioEl.pause();
+        }
+        if (except !== 'radio') {
+            K.radioAudio.pause();
+            if (K.radioIsPlaying) {
+                K.radioIsPlaying = false;
+                var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
+                var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
+                var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
+            }
+        }
+        if (except !== 'market') {
+            K.marketPreviewAudio.pause();
+        }
+        if (except !== 'archivo') {
+            K.archivoPreviewAudio.pause();
+        }
     };
 
     /* ══════════════════════════════════════════
@@ -402,34 +429,93 @@
     };
 
     /* ══════════════════════════════════════════
-       🎶 PLAYER BAR — controles
+       🎶 PLAYER BAR — controles (FIX COMPLETO)
        ══════════════════════════════════════════ */
     var audioEl = K.audioEl;
 
+    /* ── PLAY/PAUSE inteligente ── */
     document.getElementById('playerPlayPause').addEventListener('click', function () {
+        var self = this;
+
         if (K.isPlaying) {
-            audioEl.pause();
-            K.marketPreviewAudio.pause();
-            K.archivoPreviewAudio.pause();
-            this.textContent = '▶';
+            /* ── PAUSAR: detectar qué fuente está activa ── */
+            if (K.activeSource === 'radio') {
+                K.radioAudio.pause();
+                K.radioIsPlaying = false;
+                var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
+                var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
+                var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
+            } else if (K.activeSource === 'archivo') {
+                K.archivoPreviewAudio.pause();
+            } else if (K.activeSource === 'market') {
+                K.marketPreviewAudio.pause();
+            } else {
+                audioEl.pause();
+            }
+            self.textContent = '▶';
             K.isPlaying = false;
         } else {
-            if (K.archivoPreviewAudio.src && K.archivoPreviewAudio.currentTime > 0) { K.archivoPreviewAudio.play(); }
-            else if (K.marketPreviewAudio.src && K.marketPreviewAudio.currentTime > 0) { K.marketPreviewAudio.play(); }
-            else { audioEl.play(); }
-            this.textContent = '⏸';
+            /* ── REANUDAR: detectar qué fuente estaba activa ── */
+            if (K.activeSource === 'radio') {
+                if (K.radioIndex === -1) {
+                    // Nunca se reprodujo radio, iniciar desde 0
+                    if (typeof window._rjump === 'function') window._rjump(0);
+                } else {
+                    K.radioAudio.play();
+                    K.radioIsPlaying = true;
+                    var d2 = document.getElementById('radioDisc'); if (d2) d2.classList.add('spinning');
+                    var pb2 = document.getElementById('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
+                    var pi2 = document.getElementById('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
+                }
+            } else if (K.activeSource === 'archivo' && K.archivoPreviewAudio.src) {
+                K.archivoPreviewAudio.play();
+            } else if (K.activeSource === 'market' && K.marketPreviewAudio.src) {
+                K.marketPreviewAudio.play();
+            } else {
+                audioEl.play();
+            }
+            self.textContent = '⏸';
             K.isPlaying = true;
         }
     });
 
+    /* ── NEXT inteligente ── */
     document.getElementById('playerNext').addEventListener('click', function () {
-        if (K.currentTrackIndex < K.currentPlaylist.length - 1) window.KXON.playTrack(K.currentTrackIndex + 1);
-    });
-    document.getElementById('playerPrev').addEventListener('click', function () {
-        if (K.currentTrackIndex > 0) window.KXON.playTrack(K.currentTrackIndex - 1);
+        if (K.activeSource === 'radio') {
+            // Usar next de radio
+            var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
+            if (list.length === 0) return;
+            var n = K.radioIndex + 1;
+            if (n >= list.length) n = 0;
+            if (typeof window._rjump === 'function') window._rjump(n);
+            return;
+        }
+        // Player normal
+        if (K.currentTrackIndex < K.currentPlaylist.length - 1) {
+            window.KXON.playTrack(K.currentTrackIndex + 1);
+        }
     });
 
+    /* ── PREV inteligente ── */
+    document.getElementById('playerPrev').addEventListener('click', function () {
+        if (K.activeSource === 'radio') {
+            var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
+            if (list.length === 0) return;
+            if (K.radioAudio.currentTime > 3) { K.radioAudio.currentTime = 0; return; }
+            var p = K.radioIndex - 1;
+            if (p < 0) p = list.length - 1;
+            if (typeof window._rjump === 'function') window._rjump(p);
+            return;
+        }
+        // Player normal
+        if (K.currentTrackIndex > 0) {
+            window.KXON.playTrack(K.currentTrackIndex - 1);
+        }
+    });
+
+    /* ── Timeupdate del player normal ── */
     audioEl.addEventListener('timeupdate', function () {
+        if (K.activeSource !== 'player') return; // Solo actualizar si es el player normal
         if (audioEl.duration) {
             document.getElementById('progressFill').style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
             document.getElementById('playerCurrentTime').textContent = K.formatTime(audioEl.currentTime);
@@ -443,23 +529,39 @@
     });
 
     document.getElementById('progressBar').addEventListener('click', function (e) {
+        if (K.activeSource === 'radio') {
+            if (K.radioAudio.duration) {
+                var r = this.getBoundingClientRect();
+                K.radioAudio.currentTime = (e.clientX - r.left) / r.width * K.radioAudio.duration;
+            }
+            return;
+        }
         if (audioEl.duration) {
-            var r = this.getBoundingClientRect();
-            audioEl.currentTime = (e.clientX - r.left) / r.width * audioEl.duration;
+            var r2 = this.getBoundingClientRect();
+            audioEl.currentTime = (e.clientX - r2.left) / r2.width * audioEl.duration;
         }
     });
 
     document.getElementById('volumeBar').addEventListener('click', function (e) {
         var r = this.getBoundingClientRect();
-        var p = (e.clientX - r.left) / r.width;
-        audioEl.volume = Math.max(0, Math.min(1, p));
+        var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+        if (K.activeSource === 'radio') {
+            K.radioVolume = p;
+            K.radioAudio.volume = p;
+        } else {
+            audioEl.volume = p;
+        }
         document.getElementById('volumeFill').style.width = (p * 100) + '%';
     });
 
-    /* ── PLAY TRACK (compartido) ── */
+    /* ── PLAY TRACK (compartido) — FIX: marcar fuente activa ── */
     window.KXON.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
         var track = K.currentPlaylist[idx];
+
+        // ✅ Detener radio y otras fuentes
+        K.stopAllAudio('player');
+        K.activeSource = 'player';
 
         audioEl.src = track.archivo_url;
         audioEl.play();
@@ -488,12 +590,21 @@
 
     window._playTrack = function (idx) { window.KXON.playTrack(idx); };
 
-    /* ── CERRAR PLAYER ── */
+    /* ── CERRAR PLAYER — FIX: detener todo correctamente ── */
     document.getElementById('playerCloseBtn').addEventListener('click', function () {
+        // Detener TODAS las fuentes
         audioEl.pause(); audioEl.currentTime = 0;
         K.marketPreviewAudio.pause(); K.marketPreviewAudio.currentTime = 0;
         K.archivoPreviewAudio.pause(); K.archivoPreviewAudio.currentTime = 0;
         K.archivoCurrentPlayingUrl = '';
+
+        // Detener radio
+        K.radioAudio.pause(); K.radioAudio.currentTime = 0;
+        K.radioIsPlaying = false;
+        var rd = document.getElementById('radioDisc'); if (rd) rd.classList.remove('spinning');
+        var rpb = document.getElementById('radioPlayBtn'); if (rpb) rpb.classList.remove('playing');
+        var rpi = document.getElementById('radioPlayIcon'); if (rpi) rpi.textContent = '▶';
+        var rgl = document.getElementById('radioProgressGlow'); if (rgl) rgl.classList.remove('visible');
 
         var archItems = document.querySelectorAll('.archivo-audio-item');
         for (var ai = 0; ai < archItems.length; ai++) {
@@ -503,6 +614,7 @@
         }
 
         K.isPlaying = false;
+        K.activeSource = 'none';
         document.getElementById('playerBar').classList.remove('show');
         document.getElementById('playerPlayPause').textContent = '▶';
         document.getElementById('progressFill').style.width = '0%';
@@ -512,14 +624,6 @@
             items[i].classList.remove('playing');
             var btn4 = items[i].querySelector('.track-play-btn');
             if (btn4) btn4.textContent = '▶';
-        }
-
-        if (K.radioIsPlaying) {
-            K.radioAudio.pause();
-            K.radioIsPlaying = false;
-            var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
-            var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
-            var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
         }
     });
 
