@@ -80,6 +80,46 @@
             <span>Scroll</span>
             <div class="scroll-line"></div>
         </div>
+        </section>
+
+    <!-- ============================================
+         🎬 VIDEO PRESENTACIÓN (FONDO EN MOVIMIENTO)
+         ============================================ -->
+    <section class="video-hero-section" id="video-presentacion">
+        <div class="video-hero-bg">
+            <!-- ✅ Cambia "tu-video.mp4" por la URL de tu video -->
+            <video 
+                class="video-hero-media" 
+                autoplay 
+                muted 
+                loop 
+                playsinline 
+                preload="auto"
+                poster="https://placehold.co/1920x1080/0a0a0a/111?text=">
+                <source src="https://zizbbypwwvugyswjfbxr.supabase.co/storage/v1/object/public/videos/mi-presentacion.mp4" type="video/mp4">
+            </video>
+            <div class="video-hero-overlay"></div>
+            <div class="video-hero-grain"></div>
+        </div>
+        <div class="video-hero-content">
+            <div class="video-hero-badge">Presentación Oficial</div>
+            <h2 class="video-hero-title">Bienvenido al <span class="gradient-text">Universo KXON</span></h2>
+            <p class="video-hero-desc">
+                Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música, 
+                nuestros beats y nuestro arte.
+            </p>
+            <div class="video-hero-actions">
+                <a href="register.html" class="btn-hero-primary">Únete Ahora</a>
+                <button class="btn-video-sound" id="btnVideoSound" onclick="window._toggleVideoSound()">
+                    <span id="videoSoundIcon">🔇</span>
+                    <span id="videoSoundText">Activar sonido</span>
+                </button>
+            </div>
+        </div>
+        <!-- Indicador scroll -->
+        <div class="video-hero-scroll">
+            <div class="video-hero-scroll-line"></div>
+        </div>
     </section>
 
     <div class="section-divider"></div>
@@ -350,5 +390,45 @@
         if (e.target === this) this.classList.remove('show');
     });
     </script>
+
+        <!-- 🎬 VIDEO HERO: Toggle sonido -->
+    <script>
+    window._toggleVideoSound = function() {
+        var video = document.querySelector('.video-hero-media');
+        var btn = document.getElementById('btnVideoSound');
+        var icon = document.getElementById('videoSoundIcon');
+        var text = document.getElementById('videoSoundText');
+        
+        if (!video) return;
+        
+        if (video.muted) {
+            video.muted = false;
+            video.volume = 0.5;
+            icon.textContent = '🔊';
+            text.textContent = 'Silenciar';
+            btn.classList.add('active');
+        } else {
+            video.muted = true;
+            icon.textContent = '🔇';
+            text.textContent = 'Activar sonido';
+            btn.classList.remove('active');
+        }
+    };
+
+    /* Asegurar que el video se reproduce (algunos navegadores lo bloquean) */
+    document.addEventListener('DOMContentLoaded', function() {
+        var video = document.querySelector('.video-hero-media');
+        if (video) {
+            video.play().catch(function() {
+                /* Si falla autoplay, intentar con click del usuario */
+                document.addEventListener('click', function playOnce() {
+                    video.play().catch(function(){});
+                    document.removeEventListener('click', playOnce);
+                }, { once: true });
+            });
+        }
+    });
+    </script>
+
 </body>
 </html>
