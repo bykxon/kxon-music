@@ -85,9 +85,12 @@
 
         setTimeout(function () { playerEl.play().catch(function () { }); }, 300);
 
-        /* Update views */
+            /* ✅ FIX: Update views con RPC atómico */
         var tabla = video.documental_id ? 'episodios' : 'videos';
-        db.from(tabla).update({ visualizaciones: (video.visualizaciones || 0) + 1 }).eq('id', video.id);
+        db.rpc('increment_visualizaciones', { video_id: video.id, tabla: tabla }).then(function(r) {
+            if (r.error) console.warn('Error updating views:', r.error.message);
+            else console.log('✅ Vista registrada:', video.titulo);
+        });
     };
 
     /* ── Cerrar reproductor ── */

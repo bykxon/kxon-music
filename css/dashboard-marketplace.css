@@ -1,6 +1,7 @@
 /* ============================================
    🛒 DASHBOARD MARKETPLACE CSS - KXON
-   Marketplace + Archivo + Compras estilos
+   Marketplace + Archivo + Compras
+   ✅ FIX: Cards compactas
    ============================================ */
 
 /* ──────────────────────────────────
@@ -9,7 +10,7 @@
 .market-tabs {
     display: flex;
     gap: 4px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     background: var(--negro-card);
     border: 1px solid rgba(255,255,255,.06);
     border-radius: var(--radio-sm);
@@ -18,10 +19,10 @@
 }
 
 .market-tab {
-    padding: 10px 24px;
+    padding: 8px 20px;
     border-radius: 6px;
     font-family: var(--font-titulo);
-    font-size: .75rem;
+    font-size: .7rem;
     font-weight: 600;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -42,14 +43,15 @@
     border-color: rgba(192,192,192,.15);
 }
 
+/* ✅ FIX: Grid compacto */
 .market-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
 }
 
 /* ──────────────────────────────────
-   🃏 MARKET CARD
+   🃏 MARKET CARD — COMPACTA
    ────────────────────────────────── */
 .market-card {
     background: var(--negro-card);
@@ -57,13 +59,13 @@
     border-radius: var(--radio-md);
     overflow: hidden;
     transition: var(--trans-suave);
-    animation: fadeInUp .5s ease both;
+    animation: fadeInUp .4s ease both;
 }
 
 .market-card:hover {
     border-color: rgba(192,192,192,.12);
-    box-shadow: 0 0 20px rgba(192,192,192,.06);
-    transform: translateY(-4px);
+    box-shadow: 0 0 15px rgba(192,192,192,.06);
+    transform: translateY(-3px);
 }
 
 .market-card-img {
@@ -86,11 +88,11 @@
 
 .market-card-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 4px 10px;
+    top: 8px;
+    left: 8px;
+    padding: 3px 8px;
     border-radius: 50px;
-    font-size: .62rem;
+    font-size: .55rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -112,62 +114,62 @@
 
 .market-card-price {
     position: absolute;
-    bottom: 12px;
-    right: 12px;
-    padding: 6px 14px;
+    bottom: 8px;
+    right: 8px;
+    padding: 4px 10px;
     background: rgba(5,5,5,.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(192,192,192,.2);
     border-radius: 50px;
     font-family: var(--font-titulo);
-    font-size: .85rem;
+    font-size: .72rem;
     font-weight: 800;
     color: var(--plata-blanca);
     z-index: 3;
 }
 
 .market-card-body {
-    padding: 18px;
+    padding: 10px 12px 12px;
 }
 
 .market-card-title {
     font-family: var(--font-titulo);
-    font-size: .95rem;
+    font-size: .78rem;
     font-weight: 700;
     color: var(--plata-titulo);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .market-card-desc {
-    font-size: .78rem;
+    font-size: .65rem;
     color: var(--plata-oscura);
     font-weight: 300;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 .market-card-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .market-btn-listen {
     flex: 1;
-    padding: 9px 14px;
+    padding: 7px 10px;
     background: rgba(255,255,255,.04);
     border: 1px solid rgba(255,255,255,.08);
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--plata-clara);
     font-family: var(--font-titulo);
-    font-size: .7rem;
+    font-size: .6rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -176,7 +178,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .market-btn-listen:hover {
@@ -186,13 +188,13 @@
 
 .market-btn-buy {
     flex: 1;
-    padding: 9px 14px;
+    padding: 7px 10px;
     background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
     border: 1px solid rgba(192,192,192,.2);
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--plata-blanca);
     font-family: var(--font-titulo);
-    font-size: .7rem;
+    font-size: .6rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -201,7 +203,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .market-btn-buy:hover {
@@ -213,16 +215,16 @@
 
 .market-card-admin-del {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 30px;
-    height: 30px;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
     background: rgba(255,71,87,.8);
     border-radius: 50%;
     display: none;
     align-items: center;
     justify-content: center;
-    font-size: .8rem;
+    font-size: .65rem;
     color: #fff;
     z-index: 5;
     transition: var(--trans-normal);
@@ -262,7 +264,7 @@
     border: 1px solid rgba(255,255,255,.08);
     border-radius: var(--radio-lg);
     width: 100%;
-    max-width: 600px;
+    max-width: 520px;
     max-height: 90vh;
     overflow-y: auto;
     animation: fadeIn .3s ease;
@@ -280,14 +282,14 @@
 
 .market-detail-close {
     position: absolute;
-    top: 16px; right: 16px;
-    width: 36px; height: 36px;
+    top: 14px; right: 14px;
+    width: 32px; height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--plata-media);
-    font-size: 1.1rem;
+    font-size: 1rem;
     z-index: 5;
     background: rgba(0,0,0,.5);
     backdrop-filter: blur(10px);
@@ -303,14 +305,14 @@
 
 .market-detail-header {
     display: flex;
-    gap: 20px;
-    padding: 28px;
+    gap: 18px;
+    padding: 24px;
     align-items: flex-start;
 }
 
 .market-detail-cover {
-    width: 160px;
-    height: 160px;
+    width: 130px;
+    height: 130px;
     border-radius: var(--radio-md);
     overflow: hidden;
     flex-shrink: 0;
@@ -327,58 +329,58 @@
 
 .market-detail-badge {
     display: inline-flex;
-    padding: 3px 10px;
+    padding: 3px 8px;
     border-radius: 50px;
-    font-size: .6rem;
+    font-size: .55rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .market-detail-title {
     font-family: var(--font-titulo);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: var(--plata-blanca);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .market-detail-desc {
-    font-size: .85rem;
+    font-size: .8rem;
     color: var(--plata-media);
     font-weight: 300;
-    line-height: 1.6;
-    margin-bottom: 12px;
+    line-height: 1.5;
+    margin-bottom: 10px;
 }
 
 .market-detail-price {
     font-family: var(--font-titulo);
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 900;
     color: var(--plata-blanca);
 }
 
 .market-detail-price-label {
-    font-size: .7rem;
+    font-size: .65rem;
     color: var(--plata-oscura);
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 /* ── MARKET AUDIOS ── */
-.market-detail-audios { padding: 0 28px 20px; }
+.market-detail-audios { padding: 0 24px 18px; }
 
 .market-detail-audios-title {
     font-family: var(--font-titulo);
-    font-size: .8rem;
+    font-size: .72rem;
     font-weight: 700;
     color: var(--plata-clara);
-    margin-bottom: 12px;
-    padding-bottom: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
     border-bottom: 1px solid rgba(255,255,255,.06);
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -387,12 +389,12 @@
 .market-audio-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 10px;
+    padding: 8px 12px;
     background: rgba(255,255,255,.02);
     border: 1px solid rgba(255,255,255,.04);
     border-radius: var(--radio-sm);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     transition: var(--trans-normal);
 }
 
@@ -402,14 +404,14 @@
 }
 
 .market-audio-play {
-    width: 34px; height: 34px;
+    width: 30px; height: 30px;
     background: rgba(255,255,255,.05);
     border: 1px solid rgba(255,255,255,.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: .7rem;
+    font-size: .65rem;
     color: var(--plata-clara);
     cursor: pointer;
     transition: var(--trans-normal);
@@ -422,36 +424,36 @@
 }
 
 .market-audio-label {
-    font-size: .82rem;
+    font-size: .78rem;
     font-weight: 500;
     color: var(--plata-titulo);
     flex: 1;
 }
 
 .market-audio-tag {
-    font-size: .62rem;
+    font-size: .55rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: 50px;
     background: rgba(192,192,192,.08);
     color: var(--plata-media);
     border: 1px solid rgba(255,255,255,.06);
 }
 
-.market-detail-actions { padding: 0 28px 28px; display: flex; gap: 12px; }
+.market-detail-actions { padding: 0 24px 24px; display: flex; gap: 10px; }
 
 .market-detail-buy-btn {
     flex: 1;
-    padding: 15px;
+    padding: 12px;
     background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
     border: 1px solid rgba(192,192,192,.2);
     border-radius: var(--radio-sm);
     color: var(--plata-blanca);
     font-family: var(--font-titulo);
     font-weight: 700;
-    font-size: .82rem;
+    font-size: .75rem;
     letter-spacing: 2px;
     text-transform: uppercase;
     cursor: pointer;
@@ -491,7 +493,7 @@
     border: 1px solid rgba(255,255,255,.08);
     border-radius: var(--radio-lg);
     width: 100%;
-    max-width: 480px;
+    max-width: 440px;
     max-height: 90vh;
     overflow-y: auto;
     animation: fadeIn .3s ease;
@@ -508,7 +510,7 @@
 }
 
 .purchase-header {
-    padding: 24px 28px 0;
+    padding: 20px 24px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -516,19 +518,19 @@
 
 .purchase-title {
     font-family: var(--font-titulo);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--plata-titulo);
 }
 
 .purchase-close {
-    width: 32px; height: 32px;
+    width: 30px; height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--plata-media);
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
     transition: var(--trans-normal);
 }
@@ -538,28 +540,28 @@
     color: var(--plata-blanca);
 }
 
-.purchase-body { padding: 24px 28px; }
+.purchase-body { padding: 20px 24px; }
 
 .purchase-info-card {
     background: rgba(255,255,255,.02);
     border: 1px solid rgba(255,255,255,.06);
     border-radius: var(--radio-sm);
-    padding: 16px;
-    margin-bottom: 20px;
+    padding: 14px;
+    margin-bottom: 16px;
 }
 
 .purchase-info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 0;
+    padding: 5px 0;
     border-bottom: 1px solid rgba(255,255,255,.04);
 }
 
 .purchase-info-row:last-child { border-bottom: none; }
 
 .purchase-info-label {
-    font-size: .72rem;
+    font-size: .68rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -568,13 +570,13 @@
 }
 
 .purchase-info-value {
-    font-size: .85rem;
+    font-size: .82rem;
     font-weight: 600;
     color: var(--plata-titulo);
 }
 
 .purchase-info-value.price {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 800;
     color: var(--plata-blanca);
 }
@@ -583,46 +585,46 @@
     background: rgba(150,60,200,.08);
     border: 1px solid rgba(150,60,200,.2);
     border-radius: var(--radio-sm);
-    padding: 18px;
+    padding: 16px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .nequi-label {
-    font-size: .68rem;
+    font-size: .62rem;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(180,120,220,.8);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-family: var(--font-titulo);
 }
 
 .nequi-number {
     font-family: var(--font-titulo);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 900;
     color: var(--plata-blanca);
     letter-spacing: 3px;
 }
 
 .nequi-hint {
-    font-size: .72rem;
+    font-size: .68rem;
     color: var(--plata-oscura);
-    margin-top: 8px;
+    margin-top: 6px;
     font-weight: 300;
 }
 
 .btn-whatsapp {
     width: 100%;
-    padding: 13px;
+    padding: 11px;
     background: rgba(37,211,102,.12);
     border: 1px solid rgba(37,211,102,.25);
     border-radius: var(--radio-sm);
     color: #25d366;
     font-family: var(--font-titulo);
     font-weight: 700;
-    font-size: .78rem;
+    font-size: .72rem;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     cursor: pointer;
@@ -630,8 +632,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 16px;
     text-decoration: none;
 }
 
@@ -644,20 +646,20 @@
 
 .purchase-actions {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     margin-top: 8px;
 }
 
 .btn-send-purchase {
     flex: 1;
-    padding: 14px;
+    padding: 12px;
     background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
     border: 1px solid rgba(192,192,192,.2);
     border-radius: var(--radio-sm);
     color: var(--plata-blanca);
     font-family: var(--font-titulo);
     font-weight: 700;
-    font-size: .78rem;
+    font-size: .72rem;
     letter-spacing: 2px;
     text-transform: uppercase;
     cursor: pointer;
@@ -680,8 +682,8 @@
     content: '';
     position: absolute;
     top: 50%; left: 50%;
-    width: 18px; height: 18px;
-    margin: -9px 0 0 -9px;
+    width: 16px; height: 16px;
+    margin: -8px 0 0 -8px;
     border: 2px solid rgba(192,192,192,.3);
     border-top-color: var(--plata-blanca);
     border-radius: 50%;
@@ -692,17 +694,17 @@
    📋 SOLICITUDES DE COMPRA
    ────────────────────────────────── */
 .solicitudes-section {
-    margin-top: 48px;
+    margin-top: 40px;
     border-top: 1px solid rgba(255,255,255,.06);
-    padding-top: 32px;
+    padding-top: 24px;
 }
 
 .solicitud-card {
     background: var(--negro-card);
     border: 1px solid rgba(255,255,255,.06);
     border-radius: var(--radio-md);
-    padding: 20px;
-    margin-bottom: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
     animation: fadeInUp .4s ease both;
 }
 
@@ -710,13 +712,13 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .solicitud-status {
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 50px;
-    font-size: .62rem;
+    font-size: .58rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -731,31 +733,31 @@
 .solicitud-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 14px;
 }
 
 .solicitud-info-label {
-    font-size: .65rem;
+    font-size: .6rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--plata-oscura);
     font-family: var(--font-titulo);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .solicitud-info-value {
-    font-size: .85rem;
+    font-size: .8rem;
     color: var(--plata-titulo);
     font-weight: 500;
 }
 
-.solicitud-comprobante { margin-bottom: 16px; }
+.solicitud-comprobante { margin-bottom: 14px; }
 
 .solicitud-comprobante-img {
     width: 100%;
-    max-height: 200px;
+    max-height: 180px;
     object-fit: contain;
     border-radius: var(--radio-sm);
     border: 1px solid rgba(255,255,255,.06);
@@ -767,19 +769,19 @@
 
 .solicitud-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .btn-confirm-purchase {
     flex: 1;
-    padding: 11px;
+    padding: 10px;
     background: rgba(46,213,115,.1);
     border: 1px solid rgba(46,213,115,.25);
     border-radius: var(--radio-sm);
     color: var(--acento-exito);
     font-family: var(--font-titulo);
     font-weight: 700;
-    font-size: .72rem;
+    font-size: .68rem;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     cursor: pointer;
@@ -793,14 +795,14 @@
 
 .btn-reject-purchase {
     flex: 1;
-    padding: 11px;
+    padding: 10px;
     background: rgba(255,71,87,.1);
     border: 1px solid rgba(255,71,87,.2);
     border-radius: var(--radio-sm);
     color: var(--acento-error);
     font-family: var(--font-titulo);
     font-weight: 700;
-    font-size: .72rem;
+    font-size: .68rem;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     cursor: pointer;
@@ -813,12 +815,12 @@
 }
 
 /* ──────────────────────────────────
-   📁 PANEL ARCHIVO
+   📁 PANEL ARCHIVO — COMPACTO
    ────────────────────────────────── */
 .archivo-tabs {
     display: flex;
     gap: 4px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     background: var(--negro-card);
     border: 1px solid rgba(255,255,255,.06);
     border-radius: var(--radio-sm);
@@ -827,10 +829,10 @@
 }
 
 .archivo-tab {
-    padding: 10px 24px;
+    padding: 8px 20px;
     border-radius: 6px;
     font-family: var(--font-titulo);
-    font-size: .75rem;
+    font-size: .7rem;
     font-weight: 600;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -853,16 +855,16 @@
 
 .archivo-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 32px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .archivo-stat-card {
     background: var(--negro-card);
     border: 1px solid rgba(255,255,255,.06);
     border-radius: var(--radio-md);
-    padding: 20px;
+    padding: 16px;
     transition: var(--trans-suave);
     position: relative;
     overflow: hidden;
@@ -878,31 +880,32 @@
 
 .archivo-stat-card:hover {
     border-color: rgba(192,192,192,.12);
-    box-shadow: 0 0 20px rgba(192,192,192,.05);
+    box-shadow: 0 0 15px rgba(192,192,192,.05);
 }
 
-.archivo-stat-icon { font-size: 1.3rem; margin-bottom: 10px; }
+.archivo-stat-icon { font-size: 1.1rem; margin-bottom: 8px; }
 
 .archivo-stat-value {
     font-family: var(--font-titulo);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: var(--plata-blanca);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .archivo-stat-label {
-    font-size: .68rem;
+    font-size: .62rem;
     font-weight: 600;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--plata-oscura);
 }
 
+/* ✅ FIX: Archivo grid compacto */
 .archivo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
 }
 
 .archivo-card {
@@ -911,25 +914,25 @@
     border-radius: var(--radio-md);
     overflow: hidden;
     transition: var(--trans-suave);
-    animation: fadeInUp .5s ease both;
+    animation: fadeInUp .4s ease both;
     position: relative;
 }
 
 .archivo-card:hover {
     border-color: rgba(192,192,192,.15);
-    box-shadow: 0 0 25px rgba(192,192,192,.08);
-    transform: translateY(-4px);
+    box-shadow: 0 0 20px rgba(192,192,192,.08);
+    transform: translateY(-3px);
 }
 
 .archivo-card-header {
     display: flex;
-    gap: 16px;
-    padding: 20px;
+    gap: 12px;
+    padding: 14px;
     align-items: flex-start;
 }
 
 .archivo-card-cover {
-    width: 80px; height: 80px;
+    width: 60px; height: 60px;
     border-radius: var(--radio-sm);
     overflow: hidden;
     flex-shrink: 0;
@@ -947,10 +950,10 @@
 
 .archivo-card-cover-badge {
     position: absolute;
-    bottom: 4px; right: 4px;
-    padding: 2px 6px;
+    bottom: 3px; right: 3px;
+    padding: 1px 5px;
     border-radius: 50px;
-    font-size: .5rem;
+    font-size: .45rem;
     font-weight: 800;
     letter-spacing: .5px;
     text-transform: uppercase;
@@ -973,40 +976,40 @@
 
 .archivo-card-title {
     font-family: var(--font-titulo);
-    font-size: 1rem;
+    font-size: .85rem;
     font-weight: 700;
     color: var(--plata-titulo);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .archivo-card-desc {
-    font-size: .78rem;
+    font-size: .68rem;
     color: var(--plata-oscura);
     font-weight: 300;
-    line-height: 1.5;
+    line-height: 1.4;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .archivo-card-meta {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
 .archivo-meta-item {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: .68rem;
+    gap: 4px;
+    font-size: .6rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -1014,23 +1017,23 @@
     font-family: var(--font-titulo);
 }
 
-.archivo-meta-item .meta-icon { font-size: .75rem; }
+.archivo-meta-item .meta-icon { font-size: .65rem; }
 .archivo-meta-precio { color: var(--acento-exito); }
 .archivo-meta-fecha { color: var(--plata-media); }
 
 /* ── ARCHIVO AUDIOS ── */
 .archivo-card-audios {
-    padding: 0 20px 16px;
+    padding: 0 14px 12px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
 .archivo-audio-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 10px;
+    padding: 8px 10px;
     background: rgba(255,255,255,.02);
     border: 1px solid rgba(255,255,255,.04);
     border-radius: var(--radio-sm);
@@ -1049,14 +1052,14 @@
 }
 
 .archivo-audio-play {
-    width: 34px; height: 34px;
+    width: 28px; height: 28px;
     background: rgba(255,255,255,.05);
     border: 1px solid rgba(255,255,255,.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: .7rem;
+    font-size: .6rem;
     color: var(--plata-clara);
     cursor: pointer;
     transition: var(--trans-normal);
@@ -1075,7 +1078,7 @@
 }
 
 .archivo-audio-label {
-    font-size: .82rem;
+    font-size: .75rem;
     font-weight: 500;
     color: var(--plata-titulo);
     flex: 1;
@@ -1085,11 +1088,11 @@
 }
 
 .archivo-audio-tag {
-    font-size: .6rem;
+    font-size: .55rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 3px 8px;
+    padding: 2px 6px;
     border-radius: 50px;
     background: rgba(192,192,192,.08);
     color: var(--plata-media);
@@ -1099,20 +1102,20 @@
 
 /* ── ARCHIVO ACTIONS ── */
 .archivo-card-actions {
-    padding: 0 20px 20px;
+    padding: 0 14px 14px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .archivo-btn-download {
     flex: 1;
-    padding: 10px 14px;
+    padding: 8px 12px;
     background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
     border: 1px solid rgba(192,192,192,.2);
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--plata-blanca);
     font-family: var(--font-titulo);
-    font-size: .7rem;
+    font-size: .62rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -1121,7 +1124,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     text-decoration: none;
 }
 
@@ -1130,17 +1133,16 @@
     color: var(--negro-base);
     border-color: var(--acento-principal);
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(192,192,192,.15);
 }
 
 .archivo-btn-listen {
-    padding: 10px 14px;
+    padding: 8px 12px;
     background: rgba(255,255,255,.04);
     border: 1px solid rgba(255,255,255,.08);
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--plata-clara);
     font-family: var(--font-titulo);
-    font-size: .7rem;
+    font-size: .62rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -1149,7 +1151,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     text-decoration: none;
 }
 
@@ -1161,10 +1163,10 @@
 /* ── ARCHIVO STATUS BADGES ── */
 .archivo-status-badge {
     position: absolute;
-    top: 16px; right: 16px;
-    padding: 4px 12px;
+    top: 12px; right: 12px;
+    padding: 3px 10px;
     border-radius: 50px;
-    font-size: .6rem;
+    font-size: .55rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -1191,8 +1193,8 @@
 
 /* ── ARCHIVO PENDING ── */
 .archivo-pending-section {
-    margin-top: 48px;
-    padding-top: 32px;
+    margin-top: 40px;
+    padding-top: 24px;
     border-top: 1px solid rgba(255,255,255,.06);
 }
 
@@ -1200,16 +1202,16 @@
     background: var(--negro-card);
     border: 1px solid rgba(255,165,0,.15);
     border-radius: var(--radio-md);
-    padding: 20px;
-    margin-bottom: 12px;
+    padding: 14px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     animation: fadeInUp .4s ease both;
 }
 
 .archivo-pending-cover {
-    width: 60px; height: 60px;
+    width: 48px; height: 48px;
     border-radius: var(--radio-sm);
     overflow: hidden;
     flex-shrink: 0;
@@ -1225,14 +1227,14 @@
 
 .archivo-pending-title {
     font-family: var(--font-titulo);
-    font-size: .9rem;
+    font-size: .82rem;
     font-weight: 700;
     color: var(--plata-titulo);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .archivo-pending-detail {
-    font-size: .72rem;
+    font-size: .65rem;
     color: var(--plata-oscura);
     font-weight: 400;
 }
@@ -1240,7 +1242,7 @@
 .archivo-pending-status { flex-shrink: 0; }
 
 /* ============================================
-   📋 SOLICITUDES - FORMATO LISTA COMPACTA
+   📋 SOLICITUDES - LISTA COMPACTA
    ============================================ */
 .solicitud-list {
     display: flex;
@@ -1251,8 +1253,8 @@
 .solicitud-row {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 14px 18px;
+    gap: 12px;
+    padding: 10px 14px;
     background: var(--negro-card);
     border: 1px solid rgba(255,255,255,0.04);
     border-radius: var(--radio-sm);
@@ -1265,19 +1267,19 @@
 }
 
 .solicitud-row-num {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: var(--plata-oscura);
     font-weight: 600;
-    width: 22px;
+    width: 20px;
     text-align: center;
     font-family: var(--font-titulo);
     flex-shrink: 0;
 }
 
 .solicitud-row-icon {
-    font-size: 1rem;
+    font-size: .9rem;
     flex-shrink: 0;
-    width: 20px;
+    width: 18px;
     text-align: center;
 }
 
@@ -1288,7 +1290,7 @@
 
 .solicitud-row-title {
     font-family: var(--font-titulo);
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     font-weight: 700;
     color: var(--plata-titulo);
     white-space: nowrap;
@@ -1297,7 +1299,7 @@
 }
 
 .solicitud-row-buyer {
-    font-size: 0.72rem;
+    font-size: 0.65rem;
     color: var(--plata-oscura);
     font-weight: 400;
     margin-top: 2px;
@@ -1305,11 +1307,11 @@
 
 .solicitud-row-price {
     font-family: var(--font-titulo);
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: var(--plata-blanca);
     flex-shrink: 0;
-    min-width: 80px;
+    min-width: 70px;
     text-align: right;
 }
 
@@ -1318,13 +1320,13 @@
 }
 
 .solicitud-row-view {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--plata-media);
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
@@ -1350,7 +1352,6 @@
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
 }
 
 .solicitud-detail-overlay.show {
@@ -1362,7 +1363,7 @@
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: var(--radio-lg);
     width: 100%;
-    max-width: 480px;
+    max-width: 440px;
     max-height: 90vh;
     overflow-y: auto;
     animation: fadeIn 0.3s ease;
@@ -1380,14 +1381,14 @@
 
 .solicitud-detail-close {
     position: absolute;
-    top: 16px; right: 16px;
-    width: 32px; height: 32px;
+    top: 14px; right: 14px;
+    width: 30px; height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--plata-media);
-    font-size: 1.1rem;
+    font-size: 1rem;
     z-index: 5;
     background: rgba(0,0,0,0.5);
     backdrop-filter: blur(10px);
@@ -1403,14 +1404,14 @@
 
 .solicitud-detail-product {
     display: flex;
-    gap: 16px;
-    padding: 28px;
+    gap: 14px;
+    padding: 24px;
     align-items: center;
 }
 
 .solicitud-detail-cover {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: var(--radio-sm);
     overflow: hidden;
     flex-shrink: 0;
@@ -1430,81 +1431,81 @@
 
 .solicitud-detail-product-title {
     font-family: var(--font-titulo);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 800;
     color: var(--plata-blanca);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .solicitud-detail-product-type {
     display: inline-flex;
-    padding: 2px 8px;
+    padding: 2px 7px;
     border-radius: 50px;
-    font-size: 0.6rem;
+    font-size: .55rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 
 .solicitud-detail-product-price {
     font-family: var(--font-titulo);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 900;
     color: var(--plata-blanca);
 }
 
 .solicitud-detail-info {
-    padding: 0 28px 20px;
+    padding: 0 24px 18px;
 }
 
 .solicitud-detail-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
 }
 
 .solicitud-detail-info-item {
-    padding: 12px;
+    padding: 10px;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.04);
     border-radius: var(--radio-sm);
 }
 
 .solicitud-detail-info-label {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--plata-oscura);
     font-family: var(--font-titulo);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .solicitud-detail-info-value {
-    font-size: 0.85rem;
+    font-size: .8rem;
     color: var(--plata-titulo);
     font-weight: 500;
     word-break: break-all;
 }
 
 .solicitud-detail-comprobante {
-    padding: 0 28px 20px;
+    padding: 0 24px 18px;
 }
 
 .solicitud-detail-comprobante-title {
     font-family: var(--font-titulo);
-    font-size: 0.72rem;
+    font-size: .65rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--plata-oscura);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .solicitud-detail-comprobante-img {
     width: 100%;
-    max-height: 280px;
+    max-height: 240px;
     object-fit: contain;
     border-radius: var(--radio-sm);
     border: 1px solid rgba(255,255,255,0.06);
@@ -1518,9 +1519,9 @@
 }
 
 .solicitud-detail-actions {
-    padding: 0 28px 28px;
+    padding: 0 24px 24px;
     display: flex;
-    gap: 12px;
+    gap: 10px;
 }
 
 .solicitud-detail-actions .btn-confirm-purchase,
@@ -1528,21 +1529,187 @@
     flex: 1;
 }
 
-/* ── RESPONSIVE ── */
+/* ── RESPONSIVE MARKETPLACE ── */
+@media (max-width: 1024px) {
+    .market-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+    }
+
+    .archivo-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 12px;
+    }
+
+    .archivo-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
-    .solicitud-row {
-        flex-wrap: wrap;
+    .market-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
+
+    .market-card-body {
+        padding: 8px 10px 10px;
+    }
+
+    .market-card-title {
+        font-size: .7rem;
+    }
+
+    .market-card-desc {
+        display: none;
+    }
+
+    .market-card-actions {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .market-btn-listen,
+    .market-btn-buy {
+        font-size: .55rem;
+        padding: 6px 8px;
+    }
+
+    .market-card-badge {
+        top: 5px;
+        left: 5px;
+        padding: 2px 6px;
+        font-size: .5rem;
+    }
+
+    .market-card-price {
+        bottom: 5px;
+        right: 5px;
+        padding: 3px 8px;
+        font-size: .62rem;
+    }
+
+    .market-tabs {
+        width: 100%;
+    }
+
+    .market-tab {
+        flex: 1;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: .62rem;
+    }
+
+    .archivo-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .archivo-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .archivo-stat-card {
+        padding: 12px;
+    }
+
+    .archivo-stat-value {
+        font-size: 1rem;
+    }
+
+    .archivo-tabs {
+        width: 100%;
+    }
+
+    .archivo-tab {
+        flex: 1;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: .62rem;
+    }
+
+    .market-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .market-detail-cover {
+        width: 120px;
+        height: 120px;
+    }
+
+    .solicitud-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
     .solicitud-row-price {
         min-width: auto;
         text-align: left;
     }
+
     .solicitud-detail-info-grid {
         grid-template-columns: 1fr;
     }
+
     .solicitud-detail-product {
         flex-direction: column;
         text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .market-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .market-card-body {
+        padding: 6px 8px 8px;
+    }
+
+    .market-card-title {
+        font-size: .65rem;
+    }
+
+    .market-card-actions {
+        gap: 3px;
+    }
+
+    .market-btn-listen,
+    .market-btn-buy {
+        font-size: .5rem;
+        padding: 5px 6px;
+        letter-spacing: .5px;
+    }
+
+    .archivo-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .archivo-stat-card {
+        padding: 10px;
+    }
+
+    .archivo-stat-value {
+        font-size: .9rem;
+    }
+
+    .archivo-stat-label {
+        font-size: .55rem;
+    }
+}
+
+/* ── PANTALLAS GRANDES ── */
+@media (min-width: 1400px) {
+    .market-grid {
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    }
+
+    .archivo-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
 }

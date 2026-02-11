@@ -1,7 +1,7 @@
 /* ============================================
    📊 DASHBOARD-ANALYTICS.JS — KXON
    Panel Analytics para Admin
-   Estadísticas, gráficas, top content, tracking
+   ✅ FIX: Contadores reales de plays y vistas
    ============================================ */
 (function () {
 
@@ -25,7 +25,7 @@
     /* Auto-track: login */
     K.trackEvent('login', { timestamp: new Date().toISOString() });
 
-    /* Hook playTrack para tracking */
+    /* Hook playTrack para tracking analytics event */
     var _origPlay = K.playTrack;
     K.playTrack = function (idx) {
         _origPlay(idx);
@@ -63,7 +63,7 @@
             '</div>' +
             '<button class="analytics-refresh" onclick="window.KXON.loadAnalytics()">🔄 Actualizar</button>' +
             '</div>' +
-            '<div class="analytics-stats" id="analyticsStats">Cargando...</div>' +
+            '<div class="analytics-stats" id="analyticsStats"><div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Cargando estadísticas...</div></div></div>' +
             '<div class="analytics-section" id="analyticsChart"></div>' +
             '<div class="analytics-top-grid" id="analyticsTopGrid"></div>';
 
@@ -101,12 +101,21 @@
             var users = await db.from('profiles').select('id', { count: 'exact', head: true });
             var totalUsers = users.count || 0;
 
-            /* Total plays (from events) */
-            var plays = await db.from('analytics_events')
+            /* ✅ FIX: Total plays — REAL desde la tabla canciones */
+            var playsResult = await db.from('canciones').select('reproducciones');
+            var totalPlaysReal = 0;
+            if (playsResult.data) {
+                for (var p = 0; p < playsResult.data.length; p++) {
+                    totalPlaysReal += (playsResult.data[p].reproducciones || 0);
+                }
+            }
+
+            /* Plays en período (desde analytics_events) */
+            var playsEvents = await db.from('analytics_events')
                 .select('id', { count: 'exact', head: true })
                 .eq('evento', 'play_song')
                 .gte('created_at', dateFrom);
-            var totalPlays = plays.count || 0;
+            var totalPlaysPeriod = playsEvents.count || 0;
 
             /* Total sales */
             var sales = await db.from('compras')
@@ -120,12 +129,21 @@
                 }
             }
 
-            /* Total video views */
+            /* ✅ FIX: Total video views — REAL desde la tabla */
             var vids = await db.from('videos').select('visualizaciones');
             var totalViews = 0;
             if (vids.data) {
                 for (var j = 0; j < vids.data.length; j++) {
                     totalViews += (vids.data[j].visualizaciones || 0);
+                }
+            }
+
+            /* Episodios views también */
+            var eps = await db.from('episodios').select('visualizaciones');
+            var totalEpViews = 0;
+            if (eps.data) {
+                for (var e = 0; e < eps.data.length; e++) {
+                    totalEpViews += (eps.data[e].visualizaciones || 0);
                 }
             }
 
@@ -142,21 +160,50 @@
             var totalSubs = subs.count || 0;
 
             c.innerHTML =
-                '<div class="analytics-stat-card stat-users"><div class="analytics-stat-header"><span class="analytics-stat-icon">👥</span></div><div class="analytics-stat-value">' + totalUsers + '</div><div class="analytics-stat-label">Usuarios totales</div></div>' +
-                '<div class="analytics-stat-card stat-plays"><div class="analytics-stat-header"><span class="analytics-stat-icon">▶️</span></div><div class="analytics-stat-value">' + totalPlays.toLocaleString() + '</div><div class="analytics-stat-label">Reproducciones</div></div>' +
-                '<div class="analytics-stat-card stat-sales"><div class="analytics-stat-header"><span class="analytics-stat-icon">💰</span></div><div class="analytics-stat-value">' + K.formatPrice(totalRevenue) + '</div><div class="analytics-stat-label">' + totalSales + ' ventas</div></div>' +
-                '<div class="analytics-stat-card stat-views"><div class="analytics-stat-header"><span class="analytics-stat-icon">👁</span></div><div class="analytics-stat-value">' + totalViews.toLocaleString() + '</div><div class="analytics-stat-label">Vistas de video</div></div>' +
-                '<div class="analytics-stat-card stat-favs"><div class="analytics-stat-header"><span class="analytics-stat-icon">❤️</span></div><div class="analytics-stat-value">' + totalFavs.toLocaleString() + '</div><div class="analytics-stat-label">Favoritos</div></div>' +
-                '<div class="analytics-stat-card stat-subs"><div class="analytics-stat-header"><span class="analytics-stat-icon">🎫</span></div><div class="analytics-stat-value">' + totalSubs + '</div><div class="analytics-stat-label">Suscripciones activas</div></div>';
+                '<div class="analytics-stat-card stat-users">' +
+                '<div class="analytics-stat-header"><span class="analytics-stat-icon">👥</span></div>' +
+                '<div class="analytics-stat-value">' + totalUsers + '</div>' +
+                '<div class="analytics-stat-label">Usuarios totales</div>' +
+                '</div>' +
 
-        } catch (e) {
-            console.error('Error analytics stats:', e);
-            c.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Error cargando stats</div></div>';
+                '<div class="analytics-stat-card stat-plays">' +
+                '<div class="analytics-stat-header"><span class="analytics-stat-icon">▶️</span></div>' +
+                '<div class="analytics-stat-value">' + totalPlaysReal.toLocaleString() + '</div>' +
+                '<div class="analytics-stat-label">Reproducciones totales' + (analyticsPeriod !== 'all' ? ' · ' + totalPlaysPeriod + ' en período' : '') + '</div>' +
+                '</div>' +
+
+                '<div class="analytics-stat-card stat-sales">' +
+                '<div class="analytics-stat-header"><span class="analytics-stat-icon">💰</span></div>' +
+                '<div class="analytics-stat-value">' + K.formatPrice(totalRevenue) + '</div>' +
+                '<div class="analytics-stat-label">' + totalSales + ' ventas</div>' +
+                '</div>' +
+
+                '<div class="analytics-stat-card stat-views">' +
+                '<div class="analytics-stat-header"><span class="analytics-stat-icon">👁</span></div>' +
+                '<div class="analytics-stat-value">' + (totalViews + totalEpViews).toLocaleString() + '</div>' +
+                '<div class="analytics-stat-label">Vistas totales · ' + totalViews + ' videos · ' + totalEpViews + ' episodios</div>' +
+                '</div>' +
+
+                '<div class="analytics-stat-card stat-favs">' +
+                '<div class="analytics-stat-header"><span class="analytics-stat-icon">❤️</span></div>' +
+                '<div class="analytics-stat-value">' + totalFavs.toLocaleString() + '</div>' +
+                '<div class="analytics-stat-label">Favoritos</div>' +
+                '</div>' +
+
+                '<div class="analytics-stat-card stat-subs">' +
+                '<div class="analytics-stat-header"><span class="analytics-stat-icon">🎫</span></div>' +
+                '<div class="analytics-stat-value">' + totalSubs + '</div>' +
+                '<div class="analytics-stat-label">Suscripciones activas</div>' +
+                '</div>';
+
+        } catch (err) {
+            console.error('Error analytics stats:', err);
+            c.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Error cargando stats</div><div class="empty-text">' + err.message + '</div></div>';
         }
     }
 
     /* ══════════════════════════════════════════
-       📊 ACTIVITY CHART (últimos 7 días)
+       📊 ACTIVITY CHART
        ══════════════════════════════════════════ */
     async function loadActivityChart() {
         var c = document.getElementById('analyticsChart');
@@ -173,7 +220,6 @@
 
             var data = r.data || [];
 
-            /* Agrupar por día */
             var byDay = {};
             var dayLabels = [];
             for (var d = days - 1; d >= 0; d--) {
@@ -189,11 +235,9 @@
                 if (byDay[dayKey] !== undefined) byDay[dayKey]++;
             }
 
-            /* Calcular max */
             var maxVal = 1;
             for (var k in byDay) { if (byDay[k] > maxVal) maxVal = byDay[k]; }
 
-            /* Render chart — mostrar solo últimos labels visibles */
             var showLabels = days <= 14;
             var barsHTML = '';
             for (var j = 0; j < dayLabels.length; j++) {
@@ -219,64 +263,104 @@
     }
 
     /* ══════════════════════════════════════════
-       📊 TOP CONTENT
+       📊 TOP CONTENT — ✅ FIX COMPLETO
        ══════════════════════════════════════════ */
     async function loadTopContent() {
         var c = document.getElementById('analyticsTopGrid');
         if (!c) return;
 
         try {
-            /* Top canciones por reproducciones */
+            /* ✅ FIX: Top canciones — ordenar por reproducciones DESC, filtrar > 0 */
             var songs = await db.from('canciones')
-                .select('titulo, reproducciones')
+                .select('id, titulo, reproducciones, imagen_url, albumes(titulo)')
                 .order('reproducciones', { ascending: false })
                 .limit(10);
 
             var songsHTML = '<div class="analytics-section">' +
-                '<div class="analytics-section-title">🎵 Top Canciones</div>' +
+                '<div class="analytics-section-title">🎵 Top Canciones (por reproducciones)</div>' +
                 '<div class="analytics-table">' +
-                '<div class="analytics-table-header table-3col"><span>#</span><span>Canción</span><span style="text-align:center">Plays</span></div>';
+                '<div class="analytics-table-header table-3col"><span>#</span><span>Canción</span><span style="text-align:center">▶ Plays</span></div>';
 
             if (songs.data && songs.data.length) {
+                var hasSongPlays = false;
                 for (var i = 0; i < songs.data.length; i++) {
                     var s = songs.data[i];
+                    var plays = s.reproducciones || 0;
+                    if (plays > 0) hasSongPlays = true;
+                    var albumInfo = s.albumes ? ' · ' + s.albumes.titulo : '';
                     songsHTML +=
                         '<div class="analytics-table-row table-3col">' +
-                        '<span class="table-cell-num" style="text-align:left">' + (i + 1) + '</span>' +
-                        '<span class="table-cell-title">' + s.titulo + '</span>' +
-                        '<span class="table-cell-num">' + (s.reproducciones || 0) + '</span>' +
+                        '<span class="table-cell-num" style="text-align:left;color:' + (i < 3 ? 'var(--acento-dorado)' : 'var(--plata-oscura)') + ';">' + (i < 3 ? ['🥇','🥈','🥉'][i] : (i + 1)) + '</span>' +
+                        '<span class="table-cell-title" title="' + s.titulo + albumInfo + '">' + s.titulo + '<span style="font-size:.65rem;color:var(--plata-oscura);font-weight:400;">' + albumInfo + '</span></span>' +
+                        '<span class="table-cell-num" style="color:' + (plays > 0 ? 'var(--plata-blanca)' : 'var(--plata-oscura)') + ';font-size:.9rem;">' + plays.toLocaleString() + '</span>' +
                         '</div>';
                 }
+                if (!hasSongPlays) {
+                    songsHTML += '<div style="padding:12px 20px;font-size:.75rem;color:var(--plata-oscura);text-align:center;border-top:1px solid rgba(255,255,255,.04);">⚠️ Las canciones aún no tienen reproducciones registradas. Reproduce canciones para ver datos aquí.</div>';
+                }
             } else {
-                songsHTML += '<div class="analytics-table-row"><span style="grid-column:1/-1;text-align:center;color:var(--plata-oscura);">Sin datos</span></div>';
+                songsHTML += '<div class="analytics-table-row"><span style="grid-column:1/-1;text-align:center;color:var(--plata-oscura);">Sin canciones</span></div>';
             }
             songsHTML += '</div></div>';
 
-            /* Top videos por vistas */
+            /* ✅ FIX: Top videos — ordenar por visualizaciones DESC */
             var vids = await db.from('videos')
-                .select('titulo, visualizaciones')
+                .select('id, titulo, visualizaciones, thumbnail_url')
                 .order('visualizaciones', { ascending: false })
                 .limit(10);
 
             var vidsHTML = '<div class="analytics-section">' +
-                '<div class="analytics-section-title">🎬 Top Videos</div>' +
+                '<div class="analytics-section-title">🎬 Top Videos (por vistas)</div>' +
                 '<div class="analytics-table">' +
-                '<div class="analytics-table-header table-3col"><span>#</span><span>Video</span><span style="text-align:center">Vistas</span></div>';
+                '<div class="analytics-table-header table-3col"><span>#</span><span>Video</span><span style="text-align:center">👁 Vistas</span></div>';
 
             if (vids.data && vids.data.length) {
+                var hasVideoViews = false;
                 for (var j = 0; j < vids.data.length; j++) {
                     var v = vids.data[j];
+                    var views = v.visualizaciones || 0;
+                    if (views > 0) hasVideoViews = true;
                     vidsHTML +=
                         '<div class="analytics-table-row table-3col">' +
-                        '<span class="table-cell-num" style="text-align:left">' + (j + 1) + '</span>' +
+                        '<span class="table-cell-num" style="text-align:left;color:' + (j < 3 ? 'var(--acento-dorado)' : 'var(--plata-oscura)') + ';">' + (j < 3 ? ['🥇','🥈','🥉'][j] : (j + 1)) + '</span>' +
                         '<span class="table-cell-title">' + v.titulo + '</span>' +
-                        '<span class="table-cell-num">' + (v.visualizaciones || 0) + '</span>' +
+                        '<span class="table-cell-num" style="color:' + (views > 0 ? 'var(--plata-blanca)' : 'var(--plata-oscura)') + ';font-size:.9rem;">' + views.toLocaleString() + '</span>' +
                         '</div>';
                 }
+                if (!hasVideoViews) {
+                    vidsHTML += '<div style="padding:12px 20px;font-size:.75rem;color:var(--plata-oscura);text-align:center;border-top:1px solid rgba(255,255,255,.04);">⚠️ Los videos aún no tienen vistas registradas. Reproduce videos para ver datos aquí.</div>';
+                }
             } else {
-                vidsHTML += '<div class="analytics-table-row"><span style="grid-column:1/-1;text-align:center;color:var(--plata-oscura);">Sin datos</span></div>';
+                vidsHTML += '<div class="analytics-table-row"><span style="grid-column:1/-1;text-align:center;color:var(--plata-oscura);">Sin videos</span></div>';
             }
             vidsHTML += '</div></div>';
+
+            /* ✅ NUEVO: Top episodios */
+            var episodios = await db.from('episodios')
+                .select('id, titulo, visualizaciones, numero, documentales(titulo)')
+                .order('visualizaciones', { ascending: false })
+                .limit(5);
+
+            var epsHTML = '';
+            if (episodios.data && episodios.data.length) {
+                epsHTML = '<div class="analytics-section" style="grid-column:1/-1;">' +
+                    '<div class="analytics-section-title">🎞️ Top Episodios</div>' +
+                    '<div class="analytics-table">' +
+                    '<div class="analytics-table-header table-3col"><span>#</span><span>Episodio</span><span style="text-align:center">👁 Vistas</span></div>';
+
+                for (var e = 0; e < episodios.data.length; e++) {
+                    var ep = episodios.data[e];
+                    var epViews = ep.visualizaciones || 0;
+                    var docName = ep.documentales ? ' · ' + ep.documentales.titulo : '';
+                    epsHTML +=
+                        '<div class="analytics-table-row table-3col">' +
+                        '<span class="table-cell-num" style="text-align:left;">' + (e + 1) + '</span>' +
+                        '<span class="table-cell-title">Ep. ' + ep.numero + ' — ' + ep.titulo + '<span style="font-size:.65rem;color:var(--plata-oscura);font-weight:400;">' + docName + '</span></span>' +
+                        '<span class="table-cell-num">' + epViews.toLocaleString() + '</span>' +
+                        '</div>';
+                }
+                epsHTML += '</div></div>';
+            }
 
             /* Recent users */
             var recentUsers = await db.from('profiles')
@@ -293,22 +377,22 @@
                 for (var u = 0; u < recentUsers.data.length; u++) {
                     var user = recentUsers.data[u];
                     var fecha = new Date(user.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-                    var roleBadge = '<span class="badge" style="font-size:.6rem;">' + (user.role || 'fan') + '</span>';
+                    var roleColor = user.role === 'admin' ? 'var(--acento-dorado)' : user.role === 'artista' ? 'var(--acento-principal)' : 'var(--acento-exito)';
                     usersHTML +=
                         '<div class="analytics-table-row table-3col">' +
                         '<span class="table-cell-title">' + (user.full_name || 'Sin nombre') + '</span>' +
-                        '<span class="table-cell-badge">' + roleBadge + '</span>' +
+                        '<span class="table-cell-badge"><span class="badge" style="font-size:.58rem;color:' + roleColor + ';">' + (user.role || 'fan') + '</span></span>' +
                         '<span class="table-cell-num">' + fecha + '</span>' +
                         '</div>';
                 }
             }
             usersHTML += '</div></div>';
 
-            c.innerHTML = songsHTML + vidsHTML + usersHTML;
+            c.innerHTML = songsHTML + vidsHTML + epsHTML + usersHTML;
 
-        } catch (e) {
-            console.error('Error top content:', e);
-            c.innerHTML = '';
+        } catch (err) {
+            console.error('Error top content:', err);
+            c.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Error cargando rankings</div><div class="empty-text">' + err.message + '</div></div>';
         }
     }
 

@@ -551,7 +551,7 @@
         document.getElementById('volumeFill').style.width = (p * 100) + '%';
     });
 
-    window.KXON.playTrack = function (idx) {
+        window.KXON.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
         var track = K.currentPlaylist[idx];
 
@@ -580,7 +580,11 @@
             if (btn3) btn3.textContent = '⏸';
         }
 
-        db.from('canciones').update({ reproducciones: (track.reproducciones || 0) + 1 }).eq('id', track.id);
+        // ✅ FIX: Usar RPC para incrementar atómicamente
+        db.rpc('increment_reproducciones', { song_id: track.id }).then(function(r) {
+            if (r.error) console.warn('Error updating plays:', r.error.message);
+            else console.log('✅ Play registrado:', track.titulo);
+        });
     };
 
     window._playTrack = function (idx) { window.KXON.playTrack(idx); };

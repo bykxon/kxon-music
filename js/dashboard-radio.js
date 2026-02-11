@@ -89,7 +89,10 @@
             setTimeout(K.updatePlayerFavState, 100);
         }
 
-        db.from('canciones').update({ reproducciones: (t.reproducciones || 0) + 1 }).eq('id', t.id);
+               // ✅ FIX: Usar RPC para incrementar atómicamente
+        db.rpc('increment_reproducciones', { song_id: t.id }).then(function(r) {
+            if (r.error) console.warn('Error updating radio plays:', r.error.message);
+        });
     }
 
     function radioToggle() {
