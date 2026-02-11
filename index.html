@@ -117,14 +117,14 @@
     <div class="section-divider"></div>
 
     <!-- ============================================
-         📱 DESCARGA APP - TODAS LAS PLATAFORMAS
+         📱 DESCARGA APP - ANDROID + iOS
          ============================================ -->
     <section class="section app-download-section" id="descargar">
         <div class="container">
             <div class="section-header">
-                <div class="section-label">Disponible para todos</div>
+                <div class="section-label">Disponible para móvil</div>
                 <h2 class="section-title">Descarga <span class="gradient-text">KXON</span></h2>
-                <p class="section-desc">Lleva tu música a todas partes. Disponible para Android, Windows e iOS</p>
+                <p class="section-desc">Lleva tu música a todas partes. Disponible para Android e iOS</p>
             </div>
 
             <div class="app-download-container">
@@ -156,7 +156,7 @@
                         </div>
                     </div>
 
-                    <!-- ── BOTONES DE DESCARGA POR PLATAFORMA ── -->
+                    <!-- ── BOTONES ANDROID + iOS ── -->
                     <div class="app-platforms">
 
                         <!-- 🤖 ANDROID -->
@@ -165,18 +165,7 @@
                             <div class="app-platform-info">
                                 <span class="app-platform-label">Descargar para</span>
                                 <span class="app-platform-name">Android</span>
-                                <span class="app-platform-detail">APK • ~5 MB • Android 8.0+</span>
-                            </div>
-                            <div class="app-platform-arrow">📥</div>
-                        </a>
-
-                        <!-- 🪟 WINDOWS -->
-                        <a href="downloads/kxon-app.msix" download="KXON.msix" class="app-platform-btn">
-                            <div class="app-platform-icon">🪟</div>
-                            <div class="app-platform-info">
-                                <span class="app-platform-label">Descargar para</span>
-                                <span class="app-platform-name">Windows</span>
-                                <span class="app-platform-detail">MSIX • ~10 MB • Windows 10+</span>
+                                <span class="app-platform-detail">APK • Android 8.0+</span>
                             </div>
                             <div class="app-platform-arrow">📥</div>
                         </a>
@@ -191,21 +180,10 @@
                             </div>
                             <div class="app-platform-arrow">ℹ️</div>
                         </div>
-
-                        <!-- ▶️ GOOGLE PLAY (Próximamente) -->
-                        <div class="app-platform-btn app-platform-coming" onclick="alert('¡Próximamente en Google Play Store!')">
-                            <div class="app-platform-icon">▶️</div>
-                            <div class="app-platform-info">
-                                <span class="app-platform-label">Próximamente en</span>
-                                <span class="app-platform-name">Google Play</span>
-                                <span class="app-platform-detail">En proceso de revisión</span>
-                            </div>
-                            <div class="app-platform-arrow app-coming-badge">PRONTO</div>
-                        </div>
                     </div>
 
                     <p class="app-download-hint">
-                        ⚠️ Para Android y Windows, tu dispositivo puede pedir permiso para instalar
+                        ⚠️ Para Android, tu dispositivo puede pedir permiso para instalar
                         desde fuentes externas. Es completamente seguro.
                     </p>
                 </div>
@@ -368,7 +346,6 @@
         navigator.serviceWorker.register('sw.js').catch(function(){});
     }
 
-    /* Cerrar modales al click en overlay */
     document.getElementById('iosModal').addEventListener('click', function(e) {
         if (e.target === this) this.classList.remove('show');
     });
