@@ -1,11 +1,30 @@
 /* ============================================
    ❤️ DASHBOARD-FAVS-SHARE.JS — KXON
    Favoritos / Likes + Compartir en Redes
+   FIX: Columnas separadas cancion, album, beat
    ============================================ */
 (function () {
 
     var db = window.db;
     var K = window.KXON;
+
+    /* ══════════════════════════════════════════
+       📌 MAPA DE COLUMNAS DE LA TABLA FAVORITOS
+       La tabla tiene columnas separadas:
+       cancion, album, beat (en vez de item_id)
+       ══════════════════════════════════════════ */
+    var columnMap = {
+        'cancion': 'cancion',
+        'album': 'album',
+        'beat': 'beat',
+        'video': 'cancion',       // videos se guardan en columna cancion (o ajustar si tienes columna video)
+        'documental': 'cancion',  // igual
+        'noticia': 'cancion'      // igual
+    };
+
+    function getColumn(tipo) {
+        return columnMap[tipo] || 'cancion';
+    }
 
     /* ══════════════════════════════════════════
        📌 CACHE LOCAL DE FAVORITOS
@@ -20,13 +39,19 @@
         if (!K.currentUser) return;
         try {
             var r = await db.from('favoritos')
-                .select('tipo, item_id')
+                .select('tipo, cancion, album, beat')
                 .eq('usuario_id', K.currentUser.id);
             if (r.error) throw r.error;
             userFavs = {};
             var data = r.data || [];
             for (var i = 0; i < data.length; i++) {
-                userFavs[data[i].tipo + '_' + data[i].item_id] = true;
+                var row = data[i];
+                var tipo = row.tipo;
+                var col = getColumn(tipo);
+                var itemId = row[col];
+                if (itemId) {
+                    userFavs[tipo + '_' + itemId] = true;
+                }
             }
         } catch (e) { console.error('Error cargando favoritos:', e); }
     };
@@ -36,27 +61,39 @@
        ══════════════════════════════════════════ */
     async function loadFavCountsForType(tipo, ids) {
         if (!ids || !ids.length) return;
+        var col = getColumn(tipo);
         try {
             var r = await db.from('favoritos')
-                .select('item_id')
+                .select(col)
                 .eq('tipo', tipo)
-                .in('item_id', ids);
+                .in(col, ids);
             if (r.error) throw r.error;
             var data = r.data || [];
             for (var i = 0; i < data.length; i++) {
-                var key = tipo + '_' + data[i].item_id;
-                favCounts[key] = (favCounts[key] || 0) + 1;
+                var itemId = data[i][col];
+                if (itemId) {
+                    var key = tipo + '_' + itemId;
+                    favCounts[key] = (favCounts[key] || 0) + 1;
+                }
             }
         } catch (e) { console.error('Error contando favs:', e); }
     }
 
     /* ══════════════════════════════════════════
-       ❤️ TOGGLE FAVORITO
+       ❤️ TOGGLE FAVORITO (FIX COMPLETO)
        ══════════════════════════════════════════ */
     async function toggleFavorite(tipo, itemId, btnEl) {
         if (!K.currentUser) { K.showToast('Inicia sesión para dar like', 'error'); return; }
 
+        // Validar que itemId no esté vacío
+        if (!itemId || itemId === 'undefined' || itemId === 'null' || itemId === '') {
+            console.warn('toggleFavorite: itemId inválido:', itemId);
+            K.showToast('No se pudo identificar el elemento', 'error');
+            return;
+        }
+
         var key = tipo + '_' + itemId;
+        var col = getColumn(tipo);
         var isLiked = userFavs[key];
 
         // Optimistic UI
@@ -71,24 +108,49 @@
 
         try {
             if (isLiked) {
+                // ELIMINAR favorito
                 var r = await db.from('favoritos').delete()
                     .eq('usuario_id', K.currentUser.id)
                     .eq('tipo', tipo)
-                    .eq('item_id', itemId);
+                    .eq(col, itemId);
                 if (r.error) throw r.error;
+                K.showToast('Eliminado de favoritos', 'success');
             } else {
-                var r2 = await db.from('favoritos').insert({
-                    usuario_id: K.currentUser.id, tipo: tipo, item_id: itemId
-                });
-                if (r2.error) throw r2.error;
+                // VERIFICAR si ya existe
+                var check = await db.from('favoritos')
+                    .select('id')
+                    .eq('usuario_id', K.currentUser.id)
+                    .eq('tipo', tipo)
+                    .eq(col, itemId)
+                    .limit(1);
+
+                if (check.data && check.data.length > 0) {
+                    K.showToast('Ya está en favoritos', 'success');
+                    return;
+                }
+
+                // INSERTAR — construir objeto con la columna correcta
+                var insertData = {
+                    usuario_id: K.currentUser.id,
+                    tipo: tipo
+                };
+                insertData[col] = itemId;
+
+                var r2 = await db.from('favoritos').insert(insertData);
+                if (r2.error) {
+                    console.error('Insert error:', JSON.stringify(r2.error));
+                    throw r2.error;
+                }
+                K.showToast('¡Agregado a favoritos!', 'success');
             }
         } catch (e) {
-            // Revert
+            // Revert UI
             if (isLiked) { userFavs[key] = true; favCounts[key]++; }
             else { delete userFavs[key]; favCounts[key] = Math.max(0, favCounts[key] - 1); }
             updateFavBtn(btnEl, isLiked, favCounts[key]);
             console.error('Error toggle fav:', e);
-            K.showToast('Error al guardar favorito', 'error');
+            console.error('Datos:', { usuario_id: K.currentUser.id, tipo: tipo, col: col, itemId: itemId });
+            K.showToast('Error: ' + (e.message || e.details || 'Revisa consola'), 'error');
         }
     }
 
@@ -160,8 +222,6 @@
     /* ══════════════════════════════════════════
        🔌 INYECTAR FAV+SHARE EN RENDERS
        ══════════════════════════════════════════ */
-
-    /* Observa cambios en los contenedores y agrega botones */
     function injectFavShare() {
         injectIntoCards('albumesGrid', 'album', function () {
             var albums = [];
@@ -214,7 +274,7 @@
         if (!cards.length) return;
         var items = extractFn();
         cards.forEach(function (card, i) {
-            if (card.querySelector('.card-actions-row')) return; // already injected
+            if (card.querySelector('.card-actions-row')) return;
             if (i < items.length) {
                 var div = document.createElement('div');
                 div.innerHTML = favShareCardHTML(tipo, items[i].id, items[i].titulo);
@@ -230,11 +290,9 @@
         tracks.forEach(function (track) {
             if (track.querySelector('.track-actions')) return;
             var onclick = track.getAttribute('onclick') || '';
-            // Extract track info from DOM
             var titleEl = track.querySelector('.track-title');
             var titulo = titleEl ? titleEl.textContent : '';
 
-            // Try to get ID from playlist
             var idx = -1;
             var m = onclick.match(/playTrack\((\d+)\)/) || onclick.match(/_playTrack\((\d+)\)/) || onclick.match(/_playFromAll\((\d+)/);
             if (m) idx = parseInt(m[1]);
@@ -244,11 +302,7 @@
                 trackId = K.currentPlaylist[idx].id;
             }
 
-            if (!trackId) {
-                // Try from all canciones by matching title
-                // Fallback: skip this track
-                return;
-            }
+            if (!trackId) return;
 
             var adminDel = track.querySelector('.track-delete');
             var frag = document.createElement('div');
@@ -268,7 +322,7 @@
         var cards = c.querySelectorAll('.video-card');
         cards.forEach(function (card, i) {
             if (card.querySelector('.card-actions-row')) return;
-            if (i < K.allVideosData.length) {
+            if (K.allVideosData && i < K.allVideosData.length) {
                 var v = K.allVideosData[i];
                 var div = document.createElement('div');
                 div.innerHTML = favShareCardHTML('video', v.id, v.titulo);
@@ -283,7 +337,7 @@
         var cards = c.querySelectorAll('.docu-card');
         cards.forEach(function (card, i) {
             if (card.querySelector('.card-actions-row')) return;
-            if (i < K.allDocuData.length) {
+            if (K.allDocuData && i < K.allDocuData.length) {
                 var d = K.allDocuData[i];
                 var div = document.createElement('div');
                 div.innerHTML = favShareCardHTML('documental', d.id, d.titulo);
@@ -296,7 +350,7 @@
         var c = document.getElementById(containerId);
         if (!c) return;
         var cards = c.querySelectorAll('.market-card');
-        var filtered = K.allMarketData.filter(function (item) { return item.tipo === K.currentMarketTab; });
+        var filtered = (K.allMarketData || []).filter(function (item) { return item.tipo === K.currentMarketTab; });
         cards.forEach(function (card, i) {
             if (card.querySelector('.card-actions-row')) return;
             if (i < filtered.length) {
@@ -409,7 +463,14 @@
     window._shareFromPlayer = function (event) {
         var title = document.getElementById('playerTitle').textContent || 'KXON';
         var itemId = '';
-        if (K.currentPlaylist && K.currentPlaylist[K.currentTrackIndex]) {
+
+        if (K.activeSource === 'radio') {
+            var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
+            if (list && list[K.radioIndex]) {
+                itemId = list[K.radioIndex].id;
+                title = list[K.radioIndex].titulo;
+            }
+        } else if (K.currentPlaylist && K.currentPlaylist[K.currentTrackIndex]) {
             itemId = K.currentPlaylist[K.currentTrackIndex].id;
         }
         window._openShare(event, 'cancion', itemId, title);
@@ -432,13 +493,18 @@
        ══════════════════════════════════════════ */
     window._togglePlayerFav = function () {
         var btn = document.getElementById('playerFavBtn');
-        if (K.currentPlaylist && K.currentPlaylist[K.currentTrackIndex]) {
-            toggleFavorite('cancion', K.currentPlaylist[K.currentTrackIndex].id, btn);
-        } else {
+
+        if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
             if (list && list[K.radioIndex]) {
                 toggleFavorite('cancion', list[K.radioIndex].id, btn);
+            } else {
+                K.showToast('No hay canción reproduciéndose', 'error');
             }
+        } else if (K.currentPlaylist && K.currentPlaylist[K.currentTrackIndex]) {
+            toggleFavorite('cancion', K.currentPlaylist[K.currentTrackIndex].id, btn);
+        } else {
+            K.showToast('No hay canción reproduciéndose', 'error');
         }
     };
 
@@ -446,12 +512,14 @@
         var btn = document.getElementById('playerFavBtn');
         if (!btn) return;
         var trackId = '';
-        if (K.currentPlaylist && K.currentPlaylist[K.currentTrackIndex]) {
-            trackId = K.currentPlaylist[K.currentTrackIndex].id;
-        } else {
+
+        if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
             if (list && list[K.radioIndex]) trackId = list[K.radioIndex].id;
+        } else if (K.currentPlaylist && K.currentPlaylist[K.currentTrackIndex]) {
+            trackId = K.currentPlaylist[K.currentTrackIndex].id;
         }
+
         if (!trackId) return;
         var key = 'cancion_' + trackId;
         var isLiked = userFavs[key];
@@ -466,6 +534,8 @@
         var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
         if (list && list[K.radioIndex]) {
             toggleFavorite('cancion', list[K.radioIndex].id, btn);
+        } else {
+            K.showToast('No hay canción reproduciéndose', 'error');
         }
     };
 
@@ -535,11 +605,18 @@
                 return;
             }
 
-            // Group by type and fetch details
+            // Agrupar por tipo y obtener el ID correcto de cada columna
             var byType = {};
             for (var i = 0; i < favs.length; i++) {
-                if (!byType[favs[i].tipo]) byType[favs[i].tipo] = [];
-                byType[favs[i].tipo].push(favs[i].item_id);
+                var fav = favs[i];
+                var tipo = fav.tipo;
+                var col = getColumn(tipo);
+                var itemId = fav[col];
+                if (!itemId) continue;
+                if (!byType[tipo]) byType[tipo] = [];
+                byType[tipo].push(itemId);
+                // Guardar itemId en el objeto fav para uso posterior
+                fav._itemId = itemId;
             }
 
             var details = {};
@@ -571,20 +648,22 @@
             var h = '';
             for (var k = 0; k < favs.length; k++) {
                 var f = favs[k];
-                var item = details[f.tipo + '_' + f.item_id];
+                var fItemId = f._itemId;
+                if (!fItemId) continue;
+                var item = details[f.tipo + '_' + fItemId];
                 if (!item) continue;
 
                 var img = item.imagen_url || item.thumbnail_url || 'https://placehold.co/400x400/111/333?text=' + (icons[f.tipo] || '♪');
                 var titulo = item.titulo || 'Sin título';
 
-                h += '<div class="card" onclick="window._openFavItem(\'' + f.tipo + '\',\'' + f.item_id + '\')">';
+                h += '<div class="card" onclick="window._openFavItem(\'' + f.tipo + '\',\'' + fItemId + '\')">';
                 h += '<div class="card-img square"><img src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/400x400/111/333?text=♪\'">';
                 h += '<div class="card-overlay"><div class="card-overlay-icon">' + (icons[f.tipo] || '❤️') + '</div></div>';
                 h += '</div><div class="card-body">';
                 h += '<div class="card-title">' + titulo + '</div>';
                 h += '<div class="card-subtitle">' + (icons[f.tipo] || '') + ' ' + (labels[f.tipo] || f.tipo) + '</div>';
                 h += '</div>';
-                h += favShareCardHTML(f.tipo, f.item_id, titulo);
+                h += favShareCardHTML(f.tipo, fItemId, titulo);
                 h += '</div>';
             }
             c.innerHTML = h;
