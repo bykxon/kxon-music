@@ -4,6 +4,7 @@
    player bar, helpers, variables compartidas
    + Sistema de verificación de suscripción
    + FIX: Conflicto radio/player resuelto
+   + FIX: Playlists + Historial + Notificaciones
    ============================================ */
 (function () {
 
@@ -42,11 +43,9 @@
         radioVolume: 0.7,
         radioShuffleMode: true,
         radioReady: false,
-        // ── SUSCRIPCIONES ──
         userSubscription: null,
         userAccesos: [],
-        // ── FIX: Fuente activa de audio ──
-        activeSource: 'none' // 'player' | 'radio' | 'market' | 'archivo' | 'none'
+        activeSource: 'none'
     };
 
     var K = window.KXON;
@@ -185,7 +184,6 @@
             '</div>';
     }
 
-    /* Guardar HTML original de paneles para restaurar */
     var panelOriginalHTML = {};
 
     function savePanelHTML(panelId) {
@@ -202,14 +200,12 @@
         }
     }
 
-    /* Guardar HTML original al inicio */
     function saveAllPanelHTML() {
         for (var i = 0; i < panelesBloqueados.length; i++) {
             savePanelHTML(panelesBloqueados[i]);
         }
     }
 
-    /* Aplicar bloqueo o desbloqueo */
     window.KXON.applyAccessControl = function () {
         for (var i = 0; i < panelesBloqueados.length; i++) {
             var pid = panelesBloqueados[i];
@@ -325,7 +321,6 @@
         if (av) ae.innerHTML = '<img src="' + av + '" alt="">';
         else ae.textContent = name.charAt(0).toUpperCase();
 
-        /* Mostrar/ocultar nav items solo admin */
         var adminNavs = document.querySelectorAll('.nav-admin-only');
         for (var an = 0; an < adminNavs.length; an++) {
             adminNavs[an].style.display = K.isAdmin ? 'flex' : 'none';
@@ -349,18 +344,20 @@
     };
 
     /* ══════════════════════════════════════════
-       🔀 PANEL NAVIGATION
+       🔀 PANEL NAVIGATION — FIX: Playlists + Historial
        ══════════════════════════════════════════ */
     var panelTitles = {
         'inicio': 'Inicio', 'albumes': 'Álbumes', 'canciones': 'Canciones',
-        'radio': 'Radio KXON', 'videos': 'Videos', 'documentales': 'Documentales',
-        'marketplace': 'Marketplace', 'archivo': 'Archivo', 'planes': 'Planes',
-        'perfil': 'Mi Perfil', 'favoritos': 'Mis Favoritos', 'analytics': 'Analytics'
+        'radio': 'Radio KXON', 'playlists': 'Mis Playlists', 'videos': 'Videos',
+        'documentales': 'Documentales', 'marketplace': 'Marketplace', 'archivo': 'Archivo',
+        'planes': 'Planes', 'historial': 'Historial', 'perfil': 'Mi Perfil',
+        'favoritos': 'Mis Favoritos', 'analytics': 'Analytics'
     };
     var panelAddText = {
         'inicio': 'Nueva Noticia', 'albumes': 'Nuevo Álbum', 'canciones': '',
-        'radio': '', 'videos': 'Nuevo Video', 'documentales': 'Nuevo Documental',
-        'marketplace': 'Nuevo Producto', 'archivo': '', 'planes': '', 'perfil': '',
+        'radio': '', 'playlists': '', 'videos': 'Nuevo Video',
+        'documentales': 'Nuevo Documental', 'marketplace': 'Nuevo Producto',
+        'archivo': '', 'planes': '', 'historial': '', 'perfil': '',
         'favoritos': '', 'analytics': ''
     };
 
@@ -426,6 +423,16 @@
         if (id === 'planes' && typeof K.loadPlanes === 'function') K.loadPlanes();
         if (id === 'favoritos' && typeof K.loadFavsPanel === 'function') K.loadFavsPanel();
         if (id === 'analytics' && typeof K.loadAnalytics === 'function') K.loadAnalytics();
+
+        /* ── FIX: Cargar playlists cuando se navega al panel ── */
+        if (id === 'playlists' && typeof window._loadPlaylists === 'function') {
+            window._loadPlaylists();
+        }
+
+        /* ── FIX: Cargar historial cuando se navega al panel ── */
+        if (id === 'historial' && typeof window._loadHistorial === 'function') {
+            window._loadHistorial();
+        }
     };
 
     /* ══════════════════════════════════════════
@@ -433,12 +440,10 @@
        ══════════════════════════════════════════ */
     var audioEl = K.audioEl;
 
-    /* ── PLAY/PAUSE inteligente ── */
     document.getElementById('playerPlayPause').addEventListener('click', function () {
         var self = this;
 
         if (K.isPlaying) {
-            /* ── PAUSAR: detectar qué fuente está activa ── */
             if (K.activeSource === 'radio') {
                 K.radioAudio.pause();
                 K.radioIsPlaying = false;
@@ -455,10 +460,8 @@
             self.textContent = '▶';
             K.isPlaying = false;
         } else {
-            /* ── REANUDAR: detectar qué fuente estaba activa ── */
             if (K.activeSource === 'radio') {
                 if (K.radioIndex === -1) {
-                    // Nunca se reprodujo radio, iniciar desde 0
                     if (typeof window._rjump === 'function') window._rjump(0);
                 } else {
                     K.radioAudio.play();
@@ -479,10 +482,8 @@
         }
     });
 
-    /* ── NEXT inteligente ── */
     document.getElementById('playerNext').addEventListener('click', function () {
         if (K.activeSource === 'radio') {
-            // Usar next de radio
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
             if (list.length === 0) return;
             var n = K.radioIndex + 1;
@@ -490,13 +491,11 @@
             if (typeof window._rjump === 'function') window._rjump(n);
             return;
         }
-        // Player normal
         if (K.currentTrackIndex < K.currentPlaylist.length - 1) {
             window.KXON.playTrack(K.currentTrackIndex + 1);
         }
     });
 
-    /* ── PREV inteligente ── */
     document.getElementById('playerPrev').addEventListener('click', function () {
         if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
@@ -507,15 +506,13 @@
             if (typeof window._rjump === 'function') window._rjump(p);
             return;
         }
-        // Player normal
         if (K.currentTrackIndex > 0) {
             window.KXON.playTrack(K.currentTrackIndex - 1);
         }
     });
 
-    /* ── Timeupdate del player normal ── */
     audioEl.addEventListener('timeupdate', function () {
-        if (K.activeSource !== 'player') return; // Solo actualizar si es el player normal
+        if (K.activeSource !== 'player') return;
         if (audioEl.duration) {
             document.getElementById('progressFill').style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
             document.getElementById('playerCurrentTime').textContent = K.formatTime(audioEl.currentTime);
@@ -554,12 +551,10 @@
         document.getElementById('volumeFill').style.width = (p * 100) + '%';
     });
 
-    /* ── PLAY TRACK (compartido) — FIX: marcar fuente activa ── */
     window.KXON.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
         var track = K.currentPlaylist[idx];
 
-        // ✅ Detener radio y otras fuentes
         K.stopAllAudio('player');
         K.activeSource = 'player';
 
@@ -590,15 +585,46 @@
 
     window._playTrack = function (idx) { window.KXON.playTrack(idx); };
 
-    /* ── CERRAR PLAYER — FIX: detener todo correctamente ── */
+    /* ── PLAY TRACK LIST (para playlists) ── */
+    window.KXON.playTrackList = function (tracks, startIndex) {
+        if (!tracks || !tracks.length) return;
+
+        K.stopAllAudio('player');
+        K.activeSource = 'player';
+
+        /* Convertir formato de playlist al formato del player */
+        K.currentPlaylist = [];
+        for (var i = 0; i < tracks.length; i++) {
+            K.currentPlaylist.push({
+                id: tracks[i].id,
+                titulo: tracks[i].titulo,
+                archivo_url: tracks[i].audio_url,
+                imagen_url: tracks[i].cover || '',
+                reproducciones: 0
+            });
+        }
+
+        var idx = startIndex || 0;
+        if (idx >= K.currentPlaylist.length) idx = 0;
+
+        var track = K.currentPlaylist[idx];
+        audioEl.src = track.archivo_url;
+        audioEl.play();
+        K.isPlaying = true;
+        K.currentTrackIndex = idx;
+
+        document.getElementById('playerBar').classList.add('show');
+        document.getElementById('playerTitle').textContent = track.titulo;
+        document.getElementById('playerCover').src = track.imagen_url || '';
+        document.getElementById('playerPlayPause').textContent = '⏸';
+    };
+
     document.getElementById('playerCloseBtn').addEventListener('click', function () {
-        // Detener TODAS las fuentes
         audioEl.pause(); audioEl.currentTime = 0;
         K.marketPreviewAudio.pause(); K.marketPreviewAudio.currentTime = 0;
         K.archivoPreviewAudio.pause(); K.archivoPreviewAudio.currentTime = 0;
         K.archivoCurrentPlayingUrl = '';
 
-        // Detener radio
         K.radioAudio.pause(); K.radioAudio.currentTime = 0;
         K.radioIsPlaying = false;
         var rd = document.getElementById('radioDisc'); if (rd) rd.classList.remove('spinning');
@@ -667,7 +693,6 @@
         document.getElementById('albumDetailView').classList.remove('show');
     });
 
-    /* ── Modal close listeners ── */
     var modalCloseMap = [
         ['modalAlbumClose', 'modalAlbum'], ['modalAlbumCancel', 'modalAlbum'],
         ['modalCancionClose', 'modalCancion'], ['modalCancionCancel', 'modalCancion'],
@@ -704,6 +729,14 @@
         if (e.target === this && typeof window._closePurchase === 'function') window._closePurchase();
     });
 
+    /* ── FIX: Cerrar modales de playlist al click en overlay ── */
+    document.getElementById('modalPlaylist').addEventListener('click', function (e) {
+        if (e.target === this) window._closePlaylistModal();
+    });
+    document.getElementById('modalAddToPlaylist').addEventListener('click', function (e) {
+        if (e.target === this) window._closeAddToPlaylist();
+    });
+
     /* ══════════════════════════════════════════
        🔐 INIT — sesión y carga inicial
        ══════════════════════════════════════════ */
@@ -729,17 +762,21 @@
 
             renderSidebar();
 
-            /* ── Cargar suscripción ANTES de todo ── */
             await K.loadUserSubscription();
-
-            /* ── Guardar HTML original de paneles bloqueables ── */
             saveAllPanelHTML();
-
-            /* ── Aplicar control de acceso ── */
             K.applyAccessControl();
             if (typeof K.loadUserFavorites === 'function') await K.loadUserFavorites();
             K.loadStats();
-            K.loadNotifications();
+
+            /* ── FIX: Cargar notificaciones con delay para esperar
+                 que dashboard-notifications.js defina la función ── */
+            setTimeout(function () {
+                if (typeof K.loadNotifications === 'function') {
+                    K.loadNotifications();
+                } else {
+                    console.warn('⚠️ loadNotifications no disponible aún');
+                }
+            }, 100);
 
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
             if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones();

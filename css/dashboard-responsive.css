@@ -1,16 +1,15 @@
 /* ============================================
    📱 DASHBOARD RESPONSIVE CSS - KXON
-   Todos los @media queries del dashboard
-   FIX: Sidebar scroll en móvil corregido
+   Mobile-First + Estándares Web 2025
+   Google Material Design + Apple HIG
+   WCAG AA Compliant
    ============================================ */
 
 /* ══════════════════════════════════════════
-   🔧 BASE FIXES (aplicar siempre)
-   Estos estilos corrigen el sidebar en
-   todas las resoluciones
+   🔧 BASE FIXES (todas las resoluciones)
    ══════════════════════════════════════════ */
 
-/* ── Sidebar como flex column ── */
+/* ── Sidebar flex ── */
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -18,21 +17,20 @@
     height: 100dvh;
 }
 
-/* ── Header del sidebar: NO se encoge ── */
 .sidebar-header {
     flex-shrink: 0;
 }
 
-/* ── Nav con scroll: toma todo el espacio disponible ── */
 .sidebar-nav {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding-bottom: 20px;
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
 }
 
-/* ── Scrollbar elegante ── */
 .sidebar-nav::-webkit-scrollbar {
     width: 3px;
 }
@@ -43,11 +41,7 @@
     background: rgba(192, 192, 192, 0.15);
     border-radius: 10px;
 }
-.sidebar-nav::-webkit-scrollbar-thumb:hover {
-    background: rgba(192, 192, 192, 0.3);
-}
 
-/* ── Footer del sidebar: fijo abajo, nunca se corta ── */
 .sidebar-footer {
     flex-shrink: 0;
     padding: 12px 16px;
@@ -55,218 +49,1825 @@
     background: var(--negro-base, #0a0a0a);
 }
 
-/* ──────────────────────────────────
-   📱 TABLET (max-width: 768px)
-   ────────────────────────────────── */
-@media (max-width: 768px) {
+/* ── Touch targets mínimos (48px Google, 44px Apple) ── */
+button, 
+a, 
+.nav-item, 
+.track-item, 
+.radio-queue-item,
+.notif-item,
+.search-item {
+    min-height: 44px;
+}
 
-    /* ── Sidebar móvil ── */
+/* ── Prevent zoom on input focus (iOS) ── */
+input, select, textarea {
+    font-size: max(16px, 1rem);
+}
+
+/* ── Smooth scroll global ── */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ══════════════════════════════════════════
+   📱 MOBILE BASE (0px - 767px)
+   Todo empieza desde móvil
+   ══════════════════════════════════════════ */
+
+/* ── Sidebar: oculto por defecto en móvil ── */
+.sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+    position: fixed;
+    z-index: 50;
+}
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-nav {
+    padding: 12px 10px;
+    padding-bottom: 80px;
+}
+
+.sidebar-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+}
+
+.nav-item {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    gap: 12px;
+    border-radius: 8px;
+    min-height: 44px;
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+    width: 24px;
+}
+
+.nav-section-label {
+    padding: 12px 16px 6px;
+    font-size: 0.65rem;
+}
+
+.sidebar-header {
+    padding: 18px 16px;
+}
+
+.sidebar-logo-text {
+    font-size: 1.3rem;
+    letter-spacing: 5px;
+}
+
+.sidebar-user-name {
+    font-size: 0.85rem;
+}
+
+.sidebar-avatar {
+    width: 36px;
+    height: 36px;
+}
+
+/* ── Layout ── */
+.main-content {
+    margin-left: 0;
+    width: 100%;
+}
+
+.btn-hamburger {
+    display: block;
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 1.2rem;
+}
+
+.main-header {
+    height: 56px;
+    padding: 0 12px;
+    gap: 8px;
+}
+
+.main-header-title {
+    font-size: 0.95rem;
+}
+
+.content-area {
+    padding: 16px 12px;
+    padding-bottom: 90px;
+}
+
+/* ── Panel Header ── */
+.panel-header {
+    margin-bottom: 20px;
+}
+
+.panel-title {
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+.panel-desc {
+    font-size: 0.8rem;
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    padding: 16px 14px;
+}
+
+.stat-icon {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+}
+
+/* ── Content Grids ── */
+.content-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.content-grid-albums {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+/* ── Cards ── */
+.card-body {
+    padding: 12px;
+}
+
+.card-title {
+    font-size: 0.88rem;
+}
+
+.card-subtitle {
+    font-size: 0.75rem;
+}
+
+.card-read-more {
+    font-size: 0.65rem;
+}
+
+.card-overlay-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+}
+
+/* ── Tracks ── */
+.track-item {
+    padding: 10px 12px;
+    gap: 10px;
+    min-height: 48px;
+}
+
+.track-num {
+    font-size: 0.75rem;
+    width: 20px;
+}
+
+.track-play-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.65rem;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.track-title {
+    font-size: 0.85rem;
+}
+
+.track-duration {
+    font-size: 0.75rem;
+}
+
+.track-cover {
+    width: 36px;
+    height: 36px;
+}
+
+.track-album-name {
+    font-size: 0.7rem;
+}
+
+.track-delete.visible {
+    width: 32px;
+    height: 32px;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Player Bar ── */
+.player-bar {
+    left: 0;
+    height: 64px;
+    padding: 0 10px;
+    gap: 8px;
+}
+
+.player-cover {
+    width: 42px;
+    height: 42px;
+}
+
+.player-title {
+    font-size: 0.8rem;
+}
+
+.player-artist {
+    font-size: 0.68rem;
+}
+
+.player-progress { display: none; }
+.player-volume { display: none; }
+
+.player-controls {
+    gap: 4px;
+}
+
+.player-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.player-btn.play-pause {
+    width: 40px;
+    height: 40px;
+}
+
+.player-fav-share {
+    gap: 2px;
+}
+
+.player-fav-share .btn-fav,
+.player-fav-share .btn-share {
+    width: 32px;
+    height: 32px;
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 0.8rem;
+}
+
+.player-close-btn {
+    width: 28px;
+    height: 28px;
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 0.7rem;
+}
+
+/* ── Album Detail ── */
+.album-detail-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+}
+
+.album-detail-cover {
+    width: 160px;
+    height: 160px;
+}
+
+.album-detail-title {
+    font-size: 1.3rem;
+}
+
+.album-detail-desc {
+    font-size: 0.85rem;
+}
+
+.album-detail-meta {
+    font-size: 0.75rem;
+}
+
+.btn-back {
+    font-size: 0.75rem;
+    padding: 8px 14px;
+    margin-bottom: 14px;
+    min-height: 44px;
+}
+
+.section-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.btn-add-track {
+    font-size: 0.7rem;
+    padding: 10px 16px;
+    min-height: 44px;
+}
+
+/* ── Panel Sections ── */
+.panel-section {
+    margin-bottom: 24px;
+}
+
+.panel-section-title {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+/* ── Empty State ── */
+.empty-state {
+    padding: 48px 20px;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+}
+
+.empty-title {
+    font-size: 1rem;
+}
+
+.empty-text {
+    font-size: 0.85rem;
+}
+
+/* ── Radio ── */
+.radio-container {
+    gap: 24px;
+    padding: 10px 0;
+}
+
+.radio-disc {
+    width: 180px;
+    height: 180px;
+}
+
+.radio-disc-inner {
+    width: 75px;
+    height: 75px;
+}
+
+.radio-disc-hole {
+    width: 12px;
+    height: 12px;
+}
+
+.radio-track-title {
+    font-size: 1.1rem;
+}
+
+.radio-track-album {
+    font-size: 0.8rem;
+}
+
+.freq-label {
+    font-size: 1rem;
+    letter-spacing: 3px;
+}
+
+.freq-number {
+    font-size: 0.65rem;
+}
+
+.radio-btn-main {
+    width: 52px;
+    height: 52px;
+    font-size: 1.1rem;
+    min-height: 48px;
+}
+
+.radio-btn-secondary {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+    min-height: 44px;
+}
+
+.radio-btn-small {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+    min-height: 44px;
+}
+
+.radio-controls {
+    gap: 12px;
+}
+
+.radio-info {
+    max-width: 100%;
+    padding: 0 10px;
+}
+
+.radio-volume-wrapper {
+    max-width: 220px;
+}
+
+.radio-progress-wrapper {
+    gap: 8px;
+}
+
+.radio-time {
+    font-size: 0.7rem;
+    min-width: 34px;
+}
+
+.on-air-text {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+}
+
+.radio-on-air {
+    padding: 5px 14px;
+}
+
+/* ── Radio Queue ── */
+.radio-queue-section {
+    margin-top: 28px;
+}
+
+.radio-queue-item {
+    padding: 10px 12px;
+    gap: 10px;
+    min-height: 48px;
+}
+
+.radio-queue-cover {
+    width: 34px;
+    height: 34px;
+}
+
+.radio-queue-title {
+    font-size: 0.85rem;
+}
+
+.radio-queue-album {
+    font-size: 0.7rem;
+}
+
+.radio-queue-duration {
+    font-size: 0.7rem;
+}
+
+.radio-queue-num {
+    font-size: 0.7rem;
+    width: 20px;
+}
+
+/* ── Marketplace ── */
+.market-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.market-tabs {
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.market-tab {
+    font-size: 0.75rem;
+    padding: 10px 16px;
+    min-height: 44px;
+}
+
+.market-detail-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+}
+
+.market-detail-cover {
+    width: 160px;
+    height: 160px;
+}
+
+.market-detail-title {
+    font-size: 1.15rem;
+}
+
+.market-detail-price {
+    font-size: 1.4rem;
+}
+
+.market-detail-modal {
+    margin: 10px;
+    max-height: 92vh;
+}
+
+.market-detail-buy-btn {
+    width: 100%;
+    text-align: center;
+    min-height: 48px;
+}
+
+.solicitud-info-grid,
+.solicitud-detail-product {
+    flex-direction: column;
+    text-align: center;
+}
+
+.solicitud-detail-modal {
+    margin: 10px;
+}
+
+.solicitud-detail-actions {
+    flex-direction: column;
+}
+
+/* ── Archivo ── */
+.archivo-grid {
+    grid-template-columns: 1fr;
+}
+
+.archivo-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.archivo-stat-card {
+    padding: 14px;
+}
+
+.archivo-stat-value {
+    font-size: 1.2rem;
+}
+
+.archivo-stat-label {
+    font-size: 0.65rem;
+}
+
+.archivo-card-header {
+    padding: 14px;
+}
+
+.archivo-card-cover {
+    width: 55px;
+    height: 55px;
+}
+
+.archivo-card-actions {
+    padding: 0 14px 14px;
+}
+
+.archivo-card-audios {
+    padding: 0 14px 10px;
+}
+
+.archivo-tabs {
+    width: 100%;
+}
+
+.archivo-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 12px;
+    font-size: 0.7rem;
+    min-height: 44px;
+}
+
+.archivo-pending-card {
+    flex-direction: column;
+    text-align: center;
+}
+
+/* ── Videos ── */
+.videos-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.video-player-wrapper {
+    border-radius: 6px;
+    margin: 0 8px;
+}
+
+.video-player-header {
+    padding: 0 10px;
+}
+
+.video-player-title {
+    font-size: 0.95rem;
+}
+
+.video-player-info {
+    padding: 0 10px;
+}
+
+.video-player-overlay {
+    padding: 0;
+}
+
+/* ── Documentales ── */
+.docu-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.docu-detail-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+}
+
+.docu-detail-cover {
+    width: 160px;
+}
+
+.docu-detail-title {
+    font-size: 1.2rem;
+}
+
+.episodio-item {
+    padding: 10px 12px;
+    min-height: 48px;
+}
+
+.episodio-thumb {
+    width: 55px;
+}
+
+/* ── Playlists ── */
+.pl-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.pl-card-new {
+    min-height: 160px;
+}
+
+.pl-card-new-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 1.5rem;
+}
+
+.pl-card-new-text {
+    font-size: 0.7rem;
+}
+
+.pl-card-body {
+    padding: 10px 12px;
+}
+
+.pl-card-title {
+    font-size: 0.85rem;
+}
+
+.pl-card-meta {
+    font-size: 0.7rem;
+}
+
+.pl-detail-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+}
+
+.pl-detail-cover {
+    width: 140px;
+    height: 140px;
+}
+
+.pl-detail-title {
+    font-size: 1.2rem;
+}
+
+.pl-detail-desc {
+    font-size: 0.82rem;
+}
+
+.pl-detail-actions {
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pl-detail-btn {
+    padding: 10px 16px;
+    font-size: 0.7rem;
+    min-height: 44px;
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+}
+
+/* ── Planes ── */
+.planes-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.plan-card {
+    padding: 24px 20px;
+}
+
+.plan-name {
+    font-size: 1.15rem;
+}
+
+.plan-price {
+    font-size: 1.8rem;
+}
+
+.plan-feature {
+    font-size: 0.85rem;
+}
+
+.plan-btn {
+    padding: 14px;
+    font-size: 0.78rem;
+    min-height: 48px;
+}
+
+.sub-solicitud-info {
+    grid-template-columns: 1fr;
+}
+
+.sub-detail-info-grid {
+    grid-template-columns: 1fr;
+}
+
+.sub-list-date {
+    display: none;
+}
+
+/* ── Historial ── */
+.historial-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.historial-stat {
+    padding: 14px;
+}
+
+.historial-stat-value {
+    font-size: 1.15rem;
+}
+
+.historial-stat-label {
+    font-size: 0.65rem;
+}
+
+.historial-header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.historial-track-item {
+    padding: 10px 12px;
+    gap: 10px;
+    min-height: 48px;
+}
+
+.historial-track-cover {
+    width: 38px;
+    height: 38px;
+}
+
+.historial-track-title {
+    font-size: 0.85rem;
+}
+
+.historial-track-meta {
+    font-size: 0.7rem;
+}
+
+.historial-clear-btn {
+    font-size: 0.68rem;
+    padding: 8px 16px;
+    min-height: 44px;
+}
+
+/* ── Favoritos ── */
+.favs-tabs {
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.favs-tab {
+    font-size: 0.7rem;
+    padding: 8px 14px;
+    min-height: 40px;
+}
+
+/* ── Perfil ── */
+.perfil-avatar-section {
+    flex-direction: column;
+    text-align: center;
+}
+
+.perfil-avatar-info {
+    align-items: center;
+}
+
+.perfil-form-grid {
+    grid-template-columns: 1fr;
+}
+
+.perfil-cuenta-grid {
+    grid-template-columns: 1fr;
+}
+
+.perfil-danger-zone {
+    flex-direction: column;
+    text-align: center;
+}
+
+.perfil-danger-header {
+    flex-direction: column;
+}
+
+.perfil-card {
+    padding: 16px;
+}
+
+.perfil-section-title {
+    font-size: 1rem;
+}
+
+.perfil-section-desc {
+    font-size: 0.78rem;
+}
+
+.perfil-nombre-display {
+    font-size: 1.2rem;
+}
+
+.perfil-avatar {
+    width: 80px;
+    height: 80px;
+}
+
+.perfil-avatar-letter {
+    font-size: 2rem;
+}
+
+.perfil-btn-save,
+.perfil-btn-password,
+.perfil-btn-delete {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    min-height: 48px;
+}
+
+/* ── Modales ── */
+.modal {
+    margin: 10px;
+    max-height: 90vh;
+    border-radius: 12px;
+}
+
+.modal-header {
+    padding: 16px;
+}
+
+.modal-title {
+    font-size: 1rem;
+}
+
+.modal-body {
+    padding: 16px;
+}
+
+.form-label {
+    font-size: 0.75rem;
+}
+
+.form-input,
+.form-textarea {
+    font-size: 1rem;
+    padding: 12px 14px;
+    min-height: 44px;
+}
+
+.modal-actions {
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn-modal-cancel,
+.btn-modal-submit {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    min-height: 48px;
+    font-size: 0.82rem;
+}
+
+.file-upload-area {
+    padding: 20px;
+}
+
+.file-upload-text {
+    font-size: 0.8rem;
+}
+
+.file-upload-hint {
+    font-size: 0.68rem;
+}
+
+/* ── Buscador ── */
+.search-wrapper {
+    max-width: none;
+    margin: 0 6px;
+    flex: 1;
+}
+
+.search-input {
+    font-size: 1rem;
+    padding: 10px 14px 10px 36px;
+    min-height: 40px;
+}
+
+.search-icon {
+    left: 12px;
+    font-size: 0.82rem;
+}
+
+.search-results {
+    position: fixed;
+    top: calc(56px + 4px);
+    left: 10px;
+    right: 10px;
+    max-height: 65vh;
+}
+
+.search-item {
+    padding: 10px 14px;
+    min-height: 48px;
+}
+
+.search-item-icon {
+    width: 34px;
+    height: 34px;
+}
+
+.search-item-title {
+    font-size: 0.85rem;
+}
+
+.search-item-meta {
+    font-size: 0.72rem;
+}
+
+/* ── Notificaciones ── */
+.notif-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.notif-badge {
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.55rem;
+}
+
+.notif-dropdown {
+    position: fixed;
+    top: calc(56px + 4px);
+    right: 8px;
+    left: 8px;
+    width: auto;
+    max-height: 65vh;
+}
+
+.notif-header {
+    padding: 12px 14px;
+}
+
+.notif-header-title {
+    font-size: 0.85rem;
+}
+
+.notif-mark-all {
+    font-size: 0.65rem;
+    min-height: 36px;
+    padding: 6px 10px;
+}
+
+.notif-item {
+    padding: 10px 14px;
+    gap: 10px;
+    min-height: 48px;
+}
+
+.notif-item-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+}
+
+.notif-item-title {
+    font-size: 0.82rem;
+}
+
+.notif-item-msg {
+    font-size: 0.72rem;
+}
+
+.notif-item-time {
+    font-size: 0.65rem;
+}
+
+.notif-empty-icon {
+    font-size: 1.8rem;
+}
+
+.notif-empty-text {
+    font-size: 0.85rem;
+}
+
+/* ── Botón Admin ── */
+.btn-admin-add {
+    padding: 8px 14px;
+    font-size: 0.68rem;
+    min-height: 44px;
+}
+
+#btnAdminText {
+    display: none;
+}
+
+/* ── Comentarios ── */
+.cmt-input-wrap {
+    flex-direction: column;
+}
+
+.cmt-input-avatar {
+    display: none;
+}
+
+.cmt-textarea {
+    font-size: 0.88rem;
+    min-height: 50px;
+}
+
+.cmt-send-btn {
+    font-size: 0.68rem;
+    padding: 8px 16px;
+    min-height: 40px;
+}
+
+.cmt-item {
+    padding: 10px;
+    gap: 8px;
+}
+
+.cmt-avatar {
+    width: 28px;
+    height: 28px;
+}
+
+.cmt-author {
+    font-size: 0.78rem;
+}
+
+.cmt-text {
+    font-size: 0.85rem;
+}
+
+.cmt-time {
+    font-size: 0.65rem;
+}
+
+/* ── Toast ── */
+.toast-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+}
+
+.toast {
+    min-width: auto;
+    font-size: 0.82rem;
+    padding: 12px 16px;
+}
+
+/* ── Panel bloqueado ── */
+.panel-locked {
+    padding: 48px 20px;
+}
+
+.locked-icon {
+    font-size: 3rem;
+}
+
+.locked-title {
+    font-size: 1.15rem;
+}
+
+.locked-desc {
+    font-size: 0.85rem;
+}
+
+.locked-btn {
+    padding: 14px 24px;
+    font-size: 0.78rem;
+    width: 100%;
+    min-height: 48px;
+}
+
+/* ── Compras ── */
+.purchase-form-modal {
+    margin: 10px;
+    max-height: 90vh;
+}
+
+.purchase-title {
+    font-size: 1rem;
+}
+
+.nequi-number {
+    font-size: 1.4rem;
+}
+
+.nequi-hint {
+    font-size: 0.75rem;
+}
+
+.btn-whatsapp {
+    font-size: 0.85rem;
+    padding: 14px;
+    min-height: 48px;
+}
+
+.purchase-actions {
+    flex-direction: column;
+}
+
+.btn-send-purchase {
+    width: 100%;
+    min-height: 48px;
+}
+
+/* ── Analytics ── */
+.analytics-grid {
+    grid-template-columns: 1fr;
+}
+
+/* ══════════════════════════════════════════
+   💻 TABLET (min-width: 768px)
+   ══════════════════════════════════════════ */
+@media (min-width: 768px) {
+
+    /* ── Sidebar visible ── */
     .sidebar {
-        transform: translateX(-100%);
-        height: 100vh;
-        height: 100dvh;
-    }
-    .sidebar.open {
         transform: translateX(0);
+        width: var(--sidebar-width);
     }
 
-    .sidebar-nav {
-        flex: 1;
-        overflow-y: auto;
-        padding-bottom: 80px;
+    .btn-hamburger {
+        display: none;
     }
 
-    .sidebar-footer {
-        flex-shrink: 0;
-        position: sticky;
-        bottom: 0;
-        background: var(--negro-base, #0a0a0a);
-        z-index: 5;
+    .sidebar-overlay {
+        display: none !important;
     }
 
     /* ── Layout ── */
-    .main-content { margin-left: 0; }
-    .btn-hamburger { display: block; }
-    .content-area { padding: 20px 16px; }
+    .main-content {
+        margin-left: var(--sidebar-width);
+    }
+
+    .main-header {
+        height: var(--header-height);
+        padding: 0 28px;
+    }
+
+    .main-header-title {
+        font-size: 1.05rem;
+    }
+
+    .content-area {
+        padding: 28px 24px;
+        padding-bottom: 100px;
+    }
+
+    /* ── Panel header ── */
+    .panel-header {
+        margin-bottom: 28px;
+    }
+
+    .panel-title {
+        font-size: 1.5rem;
+    }
+
+    .panel-desc {
+        font-size: 0.88rem;
+    }
 
     /* ── Stats ── */
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        padding: 22px;
+    }
+
+    .stat-icon {
+        font-size: 1.4rem;
+    }
+
+    .stat-value {
+        font-size: 1.6rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
 
     /* ── Content grids ── */
-    .content-grid { grid-template-columns: 1fr; }
-    .content-grid-albums { grid-template-columns: repeat(2, 1fr); }
-
-    /* ── Player ── */
-    .player-bar { left: 0; }
-    .player-progress { display: none; }
-    .player-volume { display: none; }
-
-    /* ── Album detail ── */
-    .album-detail-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .album-detail-cover { width: 180px; height: 180px; }
-
-    /* ── Radio ── */
-    .radio-disc { width: 200px; height: 200px; }
-    .radio-disc-inner { width: 85px; height: 85px; }
-    .radio-track-title { font-size: 1.1rem; }
-    .radio-btn-main { width: 56px; height: 56px; font-size: 1.1rem; }
-    .radio-btn-secondary { width: 40px; height: 40px; }
-
-    /* ── Marketplace ── */
-    .market-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .market-detail-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .market-detail-cover { width: 140px; height: 140px; }
-    .solicitud-info-grid { grid-template-columns: 1fr; }
-
-    /* ── Archivo ── */
-    .archivo-grid { grid-template-columns: 1fr; }
-    .archivo-stats { grid-template-columns: repeat(2, 1fr); }
-    .archivo-card-header { padding: 16px; }
-    .archivo-card-cover { width: 65px; height: 65px; }
-    .archivo-card-actions { padding: 0 16px 16px; }
-    .archivo-card-audios { padding: 0 16px 12px; }
-    .archivo-pending-card {
-        flex-direction: column;
-        text-align: center;
+    .content-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
     }
 
-    /* ── Videos ── */
-    .videos-grid { grid-template-columns: 1fr; }
-    .video-player-wrapper { border-radius: 8px; margin: 0 12px; }
-    .video-player-header { padding: 0 12px; }
-    .video-player-info { padding: 0 12px; }
-
-    /* ── Documentales ── */
-    .docu-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .docu-detail-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .docu-detail-cover { width: 200px; }
-    .episodio-thumb { width: 60px; }
-
-    /* ── Perfil ── */
-    .perfil-avatar-section {
-        flex-direction: column;
-        text-align: center;
-    }
-    .perfil-avatar-info { align-items: center; }
-    .perfil-form-grid { grid-template-columns: 1fr; }
-    .perfil-cuenta-grid { grid-template-columns: 1fr; }
-    .perfil-danger-zone {
-        flex-direction: column;
-        text-align: center;
-    }
-    .perfil-danger-header { flex-direction: column; }
-    .perfil-card { padding: 20px; }
-}
-
-/* ──────────────────────────────────
-   📱 MOBILE (max-width: 480px)
-   ────────────────────────────────── */
-@media (max-width: 480px) {
-
-    /* ── Sidebar más compacto ── */
-    .sidebar-nav {
-        padding-bottom: 90px;
-    }
-
-    .nav-item {
-        padding: 11px 16px;
-        font-size: 0.84rem;
-    }
-
-    .nav-section-label {
-        padding: 10px 16px 4px;
-        font-size: 0.6rem;
-    }
-
-    /* ── Stats ── */
-    .stats-grid { grid-template-columns: 1fr; }
-
-    /* ── Albums ── */
     .content-grid-albums {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 16px;
     }
 
-    /* ── Radio ── */
-    .radio-disc { width: 170px; height: 170px; }
-    .radio-disc-inner { width: 70px; height: 70px; }
-    .radio-volume-wrapper { max-width: 200px; }
-
-    /* ── Marketplace ── */
-    .market-grid { grid-template-columns: 1fr; }
-
-    /* ── Archivo ── */
-    .archivo-stats { grid-template-columns: 1fr; }
-    .archivo-tabs { width: 100%; }
-    .archivo-tab {
-        flex: 1;
-        text-align: center;
-        padding: 10px 12px;
-        font-size: .68rem;
+    /* ── Cards ── */
+    .card-body {
+        padding: 16px;
     }
 
-    /* ── Documentales ── */
-    .docu-grid { grid-template-columns: 1fr; }
-    .episodio-item { padding: 12px 14px; }
-    .episodio-thumb { display: none; }
-
-    /* ── Perfil ── */
-    .perfil-avatar { width: 80px; height: 80px; }
-    .perfil-avatar-letter { font-size: 2rem; }
-    .perfil-nombre-display { font-size: 1.2rem; }
-}
-
-/* ──────────────────────────────────
-   📱 MÓVILES MUY PEQUEÑOS (max-width: 380px)
-   iPhone SE, Galaxy A01, etc.
-   ────────────────────────────────── */
-@media (max-width: 380px) {
-    .sidebar-nav {
-        padding-bottom: 110px;
+    .card-title {
+        font-size: 0.95rem;
     }
 
-    .nav-item {
-        padding: 10px 14px;
-        font-size: 0.8rem;
-        gap: 10px;
+    /* ── Tracks ── */
+    .track-item {
+        padding: 14px 18px;
+        gap: 16px;
     }
 
-    .nav-icon {
-        font-size: 0.9rem;
+    .track-title {
+        font-size: 0.88rem;
     }
 
-    .nav-section-label {
-        padding: 8px 14px 3px;
-        font-size: 0.56rem;
+    .track-cover {
+        width: 40px;
+        height: 40px;
     }
 
-    .sidebar-header {
-        padding: 12px 14px;
+    /* ── Player bar ── */
+    .player-bar {
+        left: var(--sidebar-width);
+        height: 72px;
+        padding: 0 24px;
+        gap: 16px;
     }
 
-    .sidebar-footer {
-        padding: 10px 14px;
+    .player-cover {
+        width: 48px;
+        height: 48px;
     }
 
-    .sidebar-user-name {
+    .player-title {
         font-size: 0.82rem;
     }
 
-    .sidebar-avatar {
+    .player-progress {
+        display: flex;
+        flex: 2;
+    }
+
+    .player-volume {
+        display: flex;
+    }
+
+    .player-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .player-btn.play-pause {
+        width: 42px;
+        height: 42px;
+    }
+
+    .player-fav-share .btn-fav,
+    .player-fav-share .btn-share {
         width: 32px;
         height: 32px;
-        font-size: 0.7rem;
+    }
+
+    /* ── Album detail ── */
+    .album-detail-header {
+        flex-direction: row;
+        text-align: left;
+        gap: 24px;
+    }
+
+    .album-detail-cover {
+        width: 200px;
+        height: 200px;
+    }
+
+    .album-detail-title {
+        font-size: 1.8rem;
+    }
+
+    .section-header-row {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    /* ── Radio ── */
+    .radio-disc {
+        width: 240px;
+        height: 240px;
+    }
+
+    .radio-disc-inner {
+        width: 100px;
+        height: 100px;
+    }
+
+    .radio-track-title {
+        font-size: 1.3rem;
+    }
+
+    .radio-btn-main {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+
+    .radio-btn-secondary {
+        width: 44px;
+        height: 44px;
+    }
+
+    .radio-controls {
+        gap: 16px;
+    }
+
+    .radio-volume-wrapper {
+        max-width: 250px;
+    }
+
+    .radio-queue-item {
+        padding: 12px 16px;
+        gap: 14px;
+    }
+
+    .radio-queue-cover {
+        width: 38px;
+        height: 38px;
+    }
+
+    .radio-queue-title {
+        font-size: 0.85rem;
+    }
+
+    /* ── Marketplace ── */
+    .market-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .market-tab {
+        font-size: 0.78rem;
+    }
+
+    .market-detail-header {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    /* ── Documentales ── */
+    .docu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .docu-detail-header {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .episodio-thumb {
+        width: 60px;
+    }
+
+    /* ── Playlists ── */
+    .pl-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 16px;
+    }
+
+    .pl-detail-header {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .pl-detail-cover {
+        width: 180px;
+        height: 180px;
+    }
+
+    .pl-detail-actions {
+        justify-content: flex-start;
+    }
+
+    .pl-detail-btn {
+        flex: none;
+    }
+
+    /* ── Planes ── */
+    .planes-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+    }
+
+    .sub-solicitud-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sub-detail-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sub-list-date {
+        display: block;
+    }
+
+    /* ── Historial ── */
+    .historial-stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .historial-header-actions {
+        flex-direction: row;
+    }
+
+    /* ── Perfil ── */
+    .perfil-avatar-section {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .perfil-avatar-info {
+        align-items: flex-start;
+    }
+
+    .perfil-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .perfil-avatar {
+        width: 90px;
+        height: 90px;
+    }
+
+    .perfil-btn-save,
+    .perfil-btn-password,
+    .perfil-btn-delete {
+        width: auto;
+    }
+
+    /* ── Modales ── */
+    .modal {
+        margin: auto;
+        max-width: 520px;
+    }
+
+    .modal-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .btn-modal-cancel,
+    .btn-modal-submit {
+        width: auto;
+    }
+
+    .form-input,
+    .form-textarea {
+        font-size: 0.88rem;
+    }
+
+    /* ── Buscador ── */
+    .search-wrapper {
+        max-width: 400px;
+        margin: 0 20px;
+    }
+
+    .search-input {
+        font-size: 0.85rem;
+    }
+
+    .search-results {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        max-height: 420px;
+    }
+
+    /* ── Notificaciones ── */
+    .notif-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        left: auto;
+        width: 360px;
+        max-height: 480px;
+    }
+
+    /* ── Botón Admin ── */
+    #btnAdminText {
+        display: inline;
+    }
+
+    .btn-admin-add {
+        font-size: 0.72rem;
+    }
+
+    /* ── Comentarios ── */
+    .cmt-input-wrap {
+        flex-direction: row;
+    }
+
+    .cmt-input-avatar {
+        display: flex;
+    }
+
+    /* ── Compras ── */
+    .purchase-actions {
+        flex-direction: row;
+    }
+
+    .btn-send-purchase {
+        width: auto;
+    }
+
+    .solicitud-detail-product {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .solicitud-detail-actions {
+        flex-direction: row;
+    }
+}
+
+/* ══════════════════════════════════════════
+   🖥️ DESKTOP (min-width: 1024px)
+   ══════════════════════════════════════════ */
+@media (min-width: 1024px) {
+
+    .content-area {
+        padding: 32px;
+    }
+
+    .panel-title {
+        font-size: 1.6rem;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .content-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .content-grid-albums {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .radio-disc {
+        width: 260px;
+        height: 260px;
+    }
+
+    .radio-disc-inner {
+        width: 110px;
+        height: 110px;
+    }
+
+    .radio-track-title {
+        font-size: 1.4rem;
+    }
+
+    .radio-btn-main {
+        width: 64px;
+        height: 64px;
+        font-size: 1.3rem;
+    }
+
+    .market-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .pl-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .perfil-cuenta-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ══════════════════════════════════════════
+   🖥️ PANTALLAS GRANDES (min-width: 1400px)
+   ══════════════════════════════════════════ */
+@media (min-width: 1400px) {
+    .content-area {
+        padding: 40px 48px;
+        max-width: 1400px;
+    }
+
+    .radio-disc {
+        width: 300px;
+        height: 300px;
+    }
+
+    .radio-disc-inner {
+        width: 130px;
+        height: 130px;
+    }
+
+    .market-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ══════════════════════════════════════════
+   🎯 SAFE AREAS (iPhone notch / Dynamic Island)
+   ══════════════════════════════════════════ */
+@supports (padding: env(safe-area-inset-bottom)) {
+    .player-bar {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .content-area {
+        padding-bottom: calc(90px + env(safe-area-inset-bottom));
+    }
+
+    .sidebar {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .main-header {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .modal {
+        margin-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* ══════════════════════════════════════════
+   🎬 ANIMACIONES
+   ══════════════════════════════════════════ */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(192,192,192,0.2); }
+    50% { box-shadow: 0 0 20px rgba(192,192,192,0.4); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+@keyframes discSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes eqBounce {
+    0%, 100% { height: 20%; }
+    50% { height: 100%; }
+}
+
+/* ══════════════════════════════════════════
+   ♿ ACCESIBILIDAD - Reducir movimiento
+   ══════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .radio-disc.spinning {
+        animation: none;
+    }
+
+    .radio-eq-bar {
+        animation: none;
+        height: 50%;
+    }
+}
+
+/* ══════════════════════════════════════════
+   🌓 LANDSCAPE MÓVIL
+   ══════════════════════════════════════════ */
+@media (max-width: 767px) and (orientation: landscape) {
+    .radio-disc {
+        width: 120px;
+        height: 120px;
+    }
+
+    .radio-disc-inner {
+        width: 50px;
+        height: 50px;
+    }
+
+    .radio-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .radio-disc-wrapper {
+        flex-shrink: 0;
+    }
+
+    .radio-info {
+        max-width: 300px;
+    }
+
+    .content-grid-albums {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .pl-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
