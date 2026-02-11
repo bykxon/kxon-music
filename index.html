@@ -117,19 +117,18 @@
     <div class="section-divider"></div>
 
     <!-- ============================================
-         📱 DESCARGA APP (AL FINAL)
+         📱 DESCARGA APP - TODAS LAS PLATAFORMAS
          ============================================ -->
     <section class="section app-download-section" id="descargar">
         <div class="container">
+            <div class="section-header">
+                <div class="section-label">Disponible para todos</div>
+                <h2 class="section-title">Descarga <span class="gradient-text">KXON</span></h2>
+                <p class="section-desc">Lleva tu música a todas partes. Disponible para Android, Windows e iOS</p>
+            </div>
+
             <div class="app-download-container">
                 <div class="app-download-content">
-                    <div class="app-download-badge">📱 NUEVA APP DISPONIBLE</div>
-                    <h2 class="app-download-title">Descarga <span class="gradient-text">KXON</span></h2>
-                    <p class="app-download-desc">
-                        Lleva tu música a todas partes. Descarga la app oficial
-                        de KXON para Android y disfruta de toda la experiencia musical
-                        desde tu dispositivo.
-                    </p>
                     <div class="app-download-features">
                         <div class="app-feature">
                             <span class="app-feature-icon">🎵</span>
@@ -156,39 +155,67 @@
                             <span>Videos exclusivos</span>
                         </div>
                     </div>
-                    <div class="app-download-buttons">
-                        <a href="downloads/kxon-app.apk" download="KXON.apk" class="app-download-btn app-btn-primary">
-                            <span class="app-btn-icon">📥</span>
-                            <div class="app-btn-text">
-                                <span class="app-btn-small">Descargar para</span>
-                                <span class="app-btn-big">Android APK</span>
+
+                    <!-- ── BOTONES DE DESCARGA POR PLATAFORMA ── -->
+                    <div class="app-platforms">
+
+                        <!-- 🤖 ANDROID -->
+                        <a href="downloads/kxon-app.apk" download="KXON.apk" class="app-platform-btn">
+                            <div class="app-platform-icon">🤖</div>
+                            <div class="app-platform-info">
+                                <span class="app-platform-label">Descargar para</span>
+                                <span class="app-platform-name">Android</span>
+                                <span class="app-platform-detail">APK • ~5 MB • Android 8.0+</span>
                             </div>
+                            <div class="app-platform-arrow">📥</div>
                         </a>
-                        <a href="#" class="app-download-btn app-btn-secondary" onclick="alert('Próximamente en Google Play Store');return false;">
-                            <span class="app-btn-icon">▶️</span>
-                            <div class="app-btn-text">
-                                <span class="app-btn-small">Próximamente en</span>
-                                <span class="app-btn-big">Google Play</span>
+
+                        <!-- 🪟 WINDOWS -->
+                        <a href="downloads/kxon-app.msix" download="KXON.msix" class="app-platform-btn">
+                            <div class="app-platform-icon">🪟</div>
+                            <div class="app-platform-info">
+                                <span class="app-platform-label">Descargar para</span>
+                                <span class="app-platform-name">Windows</span>
+                                <span class="app-platform-detail">MSIX • ~10 MB • Windows 10+</span>
                             </div>
+                            <div class="app-platform-arrow">📥</div>
                         </a>
+
+                        <!-- 🍎 iOS -->
+                        <div class="app-platform-btn app-platform-ios" onclick="document.getElementById('iosModal').classList.add('show')">
+                            <div class="app-platform-icon">🍎</div>
+                            <div class="app-platform-info">
+                                <span class="app-platform-label">Instalar en</span>
+                                <span class="app-platform-name">iPhone / iPad</span>
+                                <span class="app-platform-detail">Agregar desde Safari • Gratis</span>
+                            </div>
+                            <div class="app-platform-arrow">ℹ️</div>
+                        </div>
+
+                        <!-- ▶️ GOOGLE PLAY (Próximamente) -->
+                        <div class="app-platform-btn app-platform-coming" onclick="alert('¡Próximamente en Google Play Store!')">
+                            <div class="app-platform-icon">▶️</div>
+                            <div class="app-platform-info">
+                                <span class="app-platform-label">Próximamente en</span>
+                                <span class="app-platform-name">Google Play</span>
+                                <span class="app-platform-detail">En proceso de revisión</span>
+                            </div>
+                            <div class="app-platform-arrow app-coming-badge">PRONTO</div>
+                        </div>
                     </div>
+
                     <p class="app-download-hint">
-                        ⚠️ Al instalar la APK, tu dispositivo puede pedir permiso
-                        para instalar desde "fuentes desconocidas". Es completamente seguro.
+                        ⚠️ Para Android y Windows, tu dispositivo puede pedir permiso para instalar
+                        desde fuentes externas. Es completamente seguro.
                     </p>
-                    <div class="app-download-version">
-                        <span>📦 Versión 1.0.0</span>
-                        <span>•</span>
-                        <span>📏 ~5 MB</span>
-                        <span>•</span>
-                        <span>🤖 Android 8.0+</span>
-                    </div>
                 </div>
+
+                <!-- ── PHONE MOCKUP ── -->
                 <div class="app-download-mockup">
                     <div class="phone-mockup">
                         <div class="phone-notch"></div>
                         <div class="phone-screen">
-                            <img src="icons/screenshot-mobile.png" alt="KXON App Preview" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                            <img src="icons/screenshot-mobile.png" alt="KXON App" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                             <div class="phone-screen-fallback" style="display:none;">
                                 <span class="phone-logo gradient-text">KXON</span>
                                 <span class="phone-tagline">Tu música, tu mundo</span>
@@ -233,6 +260,61 @@
             <p class="footer-text">© 2025 <span>KXON</span> — Todos los derechos reservados</p>
         </div>
     </footer>
+
+    <!-- ============================================
+         🍎 MODAL: INSTRUCCIONES iOS
+         ============================================ -->
+    <div class="modal-overlay-landing" id="iosModal">
+        <div class="modal-landing" style="max-width:480px;">
+            <button class="modal-landing-close" onclick="document.getElementById('iosModal').classList.remove('show')">✕</button>
+            <div class="modal-landing-body">
+                <div style="text-align:center;margin-bottom:24px;">
+                    <span style="font-size:3rem;">🍎</span>
+                </div>
+                <h2 class="modal-landing-title" style="text-align:center;">Instalar KXON en iPhone</h2>
+                <p style="font-size:0.85rem;color:#888;text-align:center;margin-bottom:24px;font-weight:300;">
+                    Sigue estos pasos para agregar KXON como app en tu iPhone o iPad
+                </p>
+
+                <div class="ios-steps">
+                    <div class="ios-step">
+                        <div class="ios-step-num">1</div>
+                        <div class="ios-step-content">
+                            <div class="ios-step-title">Abre Safari</div>
+                            <div class="ios-step-desc">Ve a <strong>kxon-music.vercel.app</strong> usando el navegador Safari (no Chrome)</div>
+                        </div>
+                    </div>
+                    <div class="ios-step">
+                        <div class="ios-step-num">2</div>
+                        <div class="ios-step-content">
+                            <div class="ios-step-title">Toca el botón Compartir</div>
+                            <div class="ios-step-desc">Toca el ícono de compartir <strong>⬆️</strong> en la barra inferior de Safari</div>
+                        </div>
+                    </div>
+                    <div class="ios-step">
+                        <div class="ios-step-num">3</div>
+                        <div class="ios-step-content">
+                            <div class="ios-step-title">Agregar a pantalla de inicio</div>
+                            <div class="ios-step-desc">Desplázate hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></div>
+                        </div>
+                    </div>
+                    <div class="ios-step">
+                        <div class="ios-step-num">4</div>
+                        <div class="ios-step-content">
+                            <div class="ios-step-title">¡Listo!</div>
+                            <div class="ios-step-desc">Toca <strong>"Agregar"</strong> y KXON aparecerá como app en tu inicio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align:center;margin-top:24px;">
+                    <button class="btn-hero-primary" onclick="document.getElementById('iosModal').classList.remove('show')" style="padding:12px 28px;font-size:0.78rem;">
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ============================================
          📰 MODAL: DETALLE NOTICIA
@@ -285,6 +367,11 @@
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').catch(function(){});
     }
+
+    /* Cerrar modales al click en overlay */
+    document.getElementById('iosModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('show');
+    });
     </script>
 </body>
 </html>

@@ -1541,3 +1541,546 @@ body {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(1.2); }
 }
+/* ============================================
+   📱 SECCIÓN DESCARGA APP - MULTI PLATAFORMA
+   ============================================ */
+.app-download-section {
+    background: linear-gradient(180deg, var(--negro-base, #0a0a0a) 0%, #0d0d0d 50%, var(--negro-base, #0a0a0a) 100%);
+    overflow: hidden;
+}
+
+.app-download-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(192, 192, 192, 0.025) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.app-download-container {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.app-download-content {
+    flex: 1;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #f0f0f0 0%, #888888 40%, #c0c0c0 60%, #f0f0f0 100%);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+}
+
+.app-download-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin-bottom: 36px;
+    animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+.app-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: var(--plata-clara, #b8b8b8);
+    font-weight: 400;
+}
+
+.app-feature-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* ── PLATAFORMAS DE DESCARGA ── */
+.app-platforms {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+    animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.app-platform-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--negro-card, #0f0f0f);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.app-platform-btn:hover {
+    border-color: rgba(192, 192, 192, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateX(6px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.app-platform-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.app-platform-btn:hover .app-platform-icon {
+    background: rgba(192, 192, 192, 0.08);
+    border-color: rgba(192, 192, 192, 0.15);
+}
+
+.app-platform-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.app-platform-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--plata-oscura, #555555);
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+}
+
+.app-platform-name {
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--plata-blanca, #f0f0f0);
+    letter-spacing: 0.5px;
+}
+
+.app-platform-detail {
+    font-size: 0.68rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 400;
+}
+
+.app-platform-arrow {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    color: var(--plata-oscura, #555555);
+    transition: all 0.3s ease;
+}
+
+.app-platform-btn:hover .app-platform-arrow {
+    color: var(--plata-blanca, #f0f0f0);
+    transform: translateX(4px);
+}
+
+/* ── Próximamente badge ── */
+.app-coming-badge {
+    font-size: 0.55rem !important;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    background: rgba(192, 192, 192, 0.08);
+    border: 1px solid rgba(192, 192, 192, 0.15);
+    border-radius: 50px;
+    color: var(--plata-media, #888888) !important;
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+}
+
+.app-platform-coming {
+    opacity: 0.6;
+}
+
+.app-platform-coming:hover {
+    opacity: 0.8;
+    transform: none;
+}
+
+/* ── iOS especial ── */
+.app-platform-ios {
+    border-style: dashed;
+}
+
+.app-download-hint {
+    font-size: 0.72rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 480px;
+    animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+/* ── Phone Mockup ── */
+.app-download-mockup {
+    flex-shrink: 0;
+    animation: fadeInUp 0.8s ease 0.3s both;
+    position: relative;
+}
+
+.phone-mockup {
+    width: 260px;
+    height: 530px;
+    background: #111;
+    border-radius: 40px;
+    border: 3px solid rgba(192, 192, 192, 0.12);
+    padding: 10px;
+    position: relative;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(192, 192, 192, 0.03),
+        inset 0 0 30px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.phone-notch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 28px;
+    background: #000;
+    border-radius: 0 0 18px 18px;
+    z-index: 5;
+}
+
+.phone-notch::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--negro-base, #0a0a0a);
+    border-radius: 30px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.phone-screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.phone-screen-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    padding: 50px 20px 20px;
+}
+
+.phone-logo {
+    font-family: var(--font-logo, 'Oswald', sans-serif);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+    margin-bottom: 4px;
+}
+
+.phone-tagline {
+    font-size: 0.65rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+}
+
+.phone-fake-ui {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.phone-fake-bar {
+    height: 32px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+}
+
+.phone-fake-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    flex: 1;
+}
+
+.phone-fake-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px;
+}
+
+.phone-fake-player {
+    height: 50px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+}
+
+.phone-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(192, 192, 192, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ── iOS Steps Modal ── */
+.ios-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ios-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.ios-step:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(192, 192, 192, 0.1);
+}
+
+.ios-step-num {
+    width: 28px;
+    height: 28px;
+    background: rgba(192, 192, 192, 0.08);
+    border: 1px solid rgba(192, 192, 192, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--plata-blanca, #f0f0f0);
+    flex-shrink: 0;
+}
+
+.ios-step-content {
+    flex: 1;
+}
+
+.ios-step-title {
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--plata-titulo, #e0e0e0);
+    margin-bottom: 4px;
+}
+
+.ios-step-desc {
+    font-size: 0.78rem;
+    color: var(--plata-media, #888888);
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+.ios-step-desc strong {
+    color: var(--plata-clara, #b8b8b8);
+    font-weight: 600;
+}
+
+/* ── Footer mejorado ── */
+.footer {
+    padding: 48px 0 32px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.footer-logo {
+    font-family: var(--font-logo, 'Oswald', sans-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+}
+
+.footer-tagline {
+    font-size: 0.72rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.footer-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.footer-link {
+    font-size: 0.78rem;
+    color: var(--plata-oscura, #555555);
+    font-weight: 500;
+    transition: color 0.3s ease;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.footer-link:hover {
+    color: var(--plata-blanca, #f0f0f0);
+}
+
+.footer-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.04);
+    margin-bottom: 20px;
+}
+
+/* ── RESPONSIVE DESCARGA APP ── */
+@media (max-width: 768px) {
+    .app-download-container {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .app-download-features {
+        grid-template-columns: 1fr;
+        text-align: left;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .app-platforms {
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .app-download-hint {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .phone-mockup {
+        width: 210px;
+        height: 430px;
+        border-radius: 32px;
+    }
+
+    .phone-notch {
+        width: 80px;
+        height: 22px;
+    }
+
+    .phone-screen {
+        border-radius: 24px;
+    }
+
+    .phone-logo {
+        font-size: 1.4rem;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-platform-btn {
+        padding: 12px 14px;
+        gap: 12px;
+    }
+
+    .app-platform-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .app-platform-name {
+        font-size: 0.92rem;
+    }
+
+    .app-platform-detail {
+        font-size: 0.62rem;
+    }
+
+    .phone-mockup {
+        width: 180px;
+        height: 370px;
+        border-radius: 28px;
+    }
+
+    .phone-notch {
+        width: 65px;
+        height: 18px;
+        border-radius: 0 0 14px 14px;
+    }
+
+    .phone-screen {
+        border-radius: 20px;
+    }
+}
