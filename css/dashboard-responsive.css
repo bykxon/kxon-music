@@ -1,33 +1,107 @@
 /* ============================================
    📱 DASHBOARD RESPONSIVE CSS - KXON
    Todos los @media queries del dashboard
+   FIX: Sidebar scroll en móvil corregido
    ============================================ */
+
+/* ══════════════════════════════════════════
+   🔧 BASE FIXES (aplicar siempre)
+   Estos estilos corrigen el sidebar en
+   todas las resoluciones
+   ══════════════════════════════════════════ */
+
+/* ── Sidebar como flex column ── */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+}
+
+/* ── Header del sidebar: NO se encoge ── */
+.sidebar-header {
+    flex-shrink: 0;
+}
+
+/* ── Nav con scroll: toma todo el espacio disponible ── */
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ── Scrollbar elegante ── */
+.sidebar-nav::-webkit-scrollbar {
+    width: 3px;
+}
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(192, 192, 192, 0.15);
+    border-radius: 10px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(192, 192, 192, 0.3);
+}
+
+/* ── Footer del sidebar: fijo abajo, nunca se corta ── */
+.sidebar-footer {
+    flex-shrink: 0;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--negro-base, #0a0a0a);
+}
 
 /* ──────────────────────────────────
    📱 TABLET (max-width: 768px)
    ────────────────────────────────── */
 @media (max-width: 768px) {
 
-    /* Layout */
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
+    /* ── Sidebar móvil ── */
+    .sidebar {
+        transform: translateX(-100%);
+        height: 100vh;
+        height: 100dvh;
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 80px;
+    }
+
+    .sidebar-footer {
+        flex-shrink: 0;
+        position: sticky;
+        bottom: 0;
+        background: var(--negro-base, #0a0a0a);
+        z-index: 5;
+    }
+
+    /* ── Layout ── */
     .main-content { margin-left: 0; }
     .btn-hamburger { display: block; }
     .content-area { padding: 20px 16px; }
 
-    /* Stats */
+    /* ── Stats ── */
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
 
-    /* Content grids */
+    /* ── Content grids ── */
     .content-grid { grid-template-columns: 1fr; }
     .content-grid-albums { grid-template-columns: repeat(2, 1fr); }
 
-    /* Player */
+    /* ── Player ── */
     .player-bar { left: 0; }
     .player-progress { display: none; }
     .player-volume { display: none; }
 
-    /* Album detail */
+    /* ── Album detail ── */
     .album-detail-header {
         flex-direction: column;
         align-items: center;
@@ -35,14 +109,14 @@
     }
     .album-detail-cover { width: 180px; height: 180px; }
 
-    /* Radio */
+    /* ── Radio ── */
     .radio-disc { width: 200px; height: 200px; }
     .radio-disc-inner { width: 85px; height: 85px; }
     .radio-track-title { font-size: 1.1rem; }
     .radio-btn-main { width: 56px; height: 56px; font-size: 1.1rem; }
     .radio-btn-secondary { width: 40px; height: 40px; }
 
-    /* Marketplace */
+    /* ── Marketplace ── */
     .market-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .market-detail-header {
         flex-direction: column;
@@ -52,7 +126,7 @@
     .market-detail-cover { width: 140px; height: 140px; }
     .solicitud-info-grid { grid-template-columns: 1fr; }
 
-    /* Archivo */
+    /* ── Archivo ── */
     .archivo-grid { grid-template-columns: 1fr; }
     .archivo-stats { grid-template-columns: repeat(2, 1fr); }
     .archivo-card-header { padding: 16px; }
@@ -64,13 +138,13 @@
         text-align: center;
     }
 
-    /* Videos */
+    /* ── Videos ── */
     .videos-grid { grid-template-columns: 1fr; }
     .video-player-wrapper { border-radius: 8px; margin: 0 12px; }
     .video-player-header { padding: 0 12px; }
     .video-player-info { padding: 0 12px; }
 
-    /* Documentales */
+    /* ── Documentales ── */
     .docu-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .docu-detail-header {
         flex-direction: column;
@@ -80,7 +154,7 @@
     .docu-detail-cover { width: 200px; }
     .episodio-thumb { width: 60px; }
 
-    /* Perfil */
+    /* ── Perfil ── */
     .perfil-avatar-section {
         flex-direction: column;
         text-align: center;
@@ -101,24 +175,39 @@
    ────────────────────────────────── */
 @media (max-width: 480px) {
 
-    /* Stats */
+    /* ── Sidebar más compacto ── */
+    .sidebar-nav {
+        padding-bottom: 90px;
+    }
+
+    .nav-item {
+        padding: 11px 16px;
+        font-size: 0.84rem;
+    }
+
+    .nav-section-label {
+        padding: 10px 16px 4px;
+        font-size: 0.6rem;
+    }
+
+    /* ── Stats ── */
     .stats-grid { grid-template-columns: 1fr; }
 
-    /* Albums */
+    /* ── Albums ── */
     .content-grid-albums {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
 
-    /* Radio */
+    /* ── Radio ── */
     .radio-disc { width: 170px; height: 170px; }
     .radio-disc-inner { width: 70px; height: 70px; }
     .radio-volume-wrapper { max-width: 200px; }
 
-    /* Marketplace */
+    /* ── Marketplace ── */
     .market-grid { grid-template-columns: 1fr; }
 
-    /* Archivo */
+    /* ── Archivo ── */
     .archivo-stats { grid-template-columns: 1fr; }
     .archivo-tabs { width: 100%; }
     .archivo-tab {
@@ -128,13 +217,56 @@
         font-size: .68rem;
     }
 
-    /* Documentales */
+    /* ── Documentales ── */
     .docu-grid { grid-template-columns: 1fr; }
     .episodio-item { padding: 12px 14px; }
     .episodio-thumb { display: none; }
 
-    /* Perfil */
+    /* ── Perfil ── */
     .perfil-avatar { width: 80px; height: 80px; }
     .perfil-avatar-letter { font-size: 2rem; }
     .perfil-nombre-display { font-size: 1.2rem; }
+}
+
+/* ──────────────────────────────────
+   📱 MÓVILES MUY PEQUEÑOS (max-width: 380px)
+   iPhone SE, Galaxy A01, etc.
+   ────────────────────────────────── */
+@media (max-width: 380px) {
+    .sidebar-nav {
+        padding-bottom: 110px;
+    }
+
+    .nav-item {
+        padding: 10px 14px;
+        font-size: 0.8rem;
+        gap: 10px;
+    }
+
+    .nav-icon {
+        font-size: 0.9rem;
+    }
+
+    .nav-section-label {
+        padding: 8px 14px 3px;
+        font-size: 0.56rem;
+    }
+
+    .sidebar-header {
+        padding: 12px 14px;
+    }
+
+    .sidebar-footer {
+        padding: 10px 14px;
+    }
+
+    .sidebar-user-name {
+        font-size: 0.82rem;
+    }
+
+    .sidebar-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.7rem;
+    }
 }
