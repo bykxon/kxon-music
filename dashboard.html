@@ -1147,5 +1147,60 @@
         });
     }
     </script>
+<script>
+// ============================================
+// 🔧 FIX DEFINITIVO: Event delegation global
+// Soluciona botones que pierden eventos al recrear HTML
+// ============================================
+(function() {
+    document.body.addEventListener('click', function(e) {
+        // ── Botón Agregar Canción ──
+        var addTrack = e.target.closest('#btnAddTrack');
+        if (addTrack) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.KXON && window.KXON.openModal) {
+                window.KXON.openModal('modalCancion');
+            }
+            return;
+        }
+
+        // ── Botón Agregar Episodio ──
+        var addEp = e.target.closest('#btnAddEpisodio');
+        if (addEp) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.KXON && window.KXON.openModal) {
+                window.KXON.openModal('modalEpisodio');
+            }
+            return;
+        }
+
+        // ── Botón Volver Álbumes ──
+        var backAlb = e.target.closest('#btnBackAlbums');
+        if (backAlb) {
+            e.preventDefault();
+            e.stopPropagation();
+            var listView = document.getElementById('albumesListView');
+            var detailView = document.getElementById('albumDetailView');
+            if (listView) listView.style.display = 'block';
+            if (detailView) detailView.classList.remove('show');
+            return;
+        }
+
+        // ── Botón Volver Documentales ──
+        var backDoc = e.target.closest('#btnBackDocu');
+        if (backDoc) {
+            e.preventDefault();
+            e.stopPropagation();
+            var docList = document.getElementById('docuListView');
+            var docDetail = document.getElementById('docuDetailView');
+            if (docList) docList.style.display = 'block';
+            if (docDetail) docDetail.classList.remove('show');
+            return;
+        }
+    });
+})();
+</script>
 </body>
 </html>
