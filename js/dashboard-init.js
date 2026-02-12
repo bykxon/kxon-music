@@ -7,6 +7,7 @@
    + FIX: Playlists + Historial + Notificaciones
    + FIX: Limpieza campos fecha lanzamiento
    + FIX: renderInicio seguro (no depende de orden)
+   + NEW: Panel En Vivo integrado
    ============================================ */
 (function () {
 
@@ -350,18 +351,19 @@
     };
 
     /* ══════════════════════════════════════════
-       🔀 PANEL NAVIGATION
+       🔀 PANEL NAVIGATION (con En Vivo)
        ══════════════════════════════════════════ */
     var panelTitles = {
         'inicio': 'Inicio', 'albumes': 'Álbumes', 'canciones': 'Canciones',
         'radio': 'Radio KXON', 'playlists': 'Mis Playlists', 'videos': 'Videos',
+        'envivo': 'En Vivo',
         'documentales': 'Documentales', 'marketplace': 'Marketplace', 'archivo': 'Archivo',
         'planes': 'Planes', 'historial': 'Historial', 'perfil': 'Mi Perfil',
         'favoritos': 'Mis Favoritos', 'analytics': 'Analytics'
     };
     var panelAddText = {
         'inicio': 'Nueva Noticia', 'albumes': 'Nuevo Álbum', 'canciones': '',
-        'radio': '', 'playlists': '', 'videos': 'Nuevo Video',
+        'radio': '', 'playlists': '', 'videos': 'Nuevo Video', 'envivo': '',
         'documentales': 'Nuevo Documental', 'marketplace': 'Nuevo Producto',
         'archivo': '', 'planes': '', 'historial': '', 'perfil': '',
         'favoritos': '', 'analytics': ''
@@ -419,6 +421,7 @@
         if (id === 'canciones' && typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
         if (id === 'radio' && typeof K.initRadio === 'function') K.initRadio();
         if (id === 'videos' && typeof K.loadVideos === 'function') K.loadVideos();
+        if (id === 'envivo' && typeof K.loadLiveStatus === 'function') K.loadLiveStatus();
         if (id === 'documentales') {
             document.getElementById('docuListView').style.display = 'block';
             document.getElementById('docuDetailView').classList.remove('show');
