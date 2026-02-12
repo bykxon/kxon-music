@@ -480,6 +480,131 @@
     flex-shrink: 0;
 }
 
+    /* ============================================
+       🧹 SISTEMA LIMPIAR/MARCAR COMO VISTO
+       ============================================ */
+    .inicio-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .inicio-section-title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .inicio-new-badge {
+        font-family: var(--font-titulo);
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--acento-exito);
+        background: rgba(46,213,115,.08);
+        border: 1px solid rgba(46,213,115,.15);
+        padding: 3px 10px;
+        border-radius: 50px;
+        animation: newPulse 2s ease-in-out infinite;
+    }
+    .inicio-clear-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 8px;
+        color: var(--plata-oscura);
+        font-family: var(--font-titulo);
+        font-size: .62rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all .25s ease;
+    }
+    .inicio-clear-btn:hover {
+        background: rgba(192,192,192,.06);
+        border-color: rgba(192,192,192,.12);
+        color: var(--plata-blanca);
+        transform: translateY(-1px);
+    }
+    .inicio-all-seen {
+        font-family: var(--font-titulo);
+        font-size: .6rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: rgba(192,192,192,.25);
+        padding: 6px 14px;
+        background: rgba(255,255,255,.015);
+        border: 1px solid rgba(255,255,255,.03);
+        border-radius: 8px;
+    }
+    .inicio-clear-all-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 22px;
+        background: linear-gradient(135deg, rgba(30,30,30,.9), rgba(18,18,18,.9));
+        border: 1px solid rgba(192,192,192,.12);
+        border-radius: 10px;
+        color: var(--plata-blanca);
+        font-family: var(--font-titulo);
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all .3s ease;
+        width: 100%;
+        justify-content: center;
+    }
+    .inicio-clear-all-btn:hover {
+        background: linear-gradient(135deg, rgba(192,192,192,.15), rgba(192,192,192,.05));
+        border-color: rgba(192,192,192,.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0,0,0,.2);
+    }
+    .inicio-all-clear {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px 24px;
+        background: rgba(46,213,115,.03);
+        border: 1px solid rgba(46,213,115,.08);
+        border-radius: 12px;
+        text-align: center;
+    }
+    .inicio-all-clear-icon {
+        font-size: 1.2rem;
+    }
+    .inicio-all-clear-text {
+        font-family: var(--font-titulo);
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .5px;
+        color: rgba(46,213,115,.6);
+    }
+    .empty-state-sm {
+        padding: 30px 16px;
+    }
+    .empty-state-sm .empty-icon {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+    .empty-state-sm .empty-title {
+        font-size: .82rem;
+    }
+    .empty-state-sm .empty-text {
+        font-size: .72rem;
+        margin-top: 4px;
+    }
+
     </style>
 </head>
 <body>
@@ -830,41 +955,39 @@
 
             <div class="content-area">
 
-                <!-- 🏠 PANEL: INICIO -->
+                                <!-- 🏠 PANEL: INICIO -->
                 <div class="panel active" id="panel-inicio">
-                    <div class="panel-header"><h1 class="panel-title">Bienvenido a KXON</h1><p class="panel-desc">Tu resumen de la plataforma</p></div>
-                    <div class="stats-grid"><div class="stat-card"><div class="stat-icon">💿</div><div class="stat-value" id="statAlbumes">0</div><div class="stat-label">Álbumes</div></div><div class="stat-card"><div class="stat-icon">🎵</div><div class="stat-value" id="statCanciones">0</div><div class="stat-label">Canciones</div></div><div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-value" id="statBeats">0</div><div class="stat-label">Beats</div></div><div class="stat-card"><div class="stat-icon">📰</div><div class="stat-value" id="statNoticias">0</div><div class="stat-label">Noticias</div></div></div>
-                    <div class="panel-section"><div class="panel-section-title">📰 Últimas Noticias</div><div class="content-grid" id="inicioNoticias"></div></div>
-                    <div class="panel-section"><div class="panel-section-title">🎵 Canciones Recientes</div><div class="track-list" id="inicioCanciones"></div></div>
-                    <div class="panel-section"><div class="panel-section-title">💿 Últimos Álbumes</div><div class="content-grid content-grid-albums" id="inicioAlbumes"></div></div>
-                </div>
-
-                <!-- 💿 PANEL: ÁLBUMES -->
-                <div class="panel" id="panel-albumes">
-                    <div id="albumesListView"><div class="panel-header"><h1 class="panel-title">Álbumes</h1><p class="panel-desc">Colección completa</p></div><div class="content-grid content-grid-albums" id="albumesGrid"></div></div>
-                    <div class="album-detail" id="albumDetailView"><button class="btn-back" id="btnBackAlbums">← Volver</button><div class="album-detail-header"><div class="album-detail-cover"><img id="detailCover" src="" alt=""></div><div class="album-detail-info"><h1 class="album-detail-title" id="detailTitle"></h1><p class="album-detail-desc" id="detailDesc"></p><span class="album-detail-meta" id="detailMeta"></span></div></div><div class="section-header-row"><div class="panel-section-title">🎵 Canciones del álbum</div><button class="btn-add-track" id="btnAddTrack"><span>+</span> Agregar Canción</button></div><div class="track-list" id="detailTracks"></div></div>
-                </div>
-
-                <!-- 🎵 PANEL: CANCIONES -->
-                <div class="panel" id="panel-canciones"><div class="panel-header"><h1 class="panel-title">Canciones</h1><p class="panel-desc">Todas las canciones disponibles</p></div><div class="track-list" id="allCancionesGrid"></div></div>
-
-                <!-- 📻 PANEL: RADIO -->
-                <div class="panel" id="panel-radio">
-                    <div class="panel-header"><h1 class="panel-title">Radio KXON</h1><p class="panel-desc">Emisora continua — Todas las canciones en reproducción aleatoria</p></div>
-                    <div class="radio-container">
-                        <div class="radio-disc-wrapper"><div class="radio-disc" id="radioDisc"><div class="radio-disc-inner"><img id="radioDiscImg" src="https://placehold.co/300x300/111/333?text=♪" alt=""></div><div class="radio-disc-hole"></div><div class="radio-disc-groove groove-1"></div><div class="radio-disc-groove groove-2"></div><div class="radio-disc-groove groove-3"></div></div><div class="radio-on-air" id="radioOnAir"><span class="on-air-dot"></span><span class="on-air-text">ON AIR</span></div></div>
-                        <div class="radio-info"><div class="radio-frequency"><span class="freq-label">KXON</span><span class="freq-number">FM</span></div><h2 class="radio-track-title" id="radioTrackTitle">Esperando...</h2><p class="radio-track-album" id="radioTrackAlbum">Presiona play para iniciar</p><div class="radio-progress-wrapper"><span class="radio-time" id="radioCurrentTime">0:00</span><div class="radio-progress-bar" id="radioProgressBar"><div class="radio-progress-fill" id="radioProgressFill"></div><div class="radio-progress-glow" id="radioProgressGlow"></div></div><span class="radio-time" id="radioDuration">0:00</span></div><div class="radio-controls"><button class="radio-btn radio-btn-secondary" id="radioPrev" title="Anterior"><span>⏮</span></button><button class="radio-btn radio-btn-main" id="radioPlayBtn" title="Play"><span id="radioPlayIcon">▶</span></button><button class="radio-btn radio-btn-secondary" id="radioNext" title="Siguiente"><span>⏭</span></button><button class="radio-btn radio-btn-small active" id="radioShuffle" title="Aleatorio"><span>🔀</span></button></div><div class="radio-volume-wrapper"><span class="radio-volume-icon" id="radioVolIcon">🔊</span><div class="radio-volume-bar" id="radioVolumeBar"><div class="radio-volume-fill" id="radioVolumeFill" style="width:70%"></div></div><span class="radio-volume-pct" id="radioVolPct">70%</span></div>
-                            <!-- ❤️ NUEVO: Radio fav + share -->
-                            <div class="radio-fav-share">
-                                <div class="fav-wrapper">
-                                    <button class="btn-fav" id="radioFavBtn" onclick="window._toggleRadioFav()" title="Favorito"><span>🤍</span><span class="fav-burst"></span></button>
-                                    <span class="fav-count" id="radioFavCount"></span>
-                                </div>
-                                <button class="btn-share" onclick="window._shareFromRadio(event)" title="Compartir">↗</button>
-                            </div>
-                        </div>
+                    <div class="panel-header">
+                        <h1 class="panel-title">Bienvenido a KXON</h1>
+                        <p class="panel-desc">Tu resumen de la plataforma</p>
                     </div>
-                    <div class="radio-queue-section"><div class="radio-queue-header"><h3 class="panel-section-title">📋 Cola de reproducción</h3><span class="radio-queue-count" id="radioQueueCount">0 canciones</span></div><div class="radio-queue-list" id="radioQueueList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Cargando...</div></div></div></div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-icon">💿</div><div class="stat-value" id="statAlbumes">0</div><div class="stat-label">Álbumes</div></div>
+                        <div class="stat-card"><div class="stat-icon">🎵</div><div class="stat-value" id="statCanciones">0</div><div class="stat-label">Canciones</div></div>
+                        <div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-value" id="statBeats">0</div><div class="stat-label">Beats</div></div>
+                        <div class="stat-card"><div class="stat-icon">📰</div><div class="stat-value" id="statNoticias">0</div><div class="stat-label">Noticias</div></div>
+                    </div>
+
+                    <!-- Botón global limpiar -->
+                    <div id="inicioClearAllWrap" style="display:none;margin-bottom:24px;"></div>
+
+                    <!-- Sección Noticias -->
+                    <div class="panel-section" id="inicioNoticiasWrap">
+                        <div class="inicio-section-header"></div>
+                        <div class="content-grid" id="inicioNoticias"></div>
+                    </div>
+
+                    <!-- Sección Canciones -->
+                    <div class="panel-section" id="inicioCancionesWrap">
+                        <div class="inicio-section-header"></div>
+                        <div class="track-list" id="inicioCanciones"></div>
+                    </div>
+
+                    <!-- Sección Álbumes -->
+                    <div class="panel-section" id="inicioAlbumesWrap">
+                        <div class="inicio-section-header"></div>
+                        <div class="content-grid content-grid-albums" id="inicioAlbumes"></div>
+                    </div>
                 </div>
 
                 <!-- ============================================

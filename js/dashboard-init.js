@@ -407,6 +407,9 @@
             }
         }
 
+                if (id === 'inicio') {
+            if (typeof K.renderInicio === 'function') K.renderInicio();
+        }
         if (id === 'albumes') {
             document.getElementById('albumesListView').style.display = 'block';
             document.getElementById('albumDetailView').classList.remove('show');
@@ -785,6 +788,10 @@
 
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
             if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
+                        // Renderizar inicio con sistema de "visto"
+            setTimeout(function() {
+                if (typeof K.renderInicio === 'function') K.renderInicio();
+            }, 200);
             if (typeof K.loadNoticias === 'function') K.loadNoticias();
             if (typeof K.loadVideos === 'function') K.loadVideos();
             if (typeof K.loadDocumentales === 'function') K.loadDocumentales();
