@@ -6,6 +6,7 @@
    + FIX: Conflicto radio/player resuelto
    + FIX: Playlists + Historial + Notificaciones
    + FIX: Limpieza campos fecha lanzamiento
+   + FIX: renderInicio seguro (no depende de orden)
    ============================================ */
 (function () {
 
@@ -407,7 +408,7 @@
             }
         }
 
-                if (id === 'inicio') {
+        if (id === 'inicio') {
             if (typeof K.renderInicio === 'function') K.renderInicio();
         }
         if (id === 'albumes') {
@@ -788,10 +789,19 @@
 
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
             if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
-                        // Renderizar inicio con sistema de "visto"
-            setTimeout(function() {
-                if (typeof K.renderInicio === 'function') K.renderInicio();
+
+            /* ── FIX: Esperar a que renderInicio esté disponible ── */
+            setTimeout(function () {
+                if (typeof K.renderInicio === 'function') {
+                    K.renderInicio();
+                } else {
+                    console.warn('⚠️ renderInicio no disponible aún, reintentando...');
+                    setTimeout(function () {
+                        if (typeof K.renderInicio === 'function') K.renderInicio();
+                    }, 500);
+                }
             }, 200);
+
             if (typeof K.loadNoticias === 'function') K.loadNoticias();
             if (typeof K.loadVideos === 'function') K.loadVideos();
             if (typeof K.loadDocumentales === 'function') K.loadDocumentales();
@@ -804,7 +814,7 @@
                 document.getElementById('loadingScreen').classList.add('hide');
             }, 500);
         } catch (e) {
-            console.error(e);
+            console.error('❌ Error en init:', e);
             window.location.href = 'login.html';
         }
     }

@@ -303,182 +303,176 @@
             grid-template-columns: 1fr;
         }
     }
-/* ============================================
-   🔒 SISTEMA DE LANZAMIENTO PROGRAMADO
-   ============================================ */
 
-/* ── Álbum bloqueado ── */
-.card.album-locked {
-    position: relative;
-    cursor: default;
-}
-.card.album-locked .card-img::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    z-index: 2;
-}
-.card.album-locked .card-overlay {
-    display: none;
-}
-.album-lock-badge {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    text-align: center;
-    pointer-events: none;
-}
-.album-lock-icon {
-    font-size: 2.2rem;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,.5));
-    animation: lockPulse 2s ease-in-out infinite;
-}
-.album-lock-date {
-    font-family: var(--font-titulo);
-    font-size: .65rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--plata-blanca);
-    background: rgba(0, 0, 0, 0.7);
-    padding: 5px 14px;
-    border-radius: 50px;
-    border: 1px solid rgba(192, 192, 192, 0.2);
-    backdrop-filter: blur(10px);
-    white-space: nowrap;
-}
-.album-lock-countdown {
-    font-family: var(--font-titulo);
-    font-size: .58rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: var(--acento-dorado);
-    background: rgba(255, 215, 0, 0.08);
-    padding: 3px 10px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 215, 0, 0.15);
-}
+    /* ============================================
+       🔒 SISTEMA DE LANZAMIENTO PROGRAMADO
+       ============================================ */
+    .card.album-locked {
+        position: relative;
+        cursor: default;
+    }
+    .card.album-locked .card-img::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 2;
+    }
+    .card.album-locked .card-overlay {
+        display: none;
+    }
+    .album-lock-badge {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+        pointer-events: none;
+    }
+    .album-lock-icon {
+        font-size: 2.2rem;
+        filter: drop-shadow(0 0 10px rgba(0,0,0,.5));
+        animation: lockPulse 2s ease-in-out infinite;
+    }
+    .album-lock-date {
+        font-family: var(--font-titulo);
+        font-size: .65rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--plata-blanca);
+        background: rgba(0, 0, 0, 0.7);
+        padding: 5px 14px;
+        border-radius: 50px;
+        border: 1px solid rgba(192, 192, 192, 0.2);
+        backdrop-filter: blur(10px);
+        white-space: nowrap;
+    }
+    .album-lock-countdown {
+        font-family: var(--font-titulo);
+        font-size: .58rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: var(--acento-dorado);
+        background: rgba(255, 215, 0, 0.08);
+        padding: 3px 10px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 215, 0, 0.15);
+    }
 
-/* ── Canción bloqueada ── */
-.track-item.track-locked {
-    opacity: 0.45;
-    cursor: not-allowed;
-    pointer-events: none;
-    position: relative;
-}
-.track-item.track-locked .track-play-btn {
-    display: none;
-}
-.track-lock-info {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-left: auto;
-    flex-shrink: 0;
-}
-.track-lock-icon {
-    font-size: 1rem;
-}
-.track-lock-date {
-    font-family: var(--font-titulo);
-    font-size: .6rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--plata-oscura);
-    background: rgba(255, 255, 255, 0.04);
-    padding: 3px 10px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    white-space: nowrap;
-}
+    .track-item.track-locked {
+        opacity: 0.45;
+        cursor: not-allowed;
+        pointer-events: none;
+        position: relative;
+    }
+    .track-item.track-locked .track-play-btn {
+        display: none;
+    }
+    .track-lock-info {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+    .track-lock-icon {
+        font-size: 1rem;
+    }
+    .track-lock-date {
+        font-family: var(--font-titulo);
+        font-size: .6rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--plata-oscura);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 3px 10px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        white-space: nowrap;
+    }
 
-/* ── Canción recién desbloqueada ── */
-.track-item.track-just-released {
-    border-left: 3px solid var(--acento-exito);
-    background: rgba(46, 213, 115, 0.03);
-}
-.track-new-badge {
-    font-family: var(--font-titulo);
-    font-size: .55rem;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--acento-exito);
-    background: rgba(46, 213, 115, 0.1);
-    padding: 2px 8px;
-    border-radius: 50px;
-    border: 1px solid rgba(46, 213, 115, 0.2);
-    animation: newPulse 2s ease-in-out infinite;
-    flex-shrink: 0;
-}
+    .track-item.track-just-released {
+        border-left: 3px solid var(--acento-exito);
+        background: rgba(46, 213, 115, 0.03);
+    }
+    .track-new-badge {
+        font-family: var(--font-titulo);
+        font-size: .55rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--acento-exito);
+        background: rgba(46, 213, 115, 0.1);
+        padding: 2px 8px;
+        border-radius: 50px;
+        border: 1px solid rgba(46, 213, 115, 0.2);
+        animation: newPulse 2s ease-in-out infinite;
+        flex-shrink: 0;
+    }
 
-/* ── Album detail: fecha lanzamiento ── */
-.album-release-info {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-    padding: 6px 16px;
-    background: rgba(255, 215, 0, 0.06);
-    border: 1px solid rgba(255, 215, 0, 0.12);
-    border-radius: 50px;
-    font-family: var(--font-titulo);
-    font-size: .68rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--acento-dorado);
-}
-.album-release-info.released {
-    background: rgba(46, 213, 115, 0.06);
-    border-color: rgba(46, 213, 115, 0.15);
-    color: var(--acento-exito);
-}
+    .album-release-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 6px 16px;
+        background: rgba(255, 215, 0, 0.06);
+        border: 1px solid rgba(255, 215, 0, 0.12);
+        border-radius: 50px;
+        font-family: var(--font-titulo);
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--acento-dorado);
+    }
+    .album-release-info.released {
+        background: rgba(46, 213, 115, 0.06);
+        border-color: rgba(46, 213, 115, 0.15);
+        color: var(--acento-exito);
+    }
 
-/* ── Animaciones ── */
-@keyframes lockPulse {
-    0%, 100% { transform: scale(1); opacity: 0.9; }
-    50% { transform: scale(1.1); opacity: 1; }
-}
-@keyframes newPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-}
+    @keyframes lockPulse {
+        0%, 100% { transform: scale(1); opacity: 0.9; }
+        50% { transform: scale(1.1); opacity: 1; }
+    }
+    @keyframes newPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
 
-/* ── Admin: siempre puede interactuar ── */
-.track-item.track-locked.admin-override {
-    opacity: 0.7;
-    cursor: pointer;
-    pointer-events: all;
-}
-.track-item.track-locked.admin-override:hover {
-    opacity: 0.85;
-}
-.admin-lock-label {
-    font-family: var(--font-titulo);
-    font-size: .55rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--acento-dorado);
-    background: rgba(255, 215, 0, 0.08);
-    padding: 2px 8px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    flex-shrink: 0;
-}
+    .track-item.track-locked.admin-override {
+        opacity: 0.7;
+        cursor: pointer;
+        pointer-events: all;
+    }
+    .track-item.track-locked.admin-override:hover {
+        opacity: 0.85;
+    }
+    .admin-lock-label {
+        font-family: var(--font-titulo);
+        font-size: .55rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--acento-dorado);
+        background: rgba(255, 215, 0, 0.08);
+        padding: 2px 8px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 215, 0, 0.15);
+        flex-shrink: 0;
+    }
 
     /* ============================================
        🧹 SISTEMA LIMPIAR/MARCAR COMO VISTO
@@ -623,44 +617,43 @@
          ══════════════════════════════════════════ -->
 
     <!-- 🔲 MODAL: NUEVO ÁLBUM -->
-<div class="modal-overlay" id="modalAlbum">
-    <div class="modal">
-        <div class="modal-header"><h3 class="modal-title">Nuevo Álbum</h3><button class="modal-close" id="modalAlbumClose">✕</button></div>
-        <div class="modal-body">
-            <form class="modal-form" id="formAlbum">
-                <div class="form-group"><label class="form-label">Título del álbum</label><input type="text" class="form-input" id="albumTitulo" placeholder="Nombre del álbum" required></div>
-                <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="albumDesc" placeholder="Descripción (opcional)"></textarea></div>
-                <div class="form-group">
-                    <label class="form-label">📅 Fecha de Lanzamiento</label>
-                    <input type="datetime-local" class="form-input" id="albumFechaLanzamiento">
-                    <span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">Si dejas vacío, el álbum se publica inmediatamente. Si pones fecha, estará bloqueado hasta ese día.</span>
-                </div>
-                <div class="form-group"><label class="form-label">Portada</label><div class="file-upload"><div class="file-upload-area" id="albumCoverArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="albumCoverFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="albumCoverPreview"><img id="albumCoverImg" src="" alt=""></div></div>
-                <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalAlbumCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnAlbumSubmit">Crear Álbum</button></div>
-            </form>
+    <div class="modal-overlay" id="modalAlbum">
+        <div class="modal">
+            <div class="modal-header"><h3 class="modal-title">Nuevo Álbum</h3><button class="modal-close" id="modalAlbumClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formAlbum">
+                    <div class="form-group"><label class="form-label">Título del álbum</label><input type="text" class="form-input" id="albumTitulo" placeholder="Nombre del álbum" required></div>
+                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="albumDesc" placeholder="Descripción (opcional)"></textarea></div>
+                    <div class="form-group">
+                        <label class="form-label">📅 Fecha de Lanzamiento</label>
+                        <input type="datetime-local" class="form-input" id="albumFechaLanzamiento">
+                        <span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">Si dejas vacío, el álbum se publica inmediatamente. Si pones fecha, estará bloqueado hasta ese día.</span>
+                    </div>
+                    <div class="form-group"><label class="form-label">Portada</label><div class="file-upload"><div class="file-upload-area" id="albumCoverArea"><div class="file-upload-icon">🖼️</div><div class="file-upload-text">Click para subir imagen</div><div class="file-upload-hint">JPG, PNG, WebP — Máx 5MB</div></div><input type="file" id="albumCoverFile" accept="image/jpeg,image/png,image/webp"></div><div class="img-preview" id="albumCoverPreview"><img id="albumCoverImg" src="" alt=""></div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalAlbumCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnAlbumSubmit">Crear Álbum</button></div>
+                </form>
+            </div>
         </div>
-    </div>
-</div>
     </div>
 
     <!-- 🔲 MODAL: NUEVA CANCIÓN -->
-<div class="modal-overlay" id="modalCancion">
-    <div class="modal">
-        <div class="modal-header"><h3 class="modal-title">Agregar Canción al Álbum</h3><button class="modal-close" id="modalCancionClose">✕</button></div>
-        <div class="modal-body">
-            <form class="modal-form" id="formCancion">
-                <div class="form-group"><label class="form-label">Título de la canción</label><input type="text" class="form-input" id="cancionTitulo" placeholder="Nombre de la canción" required></div>
-                <div class="form-group">
-                    <label class="form-label">📅 Fecha de Lanzamiento</label>
-                    <input type="datetime-local" class="form-input" id="cancionFechaLanzamiento">
-                    <span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">Si dejas vacío, se publica con el álbum. Si pones fecha, estará 🔒 bloqueada hasta ese día.</span>
-                </div>
-                <div class="form-group"><label class="form-label">Archivo de audio</label><div class="file-upload"><div class="file-upload-area" id="cancionAudioArea"><div class="file-upload-icon">🎵</div><div class="file-upload-text">Click para subir audio</div><div class="file-upload-hint">MP3, WAV, OGG — Máx 50MB</div></div><input type="file" id="cancionAudioFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"></div><div class="upload-progress" id="uploadProgress"><div class="upload-bar"><div class="upload-bar-fill" id="uploadBarFill"></div></div><div class="upload-text" id="uploadText">Subiendo...</div></div></div>
-                <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalCancionCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnCancionSubmit">Subir Canción</button></div>
-            </form>
+    <div class="modal-overlay" id="modalCancion">
+        <div class="modal">
+            <div class="modal-header"><h3 class="modal-title">Agregar Canción al Álbum</h3><button class="modal-close" id="modalCancionClose">✕</button></div>
+            <div class="modal-body">
+                <form class="modal-form" id="formCancion">
+                    <div class="form-group"><label class="form-label">Título de la canción</label><input type="text" class="form-input" id="cancionTitulo" placeholder="Nombre de la canción" required></div>
+                    <div class="form-group">
+                        <label class="form-label">📅 Fecha de Lanzamiento</label>
+                        <input type="datetime-local" class="form-input" id="cancionFechaLanzamiento">
+                        <span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">Si dejas vacío, se publica con el álbum. Si pones fecha, estará 🔒 bloqueada hasta ese día.</span>
+                    </div>
+                    <div class="form-group"><label class="form-label">Archivo de audio</label><div class="file-upload"><div class="file-upload-area" id="cancionAudioArea"><div class="file-upload-icon">🎵</div><div class="file-upload-text">Click para subir audio</div><div class="file-upload-hint">MP3, WAV, OGG — Máx 50MB</div></div><input type="file" id="cancionAudioFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"></div><div class="upload-progress" id="uploadProgress"><div class="upload-bar"><div class="upload-bar-fill" id="uploadBarFill"></div></div><div class="upload-text" id="uploadText">Subiendo...</div></div></div>
+                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="modalCancionCancel">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnCancionSubmit">Subir Canción</button></div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- 🔲 MODAL: NUEVA NOTICIA -->
     <div class="modal-overlay" id="modalNoticia">
@@ -685,7 +678,6 @@
                 <div id="noticiaDetalleImgWrap" style="width:100%;border-radius:10px;overflow:hidden;margin-bottom:20px;border:1px solid rgba(255,255,255,.06);display:none;"><img id="noticiaDetalleImg" src="" alt="" style="width:100%;height:auto;max-height:350px;object-fit:cover;display:block;"></div>
                 <div style="margin-bottom:16px;"><span id="noticiaDetalleFecha" style="font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--plata-oscura);font-family:var(--font-titulo);background:rgba(255,255,255,.04);padding:5px 12px;border-radius:50px;border:1px solid rgba(255,255,255,.06);"></span></div>
                 <p id="noticiaDetalleDesc" style="font-size:.92rem;color:var(--plata-clara);font-weight:300;line-height:1.8;white-space:pre-wrap;"></p>
-                <!-- 💬 COMENTARIOS EN NOTICIA -->
                 <div id="noticiaDetalleComments"></div>
             </div>
         </div>
@@ -835,9 +827,7 @@
         </div>
     </div>
 
-    <!-- ============================================
-         🔲 MODAL: CREAR/EDITAR PLAYLIST
-         ============================================ -->
+    <!-- 🔲 MODAL: CREAR/EDITAR PLAYLIST -->
     <div class="modal-overlay" id="modalPlaylist">
         <div class="modal">
             <div class="modal-header">
@@ -871,9 +861,7 @@
         </div>
     </div>
 
-    <!-- ============================================
-         🔲 MODAL: AGREGAR A PLAYLIST
-         ============================================ -->
+    <!-- 🔲 MODAL: AGREGAR A PLAYLIST -->
     <div class="modal-overlay" id="modalAddToPlaylist">
         <div class="modal" style="max-width:420px;">
             <div class="modal-header">
@@ -955,7 +943,7 @@
 
             <div class="content-area">
 
-                                <!-- 🏠 PANEL: INICIO -->
+                <!-- 🏠 PANEL: INICIO -->
                 <div class="panel active" id="panel-inicio">
                     <div class="panel-header">
                         <h1 class="panel-title">Bienvenido a KXON</h1>
@@ -990,9 +978,64 @@
                     </div>
                 </div>
 
-                <!-- ============================================
-                     🎶 PANEL: PLAYLISTS
-                     ============================================ -->
+                <!-- 💿 PANEL: ÁLBUMES -->
+                <div class="panel" id="panel-albumes">
+                    <div id="albumesListView">
+                        <div class="panel-header">
+                            <h1 class="panel-title">Álbumes</h1>
+                            <p class="panel-desc">Discografía completa de KXON</p>
+                        </div>
+                        <div class="content-grid content-grid-albums" id="albumesGrid">
+                            <div class="empty-state">
+                                <div class="empty-icon">💿</div>
+                                <div class="empty-title">Cargando álbumes...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="album-detail" id="albumDetailView">
+                        <button class="btn-back" id="btnBackAlbums">← Volver a Álbumes</button>
+                        <div class="album-detail-header">
+                            <div class="album-detail-cover">
+                                <img id="albumDetailCover" src="" alt="">
+                            </div>
+                            <div class="album-detail-info">
+                                <div class="album-detail-label">ÁLBUM</div>
+                                <h1 class="album-detail-title" id="albumDetailTitle"></h1>
+                                <p class="album-detail-desc" id="albumDetailDesc"></p>
+                                <span class="album-detail-meta" id="albumDetailMeta"></span>
+                                <div id="albumReleaseInfoWrap"></div>
+                            </div>
+                        </div>
+                        <div class="section-header-row">
+                            <div class="panel-section-title">🎵 Canciones</div>
+                            <button class="btn-add-track nav-admin-only" id="btnAddTrack">
+                                <span>+</span> Agregar Canción
+                            </button>
+                        </div>
+                        <div class="track-list" id="trackList">
+                            <div class="empty-state">
+                                <div class="empty-icon">🎵</div>
+                                <div class="empty-title">Sin canciones aún</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🎵 PANEL: CANCIONES -->
+                <div class="panel" id="panel-canciones">
+                    <div class="panel-header">
+                        <h1 class="panel-title">Todas las Canciones</h1>
+                        <p class="panel-desc">Biblioteca completa de música KXON</p>
+                    </div>
+                    <div class="track-list" id="allCancionesList">
+                        <div class="empty-state">
+                            <div class="empty-icon">🎵</div>
+                            <div class="empty-title">Cargando canciones...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🎶 PANEL: PLAYLISTS -->
                 <div class="panel" id="panel-playlists">
                     <div id="plListView">
                         <div class="panel-header">
@@ -1059,9 +1102,7 @@
                     <div class="solicitudes-section" id="subSolicitudesSection" style="display:none;"><div class="panel-section-title">📋 Solicitudes de Suscripción</div><div id="subSolicitudesList"></div></div>
                 </div>
 
-                <!-- ============================================
-                     📊 PANEL: HISTORIAL DE REPRODUCCIONES
-                     ============================================ -->
+                <!-- 📊 PANEL: HISTORIAL -->
                 <div class="panel" id="panel-historial">
                     <div class="panel-header">
                         <h1 class="panel-title">Historial de Reproducciones</h1>
@@ -1135,7 +1176,7 @@
         </main>
     </div><!-- /app-layout -->
 
-        <!-- 🎶 PLAYER BAR (Minimizado) -->
+    <!-- 🎶 PLAYER BAR (Minimizado) -->
     <div class="player-bar" id="playerBar">
         <div class="player-cover" id="playerBarClickZone"><img id="playerCover" src="" alt=""></div>
         <div class="player-info" id="playerInfoClickZone"><div class="player-title" id="playerTitle">—</div><div class="player-artist">KXON</div></div>
@@ -1150,24 +1191,17 @@
         <button class="player-close-btn" id="playerCloseBtn" title="Cerrar reproductor">✕</button>
     </div>
 
-    <!-- 🎵 PLAYER EXPANDIDO (Fullscreen estilo Spotify) -->
+    <!-- 🎵 PLAYER EXPANDIDO -->
     <div class="player-expanded-overlay" id="playerExpanded">
         <div class="player-expanded-bg" id="playerExpBg"></div>
         <div class="player-expanded-bg-overlay"></div>
-
-        <!-- Swipe indicator -->
         <div class="player-exp-swipe"><div class="player-exp-swipe-bar"></div></div>
-
-        <!-- Header -->
         <div class="player-exp-header">
             <button class="player-exp-minimize" id="playerExpMinimize" title="Minimizar">▼</button>
             <span class="player-exp-source" id="playerExpSource">REPRODUCIENDO</span>
             <button class="player-exp-menu" id="playerExpMenuBtn" title="Opciones">⋯</button>
         </div>
-
-        <!-- Contenido principal -->
         <div class="player-exp-content" id="playerExpContent">
-            <!-- Cover grande -->
             <div class="player-exp-cover-wrapper">
                 <div class="player-exp-cover" id="playerExpCoverBox">
                     <img id="playerExpCoverImg" src="" alt="">
@@ -1179,8 +1213,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Info -->
             <div class="player-exp-track-info">
                 <div class="player-exp-title" id="playerExpTitle">—</div>
                 <div class="player-exp-artist" id="playerExpArtist">KXON</div>
@@ -1192,8 +1224,6 @@
                     <div class="player-exp-eq-bar"></div>
                 </div>
             </div>
-
-            <!-- Progreso -->
             <div class="player-exp-progress">
                 <div class="player-exp-progress-bar" id="playerExpProgressBar">
                     <div class="player-exp-progress-fill" id="playerExpProgressFill">
@@ -1205,8 +1235,6 @@
                     <span class="player-exp-time" id="playerExpDuration">0:00</span>
                 </div>
             </div>
-
-            <!-- Controles -->
             <div class="player-exp-controls">
                 <button class="player-exp-btn player-exp-btn-sm" id="playerExpShuffle" title="Aleatorio">🔀</button>
                 <button class="player-exp-btn player-exp-btn-md" id="playerExpPrev" title="Anterior">⏮</button>
@@ -1214,8 +1242,6 @@
                 <button class="player-exp-btn player-exp-btn-md" id="playerExpNext" title="Siguiente">⏭</button>
                 <button class="player-exp-btn player-exp-btn-sm" id="playerExpRepeat" title="Repetir">🔁</button>
             </div>
-
-            <!-- Volumen -->
             <div class="player-exp-volume">
                 <button class="player-exp-vol-icon" id="playerExpVolIcon">🔊</button>
                 <div class="player-exp-vol-bar" id="playerExpVolBar">
@@ -1223,8 +1249,6 @@
                 </div>
                 <span class="player-exp-vol-pct" id="playerExpVolPct">70%</span>
             </div>
-
-            <!-- Acciones -->
             <div class="player-exp-actions">
                 <button class="player-exp-action" id="playerExpFav" onclick="window._togglePlayerFav()" title="Favorito">🤍</button>
                 <button class="player-exp-action" id="playerExpAddPl" onclick="window._addCurrentToPlaylist()" title="Agregar a playlist">➕</button>
@@ -1255,8 +1279,6 @@
     <script src="js/dashboard-comments.js"></script>
     <script src="js/dashboard-playlists.js"></script>
     <script src="js/dashboard-player-expanded.js"></script>
-        <script src="js/dashboard-playlists.js"></script>
-    <script src="js/dashboard-player-expanded.js"></script>
 
     <!-- 📱 PWA Service Worker Registration -->
     <script>
@@ -1270,60 +1292,51 @@
         });
     }
     </script>
-<script>
-// ============================================
-// 🔧 FIX DEFINITIVO: Event delegation global
-// Soluciona botones que pierden eventos al recrear HTML
-// ============================================
-(function() {
-    document.body.addEventListener('click', function(e) {
-        // ── Botón Agregar Canción ──
-        var addTrack = e.target.closest('#btnAddTrack');
-        if (addTrack) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.KXON && window.KXON.openModal) {
-                window.KXON.openModal('modalCancion');
+
+    <!-- 🔧 FIX: Event delegation global -->
+    <script>
+    (function() {
+        document.body.addEventListener('click', function(e) {
+            var addTrack = e.target.closest('#btnAddTrack');
+            if (addTrack) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.KXON && window.KXON.openModal) {
+                    window.KXON.openModal('modalCancion');
+                }
+                return;
             }
-            return;
-        }
-
-        // ── Botón Agregar Episodio ──
-        var addEp = e.target.closest('#btnAddEpisodio');
-        if (addEp) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.KXON && window.KXON.openModal) {
-                window.KXON.openModal('modalEpisodio');
+            var addEp = e.target.closest('#btnAddEpisodio');
+            if (addEp) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.KXON && window.KXON.openModal) {
+                    window.KXON.openModal('modalEpisodio');
+                }
+                return;
             }
-            return;
-        }
-
-        // ── Botón Volver Álbumes ──
-        var backAlb = e.target.closest('#btnBackAlbums');
-        if (backAlb) {
-            e.preventDefault();
-            e.stopPropagation();
-            var listView = document.getElementById('albumesListView');
-            var detailView = document.getElementById('albumDetailView');
-            if (listView) listView.style.display = 'block';
-            if (detailView) detailView.classList.remove('show');
-            return;
-        }
-
-        // ── Botón Volver Documentales ──
-        var backDoc = e.target.closest('#btnBackDocu');
-        if (backDoc) {
-            e.preventDefault();
-            e.stopPropagation();
-            var docList = document.getElementById('docuListView');
-            var docDetail = document.getElementById('docuDetailView');
-            if (docList) docList.style.display = 'block';
-            if (docDetail) docDetail.classList.remove('show');
-            return;
-        }
-    });
-})();
-</script>
+            var backAlb = e.target.closest('#btnBackAlbums');
+            if (backAlb) {
+                e.preventDefault();
+                e.stopPropagation();
+                var listView = document.getElementById('albumesListView');
+                var detailView = document.getElementById('albumDetailView');
+                if (listView) listView.style.display = 'block';
+                if (detailView) detailView.classList.remove('show');
+                return;
+            }
+            var backDoc = e.target.closest('#btnBackDocu');
+            if (backDoc) {
+                e.preventDefault();
+                e.stopPropagation();
+                var docList = document.getElementById('docuListView');
+                var docDetail = document.getElementById('docuDetailView');
+                if (docList) docList.style.display = 'block';
+                if (docDetail) docDetail.classList.remove('show');
+                return;
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
