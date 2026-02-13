@@ -428,198 +428,94 @@ body {
 }
 
 /* ============================================
-   💰 COMPARACIÓN KXON vs OTROS
+   💎 VENTAJAS KXON
    ============================================ */
-.comparison-grid {
+.ventajas-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    max-width: 900px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
     margin: 0 auto 48px;
 }
 
-.comparison-card {
-    background: var(--negro-card, #0f0f0f);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 16px;
-    padding: 32px 28px;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.comparison-card:hover {
-    transform: translateY(-4px);
-}
-
-.comparison-other {
-    opacity: 0.7;
-}
-
-.comparison-other:hover {
-    opacity: 0.85;
-}
-
-.comparison-kxon {
-    border-color: rgba(192,192,192,0.15);
-    background: linear-gradient(135deg, rgba(192,192,192,0.03), rgba(15,15,15,1));
-    box-shadow: 0 0 40px rgba(192,192,192,0.04);
-}
-
-.comparison-kxon:hover {
-    border-color: rgba(192,192,192,0.25);
-    box-shadow: 0 0 60px rgba(192,192,192,0.08);
-}
-
-.comparison-recommended {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 5px 20px;
-    background: linear-gradient(135deg, #c0c0c0, #888);
-    border-radius: 50px;
-    font-family: var(--font-titulo, 'Montserrat', sans-serif);
-    font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #0a0a0a;
-    white-space: nowrap;
-}
-
-.comparison-card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.comparison-logo-icon {
-    font-size: 1.5rem;
-}
-
-.comparison-brand {
-    font-family: var(--font-titulo, 'Montserrat', sans-serif);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--plata-titulo, #e0e0e0);
-    letter-spacing: 0.5px;
-}
-
-.comparison-price {
-    font-family: var(--font-titulo, 'Montserrat', sans-serif);
-    font-size: 2.2rem;
-    font-weight: 900;
-    color: var(--plata-blanca, #f0f0f0);
-    margin-bottom: 4px;
-}
-
-.comparison-period {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--plata-oscura, #555);
-}
-
-.comparison-items {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 24px 0;
-}
-
-.comparison-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 0.85rem;
-    line-height: 1.5;
-}
-
-.comparison-item.positive {
-    color: var(--plata-clara, #b8b8b8);
-}
-
-.comparison-item.negative {
-    color: var(--plata-oscura, #555);
-}
-
-.comparison-item strong {
-    color: var(--plata-blanca, #f0f0f0);
-}
-
-.comparison-check {
-    flex-shrink: 0;
-    font-size: 0.8rem;
-    margin-top: 1px;
-}
-
-.comparison-btn {
-    display: block;
-    width: 100%;
-    padding: 14px 24px;
-    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-    border: 1px solid rgba(192,192,192,0.2);
-    border-radius: 10px;
-    color: var(--plata-blanca, #f0f0f0);
-    font-family: var(--font-titulo, 'Montserrat', sans-serif);
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-align: center;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-}
-
-.comparison-btn:hover {
-    background: linear-gradient(135deg, #c0c0c0, #888);
-    color: #0a0a0a;
-    border-color: #c0c0c0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(192,192,192,0.2);
-}
-
-/* ── Stats Bar ── */
-.stats-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-    padding: 32px;
+.ventaja-card {
     background: var(--negro-card, #0f0f0f);
     border: 1px solid rgba(255,255,255,0.04);
     border-radius: 16px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.stat-bar-item {
+    padding: 32px 24px;
     text-align: center;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease both;
 }
 
-.stat-bar-value {
+.ventaja-card:nth-child(1) { animation-delay: 0.1s; }
+.ventaja-card:nth-child(2) { animation-delay: 0.15s; }
+.ventaja-card:nth-child(3) { animation-delay: 0.2s; }
+.ventaja-card:nth-child(4) { animation-delay: 0.25s; }
+.ventaja-card:nth-child(5) { animation-delay: 0.3s; }
+.ventaja-card:nth-child(6) { animation-delay: 0.35s; }
+
+.ventaja-card:hover {
+    border-color: rgba(192,192,192,0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.ventaja-icon {
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(192,192,192,0.04);
+    border: 1px solid rgba(192,192,192,0.08);
+    border-radius: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all 0.3s ease;
+}
+
+.ventaja-card:hover .ventaja-icon {
+    background: rgba(192,192,192,0.08);
+    border-color: rgba(192,192,192,0.15);
+    transform: scale(1.1);
+}
+
+.ventaja-title {
     font-family: var(--font-titulo, 'Montserrat', sans-serif);
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: var(--plata-blanca, #f0f0f0);
-    margin-bottom: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--plata-titulo, #e0e0e0);
+    margin-bottom: 10px;
 }
 
-.stat-bar-label {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--plata-oscura, #555);
+.ventaja-desc {
+    font-size: 0.82rem;
+    color: var(--plata-media, #888);
+    font-weight: 300;
+    line-height: 1.7;
 }
 
-.stat-bar-divider {
-    width: 1px;
-    height: 40px;
-    background: rgba(255,255,255,0.06);
+/* ── Responsive ventajas ── */
+@media (max-width: 768px) {
+    .ventajas-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
 }
 
+@media (max-width: 480px) {
+    .ventajas-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .ventaja-card {
+        padding: 24px 20px;
+    }
+}
 /* ============================================
    🎫 PLANES LANDING
    ============================================ */
