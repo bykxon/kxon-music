@@ -348,14 +348,18 @@
         'envivo': 'En Vivo',
         'documentales': 'Documentales', 'marketplace': 'Marketplace', 'archivo': 'Archivo',
         'planes': 'Planes', 'historial': 'Historial', 'perfil': 'Mi Perfil',
-        'favoritos': 'Mis Favoritos', 'analytics': 'Analytics'
+        'favoritos': 'Mis Favoritos', 'analytics': 'Analytics',
+        'chat': 'Chat KXON',
+        'solicitar-beat': 'Solicitar Beat'
     };
     var panelAddText = {
         'inicio': 'Nueva Noticia', 'albumes': 'Nuevo Álbum', 'canciones': '',
         'radio': '', 'playlists': '', 'videos': 'Nuevo Video', 'envivo': '',
         'documentales': 'Nuevo Documental', 'marketplace': 'Nuevo Producto',
         'archivo': '', 'planes': '', 'historial': '', 'perfil': '',
-        'favoritos': '', 'analytics': ''
+        'favoritos': '', 'analytics': '',
+        'chat': '',
+        'solicitar-beat': ''
     };
 
     var navItems = document.querySelectorAll('.nav-item');
@@ -429,6 +433,14 @@
 
         if (id === 'historial' && typeof window._loadHistorial === 'function') {
             window._loadHistorial();
+        }
+
+        if (id === 'chat' && typeof K.loadChat === 'function') {
+            K.loadChat();
+        }
+
+        if (id === 'solicitar-beat' && typeof K.loadSolicitudesBeats === 'function') {
+            K.loadSolicitudesBeats();
         }
     };
 
@@ -712,7 +724,7 @@
         })(modalCloseMap[mc][0], modalCloseMap[mc][1]);
     }
 
-    var overlayCloseIds = ['modalAlbum', 'modalCancion', 'modalNoticia', 'modalVideo', 'modalDocumental', 'modalEpisodio'];
+    var overlayCloseIds = ['modalAlbum', 'modalCancion', 'modalNoticia', 'modalVideo', 'modalDocumental', 'modalEpisodio', 'modalSolicitudBeat'];
     for (var oc = 0; oc < overlayCloseIds.length; oc++) {
         (function (mid) {
             var el = document.getElementById(mid);
@@ -737,6 +749,17 @@
 
     var matp = document.getElementById('modalAddToPlaylist');
     if (matp) matp.addEventListener('click', function (e) { if (e.target === this && typeof window._closeAddToPlaylist === 'function') window._closeAddToPlaylist(); });
+
+    /* ── Lyrics overlays ── */
+    var lyricsOv = document.getElementById('lyricsOverlay');
+    if (lyricsOv) lyricsOv.addEventListener('click', function (e) {
+        if (e.target === this) window._closeLyrics();
+    });
+
+    var lyricsEditOv = document.getElementById('lyricsEditOverlay');
+    if (lyricsEditOv) lyricsEditOv.addEventListener('click', function (e) {
+        if (e.target === this) window._closeLyricsEdit();
+    });
 
     /* ══════════════════════════════════════════
        🔐 INIT — sesión y carga inicial

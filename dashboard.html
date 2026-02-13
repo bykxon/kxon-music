@@ -975,6 +975,631 @@
         .live-admin-actions { flex-direction: column; }
     }
 
+    /* ============================================
+       💬 CHAT EN TIEMPO REAL
+       ============================================ */
+    .chat-container {
+        background: var(--negro-card);
+        border: 1px solid rgba(255,255,255,0.04);
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 220px);
+        max-height: 700px;
+    }
+    .chat-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .chat-header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .chat-header-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--acento-exito);
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(46,213,115,0.4);
+        animation: pulse 2s infinite;
+    }
+    .chat-header-status {
+        font-family: var(--font-titulo);
+        font-size: .75rem;
+        font-weight: 700;
+        color: var(--plata-titulo);
+        letter-spacing: 0.5px;
+    }
+    .chat-header-online {
+        font-size: .65rem;
+        color: var(--plata-oscura);
+        font-weight: 500;
+    }
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 3px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(192,192,192,0.06); border-radius: 4px; }
+    .chat-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        gap: 10px;
+        padding: 40px;
+    }
+    .chat-empty-icon { font-size: 2rem; opacity: 0.2; }
+    .chat-empty-title { font-family: var(--font-titulo); font-size: .88rem; font-weight: 600; color: var(--plata-oscura); }
+    .chat-empty-text { font-size: .75rem; color: rgba(192,192,192,0.25); }
+    .chat-date-sep {
+        text-align: center;
+        padding: 12px 0;
+    }
+    .chat-date-sep span {
+        font-family: var(--font-titulo);
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: rgba(192,192,192,0.2);
+        background: var(--negro-card);
+        padding: 4px 16px;
+        border: 1px solid rgba(255,255,255,0.03);
+        border-radius: 50px;
+    }
+    .chat-msg {
+        display: flex;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        transition: background 0.2s ease;
+        animation: fadeIn 0.3s ease;
+    }
+    .chat-msg:hover { background: rgba(255,255,255,0.015); }
+    .chat-msg-me { flex-direction: row-reverse; }
+    .chat-msg-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--negro-hover);
+        border: 1px solid rgba(192,192,192,0.08);
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .chat-msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .chat-avatar-letter {
+        font-family: var(--font-titulo);
+        font-size: .65rem;
+        font-weight: 700;
+        color: var(--plata-media);
+    }
+    .chat-msg-content { flex: 1; min-width: 0; }
+    .chat-msg-me .chat-msg-content { text-align: right; }
+    .chat-msg-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 3px;
+    }
+    .chat-msg-me .chat-msg-header { flex-direction: row-reverse; }
+    .chat-msg-name {
+        font-family: var(--font-titulo);
+        font-size: .7rem;
+        font-weight: 700;
+        color: var(--plata-titulo);
+    }
+    .chat-msg-name.me { color: var(--acento-principal); }
+    .chat-msg-time {
+        font-size: .55rem;
+        color: rgba(192,192,192,0.2);
+        font-weight: 500;
+    }
+    .chat-msg-delete {
+        background: none;
+        border: none;
+        font-size: .6rem;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+    .chat-msg:hover .chat-msg-delete { opacity: 0.4; }
+    .chat-msg-delete:hover { opacity: 1 !important; background: rgba(255,71,87,0.1); }
+    .chat-msg-text {
+        font-size: .82rem;
+        color: var(--plata-clara);
+        font-weight: 400;
+        line-height: 1.6;
+        word-break: break-word;
+    }
+    .chat-msg-me .chat-msg-text {
+        background: rgba(192,192,192,0.04);
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 12px 12px 2px 12px;
+    }
+    .chat-link { color: var(--acento-principal); text-decoration: underline; }
+    .chat-input-section {
+        padding: 14px 20px;
+        border-top: 1px solid rgba(255,255,255,0.04);
+        background: rgba(255,255,255,0.01);
+    }
+    .chat-input-wrap {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+    }
+    .chat-input {
+        flex: 1;
+        padding: 10px 14px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        color: var(--plata-blanca);
+        font-family: var(--font-cuerpo);
+        font-size: .85rem;
+        resize: none;
+        min-height: 40px;
+        max-height: 100px;
+        transition: border-color 0.3s ease;
+        outline: none;
+    }
+    .chat-input:focus { border-color: rgba(192,192,192,0.2); }
+    .chat-input::placeholder { color: var(--plata-oscura); }
+    .chat-send-btn {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+        border: 1px solid rgba(192,192,192,0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+    .chat-send-btn:hover {
+        background: linear-gradient(135deg, #c0c0c0, #888);
+        border-color: var(--acento-principal);
+        transform: scale(1.05);
+    }
+    .chat-send-icon { font-size: .9rem; color: var(--plata-blanca); }
+    .chat-send-btn:hover .chat-send-icon { color: var(--negro-base); }
+    .chat-input-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        padding: 0 4px;
+    }
+    .chat-char-count {
+        font-family: var(--font-titulo);
+        font-size: .55rem;
+        font-weight: 600;
+        color: rgba(192,192,192,0.15);
+        letter-spacing: 0.5px;
+    }
+    .chat-char-count.warn { color: var(--acento-error); }
+    .chat-input-hint {
+        font-size: .55rem;
+        color: rgba(192,192,192,0.12);
+    }
+    .chat-unread-badge {
+        min-width: 18px;
+        height: 18px;
+        background: var(--acento-error);
+        border-radius: 50%;
+        font-family: var(--font-titulo);
+        font-size: .55rem;
+        font-weight: 800;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        padding: 0 5px;
+    }
+
+    /* ============================================
+       🎵 LETRAS Y CRÉDITOS
+       ============================================ */
+    .lyrics-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 1100;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+    }
+    .lyrics-overlay.show { display: flex; }
+    .lyrics-modal {
+        background: rgba(12,12,12,0.97);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 520px;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+        animation: fadeIn 0.3s ease;
+    }
+    .lyrics-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 24px 24px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .lyrics-modal-label {
+        font-family: var(--font-titulo);
+        font-size: .5rem;
+        font-weight: 800;
+        letter-spacing: 3px;
+        color: rgba(192,192,192,0.25);
+        margin-bottom: 6px;
+    }
+    .lyrics-modal-title {
+        font-family: var(--font-titulo);
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--plata-blanca);
+        margin: 0 0 4px 0;
+    }
+    .lyrics-modal-album {
+        font-size: .75rem;
+        color: rgba(192,192,192,0.35);
+        margin: 0;
+    }
+    .lyrics-modal-header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .lyrics-edit-btn {
+        padding: 6px 14px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 8px;
+        color: var(--plata-media);
+        font-family: var(--font-titulo);
+        font-size: .62rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .lyrics-edit-btn:hover {
+        background: rgba(192,192,192,0.06);
+        color: var(--plata-blanca);
+    }
+    .lyrics-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        color: var(--plata-media);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .lyrics-close-btn:hover { background: rgba(255,255,255,0.04); color: var(--plata-blanca); }
+    .lyrics-modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 24px 24px;
+    }
+    .lyrics-tabs {
+        display: flex;
+        gap: 6px;
+        margin: 16px 0;
+    }
+    .lyrics-tab {
+        padding: 8px 18px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.04);
+        border-radius: 8px;
+        color: var(--plata-oscura);
+        font-family: var(--font-titulo);
+        font-size: .65rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .lyrics-tab:hover { background: rgba(255,255,255,0.04); color: var(--plata-clara); }
+    .lyrics-tab.active {
+        background: rgba(192,192,192,0.06);
+        border-color: rgba(192,192,192,0.12);
+        color: var(--plata-blanca);
+    }
+    .lyrics-text {
+        padding: 8px 0;
+    }
+    .lyrics-line {
+        font-size: .88rem;
+        color: var(--plata-clara);
+        font-weight: 300;
+        line-height: 2;
+        transition: color 0.2s ease;
+    }
+    .lyrics-line:hover { color: var(--plata-blanca); }
+    .lyrics-section {
+        font-family: var(--font-titulo);
+        font-size: .65rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--acento-principal);
+        margin: 20px 0 8px;
+        padding: 6px 14px;
+        background: rgba(192,192,192,0.04);
+        border-radius: 6px;
+        display: inline-block;
+    }
+    .lyrics-break { height: 12px; }
+    .lyrics-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 40px;
+        text-align: center;
+    }
+    .lyrics-empty-icon { font-size: 1.5rem; opacity: 0.2; }
+    .lyrics-empty-text { font-size: .78rem; color: var(--plata-oscura); }
+    .credits-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 8px 0;
+    }
+    .credit-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.03);
+        border-radius: 10px;
+        transition: all 0.2s ease;
+    }
+    .credit-item:hover { border-color: rgba(192,192,192,0.06); background: rgba(255,255,255,0.03); }
+    .credit-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .credit-info { flex: 1; }
+    .credit-label {
+        font-family: var(--font-titulo);
+        font-size: .55rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: rgba(192,192,192,0.3);
+        display: block;
+        margin-bottom: 3px;
+    }
+    .credit-value {
+        font-size: .85rem;
+        font-weight: 600;
+        color: var(--plata-titulo);
+    }
+    .credits-empty {
+        text-align: center;
+        padding: 30px;
+        font-size: .78rem;
+        color: var(--plata-oscura);
+    }
+
+    /* ============================================
+       📋 SOLICITUDES DE BEATS
+       ============================================ */
+    .sol-beat-actions-top {
+        margin-bottom: 24px;
+    }
+    .sol-beat-new-btn {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+        border: 1px solid rgba(192,192,192,0.15);
+        border-radius: 12px;
+        color: var(--plata-blanca);
+        font-family: var(--font-titulo);
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .sol-beat-new-btn:hover {
+        background: linear-gradient(135deg, #c0c0c0, #888);
+        color: var(--negro-base);
+        border-color: var(--acento-principal);
+        transform: translateY(-2px);
+    }
+    .sol-beat-card {
+        background: var(--negro-card);
+        border: 1px solid rgba(255,255,255,0.04);
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        animation: fadeInUp 0.4s ease both;
+        transition: all 0.3s ease;
+    }
+    .sol-beat-card:hover { border-color: rgba(192,192,192,0.06); }
+    .sol-beat-card.status-pendiente { border-left: 3px solid #ffa500; }
+    .sol-beat-card.status-aceptada { border-left: 3px solid var(--acento-exito); }
+    .sol-beat-card.status-rechazada { border-left: 3px solid var(--acento-error); }
+    .sol-beat-card.status-completada { border-left: 3px solid var(--acento-principal); }
+    .sol-beat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px 0;
+    }
+    .sol-beat-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .sol-beat-status-icon { font-size: .85rem; }
+    .sol-beat-status-text {
+        font-family: var(--font-titulo);
+        font-size: .65rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--plata-media);
+    }
+    .sol-beat-date { font-size: .62rem; color: var(--plata-oscura); }
+    .sol-beat-body { padding: 14px 20px 20px; }
+    .sol-beat-user {
+        font-size: .75rem;
+        color: var(--plata-media);
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .sol-beat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    .sol-beat-field {
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.03);
+        border-radius: 8px;
+    }
+    .sol-beat-label {
+        font-family: var(--font-titulo);
+        font-size: .5rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(192,192,192,0.3);
+        display: block;
+        margin-bottom: 3px;
+    }
+    .sol-beat-value {
+        font-size: .78rem;
+        font-weight: 600;
+        color: var(--plata-titulo);
+    }
+    .sol-beat-desc {
+        font-size: .82rem;
+        color: var(--plata-clara);
+        font-weight: 300;
+        line-height: 1.7;
+        margin-bottom: 10px;
+    }
+    .sol-beat-ref {
+        font-size: .72rem;
+        color: var(--plata-oscura);
+        margin-bottom: 10px;
+        word-break: break-all;
+    }
+    .sol-beat-response {
+        margin-top: 14px;
+        padding: 14px 16px;
+        background: rgba(46,213,115,0.03);
+        border: 1px solid rgba(46,213,115,0.08);
+        border-radius: 10px;
+    }
+    .sol-beat-response-label {
+        font-family: var(--font-titulo);
+        font-size: .6rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--acento-exito);
+        margin-bottom: 6px;
+    }
+    .sol-beat-response-text {
+        font-size: .82rem;
+        color: var(--plata-clara);
+        font-weight: 300;
+        line-height: 1.6;
+    }
+    .sol-beat-price-final {
+        margin-top: 8px;
+        font-family: var(--font-titulo);
+        font-size: .85rem;
+        font-weight: 800;
+        color: var(--acento-dorado);
+    }
+    .sol-beat-admin-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+    }
+    .sol-beat-btn-accept {
+        flex: 1;
+        padding: 10px;
+        background: rgba(46,213,115,0.06);
+        border: 1px solid rgba(46,213,115,0.15);
+        border-radius: 8px;
+        color: var(--acento-exito);
+        font-family: var(--font-titulo);
+        font-size: .68rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .sol-beat-btn-accept:hover {
+        background: rgba(46,213,115,0.12);
+        transform: translateY(-1px);
+    }
+    .sol-beat-btn-reject {
+        padding: 10px 18px;
+        background: rgba(255,71,87,0.06);
+        border: 1px solid rgba(255,71,87,0.15);
+        border-radius: 8px;
+        color: var(--acento-error);
+        font-family: var(--font-titulo);
+        font-size: .68rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .sol-beat-btn-reject:hover { background: rgba(255,71,87,0.12); }
+
+    /* ── Responsive nuevas funciones ── */
+    @media (max-width: 768px) {
+        .chat-container { height: calc(100vh - 200px); }
+        .sol-beat-grid { grid-template-columns: 1fr 1fr; }
+        .lyrics-modal { margin: 10px; max-height: 90vh; }
+    }
+    @media (max-width: 480px) {
+        .chat-container { height: calc(100vh - 180px); }
+        .sol-beat-grid { grid-template-columns: 1fr; }
+        .sol-beat-admin-actions { flex-direction: column; }
+    }
+
     </style>
 </head>
 <body>
@@ -1251,6 +1876,149 @@
         </div>
     </div>
 
+       <!-- 🎵 MODAL: LETRAS Y CRÉDITOS -->
+    <div class="lyrics-overlay" id="lyricsOverlay">
+        <div class="lyrics-modal">
+            <div class="lyrics-modal-header">
+                <div class="lyrics-modal-header-info">
+                    <div class="lyrics-modal-label">LETRA & CRÉDITOS</div>
+                    <h3 class="lyrics-modal-title" id="lyricsTitle">—</h3>
+                    <p class="lyrics-modal-album" id="lyricsAlbum">KXON</p>
+                </div>
+                <div class="lyrics-modal-header-actions">
+                    <button class="lyrics-edit-btn" id="lyricsEditBtn" style="display:none">✏️ Editar</button>
+                    <button class="lyrics-close-btn" onclick="window._closeLyrics()">✕</button>
+                </div>
+            </div>
+            <div class="lyrics-modal-body">
+                <div class="lyrics-tabs">
+                    <button class="lyrics-tab active" onclick="window._lyricsTab('letra',this)">📝 Letra</button>
+                    <button class="lyrics-tab" onclick="window._lyricsTab('creditos',this)">🎹 Créditos</button>
+                </div>
+                <div class="lyrics-tab-content" id="lyricsTabLetra">
+                    <div class="lyrics-text" id="lyricsText">
+                        <div class="lyrics-empty">
+                            <span class="lyrics-empty-icon">📝</span>
+                            <span class="lyrics-empty-text">Letra no disponible</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lyrics-tab-content" id="lyricsTabCreditos" style="display:none">
+                    <div class="credits-grid" id="creditsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✏️ MODAL: EDITAR LETRAS (Admin) -->
+    <div class="lyrics-overlay" id="lyricsEditOverlay">
+        <div class="lyrics-modal" style="max-width:600px;">
+            <div class="lyrics-modal-header">
+                <div class="lyrics-modal-header-info">
+                    <div class="lyrics-modal-label">EDITAR</div>
+                    <h3 class="lyrics-modal-title">Letra y Créditos</h3>
+                </div>
+                <div class="lyrics-modal-header-actions">
+                    <button class="lyrics-close-btn" onclick="window._closeLyricsEdit()">✕</button>
+                </div>
+            </div>
+            <div class="lyrics-modal-body">
+                <div class="form-group">
+                    <label class="form-label">📝 Letra de la canción</label>
+                    <textarea class="form-textarea" id="editLyricsText" rows="12" placeholder="[Verso 1]&#10;Escribe la letra aquí...&#10;&#10;[Coro]&#10;..."></textarea>
+                    <span style="font-size:.65rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">Usa [Verso], [Coro], [Pre-Coro], [Bridge] para secciones</span>
+                </div>
+                <div class="form-group"><label class="form-label">🎹 Créditos de Producción</label></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group"><label class="form-label" style="font-size:.7rem;">Productor</label><input type="text" class="form-input" id="editCreditProductor" placeholder="Nombre del productor"></div>
+                    <div class="form-group"><label class="form-label" style="font-size:.7rem;">Compositor</label><input type="text" class="form-input" id="editCreditCompositor" placeholder="Nombre del compositor"></div>
+                    <div class="form-group"><label class="form-label" style="font-size:.7rem;">Featuring</label><input type="text" class="form-input" id="editCreditFeaturing" placeholder="Artistas invitados"></div>
+                    <div class="form-group"><label class="form-label" style="font-size:.7rem;">BPM</label><input type="text" class="form-input" id="editCreditBpm" placeholder="Ej: 140"></div>
+                    <div class="form-group"><label class="form-label" style="font-size:.7rem;">Tonalidad</label><input type="text" class="form-input" id="editCreditTonalidad" placeholder="Ej: C Minor"></div>
+                    <div class="form-group"><label class="form-label" style="font-size:.7rem;">Género</label><input type="text" class="form-input" id="editCreditGenero" placeholder="Ej: Trap, Reggaeton"></div>
+                </div>
+                <div class="modal-actions" style="margin-top:20px;">
+                    <button type="button" class="btn-modal-cancel" onclick="window._closeLyricsEdit()">Cancelar</button>
+                    <button type="button" class="btn-modal-submit" id="btnSaveLyrics" onclick="window._saveLyrics()">💾 Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📋 MODAL: NUEVA SOLICITUD DE BEAT -->
+    <div class="modal-overlay" id="modalSolicitudBeat">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">🎵 Solicitar Beat Personalizado</h3>
+                <button class="modal-close" onclick="window._closeSolicitudBeat()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" onsubmit="window._submitSolicitudBeat(event);return false;">
+                    <div class="form-group">
+                        <label class="form-label">Género musical *</label>
+                        <select class="form-input" id="solBeatGenero" required>
+                            <option value="">Selecciona un género</option>
+                            <option value="Trap">Trap</option>
+                            <option value="Reggaeton">Reggaeton</option>
+                            <option value="Hip Hop">Hip Hop</option>
+                            <option value="R&B">R&B</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Dancehall">Dancehall</option>
+                            <option value="Dembow">Dembow</option>
+                            <option value="Drill">Drill</option>
+                            <option value="Lo-Fi">Lo-Fi</option>
+                            <option value="Afrobeat">Afrobeat</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div class="form-group">
+                            <label class="form-label">BPM (opcional)</label>
+                            <input type="text" class="form-input" id="solBeatBpm" placeholder="Ej: 130-140">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mood / Vibe</label>
+                            <select class="form-input" id="solBeatMood">
+                                <option value="">Selecciona</option>
+                                <option value="Oscuro">🌑 Oscuro</option>
+                                <option value="Agresivo">🔥 Agresivo</option>
+                                <option value="Melancólico">🌧 Melancólico</option>
+                                <option value="Fiesta">🎉 Fiesta</option>
+                                <option value="Romántico">💕 Romántico</option>
+                                <option value="Chill">😎 Chill</option>
+                                <option value="Épico">⚡ Épico</option>
+                                <option value="Misterioso">🌙 Misterioso</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción detallada *</label>
+                        <textarea class="form-textarea" id="solBeatDescripcion" rows="4" placeholder="Describe lo que necesitas: estilo, instrumentos, referencia artística, para qué lo usarás..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Canción de referencia (opcional)</label>
+                        <input type="text" class="form-input" id="solBeatReferencia" placeholder="Link de YouTube, Spotify o nombre de la canción">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Presupuesto aproximado</label>
+                        <select class="form-input" id="solBeatPresupuesto">
+                            <option value="">Selecciona</option>
+                            <option value="$50.000 - $100.000">$50.000 - $100.000 COP</option>
+                            <option value="$100.000 - $200.000">$100.000 - $200.000 COP</option>
+                            <option value="$200.000 - $500.000">$200.000 - $500.000 COP</option>
+                            <option value="$500.000+">$500.000+ COP</option>
+                            <option value="Negociable">Negociable</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-modal-cancel" onclick="window._closeSolicitudBeat()">Cancelar</button>
+                        <button type="submit" class="btn-modal-submit" id="btnSubmitSolBeat">🎵 Enviar Solicitud</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+   
     <!-- ── DROPDOWN COMPARTIR ── -->
     <div class="share-dropdown" id="shareDropdown">
         <div class="share-dropdown-title">Compartir en</div>
@@ -1280,6 +2048,8 @@
                 <div class="nav-item" data-panel="videos"><span class="nav-icon">🎬</span><span class="nav-text">Videos</span></div>
                                 <div class="nav-item" data-panel="envivo"><span class="nav-icon">🔴</span><span class="nav-text">En Vivo</span><span class="nav-live-dot" id="navLiveDot" style="display:none;"></span></div>
                 <div class="nav-item" data-panel="documentales"><span class="nav-icon">🎞️</span><span class="nav-text">Documentales</span></div>
+                               <div class="nav-item" data-panel="chat"><span class="nav-icon">💬</span><span class="nav-text">Chat</span><span class="chat-unread-badge" id="chatUnreadBadge" style="display:none">0</span></div>
+                <div class="nav-item" data-panel="solicitar-beat"><span class="nav-icon">📋</span><span class="nav-text">Solicitar Beat</span></div>
                 <div class="nav-section-label">Tienda</div>
                 <div class="nav-item" data-panel="marketplace"><span class="nav-icon">🛒</span><span class="nav-text">Marketplace</span></div>
                 <div class="nav-item" data-panel="archivo"><span class="nav-icon">📁</span><span class="nav-text">Archivo</span></div>
@@ -1743,6 +2513,63 @@
                 <!-- 📊 PANEL: ANALYTICS (Admin) -->
                 <div class="panel" id="panel-analytics"></div>
 
+                                <!-- 💬 PANEL: CHAT -->
+                <div class="panel" id="panel-chat">
+                    <div class="panel-header">
+                        <h1 class="panel-title">💬 Chat KXON</h1>
+                        <p class="panel-desc">Habla en tiempo real con la comunidad</p>
+                    </div>
+                    <div class="chat-container">
+                        <div class="chat-header-bar">
+                            <div class="chat-header-left">
+                                <div class="chat-header-dot"></div>
+                                <span class="chat-header-status">Chat General</span>
+                            </div>
+                            <div class="chat-header-right">
+                                <span class="chat-header-online">🟢 En línea</span>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="chatMessagesList">
+                            <div class="chat-empty">
+                                <div class="chat-empty-icon">💬</div>
+                                <div class="chat-empty-title">Cargando chat...</div>
+                            </div>
+                        </div>
+                        <div class="chat-input-section">
+                            <div class="chat-input-wrap">
+                                <textarea class="chat-input" id="chatInput" placeholder="Escribe un mensaje..." rows="1" maxlength="500"></textarea>
+                                <button class="chat-send-btn" id="chatSendBtn" title="Enviar">
+                                    <span class="chat-send-icon">➤</span>
+                                </button>
+                            </div>
+                            <div class="chat-input-footer">
+                                <span class="chat-char-count" id="chatCharCount">0/500</span>
+                                <span class="chat-input-hint">Enter para enviar · Shift+Enter nueva línea</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 📋 PANEL: SOLICITAR BEAT -->
+                <div class="panel" id="panel-solicitar-beat">
+                    <div class="panel-header">
+                        <h1 class="panel-title">📋 Solicitar Beat Personalizado</h1>
+                        <p class="panel-desc">Describe el beat que necesitas y te lo producimos</p>
+                    </div>
+                    <div class="sol-beat-actions-top">
+                        <button class="sol-beat-new-btn" onclick="window._openSolicitudBeat()">
+                            <span>🎵</span> Nueva Solicitud
+                        </button>
+                    </div>
+                    <div class="panel-section-title">📦 Mis Solicitudes</div>
+                    <div id="solicitudesBeatsGrid">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <div class="empty-title">Cargando solicitudes...</div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- 👤 PANEL: PERFIL -->
                 <div class="panel" id="panel-perfil">
                     <div class="panel-header"><h1 class="panel-title">Mi Perfil</h1><p class="panel-desc">Gestiona tu información personal y configuración de cuenta</p></div>
@@ -1839,6 +2666,7 @@
             <div class="player-exp-actions">
                 <button class="player-exp-action" id="playerExpFav" onclick="window._togglePlayerFav()" title="Favorito">🤍</button>
                 <button class="player-exp-action" id="playerExpAddPl" onclick="window._addCurrentToPlaylist()" title="Agregar a playlist">➕</button>
+                                <button class="player-exp-action" id="playerExpLyrics" title="Ver letra">📝</button>
                 <button class="player-exp-action" id="playerExpShare" onclick="window._shareFromPlayer(event)" title="Compartir">↗️</button>
             </div>
         </div>
@@ -1866,7 +2694,10 @@
     <script src="js/dashboard-comments.js"></script>
     <script src="js/dashboard-playlists.js"></script>
         <script src="js/dashboard-envivo.js"></script>
-    <script src="js/dashboard-player-expanded.js"></script>
+        <script src="js/dashboard-chat.js"></script>
+    <script src="js/dashboard-lyrics.js"></script>
+    <script src="js/dashboard-solicitudes-beats.js"></script>
+        <script src="js/dashboard-player-expanded.js"></script>
 
     <!-- 📱 PWA Service Worker Registration -->
     <script>
@@ -1881,50 +2712,69 @@
     }
     </script>
 
-    <!-- 🔧 FIX: Event delegation global -->
-    <script>
-    (function() {
-        document.body.addEventListener('click', function(e) {
-            var addTrack = e.target.closest('#btnAddTrack');
-            if (addTrack) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (window.KXON && window.KXON.openModal) {
-                    window.KXON.openModal('modalCancion');
-                }
-                return;
+<!-- 🔧 FIX: Event delegation global -->
+<script>
+(function() {
+
+    /* ── Lyrics tabs ── */
+    window._lyricsTab = function(tab, btn) {
+        var tabs = document.querySelectorAll('.lyrics-tab');
+        for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+        if (btn) btn.classList.add('active');
+        var letraTab = document.getElementById('lyricsTabLetra');
+        var creditosTab = document.getElementById('lyricsTabCreditos');
+        if (tab === 'letra') {
+            if (letraTab) letraTab.style.display = 'block';
+            if (creditosTab) creditosTab.style.display = 'none';
+        } else {
+            if (letraTab) letraTab.style.display = 'none';
+            if (creditosTab) creditosTab.style.display = 'block';
+        }
+    };
+
+    /* ── Event delegation ── */
+    document.body.addEventListener('click', function(e) {
+        var addTrack = e.target.closest('#btnAddTrack');
+        if (addTrack) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.KXON && window.KXON.openModal) {
+                window.KXON.openModal('modalCancion');
             }
-            var addEp = e.target.closest('#btnAddEpisodio');
-            if (addEp) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (window.KXON && window.KXON.openModal) {
-                    window.KXON.openModal('modalEpisodio');
-                }
-                return;
+            return;
+        }
+        var addEp = e.target.closest('#btnAddEpisodio');
+        if (addEp) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.KXON && window.KXON.openModal) {
+                window.KXON.openModal('modalEpisodio');
             }
-            var backAlb = e.target.closest('#btnBackAlbums');
-            if (backAlb) {
-                e.preventDefault();
-                e.stopPropagation();
-                var listView = document.getElementById('albumesListView');
-                var detailView = document.getElementById('albumDetailView');
-                if (listView) listView.style.display = 'block';
-                if (detailView) detailView.classList.remove('show');
-                return;
-            }
-            var backDoc = e.target.closest('#btnBackDocu');
-            if (backDoc) {
-                e.preventDefault();
-                e.stopPropagation();
-                var docList = document.getElementById('docuListView');
-                var docDetail = document.getElementById('docuDetailView');
-                if (docList) docList.style.display = 'block';
-                if (docDetail) docDetail.classList.remove('show');
-                return;
-            }
-        });
-    })();
-    </script>
+            return;
+        }
+        var backAlb = e.target.closest('#btnBackAlbums');
+        if (backAlb) {
+            e.preventDefault();
+            e.stopPropagation();
+            var listView = document.getElementById('albumesListView');
+            var detailView = document.getElementById('albumDetailView');
+            if (listView) listView.style.display = 'block';
+            if (detailView) detailView.classList.remove('show');
+            return;
+        }
+        var backDoc = e.target.closest('#btnBackDocu');
+        if (backDoc) {
+            e.preventDefault();
+            e.stopPropagation();
+            var docList = document.getElementById('docuListView');
+            var docDetail = document.getElementById('docuDetailView');
+            if (docList) docList.style.display = 'block';
+            if (docDetail) docDetail.classList.remove('show');
+            return;
+        }
+    });
+
+})();
+</script>
 </body>
 </html>

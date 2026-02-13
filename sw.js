@@ -1,9 +1,12 @@
 /* ============================================
-   ⚡ SERVICE WORKER — KXON PWA v2
-   Cache + Offline + Push ready
+   ⚡ SERVICE WORKER — KXON PWA v3
+   Cache + Offline Mejorado + Audio Cache
+   + Push ready
    ============================================ */
 
-var CACHE_NAME = 'kxon-v2.0';
+var CACHE_NAME = 'kxon-v3.0';
+var AUDIO_CACHE = 'kxon-audio-v1';
+var IMAGE_CACHE = 'kxon-images-v1';
 
 var STATIC_ASSETS = [
     '/',
@@ -48,6 +51,11 @@ var STATIC_ASSETS = [
     '/js/dashboard-analytics.js',
     '/js/dashboard-comments.js',
     '/js/dashboard-playlists.js',
+    '/js/dashboard-chat.js',
+    '/js/dashboard-lyrics.js',
+    '/js/dashboard-solicitudes-beats.js',
+    '/js/dashboard-envivo.js',
+    '/js/dashboard-player-expanded.js',
 
     '/icons/icon-72.png',
     '/icons/icon-96.png',
@@ -61,21 +69,17 @@ var STATIC_ASSETS = [
 
 /* ── INSTALL ── */
 self.addEventListener('install', function (event) {
-    console.log('[SW] Installing KXON v2.0');
+    console.log('[SW] Installing KXON v3.0');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(function (cache) {
-                return cache.addAll(STATIC_ASSETS).catch(function (err) {
-                    console.warn('[SW] Some assets failed:', err);
-                    /* Cachear lo que se pueda individualmente */
-                    return Promise.allSettled(
-                        STATIC_ASSETS.map(function (url) {
-                            return cache.add(url).catch(function () {
-                                console.warn('[SW] Failed to cache:', url);
-                            });
-                        })
-                    );
-                });
+                return Promise.allSettled(
+                    STATIC_ASSETS.map(function (url) {
+                        return cache.add(url).catch(function () {
+                            console.warn('[SW] Failed to cache:', url);
+                        });
+                    })
+                );
             })
             .then(function () {
                 return self.skipWaiting();
@@ -85,12 +89,13 @@ self.addEventListener('install', function (event) {
 
 /* ── ACTIVATE ── */
 self.addEventListener('activate', function (event) {
-    console.log('[SW] Activating KXON v2.0');
+    console.log('[SW] Activating KXON v3.0');
+    var validCaches = [CACHE_NAME, AUDIO_CACHE, IMAGE_CACHE];
     event.waitUntil(
         caches.keys().then(function (names) {
             return Promise.all(
                 names.filter(function (name) {
-                    return name !== CACHE_NAME;
+                    return validCaches.indexOf(name) === -1;
                 }).map(function (name) {
                     console.log('[SW] Deleting old cache:', name);
                     return caches.delete(name);
@@ -107,40 +112,70 @@ self.addEventListener('fetch', function (event) {
     var request = event.request;
     var url = new URL(request.url);
 
-    /* Skip: non-GET, Supabase API, extensions */
     if (request.method !== 'GET') return;
-    if (url.hostname.indexOf('supabase') >= 0) return;
     if (url.protocol === 'chrome-extension:') return;
 
-    /* Skip: Audio/Video (too large to cache) */
-    if (url.pathname.match(/\.(mp3|wav|ogg|mp4|webm|mov)$/i)) return;
+    /* ── Supabase API: Network first ── */
+    if (url.hostname.indexOf('supabase') >= 0 && url.pathname.indexOf('/storage/') === -1) {
+        return;
+    }
 
-    /* Images from Supabase storage: Cache first */
-    if (url.hostname.indexOf('supabase') >= 0 && url.pathname.indexOf('/storage/') >= 0) {
+    /* ── Audio files: Cache with offline support ── */
+    if (url.pathname.match(/\.(mp3|wav|ogg)$/i) || (url.hostname.indexOf('supabase') >= 0 && url.pathname.indexOf('/audio/') >= 0)) {
         event.respondWith(
-            caches.match(request).then(function (cached) {
-                if (cached) return cached;
-                return fetch(request).then(function (response) {
-                    if (response && response.status === 200) {
-                        var clone = response.clone();
-                        caches.open(CACHE_NAME).then(function (cache) {
-                            cache.put(request, clone);
-                        });
+            caches.open(AUDIO_CACHE).then(function (cache) {
+                return cache.match(request).then(function (cached) {
+                    if (cached) {
+                        console.log('[SW] Audio from cache:', url.pathname);
+                        return cached;
                     }
-                    return response;
-                }).catch(function () {
-                    /* Placeholder SVG for failed images */
-                    return new Response(
-                        '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#111" width="200" height="200"/><text fill="#555" x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="40">♪</text></svg>',
-                        { headers: { 'Content-Type': 'image/svg+xml' } }
-                    );
+                    return fetch(request).then(function (response) {
+                        if (response && response.status === 200) {
+                            /* Solo cachear si el usuario lo marcó como offline */
+                            var clone = response.clone();
+                            /* Verificar header personalizado */
+                            if (request.headers.get('X-KXON-Offline') === 'true') {
+                                cache.put(request, clone);
+                                console.log('[SW] Audio cached for offline:', url.pathname);
+                            }
+                        }
+                        return response;
+                    }).catch(function () {
+                        return new Response('Audio no disponible offline', { status: 503 });
+                    });
                 });
             })
         );
         return;
     }
 
-    /* Everything else: Stale-while-revalidate */
+    /* ── Video files: Skip caching ── */
+    if (url.pathname.match(/\.(mp4|webm|mov)$/i)) return;
+
+    /* ── Images from Supabase storage: Cache first ── */
+    if (url.hostname.indexOf('supabase') >= 0 && url.pathname.indexOf('/storage/') >= 0) {
+        event.respondWith(
+            caches.open(IMAGE_CACHE).then(function (cache) {
+                return cache.match(request).then(function (cached) {
+                    if (cached) return cached;
+                    return fetch(request).then(function (response) {
+                        if (response && response.status === 200) {
+                            cache.put(request, response.clone());
+                        }
+                        return response;
+                    }).catch(function () {
+                        return new Response(
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#111" width="200" height="200"/><text fill="#555" x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="40">♪</text></svg>',
+                            { headers: { 'Content-Type': 'image/svg+xml' } }
+                        );
+                    });
+                });
+            })
+        );
+        return;
+    }
+
+    /* ── Everything else: Stale-while-revalidate ── */
     event.respondWith(
         caches.match(request).then(function (cached) {
             var fetchPromise = fetch(request).then(function (response) {
@@ -153,7 +188,6 @@ self.addEventListener('fetch', function (event) {
                 return response;
             }).catch(function () {
                 if (cached) return cached;
-                /* Offline fallback for navigation */
                 if (request.mode === 'navigate') {
                     return caches.match('/dashboard.html').then(function (dash) {
                         return dash || caches.match('/index.html');
@@ -167,19 +201,64 @@ self.addEventListener('fetch', function (event) {
     );
 });
 
+/* ── MESSAGE: Guardar audio offline ── */
+self.addEventListener('message', function (event) {
+    if (event.data && event.data.type === 'CACHE_AUDIO') {
+        var audioUrl = event.data.url;
+        console.log('[SW] Caching audio for offline:', audioUrl);
+
+        caches.open(AUDIO_CACHE).then(function (cache) {
+            fetch(audioUrl).then(function (response) {
+                if (response && response.status === 200) {
+                    cache.put(audioUrl, response);
+                    /* Notificar al cliente */
+                    event.source.postMessage({
+                        type: 'AUDIO_CACHED',
+                        url: audioUrl,
+                        success: true
+                    });
+                }
+            }).catch(function (err) {
+                event.source.postMessage({
+                    type: 'AUDIO_CACHED',
+                    url: audioUrl,
+                    success: false,
+                    error: err.message
+                });
+            });
+        });
+    }
+
+    if (event.data && event.data.type === 'REMOVE_CACHED_AUDIO') {
+        caches.open(AUDIO_CACHE).then(function (cache) {
+            cache.delete(event.data.url).then(function () {
+                event.source.postMessage({
+                    type: 'AUDIO_REMOVED',
+                    url: event.data.url
+                });
+            });
+        });
+    }
+
+    if (event.data && event.data.type === 'GET_CACHED_AUDIOS') {
+        caches.open(AUDIO_CACHE).then(function (cache) {
+            cache.keys().then(function (keys) {
+                var urls = keys.map(function (k) { return k.url; });
+                event.source.postMessage({
+                    type: 'CACHED_AUDIOS_LIST',
+                    urls: urls
+                });
+            });
+        });
+    }
+});
+
 /* ── PUSH NOTIFICATIONS ── */
 self.addEventListener('push', function (event) {
     var data = {};
     if (event.data) {
-        try {
-            data = event.data.json();
-        } catch (e) {
-            data = {
-                title: 'KXON',
-                body: event.data.text(),
-                icon: '/icons/icon-192.png'
-            };
-        }
+        try { data = event.data.json(); }
+        catch (e) { data = { title: 'KXON', body: event.data.text(), icon: '/icons/icon-192.png' }; }
     }
 
     event.waitUntil(
@@ -203,13 +282,9 @@ self.addEventListener('notificationclick', function (event) {
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(function (clientList) {
                 for (var i = 0; i < clientList.length; i++) {
-                    if ('focus' in clientList[i]) {
-                        return clientList[i].focus();
-                    }
+                    if ('focus' in clientList[i]) return clientList[i].focus();
                 }
-                if (clients.openWindow) {
-                    return clients.openWindow(url);
-                }
+                if (clients.openWindow) return clients.openWindow(url);
             })
     );
 });
@@ -217,6 +292,6 @@ self.addEventListener('notificationclick', function (event) {
 /* ── BACKGROUND SYNC ── */
 self.addEventListener('sync', function (event) {
     if (event.tag === 'sync-data') {
-        console.log('[SW] Background sync');
+        console.log('[SW] Background sync triggered');
     }
 });
