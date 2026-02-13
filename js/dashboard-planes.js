@@ -203,17 +203,28 @@
         if (e.target === this) window._closeSubModal();
     });
 
-    /* ══════════════════════════════════════════
-       🔧 ADMIN: EDITAR PLAN
+        /* ══════════════════════════════════════════
+       🔧 ADMIN: EDITAR PLAN (COMPLETO)
        ══════════════════════════════════════════ */
     window._editPlan = function (planId) {
         var plan = allPlanes.find(function (p) { return p.id === planId; });
         if (!plan) return;
 
+        // Campos básicos
         document.getElementById('editPlanId').value = plan.id;
-        document.getElementById('editPlanNombre').value = plan.nombre;
-        document.getElementById('editPlanPrecio').value = plan.precio;
-        document.getElementById('editPlanDuracion').value = plan.duracion_dias;
+        document.getElementById('editPlanNombre').value = plan.nombre || '';
+        document.getElementById('editPlanDescripcion').value = plan.descripcion || '';
+        document.getElementById('editPlanPrecio').value = plan.precio || 0;
+        document.getElementById('editPlanDuracion').value = plan.duracion_dias || 30;
+        document.getElementById('editPlanOrden').value = plan.orden || 1;
+
+        // Accesos (checkboxes)
+        var accesos = plan.accesos || [];
+        document.getElementById('editAccAlbumes').checked = accesos.indexOf('albumes') >= 0;
+        document.getElementById('editAccCanciones').checked = accesos.indexOf('canciones') >= 0;
+        document.getElementById('editAccRadio').checked = accesos.indexOf('radio') >= 0;
+        document.getElementById('editAccVideos').checked = accesos.indexOf('videos') >= 0;
+        document.getElementById('editAccDocumentales').checked = accesos.indexOf('documentales') >= 0;
 
         document.getElementById('modalEditPlan').classList.add('show');
     };
@@ -228,12 +239,23 @@
 
     document.getElementById('formEditPlan').addEventListener('submit', async function (e) {
         e.preventDefault();
+
         var planId = document.getElementById('editPlanId').value;
         var nombre = document.getElementById('editPlanNombre').value.trim();
-        var precio = parseInt(document.getElementById('editPlanPrecio').value);
-        var duracion = parseInt(document.getElementById('editPlanDuracion').value);
+        var descripcion = document.getElementById('editPlanDescripcion').value.trim();
+        var precio = parseInt(document.getElementById('editPlanPrecio').value) || 0;
+        var duracion = parseInt(document.getElementById('editPlanDuracion').value) || 30;
+        var orden = parseInt(document.getElementById('editPlanOrden').value) || 1;
 
         if (!nombre) { K.showToast('Ingresa un nombre', 'error'); return; }
+
+        // Recoger accesos seleccionados
+        var accesos = [];
+        if (document.getElementById('editAccAlbumes').checked) accesos.push('albumes');
+        if (document.getElementById('editAccCanciones').checked) accesos.push('canciones');
+        if (document.getElementById('editAccRadio').checked) accesos.push('radio');
+        if (document.getElementById('editAccVideos').checked) accesos.push('videos');
+        if (document.getElementById('editAccDocumentales').checked) accesos.push('documentales');
 
         var btn = document.getElementById('btnEditPlanSubmit');
         btn.classList.add('loading');
@@ -242,18 +264,22 @@
         try {
             var upd = await db.from('planes').update({
                 nombre: nombre,
+                descripcion: descripcion,
                 precio: precio,
                 duracion_dias: duracion,
+                orden: orden,
+                accesos: accesos,
                 updated_at: new Date().toISOString()
             }).eq('id', planId);
 
             if (upd.error) throw upd.error;
 
-            K.showToast('¡Plan actualizado!', 'success');
+            K.showToast('¡Plan actualizado correctamente!', 'success');
             window._closeEditPlan();
             K.loadPlanes();
-        } catch (e) {
-            K.showToast('Error: ' + e.message, 'error');
+        } catch (err) {
+            console.error('Error actualizando plan:', err);
+            K.showToast('Error: ' + err.message, 'error');
         }
 
         btn.classList.remove('loading');

@@ -1812,21 +1812,85 @@
         </div>
     </div>
 
-    <!-- 🔲 MODAL: EDITAR PLAN -->
-    <div class="modal-overlay" id="modalEditPlan">
-        <div class="modal">
-            <div class="modal-header"><h3 class="modal-title">Editar Plan</h3><button class="modal-close" onclick="window._closeEditPlan()">✕</button></div>
-            <div class="modal-body">
-                <form class="modal-form" id="formEditPlan">
-                    <input type="hidden" id="editPlanId">
-                    <div class="form-group"><label class="form-label">Nombre del plan</label><input type="text" class="form-input" id="editPlanNombre" required></div>
-                    <div class="form-group"><label class="form-label">Precio (COP $)</label><input type="number" class="form-input" id="editPlanPrecio" min="0" step="1000" required></div>
-                    <div class="form-group"><label class="form-label">Duración (días)</label><input type="number" class="form-input" id="editPlanDuracion" min="1" value="30" required></div>
-                    <div class="modal-actions"><button type="button" class="btn-modal-cancel" onclick="window._closeEditPlan()">Cancelar</button><button type="submit" class="btn-modal-submit" id="btnEditPlanSubmit">Guardar</button></div>
-                </form>
-            </div>
+    <!-- 🔲 MODAL: EDITAR PLAN (COMPLETO) -->
+<div class="modal-overlay" id="modalEditPlan">
+    <div class="modal" style="max-width:560px;">
+        <div class="modal-header">
+            <h3 class="modal-title">✏️ Editar Plan</h3>
+            <button class="modal-close" onclick="window._closeEditPlan()">✕</button>
+        </div>
+        <div class="modal-body">
+            <form class="modal-form" id="formEditPlan">
+                <input type="hidden" id="editPlanId">
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label class="form-label">Nombre del plan</label>
+                    <input type="text" class="form-input" id="editPlanNombre" placeholder="Ej: Plan Premium" required>
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group">
+                    <label class="form-label">Descripción del plan</label>
+                    <textarea class="form-textarea" id="editPlanDescripcion" placeholder="Describe qué incluye este plan..." rows="3"></textarea>
+                </div>
+
+                <!-- Precio y Duración -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label">Precio (COP $)</label>
+                        <input type="number" class="form-input" id="editPlanPrecio" min="0" step="1000" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Duración (días)</label>
+                        <input type="number" class="form-input" id="editPlanDuracion" min="1" value="30" required>
+                    </div>
+                </div>
+
+                <!-- Orden -->
+                <div class="form-group">
+                    <label class="form-label">Orden de visualización</label>
+                    <input type="number" class="form-input" id="editPlanOrden" min="1" value="1">
+                    <span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">
+                        Número menor = aparece primero. Ej: Básico=1, Premium=2
+                    </span>
+                </div>
+
+                <!-- Accesos / Features -->
+                <div class="form-group">
+                    <label class="form-label">🔑 Accesos incluidos</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;transition:all .2s ease;">
+                            <input type="checkbox" id="editAccAlbumes" value="albumes" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">💿 Álbumes</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;transition:all .2s ease;">
+                            <input type="checkbox" id="editAccCanciones" value="canciones" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">🎵 Canciones</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;transition:all .2s ease;">
+                            <input type="checkbox" id="editAccRadio" value="radio" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">📻 Radio</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;transition:all .2s ease;">
+                            <input type="checkbox" id="editAccVideos" value="videos" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">🎬 Videos</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;transition:all .2s ease;">
+                            <input type="checkbox" id="editAccDocumentales" value="documentales" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">🎞️ Documentales</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-cancel" onclick="window._closeEditPlan()">Cancelar</button>
+                    <button type="submit" class="btn-modal-submit" id="btnEditPlanSubmit">💾 Guardar Cambios</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
     <!-- 🔲 MODAL: CREAR/EDITAR PLAYLIST -->
     <div class="modal-overlay" id="modalPlaylist">
