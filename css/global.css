@@ -1,7 +1,7 @@
 /* ============================================
    🌐 GLOBAL CSS - KXON MUSIC PLATFORM
    Variables, Reset, Fuentes, Utilidades
-   Paleta: Negro & Plata
+   ✨ REDISEÑO GLASSMORPHISM PREMIUM
    ============================================ */
 
 /* ──────────────────────────────────
@@ -10,48 +10,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap');
 
 /* ──────────────────────────────────
-   🎨 VARIABLES CSS - PALETA NEGRO & PLATA
+   🎨 VARIABLES CSS - GLASSMORPHISM PREMIUM
    ────────────────────────────────── */
 :root {
-    /* === NEGROS === */
-    --negro-profundo:    #050505;
-    --negro-base:        #0a0a0a;
-    --negro-card:        #0f0f0f;
-    --negro-suave:       #111111;
-    --negro-medio:       #1a1a1a;
-    --negro-claro:       #222222;
-    --negro-hover:       #2a2a2a;
+    /* === NEGROS (más profundos, con matiz azulado) === */
+    --negro-profundo:    #030308;
+    --negro-base:        #07070e;
+    --negro-card:        rgba(15, 15, 25, 0.6);
+    --negro-suave:       rgba(18, 18, 30, 0.8);
+    --negro-medio:       #16162a;
+    --negro-claro:       #1e1e38;
+    --negro-hover:       #2a2a4a;
 
-    /* === PLATAS === */
-    --plata-oscura:      #555555;
-    --plata-media:       #888888;
-    --plata-normal:      #a0a0a0;
-    --plata-clara:       #b8b8b8;
-    --plata-brillante:   #d0d0d0;
-    --plata-titulo:      #e0e0e0;
-    --plata-blanca:      #f0f0f0;
+    /* === PLATAS (con toque más limpio) === */
+    --plata-oscura:      #5a5a7a;
+    --plata-media:       #8888aa;
+    --plata-normal:      #a0a0c0;
+    --plata-clara:       #b8b8d8;
+    --plata-brillante:   #d0d0e8;
+    --plata-titulo:      #e2e2f0;
+    --plata-blanca:      #f0f0ff;
 
     /* === ACENTOS === */
-    --acento-principal:  #c0c0c0;
-    --acento-hover:      #e8e8e8;
-    --acento-dorado:     #d4af37;
-    --acento-error:      #ff4757;
-    --acento-exito:      #2ed573;
+    --acento-principal:  #8b7cf7;
+    --acento-hover:      #a594ff;
+    --acento-dorado:     #e0b44a;
+    --acento-error:      #ff4d6a;
+    --acento-exito:      #3ee68a;
+
+    /* === GLASSMORPHISM === */
+    --glass-bg:          rgba(255, 255, 255, 0.03);
+    --glass-bg-hover:    rgba(255, 255, 255, 0.06);
+    --glass-bg-strong:   rgba(255, 255, 255, 0.08);
+    --glass-border:      rgba(255, 255, 255, 0.08);
+    --glass-border-hover: rgba(255, 255, 255, 0.15);
+    --glass-border-active: rgba(139, 124, 247, 0.3);
+    --glass-blur:        20px;
+    --glass-blur-strong: 40px;
+    --glass-shadow:      0 8px 32px rgba(0, 0, 0, 0.3);
+    --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.4);
 
     /* === GRADIENTES === */
-    --grad-boton:        linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-    --grad-boton-hover:  linear-gradient(135deg, #c0c0c0 0%, #888888 100%);
-    --grad-borde:        linear-gradient(135deg, #c0c0c0, #444444);
-    --grad-card:         linear-gradient(145deg, #111111 0%, #0a0a0a 100%);
-    --grad-hero:         linear-gradient(180deg, #0a0a0a 0%, #050505 50%, #0a0a0a 100%);
-    --grad-overlay:      linear-gradient(180deg, transparent 0%, rgba(5,5,5,0.95) 100%);
+    --grad-boton:        linear-gradient(135deg, rgba(139,124,247,0.15) 0%, rgba(139,124,247,0.05) 100%);
+    --grad-boton-hover:  linear-gradient(135deg, #8b7cf7 0%, #6c5ce7 100%);
+    --grad-borde:        linear-gradient(135deg, #8b7cf7, #444477);
+    --grad-card:         linear-gradient(135deg, rgba(20,20,40,0.6) 0%, rgba(12,12,24,0.8) 100%);
+    --grad-hero:         radial-gradient(ellipse at 50% 0%, rgba(139,124,247,0.08) 0%, transparent 60%);
+    --grad-overlay:      linear-gradient(180deg, transparent 0%, rgba(5,5,15,0.95) 100%);
 
     /* === SOMBRAS === */
-    --sombra-sm:         0 2px 8px rgba(0,0,0,0.5);
-    --sombra-md:         0 4px 20px rgba(0,0,0,0.6);
-    --sombra-lg:         0 8px 40px rgba(0,0,0,0.7);
-    --sombra-plata:      0 0 20px rgba(192,192,192,0.08);
-    --sombra-glow:       0 0 30px rgba(192,192,192,0.12);
+    --sombra-sm:         0 2px 8px rgba(0,0,0,0.4);
+    --sombra-md:         0 4px 20px rgba(0,0,0,0.5);
+    --sombra-lg:         0 8px 40px rgba(0,0,0,0.6);
+    --sombra-plata:      0 0 20px rgba(139,124,247,0.06);
+    --sombra-glow:       0 0 30px rgba(139,124,247,0.15);
+    --sombra-glow-strong: 0 0 50px rgba(139,124,247,0.2);
 
     /* === TIPOGRAFÍA === */
     --font-titulo:       'Montserrat', sans-serif;
@@ -59,13 +72,13 @@
     --font-logo:         'Oswald', sans-serif;
 
     /* === BORDES === */
-    --borde-sutil:       1px solid rgba(255,255,255,0.06);
-    --borde-card:        1px solid rgba(255,255,255,0.08);
-    --borde-activo:      1px solid rgba(192,192,192,0.3);
-    --borde-hover:       1px solid rgba(192,192,192,0.2);
-    --radio-sm:          8px;
-    --radio-md:          12px;
-    --radio-lg:          16px;
+    --borde-sutil:       1px solid rgba(255,255,255,0.05);
+    --borde-card:        1px solid var(--glass-border);
+    --borde-activo:      1px solid var(--glass-border-active);
+    --borde-hover:       1px solid var(--glass-border-hover);
+    --radio-sm:          10px;
+    --radio-md:          14px;
+    --radio-lg:          18px;
     --radio-xl:          24px;
     --radio-full:        50%;
 
@@ -75,14 +88,14 @@
     --trans-lenta:       all 0.5s ease;
     --trans-suave:       all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* === ESPACIADO === */
-    --espacio-xs:        4px;
-    --espacio-sm:        8px;
-    --espacio-md:        16px;
-    --espacio-lg:        24px;
-    --espacio-xl:        32px;
-    --espacio-2xl:       48px;
-    --espacio-3xl:       64px;
+    /* === ESPACIADO (más generoso) === */
+    --espacio-xs:        6px;
+    --espacio-sm:        10px;
+    --espacio-md:        18px;
+    --espacio-lg:        28px;
+    --espacio-xl:        38px;
+    --espacio-2xl:       52px;
+    --espacio-3xl:       72px;
 
     /* === Z-INDEX === */
     --z-base:            1;
@@ -115,6 +128,12 @@ body {
     font-weight: 400;
     color: var(--plata-clara);
     background-color: var(--negro-base);
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(139, 124, 247, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(139, 124, 247, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(60, 50, 120, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 0% 0%, rgba(30, 30, 80, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
     line-height: 1.6;
     overflow-x: hidden;
     min-height: 100vh;
@@ -197,28 +216,28 @@ button {
    🎯 SCROLLBAR PERSONALIZADO
    ────────────────────────────────── */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--negro-profundo);
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--negro-hover);
+    background: rgba(139, 124, 247, 0.15);
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--plata-oscura);
+    background: rgba(139, 124, 247, 0.3);
 }
 
 /* ──────────────────────────────────
    ✨ SELECCIÓN DE TEXTO
    ────────────────────────────────── */
 ::selection {
-    background: rgba(192, 192, 192, 0.2);
+    background: rgba(139, 124, 247, 0.3);
     color: var(--plata-blanca);
 }
 
@@ -256,13 +275,13 @@ button {
 }
 
 @keyframes glow {
-    0%, 100% { box-shadow: 0 0 5px rgba(192,192,192,0.1); }
-    50%      { box-shadow: 0 0 20px rgba(192,192,192,0.15); }
+    0%, 100% { box-shadow: 0 0 5px rgba(139,124,247,0.1); }
+    50%      { box-shadow: 0 0 25px rgba(139,124,247,0.2); }
 }
 
 @keyframes borderGlow {
-    0%, 100% { border-color: rgba(192,192,192,0.1); }
-    50%      { border-color: rgba(192,192,192,0.3); }
+    0%, 100% { border-color: rgba(139,124,247,0.1); }
+    50%      { border-color: rgba(139,124,247,0.35); }
 }
 
 @keyframes spin {
@@ -282,6 +301,11 @@ button {
 @keyframes eqBounce {
     0%, 100% { transform: scaleY(0.3); }
     50%      { transform: scaleY(1); }
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(139,124,247,0.1); }
+    50%      { box-shadow: 0 0 40px rgba(139,124,247,0.25); }
 }
 
 /* ──────────────────────────────────
@@ -316,7 +340,7 @@ button {
 .w-full      { width: 100%; }
 
 /* ──────────────────────────────────
-   🔘 BOTONES GLOBALES
+   🔘 BOTONES GLOBALES — GLASSMORPHISM
    ────────────────────────────────── */
 .btn {
     display: inline-flex;
@@ -342,7 +366,7 @@ button {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
     transition: var(--trans-lenta);
 }
 
@@ -350,33 +374,36 @@ button {
     left: 100%;
 }
 
-/* Botón principal - Plata */
+/* Botón principal — Glow */
 .btn-primary {
     background: var(--grad-boton);
     color: var(--plata-blanca);
-    border: 1px solid rgba(192,192,192,0.2);
+    border: 1px solid rgba(139,124,247,0.25);
+    backdrop-filter: blur(10px);
 }
 
 .btn-primary:hover {
     background: var(--grad-boton-hover);
-    color: var(--negro-base);
+    color: #fff;
     border-color: var(--acento-principal);
-    box-shadow: var(--sombra-glow);
+    box-shadow: 0 0 25px rgba(139,124,247,0.3), 0 0 50px rgba(139,124,247,0.1);
     transform: translateY(-2px);
 }
 
 /* Botón outline */
 .btn-outline {
-    background: transparent;
+    background: var(--glass-bg);
     color: var(--plata-clara);
-    border: 1px solid rgba(192,192,192,0.25);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
 }
 
 .btn-outline:hover {
-    background: rgba(192,192,192,0.08);
-    border-color: var(--acento-principal);
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
     color: var(--plata-blanca);
     transform: translateY(-2px);
+    box-shadow: var(--glass-shadow);
 }
 
 /* Botón pequeño */
@@ -402,19 +429,21 @@ button {
 }
 
 /* ──────────────────────────────────
-   📦 CARDS GLOBALES
+   📦 CARDS GLOBALES — GLASS
    ────────────────────────────────── */
 .card {
-    background: var(--grad-card);
-    border: var(--borde-card);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: var(--radio-md);
     overflow: hidden;
     transition: var(--trans-suave);
 }
 
 .card:hover {
-    border-color: rgba(192,192,192,0.15);
-    box-shadow: var(--sombra-plata);
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-hover);
     transform: translateY(-4px);
 }
 
@@ -430,15 +459,16 @@ button {
     letter-spacing: 1px;
     text-transform: uppercase;
     border-radius: 50px;
-    background: rgba(192,192,192,0.1);
-    color: var(--plata-clara);
-    border: 1px solid rgba(192,192,192,0.15);
+    background: rgba(139,124,247,0.1);
+    color: var(--acento-principal);
+    border: 1px solid rgba(139,124,247,0.2);
+    backdrop-filter: blur(8px);
 }
 
 .badge-gold {
-    background: rgba(212,175,55,0.15);
+    background: rgba(224,180,74,0.12);
     color: var(--acento-dorado);
-    border-color: rgba(212,175,55,0.3);
+    border-color: rgba(224,180,74,0.25);
 }
 
 /* ──────────────────────────────────
@@ -456,30 +486,33 @@ button {
 
 .toast {
     padding: 16px 24px;
-    border-radius: var(--radio-sm);
+    border-radius: var(--radio-md);
     font-size: 0.85rem;
     font-weight: 500;
     animation: fadeIn 0.3s ease;
     min-width: 280px;
     border-left: 3px solid;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 
 .toast-success {
-    background: rgba(46,213,115,0.1);
+    background: rgba(62,230,138,0.08);
     color: var(--acento-exito);
     border-color: var(--acento-exito);
 }
 
 .toast-error {
-    background: rgba(255,71,87,0.1);
+    background: rgba(255,77,106,0.08);
     color: var(--acento-error);
     border-color: var(--acento-error);
 }
 
 .toast-info {
-    background: rgba(192,192,192,0.1);
-    color: var(--plata-clara);
-    border-color: var(--plata-media);
+    background: rgba(139,124,247,0.08);
+    color: var(--acento-principal);
+    border-color: var(--acento-principal);
 }
 
 /* ──────────────────────────────────

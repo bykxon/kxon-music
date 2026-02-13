@@ -1,21 +1,21 @@
 /* ============================================
-   🔲 DASHBOARD MODALS CSS - KXON
+   🔲 DASHBOARD MODALS CSS — KXON GLASSMORPHISM
    Todos los modales del dashboard
    ============================================ */
 
 /* ──────────────────────────────────
-   🔲 MODAL BASE
+   🔲 MODAL BASE — GLASS
    ────────────────────────────────── */
 .modal-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,.75);
+    background: rgba(3,3,8,0.7);
     z-index: 200;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .modal-overlay.show {
@@ -23,9 +23,9 @@
 }
 
 .modal {
-    background: var(--negro-suave);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: var(--radio-lg);
+    background: rgba(12,12,24,0.92);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
     width: 100%;
     max-width: 500px;
     max-height: 90vh;
@@ -33,6 +33,9 @@
     animation: fadeIn .3s ease;
     position: relative;
     margin: 20px;
+    backdrop-filter: blur(var(--glass-blur-strong));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 60px rgba(139,124,247,0.05);
 }
 
 .modal::before {
@@ -40,7 +43,8 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(192,192,192,.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(139,124,247,0.2), transparent);
+    border-radius: 20px 20px 0 0;
 }
 
 .modal-header {
@@ -58,20 +62,24 @@
 }
 
 .modal-close {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--plata-media);
     font-size: 1.1rem;
     transition: var(--trans-normal);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
 }
 
 .modal-close:hover {
-    background: rgba(255,255,255,.05);
-    color: var(--plata-blanca);
+    background: rgba(255,77,106,0.08);
+    border-color: rgba(255,77,106,0.2);
+    color: var(--acento-error);
 }
 
 .modal-body {
@@ -84,7 +92,7 @@
 .modal-form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 20px;
 }
 
 .form-group {
@@ -106,21 +114,22 @@
 .form-textarea {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(255,255,255,.03);
-    border: 1px solid rgba(255,255,255,.08);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radio-sm);
     color: var(--plata-blanca);
     font-family: var(--font-cuerpo);
     font-size: .88rem;
     transition: var(--trans-suave);
     outline: none;
+    backdrop-filter: blur(10px);
 }
 
 .form-input:focus,
 .form-textarea:focus {
-    border-color: rgba(192,192,192,.3);
-    background: rgba(255,255,255,.05);
-    box-shadow: 0 0 0 3px rgba(192,192,192,.05);
+    border-color: rgba(139,124,247,0.35);
+    background: var(--glass-bg-hover);
+    box-shadow: 0 0 0 3px rgba(139,124,247,0.08), 0 0 20px rgba(139,124,247,0.05);
 }
 
 .form-input::placeholder,
@@ -143,27 +152,30 @@
 
 .file-upload-area {
     padding: 32px 20px;
-    border: 2px dashed rgba(255,255,255,.08);
+    border: 2px dashed rgba(139,124,247,0.15);
     border-radius: var(--radio-md);
     text-align: center;
     cursor: pointer;
     transition: var(--trans-suave);
+    background: var(--glass-bg);
 }
 
 .file-upload-area:hover {
-    border-color: rgba(192,192,192,.2);
-    background: rgba(255,255,255,.02);
+    border-color: rgba(139,124,247,0.3);
+    background: var(--glass-bg-hover);
+    box-shadow: 0 0 20px rgba(139,124,247,0.05);
 }
 
 .file-upload-area.has-file {
-    border-color: rgba(46,213,115,.3);
-    background: rgba(46,213,115,.03);
+    border-color: rgba(62,230,138,0.3);
+    background: rgba(62,230,138,0.03);
 }
 
 .file-upload-icon {
     font-size: 2rem;
     margin-bottom: 10px;
     opacity: .4;
+    color: var(--acento-principal);
 }
 
 .file-upload-text {
@@ -196,6 +208,7 @@
     overflow: hidden;
     margin-top: 10px;
     display: none;
+    border: 1px solid var(--glass-border);
 }
 
 .img-preview img {
@@ -220,9 +233,9 @@
 .btn-modal-submit {
     flex: 1;
     padding: 13px;
-    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    background: rgba(139,124,247,0.1);
     color: var(--plata-blanca);
-    border: 1px solid rgba(192,192,192,.2);
+    border: 1px solid rgba(139,124,247,0.25);
     border-radius: var(--radio-sm);
     font-family: var(--font-titulo);
     font-weight: 700;
@@ -232,12 +245,16 @@
     transition: var(--trans-suave);
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
 }
 
 .btn-modal-submit:hover {
-    background: linear-gradient(135deg, #c0c0c0, #888);
-    color: var(--negro-base);
+    background: var(--grad-boton-hover);
+    color: #fff;
     border-color: var(--acento-principal);
+    box-shadow: 0 0 25px rgba(139,124,247,0.25);
+    transform: translateY(-1px);
 }
 
 .btn-modal-submit:disabled {
@@ -256,8 +273,8 @@
     top: 50%; left: 50%;
     width: 18px; height: 18px;
     margin: -9px 0 0 -9px;
-    border: 2px solid rgba(192,192,192,.3);
-    border-top-color: var(--plata-blanca);
+    border: 2px solid rgba(139,124,247,0.3);
+    border-top-color: var(--acento-principal);
     border-radius: 50%;
     animation: spin .6s linear infinite;
 }
@@ -272,11 +289,14 @@
     text-transform: uppercase;
     transition: var(--trans-normal);
     border-radius: var(--radio-sm);
+    cursor: pointer;
+    background: none;
+    border: none;
 }
 
 .btn-modal-cancel:hover {
     color: var(--plata-blanca);
-    background: rgba(255,255,255,.03);
+    background: var(--glass-bg);
 }
 
 /* ──────────────────────────────────
@@ -293,14 +313,14 @@
 
 .upload-bar {
     height: 4px;
-    background: var(--negro-hover);
+    background: rgba(139,124,247,0.1);
     border-radius: 4px;
     overflow: hidden;
 }
 
 .upload-bar-fill {
     height: 100%;
-    background: var(--acento-exito);
+    background: linear-gradient(90deg, var(--acento-principal), var(--acento-exito));
     border-radius: 4px;
     width: 0%;
     transition: width .3s ease;
