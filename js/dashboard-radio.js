@@ -1,6 +1,7 @@
 /* ============================================
    📻 DASHBOARD-RADIO.JS — KXON
    Radio KXON: reproducción continua, cola, shuffle
+   FIX: Imagen fallback sin servicio externo
    FIX: Conflicto con player bar resuelto
    ============================================ */
 (function () {
@@ -8,6 +9,9 @@
     var db = window.db;
     var K = window.KXON;
     var radioAudio = K.radioAudio;
+
+    /* ── Imagen fallback SVG inline (nunca falla) ── */
+    var FALLBACK_IMG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#111"/><text x="150" y="160" text-anchor="middle" font-size="60" fill="#333">♪</text></svg>');
 
     /* ══════════════════════════════════════════
        📻 INICIALIZAR RADIO
@@ -20,14 +24,14 @@
             K.radioPlaylist = (r.data || []).map(function (s) {
                 return {
                     id: s.id, titulo: s.titulo, archivo_url: s.archivo_url,
-                    imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '',
+                    imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || FALLBACK_IMG,
                     album: s.albumes ? s.albumes.titulo : 'KXON Radio',
                     duracion: s.duracion || '--:--', reproducciones: s.reproducciones || 0
                 };
             });
             K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
             var c = document.getElementById('radioQueueCount');
-            if (c) c.textContent = K.radioPlaylist.length + ' canciones';
+            if (c) c.textContent = K.radioPlaylist.length + ' canciones en cola';
             renderRadioQueue();
             K.radioReady = true;
         } catch (e) { console.error('Radio error:', e); }
@@ -53,7 +57,6 @@
         K.radioIndex = idx;
         var t = list[idx];
 
-        // ✅ FIX: Detener TODAS las otras fuentes de audio antes de reproducir radio
         K.stopAllAudio('radio');
         K.activeSource = 'radio';
 
@@ -62,9 +65,10 @@
         radioAudio.play();
         K.radioIsPlaying = true;
 
-        // Actualizar UI del radio
+        var imgSrc = t.imagen_url || FALLBACK_IMG;
+
         var d = document.getElementById('radioDisc'); if (d) d.classList.add('spinning');
-        var di = document.getElementById('radioDiscImg'); if (di) di.src = t.imagen_url || 'https://placehold.co/300x300/111/333?text=♪';
+        var di = document.getElementById('radioDiscImg'); if (di) { di.src = imgSrc; di.onerror = function() { this.src = FALLBACK_IMG; }; }
         var oa = document.getElementById('radioOnAir'); if (oa) oa.classList.add('active');
         var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.add('playing');
         var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '⏸';
@@ -72,16 +76,18 @@
         var ta = document.getElementById('radioTrackAlbum'); if (ta) ta.textContent = t.album;
         var gl = document.getElementById('radioProgressGlow'); if (gl) gl.classList.add('visible');
 
+        /* Activar wave animation */
+        var wave = document.getElementById('radioWave');
+        if (wave) wave.classList.add('active');
+
         updateRQHighlight();
 
-        // ✅ FIX: Actualizar player bar con info de radio
         document.getElementById('playerBar').classList.add('show');
         document.getElementById('playerTitle').textContent = t.titulo;
-        document.getElementById('playerCover').src = t.imagen_url || '';
+        document.getElementById('playerCover').src = imgSrc;
         document.getElementById('playerPlayPause').textContent = '⏸';
         K.isPlaying = true;
 
-        // Actualizar fav state si existe la función
         if (typeof K.updateRadioFavState === 'function') {
             setTimeout(K.updateRadioFavState, 100);
         }
@@ -89,7 +95,6 @@
             setTimeout(K.updatePlayerFavState, 100);
         }
 
-               // ✅ FIX: Usar RPC para incrementar atómicamente
         db.rpc('increment_reproducciones', { song_id: t.id }).then(function(r) {
             if (r.error) console.warn('Error updating radio plays:', r.error.message);
         });
@@ -103,13 +108,13 @@
             var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
             var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
             var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
+            var wave = document.getElementById('radioWave'); if (wave) wave.classList.remove('active');
             document.getElementById('playerPlayPause').textContent = '▶';
             K.isPlaying = false;
         } else {
             if (K.radioIndex === -1) {
                 radioPlay(0);
             } else {
-                // ✅ FIX: Detener otras fuentes antes de reanudar radio
                 K.stopAllAudio('radio');
                 K.activeSource = 'radio';
 
@@ -118,6 +123,7 @@
                 var d2 = document.getElementById('radioDisc'); if (d2) d2.classList.add('spinning');
                 var pb2 = document.getElementById('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
                 var pi2 = document.getElementById('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
+                var wave2 = document.getElementById('radioWave'); if (wave2) wave2.classList.add('active');
                 document.getElementById('playerPlayPause').textContent = '⏸';
                 K.isPlaying = true;
             }
@@ -144,7 +150,7 @@
         if (K.radioShuffleMode) {
             if (btn) btn.classList.add('active');
             K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
-            K.showToast('Aleatorio activado', 'success');
+            K.showToast('🔀 Aleatorio activado', 'success');
         } else {
             if (btn) btn.classList.remove('active');
             K.showToast('Modo secuencial', 'success');
@@ -159,13 +165,11 @@
         if (!radioAudio.duration) return;
         var p = (radioAudio.currentTime / radioAudio.duration) * 100;
 
-        // Actualizar barra del radio
         var f = document.getElementById('radioProgressFill'); if (f) f.style.width = p + '%';
         var g = document.getElementById('radioProgressGlow'); if (g) g.style.left = p + '%';
         var ct = document.getElementById('radioCurrentTime'); if (ct) ct.textContent = K.formatTime(radioAudio.currentTime);
         var dt = document.getElementById('radioDuration'); if (dt) dt.textContent = K.formatTime(radioAudio.duration);
 
-        // ✅ FIX: Solo actualizar player bar si la fuente activa es radio
         if (K.activeSource === 'radio') {
             document.getElementById('progressFill').style.width = p + '%';
             document.getElementById('playerCurrentTime').textContent = K.formatTime(radioAudio.currentTime);
@@ -178,39 +182,53 @@
     /* ══════════════════════════════════════════
        🎚 CONTROLES UI
        ══════════════════════════════════════════ */
-    document.getElementById('radioProgressBar').addEventListener('click', function (e) {
+    var rpb = document.getElementById('radioProgressBar');
+    if (rpb) rpb.addEventListener('click', function (e) {
         if (!radioAudio.duration) return;
         var r = this.getBoundingClientRect();
         radioAudio.currentTime = ((e.clientX - r.left) / r.width) * radioAudio.duration;
     });
 
-    document.getElementById('radioVolumeBar').addEventListener('click', function (e) {
+    var rvb = document.getElementById('radioVolumeBar');
+    if (rvb) rvb.addEventListener('click', function (e) {
         var r = this.getBoundingClientRect();
         var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
         K.radioVolume = p; radioAudio.volume = p;
-        document.getElementById('radioVolumeFill').style.width = (p * 100) + '%';
-        document.getElementById('radioVolPct').textContent = Math.round(p * 100) + '%';
+        var vf = document.getElementById('radioVolumeFill'); if (vf) vf.style.width = (p * 100) + '%';
+        var vp = document.getElementById('radioVolPct'); if (vp) vp.textContent = Math.round(p * 100) + '%';
         var ic = document.getElementById('radioVolIcon');
-        if (p === 0) ic.textContent = '🔇'; else if (p < 0.3) ic.textContent = '🔈';
-        else if (p < 0.7) ic.textContent = '🔉'; else ic.textContent = '🔊';
-    });
-
-    document.getElementById('radioVolIcon').addEventListener('click', function () {
-        if (radioAudio.volume > 0) {
-            radioAudio.volume = 0;
-            document.getElementById('radioVolumeFill').style.width = '0%';
-            document.getElementById('radioVolPct').textContent = '0%'; this.textContent = '🔇';
-        } else {
-            radioAudio.volume = K.radioVolume || 0.7;
-            document.getElementById('radioVolumeFill').style.width = (K.radioVolume * 100) + '%';
-            document.getElementById('radioVolPct').textContent = Math.round(K.radioVolume * 100) + '%'; this.textContent = '🔊';
+        if (ic) {
+            if (p === 0) ic.textContent = '🔇'; else if (p < 0.3) ic.textContent = '🔈';
+            else if (p < 0.7) ic.textContent = '🔉'; else ic.textContent = '🔊';
         }
     });
 
-    document.getElementById('radioPlayBtn').addEventListener('click', function () { radioToggle(); });
-    document.getElementById('radioNext').addEventListener('click', function () { radioNextT(); });
-    document.getElementById('radioPrev').addEventListener('click', function () { radioPrevT(); });
-    document.getElementById('radioShuffle').addEventListener('click', function () { radioShuffleToggle(); });
+    var rvi = document.getElementById('radioVolIcon');
+    if (rvi) rvi.addEventListener('click', function () {
+        if (radioAudio.volume > 0) {
+            radioAudio.volume = 0;
+            var vf = document.getElementById('radioVolumeFill'); if (vf) vf.style.width = '0%';
+            var vp = document.getElementById('radioVolPct'); if (vp) vp.textContent = '0%';
+            this.textContent = '🔇';
+        } else {
+            radioAudio.volume = K.radioVolume || 0.7;
+            var vf2 = document.getElementById('radioVolumeFill'); if (vf2) vf2.style.width = (K.radioVolume * 100) + '%';
+            var vp2 = document.getElementById('radioVolPct'); if (vp2) vp2.textContent = Math.round(K.radioVolume * 100) + '%';
+            this.textContent = '🔊';
+        }
+    });
+
+    var rpBtn = document.getElementById('radioPlayBtn');
+    if (rpBtn) rpBtn.addEventListener('click', function () { radioToggle(); });
+
+    var rnBtn = document.getElementById('radioNext');
+    if (rnBtn) rnBtn.addEventListener('click', function () { radioNextT(); });
+
+    var rpvBtn = document.getElementById('radioPrev');
+    if (rpvBtn) rpvBtn.addEventListener('click', function () { radioPrevT(); });
+
+    var rsBtn = document.getElementById('radioShuffle');
+    if (rsBtn) rsBtn.addEventListener('click', function () { radioShuffleToggle(); });
 
     /* ══════════════════════════════════════════
        📋 COLA DE REPRODUCCIÓN
@@ -225,10 +243,10 @@
         var h = '';
         for (var i = 0; i < list.length; i++) {
             var s = list[i]; var now = (i === K.radioIndex);
-            var img = s.imagen_url || 'https://placehold.co/80x80/111/333?text=♪';
+            var img = s.imagen_url || FALLBACK_IMG;
             h += '<div class="radio-queue-item' + (now ? ' now-playing' : '') + '" onclick="window._rjump(' + i + ')">';
             h += '<span class="radio-queue-num">' + (now ? '▶' : (i + 1)) + '</span>';
-            h += '<div class="radio-queue-cover"><img src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/80x80/111/333?text=♪\'"></div>';
+            h += '<div class="radio-queue-cover"><img src="' + img + '" alt="" onerror="this.src=\'' + FALLBACK_IMG + '\'"></div>';
             h += '<div class="radio-queue-info"><div class="radio-queue-title">' + s.titulo + '</div><div class="radio-queue-album">' + s.album + '</div></div>';
             if (now && K.radioIsPlaying) {
                 h += '<div class="radio-eq"><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div></div>';

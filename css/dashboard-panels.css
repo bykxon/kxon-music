@@ -1277,65 +1277,94 @@
 }
 
 /* ══════════════════════════════════════════════
-   📻 RADIO KXON — DISEÑO PREMIUM MEJORADO
+   📻 RADIO KXON — DISEÑO ULTRA PREMIUM
    ══════════════════════════════════════════════ */
 
-/* ── Radio Player Container ── */
+/* ── Container Principal ── */
 .radio-player {
     position: relative;
-    border-radius: 20px;
-    margin-bottom: 28px;
+    border-radius: 24px;
+    margin-bottom: 32px;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
 }
 
 .radio-player-bg {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: 
-        radial-gradient(ellipse at 30% 20%, rgba(192,192,192,0.04) 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 80%, rgba(192,192,192,0.02) 0%, transparent 50%),
-        linear-gradient(135deg, rgba(14,14,14,0.95) 0%, rgba(8,8,8,0.98) 100%);
+    background:
+        radial-gradient(ellipse at 20% 30%, rgba(192,192,192,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(192,192,192,0.02) 0%, transparent 40%),
+        linear-gradient(160deg, rgba(16,16,16,0.98) 0%, rgba(6,6,6,1) 100%);
     z-index: 0;
+}
+
+.radio-player-ambient {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0.03;
+    z-index: 0;
+    transition: opacity 1s ease;
+    background: radial-gradient(circle at 25% 40%, rgba(192,192,192,0.3) 0%, transparent 60%);
 }
 
 .radio-player-inner {
     position: relative;
     z-index: 1;
-    padding: 32px;
+    padding: 36px;
 }
 
-/* ── Radio Main: Disco + Info ── */
+/* ── Main: Disco + Info ── */
 .radio-player-main {
     display: flex;
     align-items: center;
-    gap: 32px;
-    margin-bottom: 28px;
+    gap: 36px;
+    margin-bottom: 32px;
 }
 
-/* ── Disco Vinilo Premium ── */
+/* ═══════════════════════════════════
+   🎵 DISCO VINILO REALISTA
+   ═══════════════════════════════════ */
 .radio-disc-wrapper {
     flex-shrink: 0;
     position: relative;
-    width: 160px;
-    height: 160px;
+    width: 180px;
+    height: 180px;
+}
+
+.radio-disc-pulse {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100%; height: 100%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid rgba(192,192,192,0.04);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.radio-disc.spinning ~ .radio-disc-pulse,
+.radio-disc-wrapper .radio-disc.spinning ~ .radio-disc-pulse {
+    animation: none;
 }
 
 .radio-disc-ring {
     position: absolute;
-    top: -6px; left: -6px;
-    width: calc(100% + 12px);
-    height: calc(100% + 12px);
+    top: -8px; left: -8px;
+    width: calc(100% + 16px);
+    height: calc(100% + 16px);
     border-radius: 50%;
-    border: 1px solid rgba(192,192,192,0.06);
-    background: linear-gradient(135deg, rgba(192,192,192,0.03), transparent, rgba(192,192,192,0.02));
+    border: 1px solid rgba(192,192,192,0.04);
+    background: radial-gradient(circle, transparent 60%, rgba(192,192,192,0.02) 100%);
     z-index: 0;
-    transition: all 0.5s ease;
+    transition: all 0.6s ease;
 }
 
-.radio-disc.spinning ~ .radio-disc-shadow,
 .radio-disc.spinning + .radio-disc-shadow {
-    box-shadow: 0 8px 40px rgba(192,192,192,0.08);
+    opacity: 1;
+    transform: scale(1.05);
 }
 
 .radio-disc {
@@ -1344,88 +1373,166 @@
     border-radius: 50%;
     overflow: hidden;
     position: relative;
-    border: 3px solid rgba(192,192,192,0.08);
-    box-shadow: 
-        0 4px 25px rgba(0,0,0,0.5),
-        inset 0 0 30px rgba(0,0,0,0.3);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 3px solid rgba(192,192,192,0.06);
+    box-shadow:
+        0 6px 30px rgba(0,0,0,0.6),
+        inset 0 0 40px rgba(0,0,0,0.4);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1;
+    background: #0a0a0a;
 }
 
 .radio-disc.spinning {
-    animation: discSpin 3s linear infinite;
-    border-color: rgba(192,192,192,0.2);
-    box-shadow: 
-        0 4px 35px rgba(192,192,192,0.06),
-        0 0 60px rgba(192,192,192,0.03),
-        inset 0 0 30px rgba(0,0,0,0.2);
+    animation: discSpin 2.5s linear infinite;
+    border-color: rgba(192,192,192,0.15);
+    box-shadow:
+        0 6px 40px rgba(192,192,192,0.05),
+        0 0 80px rgba(192,192,192,0.02),
+        inset 0 0 40px rgba(0,0,0,0.3);
 }
 
 .radio-disc-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.85) contrast(1.05);
-    transition: filter 0.5s ease;
+    filter: brightness(0.8) contrast(1.1) saturate(0.9);
+    transition: filter 0.6s ease;
+    position: relative;
+    z-index: 1;
 }
 
 .radio-disc.spinning .radio-disc-img {
-    filter: brightness(0.95) contrast(1.1);
+    filter: brightness(0.9) contrast(1.1) saturate(1);
 }
 
-.radio-disc-hole {
+.radio-disc-fallback {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 24px;
-    height: 24px;
-    background: radial-gradient(circle, #0a0a0a 40%, #111 70%, #1a1a1a 100%);
-    border-radius: 50%;
-    border: 2px solid rgba(192,192,192,0.12);
-    z-index: 3;
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
-}
-
-.radio-disc-hole-inner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
-    background: rgba(192,192,192,0.15);
-    border-radius: 50%;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: rgba(192,192,192,0.15);
+    background: linear-gradient(135deg, #111 0%, #0a0a0a 100%);
+    z-index: 0;
 }
 
 .radio-disc-grooves {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     border-radius: 50%;
-    background: 
+    background:
         repeating-radial-gradient(
             circle at center,
             transparent 0px,
-            transparent 8px,
-            rgba(0,0,0,0.08) 8px,
-            rgba(0,0,0,0.08) 9px
+            transparent 6px,
+            rgba(0,0,0,0.12) 6px,
+            rgba(0,0,0,0.12) 7px
         );
     z-index: 2;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.4;
+}
+
+.radio-disc-hole {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    background: radial-gradient(circle, #080808 30%, #111 60%, #1a1a1a 100%);
+    border-radius: 50%;
+    border: 2.5px solid rgba(192,192,192,0.1);
+    z-index: 4;
+    box-shadow:
+        inset 0 0 8px rgba(0,0,0,0.9),
+        0 0 6px rgba(0,0,0,0.5);
+}
+
+.radio-disc-hole-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(192,192,192,0.2), rgba(192,192,192,0.08));
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(192,192,192,0.1);
+}
+
+.radio-disc-shine {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.03) 100%);
+    z-index: 3;
+    pointer-events: none;
 }
 
 .radio-disc-shadow {
     position: absolute;
-    bottom: -10px;
-    left: 10%;
-    width: 80%;
-    height: 20px;
-    background: radial-gradient(ellipse, rgba(0,0,0,0.3) 0%, transparent 70%);
+    bottom: -12px;
+    left: 8%;
+    width: 84%;
+    height: 24px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.35) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
-    filter: blur(5px);
-    transition: all 0.5s ease;
+    filter: blur(6px);
+    transition: all 0.6s ease;
+    opacity: 0.7;
+}
+
+/* ── Brazo del tocadiscos ── */
+.radio-tonearm {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    width: 60px;
+    height: 120px;
+    z-index: 5;
+    transform-origin: top right;
+    transform: rotate(-25deg);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.radio-disc.spinning ~ .radio-tonearm {
+    transform: rotate(-8deg);
+}
+
+.radio-tonearm-base {
+    position: absolute;
+    top: 0; right: 0;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, #333 30%, #222 100%);
+    border-radius: 50%;
+    border: 2px solid rgba(192,192,192,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.radio-tonearm-arm {
+    position: absolute;
+    top: 8px; right: 6px;
+    width: 3px;
+    height: 90px;
+    background: linear-gradient(180deg, #444 0%, #333 50%, #2a2a2a 100%);
+    border-radius: 2px;
+    transform-origin: top center;
+    transform: rotate(10deg);
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+}
+
+.radio-tonearm-head {
+    position: absolute;
+    bottom: 15px; right: -2px;
+    width: 10px;
+    height: 14px;
+    background: linear-gradient(135deg, #555 0%, #333 100%);
+    border-radius: 2px 2px 1px 1px;
+    transform: rotate(10deg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 @keyframes discSpin {
@@ -1433,10 +1540,40 @@
     to { transform: rotate(360deg); }
 }
 
-/* ── Radio Info ── */
+/* ═══════════════════════════════════
+   📡 INFO DE CANCIÓN
+   ═══════════════════════════════════ */
 .radio-info {
     flex: 1;
     min-width: 0;
+}
+
+.radio-station-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 4px 14px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
+}
+
+.radio-station-freq {
+    font-family: var(--font-titulo);
+    font-size: .9rem;
+    font-weight: 900;
+    color: rgba(192,192,192,0.5);
+    letter-spacing: -0.5px;
+}
+
+.radio-station-name {
+    font-family: var(--font-titulo);
+    font-size: .52rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(192,192,192,0.25);
 }
 
 .radio-on-air {
@@ -1444,46 +1581,46 @@
     align-items: center;
     gap: 8px;
     padding: 5px 16px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(255,255,255,0.04);
     border-radius: 50px;
-    margin-bottom: 14px;
-    transition: all 0.4s ease;
+    margin-bottom: 16px;
+    transition: all 0.5s ease;
 }
 
 .radio-on-air.active {
-    background: rgba(255,71,87,0.06);
-    border-color: rgba(255,71,87,0.18);
-    box-shadow: 0 0 20px rgba(255,71,87,0.05);
+    background: rgba(255,71,87,0.05);
+    border-color: rgba(255,71,87,0.15);
+    box-shadow: 0 0 25px rgba(255,71,87,0.04);
 }
 
 .radio-on-air-dot {
-    width: 8px;
-    height: 8px;
-    background: rgba(192,192,192,0.2);
+    width: 7px;
+    height: 7px;
+    background: rgba(192,192,192,0.15);
     border-radius: 50%;
-    transition: all 0.4s ease;
+    transition: all 0.5s ease;
 }
 
 .radio-on-air.active .radio-on-air-dot {
     background: #ff4757;
-    box-shadow: 0 0 10px rgba(255,71,87,0.6), 0 0 20px rgba(255,71,87,0.2);
+    box-shadow: 0 0 8px rgba(255,71,87,0.6), 0 0 20px rgba(255,71,87,0.15);
     animation: radioPulse 1.5s ease-in-out infinite;
 }
 
 @keyframes radioPulse {
-    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px rgba(255,71,87,0.6); }
-    50% { opacity: 0.4; transform: scale(1.4); box-shadow: 0 0 15px rgba(255,71,87,0.3); }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.5); }
 }
 
 .radio-on-air-text {
     font-family: var(--font-titulo);
-    font-size: .58rem;
+    font-size: .55rem;
     font-weight: 800;
-    letter-spacing: 3px;
+    letter-spacing: 3.5px;
     text-transform: uppercase;
-    color: rgba(192,192,192,0.3);
-    transition: color 0.4s ease;
+    color: rgba(192,192,192,0.2);
+    transition: color 0.5s ease;
 }
 
 .radio-on-air.active .radio-on-air-text {
@@ -1492,7 +1629,7 @@
 
 .radio-track-title {
     font-family: var(--font-titulo);
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--plata-blanca);
     margin-bottom: 6px;
@@ -1504,75 +1641,85 @@
 }
 
 .radio-track-album {
-    font-size: .8rem;
-    color: rgba(192,192,192,0.35);
+    font-size: .78rem;
+    color: rgba(192,192,192,0.3);
     font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
+    letter-spacing: 0.3px;
 }
 
-/* ── Sound Wave Animation ── */
-.radio-track-wave {
+/* ── Visualizador de ondas ── */
+.radio-visualizer {
     display: flex;
     align-items: flex-end;
-    gap: 3px;
-    height: 20px;
-    opacity: 0.15;
-    transition: opacity 0.5s ease;
+    gap: 2.5px;
+    height: 28px;
+    opacity: 0.12;
+    transition: opacity 0.6s ease;
 }
 
-.radio-on-air.active ~ .radio-track-title ~ .radio-track-album ~ .radio-track-wave,
-.radio-info .radio-track-wave {
-    opacity: 0.15;
+.radio-visualizer.active {
+    opacity: 0.6;
 }
 
-.radio-wave-bar {
-    width: 3px;
-    background: linear-gradient(to top, rgba(192,192,192,0.2), rgba(192,192,192,0.5));
-    border-radius: 2px;
-    height: 30%;
-    transition: height 0.3s ease;
+.radio-viz-bar {
+    flex: 1;
+    max-width: 5px;
+    min-width: 2px;
+    background: linear-gradient(to top, rgba(192,192,192,0.15), rgba(192,192,192,0.5));
+    border-radius: 3px;
+    height: 20%;
+    transition: all 0.15s ease;
 }
 
-.radio-disc.spinning ~ * .radio-track-wave,
-.radio-on-air.active ~ * .radio-track-wave {
-    opacity: 0.5;
+.radio-visualizer.active .radio-viz-bar {
+    animation: vizBounce 0.5s ease-in-out infinite;
+    background: linear-gradient(to top, rgba(192,192,192,0.2), rgba(192,192,192,0.65));
 }
 
-.radio-disc.spinning ~ * .radio-wave-bar,
-.radio-on-air.active ~ * .radio-wave-bar {
-    animation: waveBounce 0.6s ease-in-out infinite;
-}
+.radio-viz-bar:nth-child(1) { animation-delay: 0s; }
+.radio-viz-bar:nth-child(2) { animation-delay: 0.04s; }
+.radio-viz-bar:nth-child(3) { animation-delay: 0.08s; }
+.radio-viz-bar:nth-child(4) { animation-delay: 0.12s; }
+.radio-viz-bar:nth-child(5) { animation-delay: 0.16s; }
+.radio-viz-bar:nth-child(6) { animation-delay: 0.2s; }
+.radio-viz-bar:nth-child(7) { animation-delay: 0.24s; }
+.radio-viz-bar:nth-child(8) { animation-delay: 0.28s; }
+.radio-viz-bar:nth-child(9) { animation-delay: 0.32s; }
+.radio-viz-bar:nth-child(10) { animation-delay: 0.36s; }
+.radio-viz-bar:nth-child(11) { animation-delay: 0.4s; }
+.radio-viz-bar:nth-child(12) { animation-delay: 0.44s; }
+.radio-viz-bar:nth-child(13) { animation-delay: 0.48s; }
+.radio-viz-bar:nth-child(14) { animation-delay: 0.52s; }
+.radio-viz-bar:nth-child(15) { animation-delay: 0.56s; }
+.radio-viz-bar:nth-child(16) { animation-delay: 0.6s; }
 
-.radio-wave-bar:nth-child(1) { height: 40%; animation-delay: 0s; }
-.radio-wave-bar:nth-child(2) { height: 70%; animation-delay: 0.08s; }
-.radio-wave-bar:nth-child(3) { height: 50%; animation-delay: 0.16s; }
-.radio-wave-bar:nth-child(4) { height: 90%; animation-delay: 0.24s; }
-.radio-wave-bar:nth-child(5) { height: 35%; animation-delay: 0.32s; }
-.radio-wave-bar:nth-child(6) { height: 65%; animation-delay: 0.4s; }
-.radio-wave-bar:nth-child(7) { height: 45%; animation-delay: 0.48s; }
-
-@keyframes waveBounce {
-    0%, 100% { transform: scaleY(0.3); }
+@keyframes vizBounce {
+    0%, 100% { transform: scaleY(0.2); }
+    25% { transform: scaleY(0.7); }
     50% { transform: scaleY(1); }
+    75% { transform: scaleY(0.5); }
 }
 
-/* ── Radio Progress ── */
+/* ═══════════════════════════════════
+   🎚 BARRA DE PROGRESO
+   ═══════════════════════════════════ */
 .radio-progress-section {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 24px;
-    padding: 0 4px;
+    margin-bottom: 28px;
+    padding: 0 8px;
 }
 
 .radio-time {
     font-family: var(--font-titulo);
-    font-size: .62rem;
+    font-size: .6rem;
     font-weight: 600;
-    color: rgba(192,192,192,0.3);
+    color: rgba(192,192,192,0.25);
     min-width: 38px;
     text-align: center;
     letter-spacing: 0.5px;
@@ -1581,7 +1728,7 @@
 .radio-progress-bar {
     flex: 1;
     height: 4px;
-    background: rgba(255,255,255,0.04);
+    background: transparent;
     border-radius: 6px;
     cursor: pointer;
     position: relative;
@@ -1590,30 +1737,39 @@
 }
 
 .radio-progress-bar:hover {
-    height: 6px;
+    height: 7px;
+}
+
+.radio-progress-track {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
 }
 
 .radio-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, rgba(192,192,192,0.25), rgba(192,192,192,0.6));
+    background: linear-gradient(90deg, rgba(192,192,192,0.2), rgba(192,192,192,0.55));
     border-radius: 6px;
     width: 0%;
-    transition: width 0.1s linear;
+    transition: width 0.15s linear;
     position: relative;
+    z-index: 1;
 }
 
 .radio-progress-glow {
     position: absolute;
-    top: -4px;
-    width: 12px;
-    height: 12px;
-    background: var(--plata-blanca);
+    top: -5px;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle, var(--plata-blanca) 30%, rgba(192,192,192,0.3) 100%);
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba(192,192,192,0.5), 0 0 20px rgba(192,192,192,0.2);
+    box-shadow: 0 0 12px rgba(192,192,192,0.5), 0 0 25px rgba(192,192,192,0.15);
     transform: translateX(-50%);
     opacity: 0;
     transition: opacity 0.3s ease;
     left: 0%;
+    z-index: 2;
 }
 
 .radio-progress-bar:hover .radio-progress-glow.visible {
@@ -1621,15 +1777,17 @@
 }
 
 .radio-progress-glow.visible {
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
-/* ── Radio Controls ── */
+/* ═══════════════════════════════════
+   🎛 CONTROLES
+   ═══════════════════════════════════ */
 .radio-controls {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 18px;
     margin-bottom: 24px;
 }
 
@@ -1640,127 +1798,127 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.25s ease;
-    position: relative;
-}
-
-.radio-ctrl-icon {
+    transition: all 0.3s ease;
+    color: rgba(192,192,192,0.5);
     font-size: .9rem;
-    transition: transform 0.2s ease;
 }
 
-.radio-ctrl-shuffle,
-.radio-ctrl-spacer {
-    width: 40px;
-    height: 40px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
+.radio-ctrl-shuffle {
+    width: 42px;
+    height: 42px;
+    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(255,255,255,0.04) !important;
     border-radius: 50%;
-}
-
-.radio-ctrl-spacer {
-    visibility: hidden;
 }
 
 .radio-ctrl-shuffle:hover {
-    background: rgba(192,192,192,0.06);
-    border-color: rgba(192,192,192,0.12);
-}
-
-.radio-ctrl-shuffle:hover .radio-ctrl-icon {
-    transform: scale(1.15);
+    background: rgba(192,192,192,0.05);
+    border-color: rgba(192,192,192,0.1) !important;
+    color: var(--plata-blanca);
+    transform: scale(1.1);
 }
 
 .radio-ctrl-shuffle.active {
-    background: rgba(192,192,192,0.08);
-    border-color: rgba(192,192,192,0.2);
-    box-shadow: 0 0 12px rgba(192,192,192,0.05);
+    background: rgba(192,192,192,0.06);
+    border-color: rgba(192,192,192,0.18) !important;
+    color: var(--plata-blanca);
+    box-shadow: 0 0 15px rgba(192,192,192,0.04);
 }
 
 .radio-ctrl-nav {
-    width: 46px;
-    height: 46px;
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.06);
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05) !important;
     border-radius: 50%;
-}
-
-.radio-ctrl-nav:hover {
-    background: rgba(192,192,192,0.08);
-    border-color: rgba(192,192,192,0.15);
-    transform: scale(1.08);
-}
-
-.radio-ctrl-nav .radio-ctrl-icon {
     font-size: 1rem;
 }
 
-/* ── Botón Play Principal ── */
-.radio-play-btn {
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, rgba(40,40,40,0.9), rgba(20,20,20,0.95));
-    border: 2px solid rgba(192,192,192,0.12) !important;
-    border-radius: 50%;
-    font-size: 1.3rem;
+.radio-ctrl-nav:hover {
+    background: rgba(192,192,192,0.06);
+    border-color: rgba(192,192,192,0.12) !important;
     color: var(--plata-blanca);
+    transform: scale(1.1);
+}
+
+/* ── Botón Play Espectacular ── */
+.radio-play-btn {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(145deg, rgba(45,45,45,0.9), rgba(18,18,18,0.95));
+    border: 2px solid rgba(192,192,192,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--plata-blanca);
+    cursor: pointer;
     position: relative;
-    overflow: hidden;
-    box-shadow: 
-        0 4px 20px rgba(0,0,0,0.4),
-        inset 0 1px 0 rgba(255,255,255,0.05);
+    overflow: visible;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 6px 25px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        inset 0 -2px 5px rgba(0,0,0,0.3);
 }
 
 .radio-play-btn:hover {
-    background: linear-gradient(135deg, rgba(192,192,192,0.9), rgba(140,140,140,0.9));
-    border-color: rgba(192,192,192,0.4) !important;
+    background: linear-gradient(145deg, rgba(192,192,192,0.85), rgba(150,150,150,0.9));
+    border-color: rgba(192,192,192,0.4);
     color: var(--negro-base);
-    transform: scale(1.1);
-    box-shadow: 
-        0 6px 30px rgba(192,192,192,0.15),
-        0 0 40px rgba(192,192,192,0.05);
+    transform: scale(1.12);
+    box-shadow:
+        0 8px 35px rgba(192,192,192,0.12),
+        0 0 50px rgba(192,192,192,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .radio-play-btn.playing {
-    background: linear-gradient(135deg, rgba(192,192,192,0.12), rgba(192,192,192,0.05));
-    border-color: rgba(192,192,192,0.25) !important;
-    box-shadow: 
-        0 0 25px rgba(192,192,192,0.06),
-        0 0 50px rgba(192,192,192,0.02);
+    background: linear-gradient(145deg, rgba(192,192,192,0.1), rgba(192,192,192,0.04));
+    border-color: rgba(192,192,192,0.2);
+    box-shadow:
+        0 0 30px rgba(192,192,192,0.05),
+        0 0 60px rgba(192,192,192,0.02);
 }
 
-.radio-play-ripple {
+.radio-play-ring {
     position: absolute;
     top: 50%; left: 50%;
     width: 100%; height: 100%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 1px solid rgba(192,192,192,0.1);
+    border: 1px solid rgba(192,192,192,0.06);
     opacity: 0;
     pointer-events: none;
 }
 
-.radio-play-btn.playing .radio-play-ripple {
-    animation: playRipple 2s ease-out infinite;
+.radio-play-btn.playing .radio-play-ring {
+    animation: ringPulse 2.5s ease-out infinite;
 }
 
-@keyframes playRipple {
-    0% { width: 100%; height: 100%; opacity: 0.3; }
-    100% { width: 180%; height: 180%; opacity: 0; }
+.radio-play-btn.playing .radio-play-ring.ring-2 {
+    animation: ringPulse 2.5s ease-out infinite 1.25s;
 }
 
-/* ── Radio Volume ── */
+@keyframes ringPulse {
+    0% { width: 100%; height: 100%; opacity: 0.25; border-color: rgba(192,192,192,0.15); }
+    100% { width: 200%; height: 200%; opacity: 0; border-color: rgba(192,192,192,0); }
+}
+
+/* ═══════════════════════════════════
+   🔊 VOLUMEN
+   ═══════════════════════════════════ */
 .radio-volume-section {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 0 4px;
-    max-width: 280px;
+    max-width: 260px;
     margin: 0 auto;
 }
 
 .radio-vol-icon {
-    font-size: .85rem;
+    font-size: .82rem;
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
@@ -1773,7 +1931,7 @@
 .radio-volume-bar {
     flex: 1;
     height: 4px;
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.035);
     border-radius: 6px;
     cursor: pointer;
     position: relative;
@@ -1786,7 +1944,7 @@
 
 .radio-volume-fill {
     height: 100%;
-    background: linear-gradient(90deg, rgba(192,192,192,0.2), rgba(192,192,192,0.5));
+    background: linear-gradient(90deg, rgba(192,192,192,0.15), rgba(192,192,192,0.45));
     border-radius: 6px;
     transition: width 0.1s ease;
     position: relative;
@@ -1797,13 +1955,13 @@
     right: -5px;
     top: 50%;
     transform: translateY(-50%);
-    width: 10px;
-    height: 10px;
-    background: var(--plata-blanca);
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, var(--plata-blanca) 40%, rgba(192,192,192,0.5) 100%);
     border-radius: 50%;
     opacity: 0;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 0 6px rgba(192,192,192,0.4);
+    transition: opacity 0.25s ease;
+    box-shadow: 0 0 8px rgba(192,192,192,0.3);
 }
 
 .radio-volume-bar:hover .radio-volume-thumb {
@@ -1812,15 +1970,17 @@
 
 .radio-vol-pct {
     font-family: var(--font-titulo);
-    font-size: .58rem;
+    font-size: .55rem;
     font-weight: 600;
-    color: rgba(192,192,192,0.25);
+    color: rgba(192,192,192,0.2);
     min-width: 34px;
     text-align: right;
     letter-spacing: 0.5px;
 }
 
-/* ── Radio Queue Section ── */
+/* ═══════════════════════════════════
+   📋 COLA DE REPRODUCCIÓN
+   ═══════════════════════════════════ */
 .radio-queue-section {
     margin-top: 8px;
 }
@@ -1829,94 +1989,95 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 
 .radio-queue-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
-.radio-queue-icon {
-    font-size: 1.1rem;
-    width: 38px;
-    height: 38px;
-    background: rgba(255,255,255,0.025);
+.radio-queue-icon-wrap {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
     border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 10px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+}
+
+.radio-queue-icon-inner {
+    font-size: 1.1rem;
+}
+
+.radio-queue-title-text {
+    font-family: var(--font-titulo);
+    font-size: .82rem;
+    font-weight: 700;
+    color: rgba(192,192,192,0.6);
+    letter-spacing: 0.3px;
 }
 
 .radio-queue-count {
     font-family: var(--font-titulo);
-    font-size: .6rem;
+    font-size: .58rem;
     font-weight: 600;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(192,192,192,0.25);
+    color: rgba(192,192,192,0.2);
     margin-top: 2px;
+    display: block;
 }
 
 .radio-queue-list {
     display: flex;
     flex-direction: column;
     gap: 3px;
-    max-height: 450px;
+    max-height: 480px;
     overflow-y: auto;
     padding-right: 4px;
 }
 
-/* Scrollbar */
-.radio-queue-list::-webkit-scrollbar {
-    width: 3px;
-}
-.radio-queue-list::-webkit-scrollbar-track {
-    background: transparent;
-}
-.radio-queue-list::-webkit-scrollbar-thumb {
-    background: rgba(192,192,192,0.08);
-    border-radius: 4px;
-}
-.radio-queue-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(192,192,192,0.15);
-}
+.radio-queue-list::-webkit-scrollbar { width: 3px; }
+.radio-queue-list::-webkit-scrollbar-track { background: transparent; }
+.radio-queue-list::-webkit-scrollbar-thumb { background: rgba(192,192,192,0.06); border-radius: 4px; }
+.radio-queue-list::-webkit-scrollbar-thumb:hover { background: rgba(192,192,192,0.12); }
 
-/* ── Radio Queue Items ── */
+/* ── Queue Items ── */
 .radio-queue-item {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 10px 14px;
-    background: rgba(255,255,255,0.012);
-    border: 1px solid rgba(255,255,255,0.025);
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.02);
     border-radius: 10px;
     transition: all 0.25s ease;
     cursor: pointer;
 }
 
 .radio-queue-item:hover {
-    background: rgba(255,255,255,0.035);
-    border-color: rgba(192,192,192,0.08);
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(192,192,192,0.06);
     transform: translateX(4px);
 }
 
 .radio-queue-item.now-playing {
-    background: linear-gradient(135deg, rgba(192,192,192,0.04), rgba(192,192,192,0.015));
-    border-color: rgba(192,192,192,0.1);
-    box-shadow: 
-        0 0 15px rgba(192,192,192,0.02),
-        inset 0 0 20px rgba(192,192,192,0.01);
-    border-left: 3px solid rgba(192,192,192,0.3);
+    background: linear-gradient(135deg, rgba(192,192,192,0.035), rgba(192,192,192,0.01));
+    border-color: rgba(192,192,192,0.08);
+    border-left: 3px solid rgba(192,192,192,0.25);
+    box-shadow: 0 0 20px rgba(192,192,192,0.015);
 }
 
 .radio-queue-num {
     font-family: var(--font-titulo);
-    font-size: .68rem;
+    font-size: .65rem;
     font-weight: 600;
-    color: rgba(192,192,192,0.25);
+    color: rgba(192,192,192,0.2);
     width: 22px;
     text-align: center;
     flex-shrink: 0;
@@ -1924,7 +2085,7 @@
 
 .radio-queue-item.now-playing .radio-queue-num {
     color: var(--plata-blanca);
-    font-size: .75rem;
+    font-size: .72rem;
 }
 
 .radio-queue-cover {
@@ -1933,16 +2094,12 @@
     border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
-    border: 1px solid rgba(255,255,255,0.04);
-    transition: all 0.25s ease;
-}
-
-.radio-queue-item:hover .radio-queue-cover {
-    border-color: rgba(192,192,192,0.08);
+    border: 1px solid rgba(255,255,255,0.03);
+    background: #111;
 }
 
 .radio-queue-item.now-playing .radio-queue-cover {
-    border-color: rgba(192,192,192,0.15);
+    border-color: rgba(192,192,192,0.1);
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
@@ -1958,27 +2115,21 @@
 }
 
 .radio-queue-title {
-    font-size: .82rem;
+    font-size: .8rem;
     font-weight: 600;
-    color: rgba(192,192,192,0.7);
+    color: rgba(192,192,192,0.6);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.25s ease;
 }
 
-.radio-queue-item:hover .radio-queue-title {
-    color: var(--plata-titulo);
-}
-
-.radio-queue-item.now-playing .radio-queue-title {
-    color: var(--plata-blanca);
-    font-weight: 700;
-}
+.radio-queue-item:hover .radio-queue-title { color: var(--plata-titulo); }
+.radio-queue-item.now-playing .radio-queue-title { color: var(--plata-blanca); font-weight: 700; }
 
 .radio-queue-album {
-    font-size: .62rem;
-    color: rgba(192,192,192,0.25);
+    font-size: .6rem;
+    color: rgba(192,192,192,0.2);
     margin-top: 3px;
     white-space: nowrap;
     overflow: hidden;
@@ -1987,13 +2138,13 @@
 
 .radio-queue-duration {
     font-family: var(--font-titulo);
-    font-size: .62rem;
+    font-size: .6rem;
     font-weight: 500;
-    color: rgba(192,192,192,0.2);
+    color: rgba(192,192,192,0.18);
     flex-shrink: 0;
 }
 
-/* ── Radio Equalizer Bars (en cola) ── */
+/* ── Equalizer en cola ── */
 .radio-eq {
     display: flex;
     align-items: flex-end;
@@ -2004,7 +2155,7 @@
 
 .radio-eq-bar {
     width: 3px;
-    background: linear-gradient(to top, rgba(192,192,192,0.2), rgba(192,192,192,0.6));
+    background: linear-gradient(to top, rgba(192,192,192,0.15), rgba(192,192,192,0.55));
     border-radius: 2px;
     animation: eqBounce 0.8s ease-in-out infinite;
 }
@@ -2015,38 +2166,26 @@
 .radio-eq-bar:nth-child(4) { height: 80%; animation-delay: 0.45s; }
 
 @keyframes eqBounce {
-    0%, 100% { transform: scaleY(0.3); }
+    0%, 100% { transform: scaleY(0.25); }
     50% { transform: scaleY(1); }
 }
 
-/* ──────────────────────────────────
-   📱 RESPONSIVE
-   ────────────────────────────────── */
+/* ═══════════════════════════════════
+   📱 RADIO RESPONSIVE
+   ═══════════════════════════════════ */
 @media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-
-    .album-detail-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .album-detail-cover {
-        width: 160px;
-        height: 160px;
-    }
-
     .radio-player-main {
         flex-direction: column;
         text-align: center;
     }
 
-    .radio-disc {
-        width: 140px;
-        height: 140px;
+    .radio-disc-wrapper {
+        width: 160px;
+        height: 160px;
+    }
+
+    .radio-tonearm {
+        display: none;
     }
 
     .radio-info {
@@ -2055,56 +2194,54 @@
         align-items: center;
     }
 
-    .radio-player {
-        padding: 20px;
+    .radio-player-inner {
+        padding: 28px 20px;
     }
 
     .radio-volume-section {
+        max-width: 100%;
+    }
+
+    .radio-visualizer {
         justify-content: center;
     }
 }
 
 @media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-
-    .stat-card {
-        padding: 16px;
-    }
-
-    .stat-value {
-        font-size: 1.2rem;
-    }
-
-    .content-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-
-    .content-grid-albums {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .radio-disc {
-        width: 110px;
-        height: 110px;
+    .radio-disc-wrapper {
+        width: 130px;
+        height: 130px;
     }
 
     .radio-controls {
-        gap: 10px;
+        gap: 12px;
     }
 
     .radio-play-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 1rem;
+        width: 58px;
+        height: 58px;
+        font-size: 1.2rem;
     }
 
-    .radio-ctrl-btn {
+    .radio-ctrl-nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .radio-ctrl-shuffle {
         width: 36px;
         height: 36px;
-        font-size: .75rem;
+    }
+
+    .radio-player-inner {
+        padding: 20px 16px;
+    }
+
+    .radio-track-title {
+        font-size: 1.1rem;
+    }
+
+    .radio-station-badge {
+        display: none;
     }
 }
