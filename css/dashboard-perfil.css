@@ -1,5 +1,5 @@
 /* ============================================
-   👤 DASHBOARD PERFIL — KXON GLASSMORPHISM
+   👤 DASHBOARD PERFIL CSS - KXON
    Perfil + Configuración estilos
    ============================================ */
 
@@ -7,7 +7,7 @@
    📦 PERFIL SECTIONS
    ────────────────────────────────── */
 .perfil-section {
-    margin-bottom: 36px;
+    margin-bottom: 32px;
     animation: fadeInUp 0.5s ease both;
 }
 
@@ -19,21 +19,20 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .perfil-section-icon {
     width: 44px;
     height: 44px;
-    background: rgba(139,124,247,0.08);
-    border: 1px solid rgba(139,124,247,0.15);
-    border-radius: 14px;
+    background: rgba(192,192,192,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
     flex-shrink: 0;
-    color: var(--acento-principal);
 }
 
 .perfil-section-title {
@@ -51,15 +50,13 @@
 }
 
 /* ──────────────────────────────────
-   📦 PERFIL CARD — GLASS
+   📦 PERFIL CARD
    ────────────────────────────────── */
 .perfil-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    border-radius: 18px;
-    padding: 30px;
+    background: var(--negro-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radio-lg);
+    padding: 28px;
     position: relative;
     overflow: hidden;
 }
@@ -69,13 +66,13 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(139,124,247,0.12), transparent);
+    background: linear-gradient(90deg, transparent, rgba(192,192,192,0.1), transparent);
 }
 
 .perfil-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-    margin: 26px 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    margin: 24px 0;
 }
 
 /* ──────────────────────────────────
@@ -97,14 +94,13 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: rgba(139,124,247,0.08);
-    border: 2px solid rgba(139,124,247,0.2);
+    background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+    border: 2px solid rgba(192,192,192,0.15);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 0 30px rgba(139,124,247,0.08);
 }
 
 .perfil-avatar img {
@@ -117,7 +113,8 @@
     font-family: var(--font-logo);
     font-size: 2.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--acento-principal), #a594ff);
+    color: var(--plata-media);
+    background: linear-gradient(135deg, #e0e0e0 0%, #888 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -127,7 +124,7 @@
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     border-radius: 50%;
-    background: rgba(3,3,8,0.65);
+    background: rgba(0,0,0,0.65);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -135,7 +132,7 @@
     gap: 4px;
     opacity: 0;
     transition: all 0.3s ease;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(4px);
 }
 
 .perfil-avatar-wrapper:hover .perfil-avatar-overlay {
@@ -143,8 +140,8 @@
 }
 
 .perfil-avatar-wrapper:hover .perfil-avatar {
-    border-color: rgba(139,124,247,0.5);
-    box-shadow: 0 0 40px rgba(139,124,247,0.2);
+    border-color: rgba(192,192,192,0.4);
+    box-shadow: 0 0 25px rgba(192,192,192,0.1);
 }
 
 .perfil-avatar-overlay span:first-child {
@@ -184,28 +181,27 @@
     text-transform: uppercase;
     font-family: var(--font-titulo);
     width: fit-content;
-    backdrop-filter: blur(8px);
-    background: rgba(62,230,138,0.08);
+    background: rgba(46,213,115,0.1);
     color: var(--acento-exito);
-    border: 1px solid rgba(62,230,138,0.2);
+    border: 1px solid rgba(46,213,115,0.2);
 }
 
 .perfil-role-badge.role-admin {
-    background: rgba(224,180,74,0.08);
+    background: rgba(212,175,55,0.1);
     color: var(--acento-dorado);
-    border-color: rgba(224,180,74,0.2);
+    border-color: rgba(212,175,55,0.25);
 }
 
 .perfil-role-badge.role-artista {
-    background: rgba(139,124,247,0.08);
+    background: rgba(192,192,192,0.08);
     color: var(--acento-principal);
-    border-color: rgba(139,124,247,0.2);
+    border-color: rgba(192,192,192,0.2);
 }
 
 .perfil-role-badge.role-fan {
-    background: rgba(62,230,138,0.08);
+    background: rgba(46,213,115,0.08);
     color: var(--acento-exito);
-    border-color: rgba(62,230,138,0.2);
+    border-color: rgba(46,213,115,0.2);
 }
 
 .perfil-email-display {
@@ -220,13 +216,13 @@
 .perfil-form {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 20px;
 }
 
 .perfil-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 22px;
+    gap: 20px;
 }
 
 .perfil-input-disabled {
@@ -259,13 +255,13 @@
 }
 
 /* ──────────────────────────────────
-   🔘 PERFIL BUTTONS — GLOW
+   🔘 PERFIL BUTTONS
    ────────────────────────────────── */
 .perfil-btn-save {
     padding: 13px 28px;
-    background: rgba(139,124,247,0.1);
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     color: var(--plata-blanca);
-    border: 1px solid rgba(139,124,247,0.25);
+    border: 1px solid rgba(192,192,192,0.2);
     border-radius: var(--radio-sm);
     font-family: var(--font-titulo);
     font-weight: 700;
@@ -276,7 +272,6 @@
     transition: var(--trans-suave);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
 }
 
 .perfil-btn-save::before {
@@ -284,17 +279,17 @@
     position: absolute;
     top: 0; left: -100%;
     width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
     transition: all 0.5s ease;
 }
 
 .perfil-btn-save:hover::before { left: 100%; }
 
 .perfil-btn-save:hover {
-    background: var(--grad-boton-hover);
-    color: #fff;
+    background: linear-gradient(135deg, #c0c0c0 0%, #888 100%);
+    color: var(--negro-base);
     border-color: var(--acento-principal);
-    box-shadow: 0 0 30px rgba(139,124,247,0.25), 0 4px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 20px rgba(192,192,192,0.15);
     transform: translateY(-2px);
 }
 
@@ -315,21 +310,21 @@
     top: 50%; left: 50%;
     width: 18px; height: 18px;
     margin: -9px 0 0 -9px;
-    border: 2px solid rgba(139,124,247,0.3);
-    border-top-color: var(--acento-principal);
+    border: 2px solid rgba(192,192,192,0.3);
+    border-top-color: var(--plata-blanca);
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
 }
 
 .perfil-btn-password {
-    background: rgba(100,100,220,0.08);
-    border-color: rgba(100,100,220,0.2);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
+    border-color: rgba(100,100,200,0.2);
 }
 
 .perfil-btn-password:hover {
-    background: var(--grad-boton-hover);
+    background: linear-gradient(135deg, #c0c0c0 0%, #888 100%);
     border-color: var(--acento-principal);
-    color: #fff;
+    color: var(--negro-base);
 }
 
 .perfil-save-status {
@@ -363,11 +358,11 @@
 }
 
 .perfil-pass-toggle:hover {
-    color: var(--acento-principal);
+    color: var(--plata-clara);
 }
 
 /* ──────────────────────────────────
-   ⚙️ CUENTA INFO — GLASS
+   ⚙️ CUENTA INFO
    ────────────────────────────────── */
 .perfil-cuenta-grid {
     display: grid;
@@ -376,17 +371,16 @@
 }
 
 .perfil-cuenta-item {
-    padding: 18px;
-    background: var(--glass-bg);
-    border: 1px solid rgba(255,255,255,0.03);
-    border-radius: 12px;
+    padding: 16px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: var(--radio-sm);
     transition: var(--trans-normal);
-    backdrop-filter: blur(10px);
 }
 
 .perfil-cuenta-item:hover {
-    border-color: var(--glass-border);
-    background: var(--glass-bg-hover);
+    border-color: rgba(192,192,192,0.08);
+    background: rgba(255,255,255,0.03);
 }
 
 .perfil-cuenta-label {
@@ -414,18 +408,17 @@
 }
 
 /* ──────────────────────────────────
-   ⚠️ DANGER ZONE — GLASS
+   ⚠️ DANGER ZONE
    ────────────────────────────────── */
 .perfil-danger-zone {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    padding: 22px;
-    background: rgba(255,77,106,0.03);
-    border: 1px solid rgba(255,77,106,0.1);
-    border-radius: 14px;
-    backdrop-filter: blur(10px);
+    padding: 20px;
+    background: rgba(255,71,87,0.03);
+    border: 1px solid rgba(255,71,87,0.1);
+    border-radius: var(--radio-sm);
 }
 
 .perfil-danger-header {
@@ -437,7 +430,6 @@
 .perfil-danger-icon {
     font-size: 1.3rem;
     flex-shrink: 0;
-    color: var(--acento-error);
 }
 
 .perfil-danger-title {
@@ -456,8 +448,8 @@
 
 .perfil-btn-delete {
     padding: 10px 20px;
-    background: rgba(255,77,106,0.06);
-    border: 1px solid rgba(255,77,106,0.2);
+    background: rgba(255,71,87,0.08);
+    border: 1px solid rgba(255,71,87,0.25);
     border-radius: var(--radio-sm);
     color: var(--acento-error);
     font-family: var(--font-titulo);
@@ -469,12 +461,11 @@
     transition: var(--trans-suave);
     white-space: nowrap;
     flex-shrink: 0;
-    backdrop-filter: blur(10px);
 }
 
 .perfil-btn-delete:hover {
-    background: rgba(255,77,106,0.12);
-    border-color: rgba(255,77,106,0.35);
+    background: rgba(255,71,87,0.15);
+    border-color: rgba(255,71,87,0.4);
     transform: translateY(-1px);
-    box-shadow: 0 0 20px rgba(255,77,106,0.1);
+    box-shadow: 0 4px 15px rgba(255,71,87,0.1);
 }

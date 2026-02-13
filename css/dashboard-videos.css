@@ -1,10 +1,11 @@
 /* ============================================
-   🎬 DASHBOARD VIDEOS — KXON GLASSMORPHISM
+   🎬 DASHBOARD VIDEOS CSS - KXON
    Videos + Documentales + Episodios
+   ✅ FIX: Cards compactas
    ============================================ */
 
 /* ──────────────────────────────────
-   🎬 VIDEOS GRID — GLASS
+   🎬 VIDEOS GRID — COMPACTO
    ────────────────────────────────── */
 .videos-grid {
     display: grid;
@@ -13,10 +14,8 @@
 }
 
 .video-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
+    background: var(--negro-card);
+    border: 1px solid rgba(255,255,255,0.06);
     border-radius: var(--radio-md);
     overflow: hidden;
     transition: var(--trans-suave);
@@ -25,9 +24,9 @@
 }
 
 .video-card:hover {
-    border-color: var(--glass-border-hover);
-    box-shadow: var(--glass-shadow-hover), 0 0 30px rgba(139,124,247,0.05);
-    transform: translateY(-4px);
+    border-color: rgba(192,192,192,0.15);
+    box-shadow: 0 0 20px rgba(192,192,192,0.08);
+    transform: translateY(-3px);
 }
 
 .video-card-thumb {
@@ -35,7 +34,7 @@
     aspect-ratio: 16/9;
     overflow: hidden;
     position: relative;
-    background: rgba(3,3,8,0.5);
+    background: var(--negro-profundo);
 }
 
 .video-card-thumb img {
@@ -52,13 +51,12 @@
 .video-card-play-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(3,3,8,0.45);
+    background: rgba(5,5,5,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     transition: var(--trans-normal);
-    backdrop-filter: blur(2px);
 }
 
 .video-card:hover .video-card-play-overlay {
@@ -66,33 +64,33 @@
 }
 
 .video-card-play-icon {
-    width: 44px; height: 44px;
-    background: rgba(139,124,247,0.2);
-    border: 2px solid rgba(139,124,247,0.4);
+    width: 42px; height: 42px;
+    background: rgba(5,5,5,0.75);
+    border: 2px solid rgba(192,192,192,0.35);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    color: #fff;
+    color: var(--plata-blanca);
     backdrop-filter: blur(10px);
     transition: var(--trans-suave);
 }
 
 .video-card:hover .video-card-play-icon {
-    background: rgba(139,124,247,0.3);
-    border-color: rgba(139,124,247,0.6);
+    background: rgba(192,192,192,0.15);
+    border-color: rgba(192,192,192,0.5);
     transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(139,124,247,0.25);
+    box-shadow: 0 0 20px rgba(192,192,192,0.15);
 }
 
 .video-card-views {
     position: absolute;
     bottom: 6px; right: 6px;
     padding: 3px 8px;
-    background: rgba(3,3,8,0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
+    background: rgba(5,5,5,0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 50px;
     font-size: 0.58rem;
     font-weight: 600;
@@ -146,7 +144,7 @@
     position: absolute;
     top: 6px; right: 6px;
     width: 24px; height: 24px;
-    background: rgba(255,77,106,0.85);
+    background: rgba(255,71,87,0.85);
     border-radius: 50%;
     display: none;
     align-items: center;
@@ -163,7 +161,6 @@
 .video-card-admin-del:hover {
     background: var(--acento-error);
     transform: scale(1.1);
-    box-shadow: 0 0 12px rgba(255,77,106,0.3);
 }
 
 .video-card-admin-del.visible {
@@ -171,19 +168,19 @@
 }
 
 /* ──────────────────────────────────
-   🎬 REPRODUCTOR VIDEO MODAL — GLASS
+   🎬 REPRODUCTOR VIDEO MODAL
    ────────────────────────────────── */
 .video-player-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(3,3,8,0.88);
+    background: rgba(0,0,0,0.92);
     z-index: 250;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     gap: 14px;
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(12px);
 }
 
 .video-player-overlay.show {
@@ -227,26 +224,24 @@
     font-size: .9rem;
     transition: var(--trans-normal);
     cursor: pointer;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .video-player-btn:hover {
     color: var(--plata-blanca);
-    background: var(--glass-bg-hover);
-    border-color: var(--glass-border-hover);
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(192,192,192,0.2);
 }
 
 .video-player-btn.fullscreen-btn:hover {
     color: var(--acento-principal);
-    border-color: rgba(139,124,247,0.25);
 }
 
 .video-player-btn.close-btn:hover {
     color: var(--acento-error);
-    background: rgba(255,77,106,0.08);
-    border-color: rgba(255,77,106,0.2);
+    background: rgba(255,71,87,0.1);
+    border-color: rgba(255,71,87,0.2);
 }
 
 .video-player-wrapper {
@@ -254,10 +249,10 @@
     max-width: 900px;
     aspect-ratio: 16/9;
     background: #000;
-    border-radius: 16px;
+    border-radius: var(--radio-md);
     overflow: hidden;
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(139,124,247,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     position: relative;
 }
 
@@ -316,7 +311,7 @@
 }
 
 /* ──────────────────────────────────
-   🎞️ DOCUMENTALES GRID — GLASS
+   🎞️ DOCUMENTALES GRID — COMPACTO
    ────────────────────────────────── */
 .docu-grid {
     display: grid;
@@ -325,10 +320,8 @@
 }
 
 .docu-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
+    background: var(--negro-card);
+    border: 1px solid rgba(255,255,255,0.06);
     border-radius: var(--radio-md);
     overflow: hidden;
     transition: var(--trans-suave);
@@ -337,9 +330,9 @@
 }
 
 .docu-card:hover {
-    border-color: var(--glass-border-hover);
-    box-shadow: var(--glass-shadow-hover), 0 0 25px rgba(139,124,247,0.05);
-    transform: translateY(-4px);
+    border-color: rgba(192,192,192,0.15);
+    box-shadow: 0 0 20px rgba(192,192,192,0.08);
+    transform: translateY(-3px);
 }
 
 .docu-card-img {
@@ -347,7 +340,7 @@
     aspect-ratio: 16/10;
     overflow: hidden;
     position: relative;
-    background: rgba(3,3,8,0.5);
+    background: var(--negro-profundo);
 }
 
 .docu-card-img img {
@@ -364,13 +357,12 @@
 .docu-card-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(3,3,8,0.4);
+    background: rgba(5,5,5,0.45);
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     transition: var(--trans-normal);
-    backdrop-filter: blur(2px);
 }
 
 .docu-card:hover .docu-card-overlay {
@@ -379,14 +371,14 @@
 
 .docu-card-overlay-icon {
     width: 40px; height: 40px;
-    background: rgba(139,124,247,0.2);
-    border: 1px solid rgba(139,124,247,0.35);
+    background: rgba(5,5,5,0.7);
+    border: 1px solid rgba(192,192,192,0.3);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: .9rem;
-    color: #fff;
+    color: var(--plata-blanca);
     backdrop-filter: blur(10px);
 }
 
@@ -394,9 +386,9 @@
     position: absolute;
     top: 6px; left: 6px;
     padding: 3px 8px;
-    background: rgba(3,3,8,0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
+    background: rgba(5,5,5,0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 50px;
     font-size: 0.55rem;
     font-weight: 700;
@@ -411,7 +403,7 @@
     position: absolute;
     top: 6px; right: 6px;
     width: 24px; height: 24px;
-    background: rgba(255,77,106,0.85);
+    background: rgba(255,71,87,0.85);
     border-radius: 50%;
     display: none;
     align-items: center;
@@ -462,7 +454,7 @@
 }
 
 /* ──────────────────────────────────
-   🎞️ DOCUMENTAL DETAIL — GLASS
+   🎞️ DOCUMENTAL DETAIL
    ────────────────────────────────── */
 .docu-detail {
     display: none;
@@ -486,8 +478,7 @@
     border-radius: var(--radio-md);
     overflow: hidden;
     flex-shrink: 0;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .docu-detail-cover img {
@@ -525,12 +516,12 @@
 }
 
 /* ──────────────────────────────────
-   🎬 EPISODIOS LIST — GLASS
+   🎬 EPISODIOS LIST
    ────────────────────────────────── */
 .episodio-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
 .episodio-item {
@@ -538,22 +529,21 @@
     align-items: center;
     gap: 12px;
     padding: 12px 14px;
-    background: var(--glass-bg);
-    border: 1px solid rgba(255,255,255,0.03);
+    background: var(--negro-card);
+    border: 1px solid rgba(255,255,255,0.04);
     border-radius: var(--radio-sm);
     transition: var(--trans-suave);
     cursor: pointer;
-    backdrop-filter: blur(10px);
 }
 
 .episodio-item:hover {
-    background: var(--glass-bg-hover);
-    border-color: var(--glass-border);
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(192,192,192,0.12);
 }
 
 .episodio-item.playing {
-    background: rgba(139,124,247,0.06);
-    border-color: rgba(139,124,247,0.15);
+    background: rgba(192,192,192,0.06);
+    border-color: rgba(192,192,192,0.15);
 }
 
 .episodio-num {
@@ -569,12 +559,12 @@
 .episodio-thumb {
     width: 64px;
     aspect-ratio: 16/9;
-    border-radius: 8px;
+    border-radius: 5px;
     overflow: hidden;
     flex-shrink: 0;
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(255,255,255,0.06);
     position: relative;
-    background: rgba(3,3,8,0.5);
+    background: var(--negro-profundo);
 }
 
 .episodio-thumb img {
@@ -586,13 +576,12 @@
 .episodio-thumb-play {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(3,3,8,0.45);
+    background: rgba(5,5,5,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     transition: var(--trans-normal);
-    backdrop-filter: blur(2px);
 }
 
 .episodio-item:hover .episodio-thumb-play {
@@ -654,7 +643,7 @@
 }
 
 .episodio-delete:hover {
-    background: rgba(255,77,106,0.08);
+    background: rgba(255,71,87,0.1);
 }
 
 .episodio-delete.visible {
