@@ -1398,128 +1398,147 @@
                     </div>
                 </div>
 
-                                 <!-- 📻 PANEL: RADIO -->
+                             <!-- 📻 PANEL: RADIO -->
                 <div class="panel" id="panel-radio">
-                    <div class="panel-header">
-                        <h1 class="panel-title">Radio KXON</h1>
-                        <p class="panel-desc">Tu estación personal — Reproducción continua sin límites</p>
-                    </div>
 
-                    <!-- ── Radio Player Card ── -->
-                    <div class="radio-player">
-                        <div class="radio-player-bg"></div>
-                        <div class="radio-player-ambient" id="radioAmbient"></div>
-                        <div class="radio-player-inner">
+                    <!-- ══ HERO RADIO ══ -->
+                    <div class="radio-hero">
+                        <div class="radio-hero-bg"></div>
+                        <div class="radio-hero-particles">
+                            <div class="radio-particle"></div>
+                            <div class="radio-particle"></div>
+                            <div class="radio-particle"></div>
+                            <div class="radio-particle"></div>
+                            <div class="radio-particle"></div>
+                            <div class="radio-particle"></div>
+                        </div>
+                        <div class="radio-hero-ambient" id="radioAmbient"></div>
 
-                            <!-- Zona superior -->
-                            <div class="radio-player-main">
-                                <!-- Disco Vinilo -->
-                                <div class="radio-disc-wrapper">
-                                    <div class="radio-disc-pulse"></div>
-                                    <div class="radio-disc-ring"></div>
-                                    <div class="radio-disc" id="radioDisc">
-                                        <img class="radio-disc-img" id="radioDiscImg" src="" alt="" onerror="this.style.display='none'">
-                                        <div class="radio-disc-fallback">♪</div>
-                                        <div class="radio-disc-grooves"></div>
-                                        <div class="radio-disc-hole">
-                                            <div class="radio-disc-hole-inner"></div>
+                        <div class="radio-hero-inner">
+                            <!-- Columna izquierda: Vinilo -->
+                            <div class="radio-vinyl-stage">
+                                <div class="radio-vinyl-glow" id="radioVinylGlow"></div>
+                                <div class="radio-vinyl-wrapper">
+                                    <div class="radio-vinyl" id="radioDisc">
+                                        <div class="radio-vinyl-img-wrap">
+                                            <img class="radio-vinyl-img" id="radioDiscImg" src="" alt="">
                                         </div>
-                                        <div class="radio-disc-shine"></div>
-                                    </div>
-                                    <div class="radio-disc-shadow"></div>
-                                    <!-- Brazo del tocadiscos -->
-                                    <div class="radio-tonearm" id="radioTonearm">
-                                        <div class="radio-tonearm-base"></div>
-                                        <div class="radio-tonearm-arm"></div>
-                                        <div class="radio-tonearm-head"></div>
+                                        <div class="radio-vinyl-fallback" id="radioDiscFallback">
+                                            <span class="radio-vinyl-fallback-note">♪</span>
+                                            <span class="radio-vinyl-fallback-text">KXON</span>
+                                        </div>
+                                        <div class="radio-vinyl-overlay"></div>
+                                        <div class="radio-vinyl-grooves"></div>
+                                        <div class="radio-vinyl-label">
+                                            <div class="radio-vinyl-label-inner">
+                                                <span class="radio-vinyl-label-brand">KXON</span>
+                                                <span class="radio-vinyl-label-rpm">33 RPM</span>
+                                            </div>
+                                        </div>
+                                        <div class="radio-vinyl-shine"></div>
                                     </div>
                                 </div>
+                                <!-- Tonearm -->
+                                <div class="radio-arm" id="radioTonearm">
+                                    <div class="radio-arm-pivot"></div>
+                                    <div class="radio-arm-bar"></div>
+                                    <div class="radio-arm-head">
+                                        <div class="radio-arm-needle"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                <!-- Info de la canción -->
-                                <div class="radio-info">
-                                    <div class="radio-station-badge">
+                            <!-- Columna derecha: Info + Controles -->
+                            <div class="radio-control-panel">
+                                <!-- Badge estación -->
+                                <div class="radio-station">
+                                    <div class="radio-station-dial">
                                         <span class="radio-station-freq">98.7</span>
-                                        <span class="radio-station-name">KXON FM</span>
+                                        <span class="radio-station-unit">FM</span>
                                     </div>
-                                    <div class="radio-on-air" id="radioOnAir">
-                                        <span class="radio-on-air-dot"></span>
-                                        <span class="radio-on-air-text">ON AIR</span>
-                                    </div>
-                                    <div class="radio-track-title" id="radioTrackTitle">Esperando reproducción...</div>
-                                    <div class="radio-track-album" id="radioTrackAlbum">KXON Radio</div>
-
-                                    <!-- Visualizador de ondas -->
-                                    <div class="radio-visualizer" id="radioWave">
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
-                                        <div class="radio-viz-bar"></div>
+                                    <div class="radio-station-info">
+                                        <span class="radio-station-name">KXON RADIO</span>
+                                        <span class="radio-station-tagline">Exclusivo · Sin límites</span>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Barra de progreso -->
-                            <div class="radio-progress-section">
-                                <span class="radio-time" id="radioCurrentTime">0:00</span>
-                                <div class="radio-progress-bar" id="radioProgressBar">
-                                    <div class="radio-progress-track"></div>
-                                    <div class="radio-progress-fill" id="radioProgressFill"></div>
-                                    <div class="radio-progress-glow" id="radioProgressGlow"></div>
+                                <!-- Status -->
+                                <div class="radio-on-air" id="radioOnAir">
+                                    <span class="radio-on-air-dot"></span>
+                                    <span class="radio-on-air-text">ON AIR</span>
+                                    <span class="radio-on-air-live">LIVE</span>
                                 </div>
-                                <span class="radio-time" id="radioDuration">0:00</span>
-                            </div>
 
-                            <!-- Controles principales -->
-                            <div class="radio-controls">
-                                <button class="radio-ctrl-btn radio-ctrl-shuffle" id="radioShuffle" title="Aleatorio">
-                                    🔀
-                                </button>
-                                <button class="radio-ctrl-btn radio-ctrl-nav" id="radioPrev" title="Anterior">
-                                    ⏮
-                                </button>
-                                <button class="radio-play-btn" id="radioPlayBtn" title="Play/Pause">
-                                    <span id="radioPlayIcon">▶</span>
-                                    <div class="radio-play-ring"></div>
-                                    <div class="radio-play-ring ring-2"></div>
-                                </button>
-                                <button class="radio-ctrl-btn radio-ctrl-nav" id="radioNext" title="Siguiente">
-                                    ⏭
-                                </button>
-                                <div class="radio-ctrl-btn" style="visibility:hidden">_</div>
-                            </div>
+                                <!-- Track info -->
+                                <div class="radio-now-playing">
+                                    <div class="radio-now-label">REPRODUCIENDO</div>
+                                    <h2 class="radio-now-title" id="radioTrackTitle">Selecciona una canción</h2>
+                                    <p class="radio-now-album" id="radioTrackAlbum">KXON Radio</p>
+                                </div>
 
-                            <!-- Volumen -->
-                            <div class="radio-volume-section">
-                                <span class="radio-vol-icon" id="radioVolIcon">🔊</span>
-                                <div class="radio-volume-bar" id="radioVolumeBar">
-                                    <div class="radio-volume-fill" id="radioVolumeFill" style="width:70%">
-                                        <div class="radio-volume-thumb"></div>
+                                <!-- Visualizador -->
+                                <div class="radio-visualizer" id="radioWave">
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                    <div class="radio-viz-bar"></div><div class="radio-viz-bar"></div>
+                                </div>
+
+                                <!-- Progress -->
+                                <div class="radio-progress-section">
+                                    <span class="radio-time" id="radioCurrentTime">0:00</span>
+                                    <div class="radio-progress-bar" id="radioProgressBar">
+                                        <div class="radio-progress-track"></div>
+                                        <div class="radio-progress-fill" id="radioProgressFill"></div>
+                                        <div class="radio-progress-glow" id="radioProgressGlow"></div>
                                     </div>
+                                    <span class="radio-time" id="radioDuration">0:00</span>
                                 </div>
-                                <span class="radio-vol-pct" id="radioVolPct">70%</span>
-                            </div>
 
+                                <!-- Controles -->
+                                <div class="radio-controls">
+                                    <button class="radio-ctrl shuffle-btn" id="radioShuffle" title="Aleatorio">🔀</button>
+                                    <button class="radio-ctrl nav-btn" id="radioPrev" title="Anterior">⏮</button>
+                                    <button class="radio-main-play" id="radioPlayBtn" title="Play/Pause">
+                                        <span class="radio-main-play-icon" id="radioPlayIcon">▶</span>
+                                        <div class="radio-main-play-pulse"></div>
+                                        <div class="radio-main-play-pulse p2"></div>
+                                        <div class="radio-main-play-pulse p3"></div>
+                                    </button>
+                                    <button class="radio-ctrl nav-btn" id="radioNext" title="Siguiente">⏭</button>
+                                    <div class="radio-ctrl" style="visibility:hidden;">_</div>
+                                </div>
+
+                                <!-- Volumen -->
+                                <div class="radio-volume-section">
+                                    <span class="radio-vol-icon" id="radioVolIcon">🔊</span>
+                                    <div class="radio-volume-bar" id="radioVolumeBar">
+                                        <div class="radio-volume-fill" id="radioVolumeFill" style="width:70%">
+                                            <div class="radio-volume-thumb"></div>
+                                        </div>
+                                    </div>
+                                    <span class="radio-vol-pct" id="radioVolPct">70%</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- ── Cola de Reproducción ── -->
+                    <!-- ══ COLA DE REPRODUCCIÓN ══ -->
                     <div class="radio-queue-section">
                         <div class="radio-queue-header">
                             <div class="radio-queue-header-left">
                                 <div class="radio-queue-icon-wrap">
-                                    <span class="radio-queue-icon-inner">📋</span>
+                                    <div class="radio-queue-icon-eq">
+                                        <div class="rqi-bar"></div><div class="rqi-bar"></div><div class="rqi-bar"></div>
+                                    </div>
                                 </div>
                                 <div>
                                     <div class="radio-queue-title-text">Cola de Reproducción</div>
@@ -1528,10 +1547,7 @@
                             </div>
                         </div>
                         <div class="radio-queue-list" id="radioQueueList">
-                            <div class="empty-state">
-                                <div class="empty-icon">🎵</div>
-                                <div class="empty-title">Cargando radio...</div>
-                            </div>
+                            <div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Cargando radio...</div></div>
                         </div>
                     </div>
                 </div>

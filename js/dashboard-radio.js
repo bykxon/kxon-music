@@ -1,7 +1,7 @@
 /* ============================================
    📻 DASHBOARD-RADIO.JS — KXON
    Radio KXON: reproducción continua, cola, shuffle
-   FIX: Imagen fallback sin servicio externo
+   FIX: Imágenes de álbum se muestran correctamente
    FIX: Conflicto con player bar resuelto
    ============================================ */
 (function () {
@@ -9,9 +9,6 @@
     var db = window.db;
     var K = window.KXON;
     var radioAudio = K.radioAudio;
-
-    /* ── Imagen fallback SVG inline (nunca falla) ── */
-    var FALLBACK_IMG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#111"/><text x="150" y="160" text-anchor="middle" font-size="60" fill="#333">♪</text></svg>');
 
     /* ══════════════════════════════════════════
        📻 INICIALIZAR RADIO
@@ -24,7 +21,7 @@
             K.radioPlaylist = (r.data || []).map(function (s) {
                 return {
                     id: s.id, titulo: s.titulo, archivo_url: s.archivo_url,
-                    imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || FALLBACK_IMG,
+                    imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '',
                     album: s.albumes ? s.albumes.titulo : 'KXON Radio',
                     duracion: s.duracion || '--:--', reproducciones: s.reproducciones || 0
                 };
@@ -48,6 +45,32 @@
 
     function getRL() { return K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist; }
 
+    /* ── Actualizar imagen del disco ── */
+    function updateDiscImage(imgUrl) {
+        var discImg = document.getElementById('radioDiscImg');
+        var discFallback = document.getElementById('radioDiscFallback');
+        if (!discImg || !discFallback) return;
+
+        if (imgUrl && imgUrl.length > 0) {
+            discImg.src = imgUrl;
+            discImg.style.display = 'block';
+            discFallback.style.display = 'none';
+            discImg.onerror = function () {
+                this.style.display = 'none';
+                discFallback.style.display = 'flex';
+            };
+        } else {
+            discImg.style.display = 'none';
+            discFallback.style.display = 'flex';
+        }
+
+        /* Actualizar fondo ambiental con color de la portada */
+        var ambient = document.getElementById('radioAmbient');
+        if (ambient && imgUrl) {
+            ambient.style.opacity = '0.06';
+        }
+    }
+
     /* ══════════════════════════════════════════
        ▶ PLAY / TOGGLE / NEXT / PREV
        ══════════════════════════════════════════ */
@@ -65,37 +88,32 @@
         radioAudio.play();
         K.radioIsPlaying = true;
 
-        var imgSrc = t.imagen_url || FALLBACK_IMG;
+        /* Actualizar disco */
+        updateDiscImage(t.imagen_url);
 
         var d = document.getElementById('radioDisc'); if (d) d.classList.add('spinning');
-        var di = document.getElementById('radioDiscImg'); if (di) { di.src = imgSrc; di.onerror = function() { this.src = FALLBACK_IMG; }; }
         var oa = document.getElementById('radioOnAir'); if (oa) oa.classList.add('active');
         var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.add('playing');
         var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '⏸';
         var tt = document.getElementById('radioTrackTitle'); if (tt) tt.textContent = t.titulo;
         var ta = document.getElementById('radioTrackAlbum'); if (ta) ta.textContent = t.album;
         var gl = document.getElementById('radioProgressGlow'); if (gl) gl.classList.add('visible');
-
-        /* Activar wave animation */
-        var wave = document.getElementById('radioWave');
-        if (wave) wave.classList.add('active');
+        var wave = document.getElementById('radioWave'); if (wave) wave.classList.add('active');
+        var tonearm = document.getElementById('radioTonearm'); if (tonearm) tonearm.classList.add('playing');
 
         updateRQHighlight();
 
+        /* Player bar */
         document.getElementById('playerBar').classList.add('show');
         document.getElementById('playerTitle').textContent = t.titulo;
-        document.getElementById('playerCover').src = imgSrc;
+        document.getElementById('playerCover').src = t.imagen_url || '';
         document.getElementById('playerPlayPause').textContent = '⏸';
         K.isPlaying = true;
 
-        if (typeof K.updateRadioFavState === 'function') {
-            setTimeout(K.updateRadioFavState, 100);
-        }
-        if (typeof K.updatePlayerFavState === 'function') {
-            setTimeout(K.updatePlayerFavState, 100);
-        }
+        if (typeof K.updateRadioFavState === 'function') setTimeout(K.updateRadioFavState, 100);
+        if (typeof K.updatePlayerFavState === 'function') setTimeout(K.updatePlayerFavState, 100);
 
-        db.rpc('increment_reproducciones', { song_id: t.id }).then(function(r) {
+        db.rpc('increment_reproducciones', { song_id: t.id }).then(function (r) {
             if (r.error) console.warn('Error updating radio plays:', r.error.message);
         });
     }
@@ -109,6 +127,7 @@
             var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
             var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
             var wave = document.getElementById('radioWave'); if (wave) wave.classList.remove('active');
+            var tonearm = document.getElementById('radioTonearm'); if (tonearm) tonearm.classList.remove('playing');
             document.getElementById('playerPlayPause').textContent = '▶';
             K.isPlaying = false;
         } else {
@@ -117,13 +136,13 @@
             } else {
                 K.stopAllAudio('radio');
                 K.activeSource = 'radio';
-
                 radioAudio.play();
                 K.radioIsPlaying = true;
                 var d2 = document.getElementById('radioDisc'); if (d2) d2.classList.add('spinning');
                 var pb2 = document.getElementById('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
                 var pi2 = document.getElementById('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
                 var wave2 = document.getElementById('radioWave'); if (wave2) wave2.classList.add('active');
+                var tonearm2 = document.getElementById('radioTonearm'); if (tonearm2) tonearm2.classList.add('playing');
                 document.getElementById('playerPlayPause').textContent = '⏸';
                 K.isPlaying = true;
             }
@@ -220,13 +239,10 @@
 
     var rpBtn = document.getElementById('radioPlayBtn');
     if (rpBtn) rpBtn.addEventListener('click', function () { radioToggle(); });
-
     var rnBtn = document.getElementById('radioNext');
     if (rnBtn) rnBtn.addEventListener('click', function () { radioNextT(); });
-
     var rpvBtn = document.getElementById('radioPrev');
     if (rpvBtn) rpvBtn.addEventListener('click', function () { radioPrevT(); });
-
     var rsBtn = document.getElementById('radioShuffle');
     if (rsBtn) rsBtn.addEventListener('click', function () { radioShuffleToggle(); });
 
@@ -243,10 +259,16 @@
         var h = '';
         for (var i = 0; i < list.length; i++) {
             var s = list[i]; var now = (i === K.radioIndex);
-            var img = s.imagen_url || FALLBACK_IMG;
+            var img = s.imagen_url || '';
+            var imgHtml = '';
+            if (img) {
+                imgHtml = '<img src="' + img + '" alt="" onerror="this.parentElement.innerHTML=\'<span class=radio-queue-cover-fallback>♪</span>\'">';
+            } else {
+                imgHtml = '<span class="radio-queue-cover-fallback">♪</span>';
+            }
             h += '<div class="radio-queue-item' + (now ? ' now-playing' : '') + '" onclick="window._rjump(' + i + ')">';
             h += '<span class="radio-queue-num">' + (now ? '▶' : (i + 1)) + '</span>';
-            h += '<div class="radio-queue-cover"><img src="' + img + '" alt="" onerror="this.src=\'' + FALLBACK_IMG + '\'"></div>';
+            h += '<div class="radio-queue-cover">' + imgHtml + '</div>';
             h += '<div class="radio-queue-info"><div class="radio-queue-title">' + s.titulo + '</div><div class="radio-queue-album">' + s.album + '</div></div>';
             if (now && K.radioIsPlaying) {
                 h += '<div class="radio-eq"><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div></div>';
@@ -273,7 +295,7 @@
             } else {
                 if (num) num.textContent = (i + 1);
                 var eq = items[i].querySelector('.radio-eq');
-                if (eq) { var d = list[i] ? list[i].duracion : '--:--'; eq.outerHTML = '<span class="radio-queue-duration">' + d + '</span>'; }
+                if (eq) { var dd = list[i] ? list[i].duracion : '--:--'; eq.outerHTML = '<span class="radio-queue-duration">' + dd + '</span>'; }
             }
         }
     }
