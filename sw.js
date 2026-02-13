@@ -4,7 +4,7 @@
    + Push ready
    ============================================ */
 
-var CACHE_NAME = 'kxon-v3.0';
+var CACHE_NAME = 'kxon-v4.0';
 var AUDIO_CACHE = 'kxon-audio-v1';
 var IMAGE_CACHE = 'kxon-images-v1';
 
