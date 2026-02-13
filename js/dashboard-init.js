@@ -2,12 +2,7 @@
    🚀 DASHBOARD-INIT.JS — KXON
    Inicialización, sesión, sidebar, navegación,
    player bar, helpers, variables compartidas
-   + Sistema de verificación de suscripción
-   + FIX: Conflicto radio/player resuelto
-   + FIX: Playlists + Historial + Notificaciones
-   + FIX: Limpieza campos fecha lanzamiento
-   + FIX: renderInicio seguro (no depende de orden)
-   + NEW: Panel En Vivo integrado
+   FIX: Archivo sin duplicar + radio panel check
    ============================================ */
 (function () {
 
@@ -221,93 +216,87 @@
     };
 
     /* ══════════════════════════════════════════
-       🔲 MODALES — ABRIR / CERRAR (FIX COMPLETO)
+       🔲 MODALES — ABRIR / CERRAR
        ══════════════════════════════════════════ */
     window.KXON.openModal = function (id) {
-        document.getElementById(id).classList.add('show');
+        var el = document.getElementById(id);
+        if (el) el.classList.add('show');
     };
 
     window.KXON.closeModal = function (id) {
-        document.getElementById(id).classList.remove('show');
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('show');
 
         if (id === 'modalAlbum') {
-            document.getElementById('albumTitulo').value = '';
-            document.getElementById('albumDesc').value = '';
+            var at = document.getElementById('albumTitulo'); if (at) at.value = '';
+            var ad = document.getElementById('albumDesc'); if (ad) ad.value = '';
             var fechaAlbum = document.getElementById('albumFechaLanzamiento');
             if (fechaAlbum) fechaAlbum.value = '';
             K._selectedCoverFile = null;
             var area = document.getElementById('albumCoverArea');
-            area.classList.remove('has-file');
-            area.querySelector('.file-upload-text').textContent = 'Click para subir imagen';
-            document.getElementById('albumCoverPreview').classList.remove('show');
-            document.getElementById('albumCoverFile').value = '';
+            if (area) { area.classList.remove('has-file'); var ft = area.querySelector('.file-upload-text'); if (ft) ft.textContent = 'Click para subir imagen'; }
+            var acp = document.getElementById('albumCoverPreview'); if (acp) acp.classList.remove('show');
+            var acf = document.getElementById('albumCoverFile'); if (acf) acf.value = '';
         }
         if (id === 'modalCancion') {
-            document.getElementById('cancionTitulo').value = '';
+            var ct = document.getElementById('cancionTitulo'); if (ct) ct.value = '';
             var fechaCancion = document.getElementById('cancionFechaLanzamiento');
             if (fechaCancion) fechaCancion.value = '';
             K._selectedAudioFile = null;
             var area2 = document.getElementById('cancionAudioArea');
-            area2.classList.remove('has-file');
-            area2.querySelector('.file-upload-text').textContent = 'Click para subir audio';
-            document.getElementById('cancionAudioFile').value = '';
-            document.getElementById('uploadProgress').classList.remove('show');
-            document.getElementById('uploadBarFill').style.width = '0%';
+            if (area2) { area2.classList.remove('has-file'); var ft2 = area2.querySelector('.file-upload-text'); if (ft2) ft2.textContent = 'Click para subir audio'; }
+            var caf = document.getElementById('cancionAudioFile'); if (caf) caf.value = '';
+            var up = document.getElementById('uploadProgress'); if (up) up.classList.remove('show');
+            var ubf = document.getElementById('uploadBarFill'); if (ubf) ubf.style.width = '0%';
         }
         if (id === 'modalNoticia') {
-            document.getElementById('noticiaTitulo').value = '';
-            document.getElementById('noticiaDesc').value = '';
+            var nt = document.getElementById('noticiaTitulo'); if (nt) nt.value = '';
+            var nd = document.getElementById('noticiaDesc'); if (nd) nd.value = '';
             K._selectedNoticiaFile = null;
             var area3 = document.getElementById('noticiaCoverArea');
-            area3.classList.remove('has-file');
-            area3.querySelector('.file-upload-text').textContent = 'Click para subir imagen';
-            document.getElementById('noticiaCoverPreview').classList.remove('show');
-            document.getElementById('noticiaCoverFile').value = '';
+            if (area3) { area3.classList.remove('has-file'); var ft3 = area3.querySelector('.file-upload-text'); if (ft3) ft3.textContent = 'Click para subir imagen'; }
+            var ncp = document.getElementById('noticiaCoverPreview'); if (ncp) ncp.classList.remove('show');
+            var ncf = document.getElementById('noticiaCoverFile'); if (ncf) ncf.value = '';
         }
         if (id === 'modalVideo') {
-            document.getElementById('videoTitulo').value = '';
-            document.getElementById('videoDesc').value = '';
+            var vt = document.getElementById('videoTitulo'); if (vt) vt.value = '';
+            var vd = document.getElementById('videoDesc'); if (vd) vd.value = '';
             K._videoThumbFileSelected = null;
             K._videoFileSelected = null;
             var a4 = document.getElementById('videoThumbArea');
-            a4.classList.remove('has-file');
-            a4.querySelector('.file-upload-text').textContent = 'Click para subir imagen';
-            document.getElementById('videoThumbPreview').classList.remove('show');
-            document.getElementById('videoThumbFile').value = '';
+            if (a4) { a4.classList.remove('has-file'); var ft4 = a4.querySelector('.file-upload-text'); if (ft4) ft4.textContent = 'Click para subir imagen'; }
+            var vtp = document.getElementById('videoThumbPreview'); if (vtp) vtp.classList.remove('show');
+            var vtf = document.getElementById('videoThumbFile'); if (vtf) vtf.value = '';
             var a5 = document.getElementById('videoFileArea');
-            a5.classList.remove('has-file');
-            a5.querySelector('.file-upload-text').textContent = 'Click para subir video';
-            document.getElementById('videoFileInput').value = '';
-            document.getElementById('videoUploadProgress').classList.remove('show');
-            document.getElementById('videoUploadFill').style.width = '0%';
+            if (a5) { a5.classList.remove('has-file'); var ft5 = a5.querySelector('.file-upload-text'); if (ft5) ft5.textContent = 'Click para subir video'; }
+            var vfi = document.getElementById('videoFileInput'); if (vfi) vfi.value = '';
+            var vup = document.getElementById('videoUploadProgress'); if (vup) vup.classList.remove('show');
+            var vuf = document.getElementById('videoUploadFill'); if (vuf) vuf.style.width = '0%';
         }
         if (id === 'modalDocumental') {
-            document.getElementById('docuTitulo').value = '';
-            document.getElementById('docuDesc').value = '';
+            var dtt = document.getElementById('docuTitulo'); if (dtt) dtt.value = '';
+            var ddd = document.getElementById('docuDesc'); if (ddd) ddd.value = '';
             K._docuCoverFileSelected = null;
             var a6 = document.getElementById('docuCoverArea');
-            a6.classList.remove('has-file');
-            a6.querySelector('.file-upload-text').textContent = 'Click para subir imagen';
-            document.getElementById('docuCoverPreview').classList.remove('show');
-            document.getElementById('docuCoverFile').value = '';
+            if (a6) { a6.classList.remove('has-file'); var ft6 = a6.querySelector('.file-upload-text'); if (ft6) ft6.textContent = 'Click para subir imagen'; }
+            var dcp = document.getElementById('docuCoverPreview'); if (dcp) dcp.classList.remove('show');
+            var dcf = document.getElementById('docuCoverFile'); if (dcf) dcf.value = '';
         }
         if (id === 'modalEpisodio') {
-            document.getElementById('episodioTitulo').value = '';
-            document.getElementById('episodioDesc').value = '';
-            document.getElementById('episodioNumero').value = '1';
+            var ett = document.getElementById('episodioTitulo'); if (ett) ett.value = '';
+            var edd = document.getElementById('episodioDesc'); if (edd) edd.value = '';
+            var en = document.getElementById('episodioNumero'); if (en) en.value = '1';
             K._episodioThumbFileSelected = null;
             K._episodioVideoFileSelected = null;
             var a7 = document.getElementById('episodioThumbArea');
-            a7.classList.remove('has-file');
-            a7.querySelector('.file-upload-text').textContent = 'Click para subir imagen';
-            document.getElementById('episodioThumbPreview').classList.remove('show');
-            document.getElementById('episodioThumbFile').value = '';
+            if (a7) { a7.classList.remove('has-file'); var ft7 = a7.querySelector('.file-upload-text'); if (ft7) ft7.textContent = 'Click para subir imagen'; }
+            var etp = document.getElementById('episodioThumbPreview'); if (etp) etp.classList.remove('show');
+            var etf = document.getElementById('episodioThumbFile'); if (etf) etf.value = '';
             var a8 = document.getElementById('episodioVideoArea');
-            a8.classList.remove('has-file');
-            a8.querySelector('.file-upload-text').textContent = 'Click para subir video';
-            document.getElementById('episodioVideoFile').value = '';
-            document.getElementById('episodioUploadProgress').classList.remove('show');
-            document.getElementById('episodioUploadFill').style.width = '0%';
+            if (a8) { a8.classList.remove('has-file'); var ft8 = a8.querySelector('.file-upload-text'); if (ft8) ft8.textContent = 'Click para subir video'; }
+            var evf = document.getElementById('episodioVideoFile'); if (evf) evf.value = '';
+            var eup = document.getElementById('episodioUploadProgress'); if (eup) eup.classList.remove('show');
+            var euf = document.getElementById('episodioUploadFill'); if (euf) euf.style.width = '0%';
         }
     };
 
@@ -343,15 +332,15 @@
             var s = await db.from('canciones').select('id', { count: 'exact', head: true });
             var b = await db.from('beats').select('id', { count: 'exact', head: true });
             var n = await db.from('noticias').select('id', { count: 'exact', head: true });
-            document.getElementById('statAlbumes').textContent = a.count || 0;
-            document.getElementById('statCanciones').textContent = s.count || 0;
-            document.getElementById('statBeats').textContent = b.count || 0;
-            document.getElementById('statNoticias').textContent = n.count || 0;
+            var ea = document.getElementById('statAlbumes'); if (ea) ea.textContent = a.count || 0;
+            var es = document.getElementById('statCanciones'); if (es) es.textContent = s.count || 0;
+            var eb = document.getElementById('statBeats'); if (eb) eb.textContent = b.count || 0;
+            var en2 = document.getElementById('statNoticias'); if (en2) en2.textContent = n.count || 0;
         } catch (e) { console.error(e); }
     };
 
     /* ══════════════════════════════════════════
-       🔀 PANEL NAVIGATION (con En Vivo)
+       🔀 PANEL NAVIGATION
        ══════════════════════════════════════════ */
     var panelTitles = {
         'inicio': 'Inicio', 'albumes': 'Álbumes', 'canciones': 'Canciones',
@@ -414,8 +403,8 @@
             if (typeof K.renderInicio === 'function') K.renderInicio();
         }
         if (id === 'albumes') {
-            document.getElementById('albumesListView').style.display = 'block';
-            document.getElementById('albumDetailView').classList.remove('show');
+            var alv = document.getElementById('albumesListView'); if (alv) alv.style.display = 'block';
+            var adv = document.getElementById('albumDetailView'); if (adv) adv.classList.remove('show');
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
         }
         if (id === 'canciones' && typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
@@ -423,8 +412,8 @@
         if (id === 'videos' && typeof K.loadVideos === 'function') K.loadVideos();
         if (id === 'envivo' && typeof K.loadLiveStatus === 'function') K.loadLiveStatus();
         if (id === 'documentales') {
-            document.getElementById('docuListView').style.display = 'block';
-            document.getElementById('docuDetailView').classList.remove('show');
+            var dlv = document.getElementById('docuListView'); if (dlv) dlv.style.display = 'block';
+            var ddv = document.getElementById('docuDetailView'); if (ddv) ddv.classList.remove('show');
             if (typeof K.loadDocumentales === 'function') K.loadDocumentales();
         }
         if (id === 'perfil' && typeof K.loadPerfilData === 'function') K.loadPerfilData();
@@ -731,25 +720,23 @@
         })(overlayCloseIds[oc]);
     }
 
-    document.getElementById('modalNoticiaDetalle').addEventListener('click', function (e) {
-        if (e.target === this) this.classList.remove('show');
-    });
-    document.getElementById('modalMarketAdd').addEventListener('click', function (e) {
-        if (e.target === this && typeof window._closeMarketModal === 'function') window._closeMarketModal();
-    });
-    document.getElementById('marketDetailOverlay').addEventListener('click', function (e) {
-        if (e.target === this) { this.classList.remove('show'); K.marketPreviewAudio.pause(); }
-    });
-    document.getElementById('purchaseOverlay').addEventListener('click', function (e) {
-        if (e.target === this && typeof window._closePurchase === 'function') window._closePurchase();
-    });
+    var mnd = document.getElementById('modalNoticiaDetalle');
+    if (mnd) mnd.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
 
-    document.getElementById('modalPlaylist').addEventListener('click', function (e) {
-        if (e.target === this) window._closePlaylistModal();
-    });
-    document.getElementById('modalAddToPlaylist').addEventListener('click', function (e) {
-        if (e.target === this) window._closeAddToPlaylist();
-    });
+    var mma = document.getElementById('modalMarketAdd');
+    if (mma) mma.addEventListener('click', function (e) { if (e.target === this && typeof window._closeMarketModal === 'function') window._closeMarketModal(); });
+
+    var mdo = document.getElementById('marketDetailOverlay');
+    if (mdo) mdo.addEventListener('click', function (e) { if (e.target === this) { this.classList.remove('show'); K.marketPreviewAudio.pause(); } });
+
+    var po = document.getElementById('purchaseOverlay');
+    if (po) po.addEventListener('click', function (e) { if (e.target === this && typeof window._closePurchase === 'function') window._closePurchase(); });
+
+    var mpl = document.getElementById('modalPlaylist');
+    if (mpl) mpl.addEventListener('click', function (e) { if (e.target === this && typeof window._closePlaylistModal === 'function') window._closePlaylistModal(); });
+
+    var matp = document.getElementById('modalAddToPlaylist');
+    if (matp) matp.addEventListener('click', function (e) { if (e.target === this && typeof window._closeAddToPlaylist === 'function') window._closeAddToPlaylist(); });
 
     /* ══════════════════════════════════════════
        🔐 INIT — sesión y carga inicial
@@ -793,7 +780,6 @@
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
             if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
 
-            /* ── FIX: Esperar a que renderInicio esté disponible ── */
             setTimeout(function () {
                 if (typeof K.renderInicio === 'function') {
                     K.renderInicio();

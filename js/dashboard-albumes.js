@@ -2,6 +2,7 @@
    💿 DASHBOARD-ALBUMES.JS — KXON
    Álbumes, detalle, canciones, CRUD
    Con sistema de lanzamiento programado
+   FIX: IDs corregidos para coincidir con HTML
    ============================================ */
 (function () {
 
@@ -99,7 +100,7 @@
     };
 
     /* ══════════════════════════════════════════
-       💿 ALBUM DETAIL
+       💿 ALBUM DETAIL — FIX: IDs correctos
        ══════════════════════════════════════════ */
     window._openAlbum = async function (aid) {
         K.currentAlbumId = aid;
@@ -108,9 +109,15 @@
             if (r.error) throw r.error;
             var album = r.data;
             K.currentAlbumCover = album.imagen_url || 'https://placehold.co/400x400/111/333?text=♪';
-            document.getElementById('detailTitle').textContent = album.titulo;
-            document.getElementById('detailDesc').textContent = album.descripcion || 'Sin descripción';
-            document.getElementById('detailCover').src = K.currentAlbumCover;
+
+            /* ── FIX: Usar IDs que existen en el HTML ── */
+            var elTitle = document.getElementById('albumDetailTitle');
+            var elDesc = document.getElementById('albumDetailDesc');
+            var elCover = document.getElementById('albumDetailCover');
+
+            if (elTitle) elTitle.textContent = album.titulo;
+            if (elDesc) elDesc.textContent = album.descripcion || 'Sin descripción';
+            if (elCover) elCover.src = K.currentAlbumCover;
 
             var existingRelease = document.getElementById('albumReleaseInfo');
             if (existingRelease) existingRelease.remove();
@@ -132,7 +139,9 @@
             }
 
             var btnAdd = document.getElementById('btnAddTrack');
-            if (K.isAdmin) btnAdd.classList.add('visible'); else btnAdd.classList.remove('visible');
+            if (btnAdd) {
+                if (K.isAdmin) btnAdd.classList.add('visible'); else btnAdd.classList.remove('visible');
+            }
 
             await loadAlbumTracks(aid);
 
@@ -147,10 +156,15 @@
         var releasedSongs = [];
         var totalSongs = songs.length;
 
-        document.getElementById('detailMeta').textContent = totalSongs + ' CANCIONES';
+        /* ── FIX: Usar ID correcto del HTML ── */
+        var elMeta = document.getElementById('albumDetailMeta');
+        if (elMeta) elMeta.textContent = totalSongs + ' CANCIONES';
+
+        /* ── FIX: Usar ID correcto del HTML (trackList, no detailTracks) ── */
+        var trackListEl = document.getElementById('trackList');
 
         if (!songs.length) {
-            document.getElementById('detailTracks').innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones</div></div>';
+            if (trackListEl) trackListEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones</div></div>';
             K.currentPlaylist = [];
             return;
         }
@@ -200,22 +214,24 @@
             }
         }
 
-        document.getElementById('detailTracks').innerHTML = h;
+        if (trackListEl) trackListEl.innerHTML = h;
         K.currentPlaylist = releasedSongs;
 
         var unreleasedCount = 0;
         for (var j = 0; j < songs.length; j++) {
             if (!isReleased(songs[j].fecha_lanzamiento)) unreleasedCount++;
         }
-        if (unreleasedCount > 0 && !K.isAdmin) {
-            document.getElementById('detailMeta').textContent = (totalSongs - unreleasedCount) + ' DISPONIBLES · ' + unreleasedCount + ' POR DESBLOQUEAR';
-        } else if (unreleasedCount > 0 && K.isAdmin) {
-            document.getElementById('detailMeta').textContent = totalSongs + ' CANCIONES · ' + unreleasedCount + ' PROGRAMADAS';
+        if (elMeta) {
+            if (unreleasedCount > 0 && !K.isAdmin) {
+                elMeta.textContent = (totalSongs - unreleasedCount) + ' DISPONIBLES · ' + unreleasedCount + ' POR DESBLOQUEAR';
+            } else if (unreleasedCount > 0 && K.isAdmin) {
+                elMeta.textContent = totalSongs + ' CANCIONES · ' + unreleasedCount + ' PROGRAMADAS';
+            }
         }
     }
 
     /* ══════════════════════════════════════════
-       🎵 TODAS LAS CANCIONES
+       🎵 TODAS LAS CANCIONES — FIX: ID correcto
        ══════════════════════════════════════════ */
     K.loadAllCanciones = async function () {
         try {
@@ -227,7 +243,8 @@
                 return isReleased(s.fecha_lanzamiento);
             });
 
-            renderAllCanciones(filtered, 'allCancionesGrid');
+            /* ── FIX: Usar ID correcto del HTML ── */
+            renderAllCanciones(filtered, 'allCancionesList');
             renderAllCanciones(filtered.slice(0, 5), 'inicioCanciones');
         } catch (e) { console.error(e); }
     };
@@ -309,60 +326,66 @@
        ══════════════════════════════════════════ */
     K._selectedCoverFile = null;
 
-    document.getElementById('albumCoverFile').addEventListener('change', function (e) {
-        var f = e.target.files[0]; if (!f) return;
-        K._selectedCoverFile = f;
-        document.getElementById('albumCoverArea').classList.add('has-file');
-        document.getElementById('albumCoverArea').querySelector('.file-upload-text').textContent = f.name;
-        var rd = new FileReader();
-        rd.onload = function (ev) {
-            document.getElementById('albumCoverImg').src = ev.target.result;
-            document.getElementById('albumCoverPreview').classList.add('show');
-        };
-        rd.readAsDataURL(f);
-    });
-
-    document.getElementById('formAlbum').addEventListener('submit', async function (e) {
-        e.preventDefault();
-        var titulo = document.getElementById('albumTitulo').value.trim();
-        var desc = document.getElementById('albumDesc').value.trim();
-        var fechaEl = document.getElementById('albumFechaLanzamiento');
-        var fechaInput = fechaEl ? fechaEl.value : '';
-        if (!titulo) { K.showToast('Ingresa un título', 'error'); return; }
-
-        var btn = document.getElementById('btnAlbumSubmit');
-        btn.classList.add('loading'); btn.disabled = true;
-
-        try {
-            var imageUrl = '';
-            if (K._selectedCoverFile) {
-                var fn = Date.now() + '_' + K._selectedCoverFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
-                var up = await db.storage.from('imagenes').upload('covers/' + fn, K._selectedCoverFile, { contentType: K._selectedCoverFile.type });
-                if (up.error) throw up.error;
-                imageUrl = db.storage.from('imagenes').getPublicUrl('covers/' + fn).data.publicUrl;
-            }
-
-            var insertData = {
-                titulo: titulo,
-                descripcion: desc,
-                imagen_url: imageUrl,
-                autor_id: K.currentUser.id
+    var albumCoverFile = document.getElementById('albumCoverFile');
+    if (albumCoverFile) {
+        albumCoverFile.addEventListener('change', function (e) {
+            var f = e.target.files[0]; if (!f) return;
+            K._selectedCoverFile = f;
+            document.getElementById('albumCoverArea').classList.add('has-file');
+            document.getElementById('albumCoverArea').querySelector('.file-upload-text').textContent = f.name;
+            var rd = new FileReader();
+            rd.onload = function (ev) {
+                document.getElementById('albumCoverImg').src = ev.target.result;
+                document.getElementById('albumCoverPreview').classList.add('show');
             };
+            rd.readAsDataURL(f);
+        });
+    }
 
-            if (fechaInput) {
-                insertData.fecha_lanzamiento = new Date(fechaInput).toISOString();
-            }
+    var formAlbum = document.getElementById('formAlbum');
+    if (formAlbum) {
+        formAlbum.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var titulo = document.getElementById('albumTitulo').value.trim();
+            var desc = document.getElementById('albumDesc').value.trim();
+            var fechaEl = document.getElementById('albumFechaLanzamiento');
+            var fechaInput = fechaEl ? fechaEl.value : '';
+            if (!titulo) { K.showToast('Ingresa un título', 'error'); return; }
 
-            var ins = await db.from('albumes').insert(insertData);
-            if (ins.error) throw ins.error;
+            var btn = document.getElementById('btnAlbumSubmit');
+            btn.classList.add('loading'); btn.disabled = true;
 
-            var msg = fechaInput ? '¡Álbum programado para el ' + formatReleaseDate(fechaInput) + '!' : '¡Álbum creado!';
-            K.showToast(msg, 'success');
-            K.closeModal('modalAlbum');
-            K.loadAlbumes(); K.loadStats();
-        } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
-        btn.classList.remove('loading'); btn.disabled = false;
-    });
+            try {
+                var imageUrl = '';
+                if (K._selectedCoverFile) {
+                    var fn = Date.now() + '_' + K._selectedCoverFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
+                    var up = await db.storage.from('imagenes').upload('covers/' + fn, K._selectedCoverFile, { contentType: K._selectedCoverFile.type });
+                    if (up.error) throw up.error;
+                    imageUrl = db.storage.from('imagenes').getPublicUrl('covers/' + fn).data.publicUrl;
+                }
+
+                var insertData = {
+                    titulo: titulo,
+                    descripcion: desc,
+                    imagen_url: imageUrl,
+                    autor_id: K.currentUser.id
+                };
+
+                if (fechaInput) {
+                    insertData.fecha_lanzamiento = new Date(fechaInput).toISOString();
+                }
+
+                var ins = await db.from('albumes').insert(insertData);
+                if (ins.error) throw ins.error;
+
+                var msg = fechaInput ? '¡Álbum programado para el ' + formatReleaseDate(fechaInput) + '!' : '¡Álbum creado!';
+                K.showToast(msg, 'success');
+                K.closeModal('modalAlbum');
+                K.loadAlbumes(); K.loadStats();
+            } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
+            btn.classList.remove('loading'); btn.disabled = false;
+        });
+    }
 
     window._deleteAlbum = async function (aid) {
         if (!confirm('¿Eliminar este álbum y todas sus canciones?')) return;
@@ -380,64 +403,70 @@
        ══════════════════════════════════════════ */
     K._selectedAudioFile = null;
 
-    document.getElementById('cancionAudioFile').addEventListener('change', function (e) {
-        var f = e.target.files[0]; if (!f) return;
-        K._selectedAudioFile = f;
-        document.getElementById('cancionAudioArea').classList.add('has-file');
-        document.getElementById('cancionAudioArea').querySelector('.file-upload-text').textContent = f.name;
-    });
+    var cancionAudioFile = document.getElementById('cancionAudioFile');
+    if (cancionAudioFile) {
+        cancionAudioFile.addEventListener('change', function (e) {
+            var f = e.target.files[0]; if (!f) return;
+            K._selectedAudioFile = f;
+            document.getElementById('cancionAudioArea').classList.add('has-file');
+            document.getElementById('cancionAudioArea').querySelector('.file-upload-text').textContent = f.name;
+        });
+    }
 
-    document.getElementById('formCancion').addEventListener('submit', async function (e) {
-        e.preventDefault();
-        var titulo = document.getElementById('cancionTitulo').value.trim();
-        var fechaEl = document.getElementById('cancionFechaLanzamiento');
-        var fechaInput = fechaEl ? fechaEl.value : '';
-        if (!titulo) { K.showToast('Ingresa el título', 'error'); return; }
-        if (!K._selectedAudioFile) { K.showToast('Selecciona un archivo de audio', 'error'); return; }
-        if (!K.currentAlbumId) { K.showToast('Error: álbum no seleccionado', 'error'); return; }
+    var formCancion = document.getElementById('formCancion');
+    if (formCancion) {
+        formCancion.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var titulo = document.getElementById('cancionTitulo').value.trim();
+            var fechaEl = document.getElementById('cancionFechaLanzamiento');
+            var fechaInput = fechaEl ? fechaEl.value : '';
+            if (!titulo) { K.showToast('Ingresa el título', 'error'); return; }
+            if (!K._selectedAudioFile) { K.showToast('Selecciona un archivo de audio', 'error'); return; }
+            if (!K.currentAlbumId) { K.showToast('Error: álbum no seleccionado', 'error'); return; }
 
-        var btn = document.getElementById('btnCancionSubmit');
-        btn.classList.add('loading'); btn.disabled = true;
-        var prog = document.getElementById('uploadProgress');
-        prog.classList.add('show');
-        document.getElementById('uploadText').textContent = 'Subiendo audio...';
-        document.getElementById('uploadBarFill').style.width = '30%';
+            var btn = document.getElementById('btnCancionSubmit');
+            btn.classList.add('loading'); btn.disabled = true;
+            var prog = document.getElementById('uploadProgress');
+            prog.classList.add('show');
+            document.getElementById('uploadText').textContent = 'Subiendo audio...';
+            document.getElementById('uploadBarFill').style.width = '30%';
 
-        try {
-            var fn = Date.now() + '_' + K._selectedAudioFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
-            document.getElementById('uploadBarFill').style.width = '50%';
-            var up = await db.storage.from('audio').upload('songs/' + fn, K._selectedAudioFile, { contentType: K._selectedAudioFile.type });
-            if (up.error) throw up.error;
-            document.getElementById('uploadBarFill').style.width = '80%';
-            var audioUrl = db.storage.from('audio').getPublicUrl('songs/' + fn).data.publicUrl;
-            document.getElementById('uploadText').textContent = 'Guardando...';
+            try {
+                var fn = Date.now() + '_' + K._selectedAudioFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
+                document.getElementById('uploadBarFill').style.width = '50%';
+                var up = await db.storage.from('audio').upload('songs/' + fn, K._selectedAudioFile, { contentType: K._selectedAudioFile.type });
+                if (up.error) throw up.error;
+                document.getElementById('uploadBarFill').style.width = '80%';
+                var audioUrl = db.storage.from('audio').getPublicUrl('songs/' + fn).data.publicUrl;
+                document.getElementById('uploadText').textContent = 'Guardando...';
 
-            var insertData = {
-                titulo: titulo,
-                archivo_url: audioUrl,
-                imagen_url: K.currentAlbumCover,
-                album_id: K.currentAlbumId,
-                autor_id: K.currentUser.id
-            };
+                var insertData = {
+                    titulo: titulo,
+                    archivo_url: audioUrl,
+                    imagen_url: K.currentAlbumCover,
+                    album_id: K.currentAlbumId,
+                    autor_id: K.currentUser.id
+                };
 
-            if (fechaInput) {
-                insertData.fecha_lanzamiento = new Date(fechaInput).toISOString();
-            }
+                if (fechaInput) {
+                    insertData.fecha_lanzamiento = new Date(fechaInput).toISOString();
+                }
 
-            var ins = await db.from('canciones').insert(insertData);
-            if (ins.error) throw ins.error;
-            document.getElementById('uploadBarFill').style.width = '100%';
-            document.getElementById('uploadText').textContent = '¡Completado!';
+                var ins = await db.from('canciones').insert(insertData);
+                if (ins.error) throw ins.error;
+                document.getElementById('uploadBarFill').style.width = '100%';
+                document.getElementById('uploadText').textContent = '¡Completado!';
 
-            var msg = fechaInput ? '¡Canción programada para el ' + formatReleaseDate(fechaInput) + '!' : '¡Canción agregada!';
-            K.showToast(msg, 'success');
-            K.closeModal('modalCancion');
-            await loadAlbumTracks(K.currentAlbumId);
-            K.loadAllCanciones(); K.loadStats();
-        } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
-        btn.classList.remove('loading'); btn.disabled = false;
-        setTimeout(function () { prog.classList.remove('show'); document.getElementById('uploadBarFill').style.width = '0%'; }, 1500);
-    });
+                var msg = fechaInput ? '¡Canción programada para el ' + formatReleaseDate(fechaInput) + '!' : '¡Canción agregada!';
+                K.showToast(msg, 'success');
+                K.closeModal('modalCancion');
+                await loadAlbumTracks(K.currentAlbumId);
+                K.loadAllCanciones(); K.loadStats();
+            } catch (e2) { console.error(e2); K.showToast('Error: ' + e2.message, 'error'); }
+            btn.classList.remove('loading'); btn.disabled = false;
+            setTimeout(function () { prog.classList.remove('show'); document.getElementById('uploadBarFill').style.width = '0%'; }, 1500);
+        });
+    }
 
     window._deleteTrack = async function (tid) {
         if (!confirm('¿Eliminar esta canción?')) return;
