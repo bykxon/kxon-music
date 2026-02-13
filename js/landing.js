@@ -1,8 +1,8 @@
 /* ============================================
    🏠 LANDING JS - KXON PÁGINA DE INICIO
-   Carga noticias, álbumes desde Supabase
-   Modales de detalle noticia y álbum
-   Usa window.db de supabase-config.js
+   ✨ VERSIÓN EXPERTA CON SCROLL ANIMATIONS
+   Scroll Reveal, Counter, Parallax, Particles,
+   Magnetic Buttons, Progress Bar, Stagger
    ============================================ */
 
 (function(){
@@ -14,16 +14,276 @@
     var noticiasContainer = document.getElementById('noticias-grid');
     var albumesContainer = document.getElementById('albumes-grid');
     var headerEl = document.getElementById('header');
+    var scrollProgressEl = document.getElementById('scrollProgress');
     var landingNoticias = [];
     var landingAlbumes = [];
 
-    /* ──────────────────────────────────
+    /* ══════════════════════════════════════════
+       🔝 SCROLL PROGRESS BAR
+       ══════════════════════════════════════════ */
+    function updateScrollProgress() {
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        if (scrollProgressEl) {
+            scrollProgressEl.style.width = progress + '%';
+        }
+    }
+
+    /* ══════════════════════════════════════════
        🔄 HEADER SCROLL EFFECT
-       ────────────────────────────────── */
-    window.addEventListener('scroll', function(){
+       ══════════════════════════════════════════ */
+    function handleHeaderScroll() {
         if (window.scrollY > 50) headerEl.classList.add('scrolled');
         else headerEl.classList.remove('scrolled');
-    });
+    }
+
+    /* ══════════════════════════════════════════
+       ✨ SCROLL REVEAL ENGINE
+       ══════════════════════════════════════════ */
+    var revealObserver = null;
+    var revealedElements = new Set();
+
+    function initScrollReveal() {
+        var options = {
+            root: null,
+            rootMargin: '0px 0px -80px 0px',
+            threshold: 0.12
+        };
+
+        revealObserver = new IntersectionObserver(function(entries) {
+            for (var i = 0; i < entries.length; i++) {
+                var entry = entries[i];
+                if (entry.isIntersecting && !revealedElements.has(entry.target)) {
+                    revealedElements.add(entry.target);
+                    var delay = parseInt(entry.target.getAttribute('data-delay')) || 0;
+                    revealElement(entry.target, delay);
+                }
+            }
+        }, options);
+
+        // Observar todos los elementos con scroll-reveal
+        var elements = document.querySelectorAll('.scroll-reveal');
+        for (var i = 0; i < elements.length; i++) {
+            revealObserver.observe(elements[i]);
+        }
+    }
+
+    function revealElement(el, delay) {
+        setTimeout(function() {
+            el.classList.add('is-visible');
+
+            // Si el elemento tiene contadores, animarlos
+            var counters = el.querySelectorAll('.counter-animate');
+            for (var j = 0; j < counters.length; j++) {
+                animateCounter(counters[j]);
+            }
+        }, delay);
+    }
+
+    /* ══════════════════════════════════════════
+       🔢 COUNTER ANIMATION
+       ══════════════════════════════════════════ */
+    var counterObserver = null;
+    var animatedCounters = new Set();
+
+    function initCounterAnimation() {
+        var options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        counterObserver = new IntersectionObserver(function(entries) {
+            for (var i = 0; i < entries.length; i++) {
+                var entry = entries[i];
+                if (entry.isIntersecting && !animatedCounters.has(entry.target)) {
+                    animatedCounters.add(entry.target);
+                    animateCounter(entry.target);
+                }
+            }
+        }, options);
+
+        var counters = document.querySelectorAll('.counter-animate');
+        for (var i = 0; i < counters.length; i++) {
+            counterObserver.observe(counters[i]);
+        }
+    }
+
+    function animateCounter(el) {
+        var target = parseInt(el.getAttribute('data-target')) || 0;
+        var suffix = el.getAttribute('data-suffix') || '';
+        var duration = 2000;
+        var startTime = null;
+        var startValue = 0;
+
+        function easeOutExpo(t) {
+            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        }
+
+        function update(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var elapsed = timestamp - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+            var easedProgress = easeOutExpo(progress);
+            var currentValue = Math.round(startValue + (target - startValue) * easedProgress);
+
+            el.textContent = currentValue + suffix;
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    /* ══════════════════════════════════════════
+       🧲 MAGNETIC BUTTON EFFECT
+       ══════════════════════════════════════════ */
+    function initMagneticButtons() {
+        var buttons = document.querySelectorAll('.magnetic-btn');
+
+        for (var i = 0; i < buttons.length; i++) {
+            (function(btn) {
+                btn.addEventListener('mousemove', function(e) {
+                    var rect = btn.getBoundingClientRect();
+                    var x = e.clientX - rect.left - rect.width / 2;
+                    var y = e.clientY - rect.top - rect.height / 2;
+                    var strength = 0.15;
+
+                    btn.style.transform = 'translate(' + (x * strength) + 'px, ' + (y * strength) + 'px)';
+                });
+
+                btn.addEventListener('mouseleave', function() {
+                    btn.style.transform = '';
+                });
+            })(buttons[i]);
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       ✨ HERO PARTICLES
+       ══════════════════════════════════════════ */
+    function initHeroParticles() {
+        var container = document.getElementById('heroParticles');
+        if (!container) return;
+
+        var particleCount = window.innerWidth < 768 ? 15 : 30;
+
+        for (var i = 0; i < particleCount; i++) {
+            var particle = document.createElement('div');
+            particle.className = 'hero-particle';
+
+            var size = Math.random() * 3 + 1;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            particle.style.animationDelay = (Math.random() * 10) + 's';
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+
+            container.appendChild(particle);
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       📰🔄 SCROLL REVEAL FOR DYNAMIC CONTENT
+       (Noticias y Álbumes cargados vía Supabase)
+       ══════════════════════════════════════════ */
+    function applyScrollRevealToChildren(containerSelector) {
+        var container = document.querySelector(containerSelector);
+        if (!container || !container.classList.contains('scroll-reveal-children')) return;
+
+        var animation = container.getAttribute('data-animation') || 'scale-up';
+        var stagger = parseInt(container.getAttribute('data-stagger')) || 100;
+        var children = container.children;
+
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (!child.classList.contains('scroll-reveal')) {
+                child.classList.add('scroll-reveal');
+                child.setAttribute('data-animation', animation);
+                child.setAttribute('data-delay', String(i * stagger));
+
+                if (revealObserver) {
+                    revealObserver.observe(child);
+                }
+            }
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       🌊 PARALLAX EFFECT
+       ══════════════════════════════════════════ */
+    function handleParallax() {
+        var scrollY = window.pageYOffset;
+
+        // Hero circles parallax
+        var circle2 = document.querySelector('.hero-circle-2');
+        var circle3 = document.querySelector('.hero-circle-3');
+        if (circle2) {
+            circle2.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.1) + 'px))';
+        }
+        if (circle3) {
+            circle3.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.05) + 'px))';
+        }
+
+        // Video section parallax
+        var videoMedia = document.querySelector('.video-hero-media');
+        if (videoMedia) {
+            var videoSection = document.getElementById('video-presentacion');
+            if (videoSection) {
+                var rect = videoSection.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    var parallaxValue = (rect.top / window.innerHeight) * 30;
+                    videoMedia.style.transform = 'scale(1.05) translateY(' + parallaxValue + 'px)';
+                }
+            }
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       🎯 SMOOTH SCROLL FOR ANCHOR LINKS
+       ══════════════════════════════════════════ */
+    function initSmoothScroll() {
+        var links = document.querySelectorAll('a[href^="#"]');
+        for (var i = 0; i < links.length; i++) {
+            links[i].addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (href === '#') return;
+                var target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    var offsetTop = target.getBoundingClientRect().top + window.pageYOffset - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       📜 MASTER SCROLL HANDLER
+       (Optimizado con requestAnimationFrame)
+       ══════════════════════════════════════════ */
+    var ticking = false;
+
+    function onScroll() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                handleHeaderScroll();
+                updateScrollProgress();
+                handleParallax();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     /* ──────────────────────────────────
        📰 CARGAR NOTICIAS
@@ -43,6 +303,11 @@
                 html += crearCardNoticia(r.data[i], i);
             }
             noticiasContainer.innerHTML = html;
+
+            // Aplicar scroll reveal a los hijos dinámicos
+            setTimeout(function() {
+                applyScrollRevealToChildren('#noticias-grid');
+            }, 50);
         } catch(err) {
             console.error('Error noticias:', err);
             noticiasContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar noticias</h3></div>';
@@ -67,6 +332,11 @@
                 html += crearCardAlbum(r.data[i], i);
             }
             albumesContainer.innerHTML = html;
+
+            // Aplicar scroll reveal a los hijos dinámicos
+            setTimeout(function() {
+                applyScrollRevealToChildren('#albumes-grid');
+            }, 50);
         } catch(err) {
             console.error('Error álbumes:', err);
             albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar álbumes</h3></div>';
@@ -180,12 +450,26 @@
         return h;
     }
 
-    /* ──────────────────────────────────
+    /* ══════════════════════════════════════════
        🚀 INICIALIZAR LANDING
-       ────────────────────────────────── */
+       ══════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function(){
+        // Inicializar sistemas de animación
+        initScrollReveal();
+        initCounterAnimation();
+        initMagneticButtons();
+        initHeroParticles();
+        initSmoothScroll();
+
+        // Cargar contenido dinámico
         cargarNoticias();
         cargarAlbumesDestacados();
+
+        // Estado inicial del scroll
+        handleHeaderScroll();
+        updateScrollProgress();
+
+        console.log('🎵 KXON Landing inicializada con animaciones de scroll experto');
     });
 
 })();
