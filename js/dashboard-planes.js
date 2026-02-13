@@ -60,12 +60,19 @@
             var isActivePlan = K.userSubscription && K.userSubscription.plan_id === plan.id;
             var isPending = pendingSub && pendingSub.plan_id === plan.id;
 
-            var allFeatures = [
+                        var allFeatures = [
                 { key: 'albumes', label: 'Álbumes completos', icon: '💿' },
                 { key: 'canciones', label: 'Todas las canciones', icon: '🎵' },
                 { key: 'radio', label: 'Radio KXON', icon: '📻' },
                 { key: 'videos', label: 'Videos exclusivos', icon: '🎬' },
-                { key: 'documentales', label: 'Documentales', icon: '🎞️' }
+                { key: 'documentales', label: 'Documentales', icon: '🎞️' },
+                { key: 'playlists', label: 'Playlists', icon: '🎶' },
+                { key: 'envivo', label: 'En Vivo', icon: '🔴' },
+                { key: 'chat', label: 'Chat', icon: '💬' },
+                { key: 'solicitar-beat', label: 'Solicitar Beat', icon: '📋' },
+                { key: 'historial', label: 'Historial', icon: '📊' },
+                { key: 'favoritos', label: 'Favoritos', icon: '❤️' },
+                { key: 'marketplace', label: 'Marketplace', icon: '🛒' }
             ];
 
             h += '<div class="plan-card' + (isActivePlan ? ' plan-active' : '') + (isPremium ? ' plan-premium' : '') + '">';
@@ -203,9 +210,26 @@
         if (e.target === this) window._closeSubModal();
     });
 
-     /* ══════════════════════════════════════════
-       🔧 ADMIN: EDITAR PLAN (COMPLETO)
+         /* ══════════════════════════════════════════
+       🔧 ADMIN: EDITAR PLAN (TODOS LOS ACCESOS)
        ══════════════════════════════════════════ */
+
+    // Lista maestra de todos los accesos disponibles
+    var allAccesosConfig = [
+        { id: 'editAccAlbumes',       key: 'albumes' },
+        { id: 'editAccCanciones',     key: 'canciones' },
+        { id: 'editAccRadio',         key: 'radio' },
+        { id: 'editAccVideos',        key: 'videos' },
+        { id: 'editAccDocumentales',  key: 'documentales' },
+        { id: 'editAccPlaylists',     key: 'playlists' },
+        { id: 'editAccEnvivo',        key: 'envivo' },
+        { id: 'editAccChat',          key: 'chat' },
+        { id: 'editAccSolicitarBeat', key: 'solicitar-beat' },
+        { id: 'editAccHistorial',     key: 'historial' },
+        { id: 'editAccFavoritos',     key: 'favoritos' },
+        { id: 'editAccMarketplace',   key: 'marketplace' }
+    ];
+
     window._editPlan = function (planId) {
         var plan = allPlanes.find(function (p) { return p.id === planId; });
         if (!plan) return;
@@ -217,13 +241,14 @@
         document.getElementById('editPlanDuracion').value = plan.duracion_dias || 30;
         document.getElementById('editPlanOrden').value = plan.orden || 1;
 
-        // Accesos (checkboxes)
+        // Marcar/desmarcar todos los checkboxes de accesos
         var accesos = plan.accesos || [];
-        document.getElementById('editAccAlbumes').checked = accesos.indexOf('albumes') >= 0;
-        document.getElementById('editAccCanciones').checked = accesos.indexOf('canciones') >= 0;
-        document.getElementById('editAccRadio').checked = accesos.indexOf('radio') >= 0;
-        document.getElementById('editAccVideos').checked = accesos.indexOf('videos') >= 0;
-        document.getElementById('editAccDocumentales').checked = accesos.indexOf('documentales') >= 0;
+        for (var i = 0; i < allAccesosConfig.length; i++) {
+            var cb = document.getElementById(allAccesosConfig[i].id);
+            if (cb) {
+                cb.checked = accesos.indexOf(allAccesosConfig[i].key) >= 0;
+            }
+        }
 
         document.getElementById('modalEditPlan').classList.add('show');
     };
@@ -247,13 +272,14 @@
 
         if (!nombre) { K.showToast('Ingresa un nombre', 'error'); return; }
 
-        // Recoger accesos seleccionados
+        // Recoger TODOS los accesos seleccionados
         var accesos = [];
-        if (document.getElementById('editAccAlbumes').checked) accesos.push('albumes');
-        if (document.getElementById('editAccCanciones').checked) accesos.push('canciones');
-        if (document.getElementById('editAccRadio').checked) accesos.push('radio');
-        if (document.getElementById('editAccVideos').checked) accesos.push('videos');
-        if (document.getElementById('editAccDocumentales').checked) accesos.push('documentales');
+        for (var i = 0; i < allAccesosConfig.length; i++) {
+            var cb = document.getElementById(allAccesosConfig[i].id);
+            if (cb && cb.checked) {
+                accesos.push(allAccesosConfig[i].key);
+            }
+        }
 
         var btn = document.getElementById('btnEditPlanSubmit');
         btn.classList.add('loading');
@@ -282,7 +308,6 @@
         btn.classList.remove('loading');
         btn.disabled = false;
     });
-
     /* ══════════════════════════════════════════
        📋 ADMIN: SOLICITUDES — LISTA COMPACTA
        ══════════════════════════════════════════ */

@@ -1812,7 +1812,7 @@
         </div>
     </div>
 
-    <!-- 🔲 MODAL: EDITAR PLAN (COMPLETO) -->
+    <!-- 🔲 MODAL: EDITAR PLAN (TODOS LOS ACCESOS) -->
 <div class="modal-overlay" id="modalEditPlan">
     <div class="modal" style="max-width:560px;">
         <div class="modal-header">
@@ -1846,13 +1846,13 @@
                     <label class="form-label">Orden de visualización</label>
                     <input type="number" class="form-input" id="editPlanOrden" min="1" value="1">
                     <span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">
-                        Número menor = aparece primero. Ej: Básico=1, Premium=2
+                        Número menor = aparece primero. Ej: Básico=1, Pro=2
                     </span>
                 </div>
 
-                <!-- Accesos incluidos -->
+                <!-- Accesos incluidos - CONTENIDO -->
                 <div class="form-group">
-                    <label class="form-label">🔑 Accesos incluidos</label>
+                    <label class="form-label">🎵 Contenido</label>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
                         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
                             <input type="checkbox" id="editAccAlbumes" value="albumes" style="width:18px;height:18px;accent-color:var(--acento-principal);">
@@ -1873,6 +1873,41 @@
                         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
                             <input type="checkbox" id="editAccDocumentales" value="documentales" style="width:18px;height:18px;accent-color:var(--acento-principal);">
                             <span style="font-size:.82rem;color:var(--plata-clara);">🎞️ Documentales</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
+                            <input type="checkbox" id="editAccPlaylists" value="playlists" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">🎶 Playlists</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Accesos incluidos - FUNCIONES -->
+                <div class="form-group">
+                    <label class="form-label">⚡ Funciones</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
+                            <input type="checkbox" id="editAccEnvivo" value="envivo" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">🔴 En Vivo</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
+                            <input type="checkbox" id="editAccChat" value="chat" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">💬 Chat</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
+                            <input type="checkbox" id="editAccSolicitarBeat" value="solicitar-beat" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">📋 Solicitar Beat</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
+                            <input type="checkbox" id="editAccHistorial" value="historial" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">📊 Historial</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
+                            <input type="checkbox" id="editAccFavoritos" value="favoritos" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">❤️ Favoritos</span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;">
+                            <input type="checkbox" id="editAccMarketplace" value="marketplace" style="width:18px;height:18px;accent-color:var(--acento-principal);">
+                            <span style="font-size:.82rem;color:var(--plata-clara);">🛒 Marketplace</span>
                         </label>
                     </div>
                 </div>
