@@ -516,6 +516,51 @@ body {
         padding: 24px 20px;
     }
 }
+
+/* ============================================
+   📊 STATS BAR
+   ============================================ */
+.stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 32px;
+    background: var(--negro-card, #0f0f0f);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.stat-bar-item {
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat-bar-value {
+    font-family: var(--font-titulo, 'Montserrat', sans-serif);
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--plata-blanca, #f0f0f0);
+    margin-bottom: 4px;
+}
+
+.stat-bar-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--plata-oscura, #555);
+}
+
+.stat-bar-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.06);
+}
+
 /* ============================================
    🎫 PLANES LANDING
    ============================================ */
@@ -1935,6 +1980,18 @@ body {
     .video-hero-title { font-size: clamp(1.2rem, 6vw, 1.6rem); margin-bottom: 14px; }
     .video-hero-desc { font-size: 0.78rem; line-height: 1.6; margin-bottom: 18px; }
     .btn-hero-primary { padding: 12px 28px; font-size: 0.75rem; width: 100%; max-width: 260px; justify-content: center; }
+
+    /* Stats bar responsive 480px */
+    .stats-bar {
+        gap: 16px;
+        padding: 20px;
+    }
+    .stat-bar-item {
+        min-width: 100px;
+    }
+    .stat-bar-value {
+        font-size: 1.2rem;
+    }
 }
 
 /* ──────────────────────────────────
