@@ -203,7 +203,7 @@
         if (e.target === this) window._closeSubModal();
     });
 
-        /* ══════════════════════════════════════════
+     /* ══════════════════════════════════════════
        🔧 ADMIN: EDITAR PLAN (COMPLETO)
        ══════════════════════════════════════════ */
     window._editPlan = function (planId) {
@@ -213,7 +213,6 @@
         // Campos básicos
         document.getElementById('editPlanId').value = plan.id;
         document.getElementById('editPlanNombre').value = plan.nombre || '';
-        document.getElementById('editPlanDescripcion').value = plan.descripcion || '';
         document.getElementById('editPlanPrecio').value = plan.precio || 0;
         document.getElementById('editPlanDuracion').value = plan.duracion_dias || 30;
         document.getElementById('editPlanOrden').value = plan.orden || 1;
@@ -242,7 +241,6 @@
 
         var planId = document.getElementById('editPlanId').value;
         var nombre = document.getElementById('editPlanNombre').value.trim();
-        var descripcion = document.getElementById('editPlanDescripcion').value.trim();
         var precio = parseInt(document.getElementById('editPlanPrecio').value) || 0;
         var duracion = parseInt(document.getElementById('editPlanDuracion').value) || 30;
         var orden = parseInt(document.getElementById('editPlanOrden').value) || 1;
@@ -264,7 +262,6 @@
         try {
             var upd = await db.from('planes').update({
                 nombre: nombre,
-                descripcion: descripcion,
                 precio: precio,
                 duracion_dias: duracion,
                 orden: orden,
