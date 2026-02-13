@@ -463,8 +463,8 @@
             window._loadPlaylists();
         }
 
-        if (id === 'historial' && typeof window._loadHistorial === 'function') {
-            window._loadHistorial();
+                if (id === 'historial' && typeof K.loadHistorial === 'function') {
+            K.loadHistorial();
         }
 
         if (id === 'chat' && typeof K.loadChat === 'function') {
@@ -597,7 +597,7 @@
         document.getElementById('volumeFill').style.width = (p * 100) + '%';
     });
 
-    window.KXON.playTrack = function (idx) {
+        window.KXON.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
         var track = K.currentPlaylist[idx];
 
@@ -624,6 +624,17 @@
             items[idx].classList.add('playing');
             var btn3 = items[idx].querySelector('.track-play-btn');
             if (btn3) btn3.textContent = '⏸';
+        }
+
+        /* ── REGISTRAR EN HISTORIAL ── */
+        if (typeof K.addToHistorial === 'function') {
+            K.addToHistorial({
+                id: track.id,
+                titulo: track.titulo,
+                imagen_url: track.imagen_url || K.currentAlbumCover || '',
+                album: track.album || '',
+                duracion: track.duracion || '--:--'
+            });
         }
 
         db.rpc('increment_reproducciones', { song_id: track.id }).then(function (r) {

@@ -1,6 +1,7 @@
 /* ============================================
    📻 DASHBOARD-RADIO.JS — KXON
    Radio KXON: reproducción continua, cola, shuffle
+   FIX: Filtra canciones no lanzadas
    FIX: Imágenes de álbum se muestran correctamente
    FIX: Conflicto con player bar resuelto
    ============================================ */
@@ -11,14 +12,42 @@
     var radioAudio = K.radioAudio;
 
     /* ══════════════════════════════════════════
+       📅 UTILIDAD DE FECHA (igual que en albumes)
+       ══════════════════════════════════════════ */
+    function isReleased(fechaLanzamiento) {
+        if (!fechaLanzamiento) return true;
+        return new Date(fechaLanzamiento) <= new Date();
+    }
+
+    /* ══════════════════════════════════════════
        📻 INICIALIZAR RADIO
        ══════════════════════════════════════════ */
     K.initRadio = async function () {
         if (K.radioReady && K.radioPlaylist.length > 0) { renderRadioQueue(); return; }
         try {
-            var r = await db.from('canciones').select('*, albumes(titulo, imagen_url)').order('created_at', { ascending: false });
+            var r = await db.from('canciones')
+                .select('*, albumes(titulo, imagen_url, fecha_lanzamiento)')
+                .order('created_at', { ascending: false });
             if (r.error) throw r.error;
-            K.radioPlaylist = (r.data || []).map(function (s) {
+
+            var allSongs = r.data || [];
+
+            /* ── FILTRAR: solo canciones ya lanzadas ── */
+            var releasedSongs = allSongs.filter(function (s) {
+                /* Verificar fecha de lanzamiento de la canción */
+                var songReleased = isReleased(s.fecha_lanzamiento);
+
+                /* Verificar fecha de lanzamiento del álbum */
+                var albumReleased = true;
+                if (s.albumes && s.albumes.fecha_lanzamiento) {
+                    albumReleased = isReleased(s.albumes.fecha_lanzamiento);
+                }
+
+                /* Solo incluir si AMBOS están lanzados */
+                return songReleased && albumReleased;
+            });
+
+            K.radioPlaylist = releasedSongs.map(function (s) {
                 return {
                     id: s.id, titulo: s.titulo, archivo_url: s.archivo_url,
                     imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '',
@@ -26,11 +55,15 @@
                     duracion: s.duracion || '--:--', reproducciones: s.reproducciones || 0
                 };
             });
+
             K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
             var c = document.getElementById('radioQueueCount');
             if (c) c.textContent = K.radioPlaylist.length + ' canciones en cola';
             renderRadioQueue();
             K.radioReady = true;
+
+            console.log('📻 Radio: ' + releasedSongs.length + ' canciones disponibles (filtradas ' + (allSongs.length - releasedSongs.length) + ' no lanzadas)');
+
         } catch (e) { console.error('Radio error:', e); }
     };
 
@@ -64,7 +97,6 @@
             discFallback.style.display = 'flex';
         }
 
-        /* Actualizar fondo ambiental con color de la portada */
         var ambient = document.getElementById('radioAmbient');
         if (ambient && imgUrl) {
             ambient.style.opacity = '0.06';
@@ -88,7 +120,6 @@
         radioAudio.play();
         K.radioIsPlaying = true;
 
-        /* Actualizar disco */
         updateDiscImage(t.imagen_url);
 
         var d = document.getElementById('radioDisc'); if (d) d.classList.add('spinning');
@@ -110,8 +141,23 @@
         document.getElementById('playerPlayPause').textContent = '⏸';
         K.isPlaying = true;
 
+        /* Actualizar playlist actual para el player expandido */
+        K.currentPlaylist = list.map(function (song) {
+            return {
+                id: song.id, titulo: song.titulo, archivo_url: song.archivo_url,
+                imagen_url: song.imagen_url, duracion: song.duracion
+            };
+        });
+        K.currentTrackIndex = idx;
+        K.currentAlbumCover = t.imagen_url || '';
+
         if (typeof K.updateRadioFavState === 'function') setTimeout(K.updateRadioFavState, 100);
         if (typeof K.updatePlayerFavState === 'function') setTimeout(K.updatePlayerFavState, 100);
+
+        /* Registrar en historial */
+        if (typeof K.addToHistorial === 'function') {
+            K.addToHistorial(t);
+        }
 
         db.rpc('increment_reproducciones', { song_id: t.id }).then(function (r) {
             if (r.error) console.warn('Error updating radio plays:', r.error.message);
@@ -119,7 +165,7 @@
     }
 
     function radioToggle() {
-        if (K.radioPlaylist.length === 0) { K.showToast('No hay canciones', 'error'); return; }
+        if (K.radioPlaylist.length === 0) { K.showToast('No hay canciones disponibles', 'error'); return; }
         if (K.radioIsPlaying) {
             radioAudio.pause();
             K.radioIsPlaying = false;
@@ -253,7 +299,7 @@
         var c = document.getElementById('radioQueueList'); if (!c) return;
         var list = getRL();
         if (!list || list.length === 0) {
-            c.innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones</div><div class="empty-text">Sube canciones desde álbumes</div></div>';
+            c.innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones disponibles</div><div class="empty-text">Las canciones aparecerán cuando se lancen</div></div>';
             return;
         }
         var h = '';
