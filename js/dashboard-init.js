@@ -2,7 +2,7 @@
    🚀 DASHBOARD-INIT.JS — KXON
    Inicialización, sesión, sidebar, navegación,
    player bar, helpers, variables compartidas
-   FIX: Archivo sin duplicar + radio panel check
+   CON BLOQUEO COMPLETO DE TODOS LOS PANELES
    ============================================ */
 (function () {
 
@@ -104,8 +104,43 @@
 
     /* ══════════════════════════════════════════
        🔒 VERIFICACIÓN DE SUSCRIPCIÓN
+       TODOS LOS PANELES BLOQUEABLES
        ══════════════════════════════════════════ */
-    var panelesBloqueados = ['albumes', 'canciones', 'radio', 'videos', 'documentales'];
+    var panelesBloqueados = [
+        'albumes', 'canciones', 'radio', 'videos', 'documentales',
+        'playlists', 'envivo', 'chat', 'solicitar-beat',
+        'historial', 'favoritos', 'marketplace'
+    ];
+
+    var panelNombres = {
+        'albumes': 'Álbumes',
+        'canciones': 'Canciones',
+        'radio': 'Radio KXON',
+        'videos': 'Videos',
+        'documentales': 'Documentales',
+        'playlists': 'Playlists',
+        'envivo': 'En Vivo',
+        'chat': 'Chat',
+        'solicitar-beat': 'Solicitar Beat',
+        'historial': 'Historial',
+        'favoritos': 'Favoritos',
+        'marketplace': 'Marketplace'
+    };
+
+    var panelIconos = {
+        'albumes': '💿',
+        'canciones': '🎵',
+        'radio': '📻',
+        'videos': '🎬',
+        'documentales': '🎞️',
+        'playlists': '🎶',
+        'envivo': '🔴',
+        'chat': '💬',
+        'solicitar-beat': '📋',
+        'historial': '📊',
+        'favoritos': '❤️',
+        'marketplace': '🛒'
+    };
 
     window.KXON.checkAccess = function (panelId) {
         if (K.isAdmin) return true;
@@ -118,7 +153,11 @@
     window.KXON.loadUserSubscription = async function () {
         if (K.isAdmin) {
             K.userSubscription = { estado: 'admin' };
-            K.userAccesos = ['albumes', 'canciones', 'radio', 'videos', 'documentales'];
+            K.userAccesos = [
+                'albumes', 'canciones', 'radio', 'videos', 'documentales',
+                'playlists', 'envivo', 'chat', 'solicitar-beat',
+                'historial', 'favoritos', 'marketplace'
+            ];
             return;
         }
 
@@ -159,26 +198,19 @@
         var panel = document.getElementById('panel-' + panelId);
         if (!panel) return;
 
-        var nombres = {
-            'albumes': 'Álbumes', 'canciones': 'Canciones',
-            'radio': 'Radio KXON', 'videos': 'Videos', 'documentales': 'Documentales'
-        };
-
-        var planesReq = {
-            'albumes': 'Plan Básico o Premium',
-            'canciones': 'Plan Básico o Premium',
-            'radio': 'Plan Básico o Premium',
-            'videos': 'Plan Premium',
-            'documentales': 'Plan Premium'
-        };
+        var nombre = panelNombres[panelId] || panelId;
+        var icono = panelIconos[panelId] || '🔒';
 
         panel.innerHTML =
             '<div class="panel-locked">' +
             '<div class="locked-icon">🔒</div>' +
             '<h2 class="locked-title">Contenido Bloqueado</h2>' +
-            '<p class="locked-desc">Necesitas una suscripción activa para acceder a <strong>' + (nombres[panelId] || panelId) + '</strong></p>' +
-            '<button class="locked-btn" onclick="window.KXON.showPanel(\'planes\')">🎫 Ver Planes</button>' +
-            '<p class="locked-plan-hint">Requiere: ' + (planesReq[panelId] || 'Un plan activo') + '</p>' +
+            '<p class="locked-desc">Necesitas una suscripción activa para acceder a <strong>' + icono + ' ' + nombre + '</strong></p>' +
+            '<div class="locked-feature-preview">' +
+            '<div class="locked-feature-item">' + icono + ' ' + nombre + '</div>' +
+            '</div>' +
+            '<button class="locked-btn" onclick="window.KXON.showPanel(\'planes\')">🎫 Ver Planes y Suscribirse</button>' +
+            '<p class="locked-plan-hint">Elige un plan para desbloquear este y más contenido</p>' +
             '</div>';
     }
 
@@ -750,7 +782,6 @@
     var matp = document.getElementById('modalAddToPlaylist');
     if (matp) matp.addEventListener('click', function (e) { if (e.target === this && typeof window._closeAddToPlaylist === 'function') window._closeAddToPlaylist(); });
 
-    /* ── Lyrics overlays ── */
     var lyricsOv = document.getElementById('lyricsOverlay');
     if (lyricsOv) lyricsOv.addEventListener('click', function (e) {
         if (e.target === this) window._closeLyrics();

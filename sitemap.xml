@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.w3.org/2000/svg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns:s="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- Página principal -->
+    <s:url>
+        <s:loc>https://kxon-music.vercel.app/</s:loc>
+        <s:lastmod>2025-01-01</s:lastmod>
+        <s:changefreq>weekly</s:changefreq>
+        <s:priority>1.0</s:priority>
+    </s:url>
+
+    <!-- Login -->
+    <s:url>
+        <s:loc>https://kxon-music.vercel.app/login.html</s:loc>
+        <s:lastmod>2025-01-01</s:lastmod>
+        <s:changefreq>monthly</s:changefreq>
+        <s:priority>0.8</s:priority>
+    </s:url>
+
+    <!-- Registro -->
+    <s:url>
+        <s:loc>https://kxon-music.vercel.app/register.html</s:loc>
+        <s:lastmod>2025-01-01</s:lastmod>
+        <s:changefreq>monthly</s:changefreq>
+        <s:priority>0.8</s:priority>
+    </s:url>
+
+    <!-- Dashboard -->
+    <s:url>
+        <s:loc>https://kxon-music.vercel.app/dashboard.html</s:loc>
+        <s:lastmod>2025-01-01</s:lastmod>
+        <s:changefreq>daily</s:changefreq>
+        <s:priority>0.9</s:priority>
+    </s:url>
+
+    <!-- Términos y Condiciones -->
+    <s:url>
+        <s:loc>https://kxon-music.vercel.app/terms.html</s:loc>
+        <s:lastmod>2025-01-01</s:lastmod>
+        <s:changefreq>yearly</s:changefreq>
+        <s:priority>0.5</s:priority>
+    </s:url>
+
+    <!-- Recuperar contraseña -->
+    <s:url>
+        <s:loc>https://kxon-music.vercel.app/forgot-password.html</s:loc>
+        <s:lastmod>2025-01-01</s:lastmod>
+        <s:changefreq>yearly</s:changefreq>
+        <s:priority>0.3</s:priority>
+    </s:url>
+
+</urlset>

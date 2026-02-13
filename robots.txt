@@ -1,0 +1,51 @@
+# ============================================
+# 🤖 ROBOTS.TXT — KXON Music Platform
+# ============================================
+
+# Permitir todos los bots
+User-agent: *
+
+# Páginas públicas (permitidas)
+Allow: /
+Allow: /index.html
+Allow: /login.html
+Allow: /register.html
+Allow: /terms.html
+Allow: /forgot-password.html
+
+# Páginas protegidas (bloquear de buscadores)
+Disallow: /dashboard.html
+Disallow: /reset-password.html
+
+# Archivos técnicos (bloquear)
+Disallow: /js/
+Disallow: /sw.js
+Disallow: /manifest.json
+Disallow: /vercel.json
+
+# Archivos de descarga (permitir)
+Allow: /downloads/
+
+# Iconos y assets (permitir)
+Allow: /icons/
+Allow: /css/
+Allow: /favicon.svg
+
+# Sitemap
+Sitemap: https://kxon-music.vercel.app/sitemap.xml
+
+# ============================================
+# Googlebot específico
+# ============================================
+User-agent: Googlebot
+Allow: /
+Disallow: /dashboard.html
+Disallow: /js/
+
+# ============================================
+# Bingbot específico
+# ============================================
+User-agent: Bingbot
+Allow: /
+Disallow: /dashboard.html
+Disallow: /js/

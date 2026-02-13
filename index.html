@@ -3,38 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KXON — Music Platform</title>
-    <!-- SEO & META -->
-    <meta name="description" content="KXON — Plataforma musical exclusiva. Álbumes, canciones, beats y contenido audiovisual de producción propia para artistas y fans.">
-    <meta name="keywords" content="KXON, música, beats, artista digital, plataforma musical, álbumes, canciones">
+    <title>KXON — Plataforma Musical Exclusiva | Música, Beats y Contenido Directo del Artista</title>
+
+    <!-- ══════════════════════════════════════════
+         🔍 SEO META TAGS
+         ══════════════════════════════════════════ -->
+    <meta name="description" content="KXON es la plataforma musical independiente donde el 100% va directo al artista. Álbumes, canciones, beats exclusivos, videos, documentales y transmisiones en vivo. Más barato que Spotify, más directo que cualquier otra plataforma.">
+    <meta name="keywords" content="KXON, música independiente, beats, artista digital, plataforma musical, álbumes, canciones, comprar beats, música Colombia, streaming independiente, beats trap, reggaeton, hip hop">
     <meta name="author" content="KXON">
     <meta name="theme-color" content="#0a0a0a">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="es">
+    <meta name="geo.region" content="CO">
+    <meta name="geo.country" content="Colombia">
+    <link rel="canonical" href="https://kxon-music.vercel.app/">
 
-    <!-- Open Graph -->
+    <!-- ══════════════════════════════════════════
+         📘 OPEN GRAPH (Facebook, WhatsApp, Telegram)
+         ══════════════════════════════════════════ -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="KXON — Music Platform">
-    <meta property="og:description" content="El nuevo artista digital en un universo sonoro exclusivo. Álbumes, canciones y beats de producción propia.">
-    <meta property="og:image" content="https://placehold.co/1200x630/0a0a0a/c0c0c0?text=KXON+MUSIC">
-    <meta property="og:url" content="">
+    <meta property="og:title" content="KXON — Plataforma Musical Exclusiva">
+    <meta property="og:description" content="El 100% va directo al artista. Música, beats, videos y contenido exclusivo. Más barato que Spotify. Apoya directo.">
+    <meta property="og:image" content="https://kxon-music.vercel.app/icons/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="KXON Music Platform - Música exclusiva directo del artista">
+    <meta property="og:url" content="https://kxon-music.vercel.app/">
     <meta property="og:site_name" content="KXON">
+    <meta property="og:locale" content="es_CO">
 
-    <!-- Twitter Card -->
+    <!-- ══════════════════════════════════════════
+         🐦 TWITTER CARD
+         ══════════════════════════════════════════ -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="KXON — Music Platform">
-    <meta name="twitter:description" content="Plataforma musical exclusiva para artistas y fans.">
-    <meta name="twitter:image" content="https://placehold.co/1200x630/0a0a0a/c0c0c0?text=KXON+MUSIC">
+    <meta name="twitter:title" content="KXON — Plataforma Musical Exclusiva">
+    <meta name="twitter:description" content="El 100% va directo al artista. Música, beats, videos exclusivos. Desde $9.900 COP/mes.">
+    <meta name="twitter:image" content="https://kxon-music.vercel.app/icons/og-image.png">
+    <meta name="twitter:image:alt" content="KXON Music Platform">
 
-    <!-- Favicon -->
+    <!-- ══════════════════════════════════════════
+         🔗 SCHEMA MARKUP (Google Rich Results)
+         ══════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "MusicGroup",
+        "name": "KXON",
+        "description": "Plataforma musical independiente. Álbumes, canciones, beats exclusivos, videos y documentales directo del artista.",
+        "url": "https://kxon-music.vercel.app",
+        "logo": "https://kxon-music.vercel.app/icons/icon-512.png",
+        "image": "https://kxon-music.vercel.app/icons/og-image.png",
+        "genre": ["Trap", "Reggaeton", "Hip Hop", "R&B"],
+        "foundingLocation": {
+            "@type": "Place",
+            "name": "Colombia"
+        },
+        "sameAs": []
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "KXON Music",
+        "description": "Plataforma de streaming musical independiente con suscripción directa al artista",
+       "url": "https://kxon-music.vercel.app",
+        "applicationCategory": "MusicApplication",
+        "operatingSystem": "Web, Android, iOS",
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Plan Básico",
+                "price": "9900",
+                "priceCurrency": "COP",
+                "description": "Acceso a canciones, radio, playlists, historial y favoritos"
+            },
+            {
+                "@type": "Offer",
+                "name": "Plan Pro",
+                "price": "19900",
+                "priceCurrency": "COP",
+                "description": "Acceso completo: música, videos, documentales, chat, en vivo, marketplace y más"
+            }
+        ]
+    }
+    </script>
+
+    <!-- ══════════════════════════════════════════
+         🎨 FONTS & STYLES
+         ══════════════════════════════════════════ -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/landing.css">
 
+    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -80,20 +146,19 @@
             <span>Scroll</span>
             <div class="scroll-line"></div>
         </div>
-        </section>
+    </section>
 
     <!-- ============================================
-         🎬 VIDEO PRESENTACIÓN (FONDO EN MOVIMIENTO)
+         🎬 VIDEO PRESENTACIÓN
          ============================================ -->
     <section class="video-hero-section" id="video-presentacion">
         <div class="video-hero-bg">
-            <!-- ✅ Cambia "tu-video.mp4" por la URL de tu video -->
-            <video 
-                class="video-hero-media" 
-                autoplay 
-                muted 
-                loop 
-                playsinline 
+            <video
+                class="video-hero-media"
+                autoplay
+                muted
+                loop
+                playsinline
                 preload="auto"
                 poster="https://placehold.co/1920x1080/0a0a0a/111?text=">
                 <source src="https://zizbbypwwvugyswjfbxr.supabase.co/storage/v1/object/public/videos/mi-presentacion.mp4" type="video/mp4">
@@ -105,7 +170,7 @@
             <div class="video-hero-badge">Presentación Oficial</div>
             <h2 class="video-hero-title">Bienvenido al <span class="gradient-text">Universo KXON</span></h2>
             <p class="video-hero-desc">
-                Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música, 
+                Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música,
                 nuestros beats y nuestro arte.
             </p>
             <div class="video-hero-actions">
@@ -116,9 +181,179 @@
                 </button>
             </div>
         </div>
-        <!-- Indicador scroll -->
         <div class="video-hero-scroll">
             <div class="video-hero-scroll-line"></div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         💰 COMPARACIÓN — POR QUÉ KXON
+         ============================================ -->
+    <section class="section" id="por-que-kxon">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">La Diferencia</div>
+                <h2 class="section-title">¿Por qué <span class="gradient-text">KXON</span>?</h2>
+                <p class="section-desc">Tu dinero va directo al artista. Sin intermediarios, sin sellos, sin comisiones.</p>
+            </div>
+
+            <div class="comparison-grid">
+                <!-- Spotify -->
+                <div class="comparison-card comparison-other">
+                    <div class="comparison-card-header">
+                        <span class="comparison-logo-icon">🎧</span>
+                        <span class="comparison-brand">Otras plataformas</span>
+                    </div>
+                    <div class="comparison-price">$16.900<span class="comparison-period">/mes</span></div>
+                    <div class="comparison-items">
+                        <div class="comparison-item negative">
+                            <span class="comparison-check">❌</span>
+                            <span>Solo $17 COP llegan al artista por canción</span>
+                        </div>
+                        <div class="comparison-item negative">
+                            <span class="comparison-check">❌</span>
+                            <span>3-4 intermediarios se quedan tu dinero</span>
+                        </div>
+                        <div class="comparison-item negative">
+                            <span class="comparison-check">❌</span>
+                            <span>Sin contenido exclusivo</span>
+                        </div>
+                        <div class="comparison-item negative">
+                            <span class="comparison-check">❌</span>
+                            <span>Sin contacto con el artista</span>
+                        </div>
+                        <div class="comparison-item negative">
+                            <span class="comparison-check">❌</span>
+                            <span>Sin videos ni documentales</span>
+                        </div>
+                        <div class="comparison-item negative">
+                            <span class="comparison-check">❌</span>
+                            <span>Sin marketplace de beats</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KXON -->
+                <div class="comparison-card comparison-kxon">
+                    <div class="comparison-recommended">⭐ Recomendado</div>
+                    <div class="comparison-card-header">
+                        <span class="comparison-logo-icon">🎵</span>
+                        <span class="comparison-brand gradient-text">KXON</span>
+                    </div>
+                    <div class="comparison-price">$9.900<span class="comparison-period">/mes</span></div>
+                    <div class="comparison-items">
+                        <div class="comparison-item positive">
+                            <span class="comparison-check">✅</span>
+                            <span><strong>100%</strong> va directo al artista</span>
+                        </div>
+                        <div class="comparison-item positive">
+                            <span class="comparison-check">✅</span>
+                            <span>0 intermediarios</span>
+                        </div>
+                        <div class="comparison-item positive">
+                            <span class="comparison-check">✅</span>
+                            <span>Contenido 100% exclusivo</span>
+                        </div>
+                        <div class="comparison-item positive">
+                            <span class="comparison-check">✅</span>
+                            <span>Chat directo con el artista</span>
+                        </div>
+                        <div class="comparison-item positive">
+                            <span class="comparison-check">✅</span>
+                            <span>Videos y documentales exclusivos</span>
+                        </div>
+                        <div class="comparison-item positive">
+                            <span class="comparison-check">✅</span>
+                            <span>Marketplace de beats + solicitudes</span>
+                        </div>
+                    </div>
+                    <a href="register.html" class="comparison-btn">🎫 Empezar por $9.900/mes</a>
+                </div>
+            </div>
+
+            <!-- Stats rápidas -->
+            <div class="stats-bar">
+                <div class="stat-bar-item">
+                    <div class="stat-bar-value">100%</div>
+                    <div class="stat-bar-label">Directo al artista</div>
+                </div>
+                <div class="stat-bar-divider"></div>
+                <div class="stat-bar-item">
+                    <div class="stat-bar-value">$7.000</div>
+                    <div class="stat-bar-label">Más barato que Spotify</div>
+                </div>
+                <div class="stat-bar-divider"></div>
+                <div class="stat-bar-item">
+                    <div class="stat-bar-value">0</div>
+                    <div class="stat-bar-label">Intermediarios</div>
+                </div>
+                <div class="stat-bar-divider"></div>
+                <div class="stat-bar-item">
+                    <div class="stat-bar-value">12+</div>
+                    <div class="stat-bar-label">Funciones exclusivas</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         🎫 PLANES DE SUSCRIPCIÓN
+         ============================================ -->
+    <section class="section" id="planes">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Suscripciones</div>
+                <h2 class="section-title">Elige tu <span class="gradient-text">Plan</span></h2>
+                <p class="section-desc">Accede a todo el contenido exclusivo de KXON</p>
+            </div>
+
+            <div class="planes-landing-grid">
+                <!-- Plan Básico -->
+                <div class="plan-landing-card">
+                    <div class="plan-landing-badge">Básico</div>
+                    <h3 class="plan-landing-name">Plan Básico</h3>
+                    <div class="plan-landing-price">$9.900</div>
+                    <div class="plan-landing-period">COP / 30 días</div>
+                    <div class="plan-landing-features">
+                        <div class="plan-landing-feature included"><span>✅</span> Canciones</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Radio KXON</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Playlists</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Historial</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Favoritos</div>
+                        <div class="plan-landing-feature excluded"><span>❌</span> Álbumes completos</div>
+                        <div class="plan-landing-feature excluded"><span>❌</span> Videos exclusivos</div>
+                        <div class="plan-landing-feature excluded"><span>❌</span> Documentales</div>
+                        <div class="plan-landing-feature excluded"><span>❌</span> En Vivo</div>
+                        <div class="plan-landing-feature excluded"><span>❌</span> Chat</div>
+                        <div class="plan-landing-feature excluded"><span>❌</span> Marketplace</div>
+                        <div class="plan-landing-feature excluded"><span>❌</span> Solicitar Beat</div>
+                    </div>
+                    <a href="register.html" class="plan-landing-btn">Comenzar</a>
+                </div>
+
+                <!-- Plan Pro -->
+                <div class="plan-landing-card plan-landing-pro">
+                    <div class="plan-landing-badge plan-landing-badge-pro">⭐ Pro</div>
+                    <h3 class="plan-landing-name">Plan Pro</h3>
+                    <div class="plan-landing-price">$19.900</div>
+                    <div class="plan-landing-period">COP / 30 días</div>
+                    <div class="plan-landing-features">
+                        <div class="plan-landing-feature included"><span>✅</span> Todo lo del Básico</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Álbumes completos</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Videos exclusivos</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Documentales</div>
+                        <div class="plan-landing-feature included"><span>✅</span> En Vivo</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Chat directo</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Marketplace</div>
+                        <div class="plan-landing-feature included"><span>✅</span> Solicitar Beat personalizado</div>
+                    </div>
+                    <a href="register.html" class="plan-landing-btn plan-landing-btn-pro">🎫 Suscribirse al Pro</a>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -157,7 +392,104 @@
     <div class="section-divider"></div>
 
     <!-- ============================================
-         📱 DESCARGA APP - ANDROID + iOS
+         ❓ FAQ — PREGUNTAS FRECUENTES
+         ============================================ -->
+    <section class="section" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Dudas</div>
+                <h2 class="section-title">Preguntas Frecuentes</h2>
+                <p class="section-desc">Todo lo que necesitas saber sobre KXON</p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Qué es KXON?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        KXON es una plataforma musical independiente donde puedes escuchar música exclusiva, ver videos, documentales, comprar beats y tener contacto directo con el artista. El 100% de tu suscripción va directo al artista, sin intermediarios.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Por qué es más barato que Spotify?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        Porque no tenemos los costos de las grandes plataformas (servidores masivos, licencias con sellos, etc.). KXON es una plataforma independiente que conecta directamente al artista con sus fans. Sin intermediarios = precio más bajo para ti y más ingresos para el artista.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Cómo pago mi suscripción?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        El pago se realiza por transferencia Nequi al número 318 453 0020. Subes el comprobante de pago en la plataforma y el administrador verifica y activa tu suscripción. El proceso puede tomar hasta 24 horas.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Puedo instalar KXON como app?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        ¡Sí! KXON es una PWA (Progressive Web App). En Android puedes descargar el APK directamente. En iPhone, abre la página en Safari, toca el botón de compartir y selecciona "Agregar a pantalla de inicio". También está disponible para Windows.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Qué incluye el Plan Pro?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        El Plan Pro incluye acceso a TODO el contenido: álbumes completos, todas las canciones, radio, videos exclusivos, documentales, transmisiones en vivo, chat directo con el artista, marketplace de beats y la posibilidad de solicitar beats personalizados.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Mi suscripción se renueva automáticamente?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        No. Las suscripciones en KXON no se renuevan automáticamente. Cuando tu plan venza, puedes renovar manualmente cuando quieras. Te enviaremos un recordatorio antes de que expire.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Puedo solicitar un beat personalizado?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        Sí, con el Plan Pro puedes acceder a la sección de Solicitar Beat donde describes el estilo, género, BPM y mood que necesitas. El productor revisará tu solicitud y te enviará una propuesta con precio y tiempo de entrega.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-question">
+                        <span>¿Cómo contacto al artista?</span>
+                        <span class="faq-arrow">▸</span>
+                    </div>
+                    <div class="faq-answer">
+                        Con el Plan Pro tienes acceso al Chat en tiempo real dentro de la plataforma. También puedes contactarnos por WhatsApp al +57 318 453 0020 para cualquier consulta.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         📱 DESCARGA APP
          ============================================ -->
     <section class="section app-download-section" id="descargar">
         <div class="container">
@@ -170,36 +502,15 @@
             <div class="app-download-container">
                 <div class="app-download-content">
                     <div class="app-download-features">
-                        <div class="app-feature">
-                            <span class="app-feature-icon">🎵</span>
-                            <span>Música sin límites</span>
-                        </div>
-                        <div class="app-feature">
-                            <span class="app-feature-icon">📻</span>
-                            <span>Radio KXON 24/7</span>
-                        </div>
-                        <div class="app-feature">
-                            <span class="app-feature-icon">🛒</span>
-                            <span>Compra beats exclusivos</span>
-                        </div>
-                        <div class="app-feature">
-                            <span class="app-feature-icon">🔔</span>
-                            <span>Notificaciones en tiempo real</span>
-                        </div>
-                        <div class="app-feature">
-                            <span class="app-feature-icon">🎶</span>
-                            <span>Crea tus playlists</span>
-                        </div>
-                        <div class="app-feature">
-                            <span class="app-feature-icon">🎬</span>
-                            <span>Videos exclusivos</span>
-                        </div>
+                        <div class="app-feature"><span class="app-feature-icon">🎵</span><span>Música sin límites</span></div>
+                        <div class="app-feature"><span class="app-feature-icon">📻</span><span>Radio KXON 24/7</span></div>
+                        <div class="app-feature"><span class="app-feature-icon">🛒</span><span>Compra beats exclusivos</span></div>
+                        <div class="app-feature"><span class="app-feature-icon">🔔</span><span>Notificaciones en tiempo real</span></div>
+                        <div class="app-feature"><span class="app-feature-icon">🎶</span><span>Crea tus playlists</span></div>
+                        <div class="app-feature"><span class="app-feature-icon">🎬</span><span>Videos exclusivos</span></div>
                     </div>
 
-                    <!-- ── BOTONES ANDROID + iOS ── -->
                     <div class="app-platforms">
-
-                        <!-- 🤖 ANDROID -->
                         <a href="downloads/kxon-app.apk" download="KXON.apk" class="app-platform-btn">
                             <div class="app-platform-icon">🤖</div>
                             <div class="app-platform-info">
@@ -210,7 +521,6 @@
                             <div class="app-platform-arrow">📥</div>
                         </a>
 
-                        <!-- 🍎 iOS -->
                         <div class="app-platform-btn app-platform-ios" onclick="document.getElementById('iosModal').classList.add('show')">
                             <div class="app-platform-icon">🍎</div>
                             <div class="app-platform-info">
@@ -228,7 +538,6 @@
                     </p>
                 </div>
 
-                <!-- ── PHONE MOCKUP ── -->
                 <div class="app-download-mockup">
                     <div class="phone-mockup">
                         <div class="phone-notch"></div>
@@ -239,10 +548,7 @@
                                 <span class="phone-tagline">Tu música, tu mundo</span>
                                 <div class="phone-fake-ui">
                                     <div class="phone-fake-bar"></div>
-                                    <div class="phone-fake-cards">
-                                        <div class="phone-fake-card"></div>
-                                        <div class="phone-fake-card"></div>
-                                    </div>
+                                    <div class="phone-fake-cards"><div class="phone-fake-card"></div><div class="phone-fake-card"></div></div>
                                     <div class="phone-fake-player"></div>
                                 </div>
                             </div>
@@ -263,19 +569,20 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <div class="footer-logo">
-                        <span class="gradient-text">KXON</span>
-                    </div>
+                    <div class="footer-logo"><span class="gradient-text">KXON</span></div>
                     <p class="footer-tagline">Tu plataforma musical exclusiva</p>
                 </div>
                 <div class="footer-links">
+                    <a href="#planes" class="footer-link">🎫 Planes</a>
                     <a href="#descargar" class="footer-link">📱 Descargar App</a>
+                    <a href="#faq" class="footer-link">❓ FAQ</a>
+                    <a href="terms.html" class="footer-link">📋 Términos</a>
                     <a href="login.html" class="footer-link">Iniciar Sesión</a>
                     <a href="register.html" class="footer-link">Registrarse</a>
                 </div>
             </div>
             <div class="footer-divider"></div>
-            <p class="footer-text">© 2025 <span>KXON</span> — Todos los derechos reservados</p>
+            <p class="footer-text">© 2025 <span>KXON</span> — Todos los derechos reservados — Colombia 🇨🇴</p>
         </div>
     </footer>
 
@@ -286,49 +593,17 @@
         <div class="modal-landing" style="max-width:480px;">
             <button class="modal-landing-close" onclick="document.getElementById('iosModal').classList.remove('show')">✕</button>
             <div class="modal-landing-body">
-                <div style="text-align:center;margin-bottom:24px;">
-                    <span style="font-size:3rem;">🍎</span>
-                </div>
+                <div style="text-align:center;margin-bottom:24px;"><span style="font-size:3rem;">🍎</span></div>
                 <h2 class="modal-landing-title" style="text-align:center;">Instalar KXON en iPhone</h2>
-                <p style="font-size:0.85rem;color:#888;text-align:center;margin-bottom:24px;font-weight:300;">
-                    Sigue estos pasos para agregar KXON como app en tu iPhone o iPad
-                </p>
-
+                <p style="font-size:0.85rem;color:#888;text-align:center;margin-bottom:24px;font-weight:300;">Sigue estos pasos para agregar KXON como app en tu iPhone o iPad</p>
                 <div class="ios-steps">
-                    <div class="ios-step">
-                        <div class="ios-step-num">1</div>
-                        <div class="ios-step-content">
-                            <div class="ios-step-title">Abre Safari</div>
-                            <div class="ios-step-desc">Ve a <strong>kxon-music.vercel.app</strong> usando el navegador Safari (no Chrome)</div>
-                        </div>
-                    </div>
-                    <div class="ios-step">
-                        <div class="ios-step-num">2</div>
-                        <div class="ios-step-content">
-                            <div class="ios-step-title">Toca el botón Compartir</div>
-                            <div class="ios-step-desc">Toca el ícono de compartir <strong>⬆️</strong> en la barra inferior de Safari</div>
-                        </div>
-                    </div>
-                    <div class="ios-step">
-                        <div class="ios-step-num">3</div>
-                        <div class="ios-step-content">
-                            <div class="ios-step-title">Agregar a pantalla de inicio</div>
-                            <div class="ios-step-desc">Desplázate hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></div>
-                        </div>
-                    </div>
-                    <div class="ios-step">
-                        <div class="ios-step-num">4</div>
-                        <div class="ios-step-content">
-                            <div class="ios-step-title">¡Listo!</div>
-                            <div class="ios-step-desc">Toca <strong>"Agregar"</strong> y KXON aparecerá como app en tu inicio</div>
-                        </div>
-                    </div>
+                    <div class="ios-step"><div class="ios-step-num">1</div><div class="ios-step-content"><div class="ios-step-title">Abre Safari</div><div class="ios-step-desc">Ve a <strong>kxon-music.vercel.app</strong> usando el navegador Safari (no Chrome)</div></div></div>
+                    <div class="ios-step"><div class="ios-step-num">2</div><div class="ios-step-content"><div class="ios-step-title">Toca el botón Compartir</div><div class="ios-step-desc">Toca el ícono de compartir <strong>⬆️</strong> en la barra inferior de Safari</div></div></div>
+                    <div class="ios-step"><div class="ios-step-num">3</div><div class="ios-step-content"><div class="ios-step-title">Agregar a pantalla de inicio</div><div class="ios-step-desc">Desplázate hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></div></div></div>
+                    <div class="ios-step"><div class="ios-step-num">4</div><div class="ios-step-content"><div class="ios-step-title">¡Listo!</div><div class="ios-step-desc">Toca <strong>"Agregar"</strong> y KXON aparecerá como app en tu inicio</div></div></div>
                 </div>
-
                 <div style="text-align:center;margin-top:24px;">
-                    <button class="btn-hero-primary" onclick="document.getElementById('iosModal').classList.remove('show')" style="padding:12px 28px;font-size:0.78rem;">
-                        Entendido
-                    </button>
+                    <button class="btn-hero-primary" onclick="document.getElementById('iosModal').classList.remove('show')" style="padding:12px 28px;font-size:0.78rem;">Entendido</button>
                 </div>
             </div>
         </div>
@@ -358,9 +633,7 @@
         <div class="modal-landing">
             <button class="modal-landing-close" onclick="document.getElementById('modalAlbumLanding').classList.remove('show')">✕</button>
             <div class="modal-album-landing-header">
-                <div class="modal-album-landing-cover">
-                    <img id="albumLandingCover" src="" alt="">
-                </div>
+                <div class="modal-album-landing-cover"><img id="albumLandingCover" src="" alt=""></div>
                 <div class="modal-album-landing-info">
                     <h2 class="modal-landing-title" id="albumLandingTitulo"></h2>
                     <p class="modal-album-landing-desc" id="albumLandingDesc"></p>
@@ -391,36 +664,30 @@
     });
     </script>
 
-        <!-- 🎬 VIDEO HERO: Toggle sonido -->
     <script>
     window._toggleVideoSound = function() {
         var video = document.querySelector('.video-hero-media');
-        var btn = document.getElementById('btnVideoSound');
         var icon = document.getElementById('videoSoundIcon');
         var text = document.getElementById('videoSoundText');
-        
         if (!video) return;
-        
         if (video.muted) {
             video.muted = false;
             video.volume = 0.5;
             icon.textContent = '🔊';
             text.textContent = 'Silenciar';
-            btn.classList.add('active');
+            document.getElementById('btnVideoSound').classList.add('active');
         } else {
             video.muted = true;
             icon.textContent = '🔇';
             text.textContent = 'Activar sonido';
-            btn.classList.remove('active');
+            document.getElementById('btnVideoSound').classList.remove('active');
         }
     };
 
-    /* Asegurar que el video se reproduce (algunos navegadores lo bloquean) */
     document.addEventListener('DOMContentLoaded', function() {
         var video = document.querySelector('.video-hero-media');
         if (video) {
             video.play().catch(function() {
-                /* Si falla autoplay, intentar con click del usuario */
                 document.addEventListener('click', function playOnce() {
                     video.play().catch(function(){});
                     document.removeEventListener('click', playOnce);

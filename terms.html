@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KXON — Términos y Condiciones</title>
+    <meta name="description" content="Términos de uso, política de privacidad y condiciones de servicio de KXON Music.">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #b8b8b8;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+        }
+        .terms-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 16px 0;
+            background: rgba(5,5,5,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .terms-header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .terms-logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: #e0e0e0;
+            text-decoration: none;
+        }
+        .terms-back {
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            color: #888;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .terms-back:hover {
+            background: rgba(192,192,192,0.08);
+            color: #f0f0f0;
+            border-color: rgba(192,192,192,0.2);
+        }
+        .terms-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+        .terms-hero {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .terms-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            background: rgba(192,192,192,0.06);
+            border: 1px solid rgba(192,192,192,0.12);
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 20px;
+        }
+        .terms-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            color: #e0e0e0;
+            margin-bottom: 12px;
+        }
+        .terms-updated {
+            font-size: 0.78rem;
+            color: #555;
+            font-weight: 500;
+        }
+        .terms-nav {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 48px;
+        }
+        .terms-nav-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 14px;
+        }
+        .terms-nav-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .terms-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        .terms-nav-link:hover {
+            background: rgba(192,192,192,0.04);
+            color: #e0e0e0;
+        }
+        .terms-section {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .terms-section:last-child {
+            border-bottom: none;
+        }
+        .terms-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e0e0e0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .terms-section-icon {
+            font-size: 1.2rem;
+        }
+        .terms-text {
+            font-size: 0.9rem;
+            color: #999;
+            font-weight: 300;
+            line-height: 1.9;
+            margin-bottom: 16px;
+        }
+        .terms-text strong {
+            color: #b8b8b8;
+            font-weight: 600;
+        }
+        .terms-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+        }
+        .terms-list li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+            font-size: 0.88rem;
+            color: #999;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        .terms-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #666;
+            font-weight: 600;
+        }
+        .terms-highlight {
+            padding: 20px 24px;
+            background: rgba(192,192,192,0.03);
+            border: 1px solid rgba(192,192,192,0.08);
+            border-left: 3px solid rgba(192,192,192,0.2);
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 0.85rem;
+            color: #aaa;
+            font-weight: 400;
+        }
+        .terms-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .terms-footer-logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .terms-footer-text {
+            font-size: 0.72rem;
+            color: #444;
+        }
+        @media (max-width: 768px) {
+            .terms-nav-list { grid-template-columns: 1fr; }
+            .terms-container { padding: 100px 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="terms-header">
+        <div class="terms-header-inner">
+            <a href="index.html" class="terms-logo">KXON</a>
+            <a href="index.html" class="terms-back">← Volver al inicio</a>
+        </div>
+    </header>
+
+    <div class="terms-container">
+
+        <!-- HERO -->
+        <div class="terms-hero">
+            <div class="terms-badge">📋 Documento Legal</div>
+            <h1 class="terms-title">Términos y Condiciones</h1>
+            <p class="terms-updated">Última actualización: Enero 2025</p>
+        </div>
+
+        <!-- NAVEGACIÓN -->
+        <div class="terms-nav">
+            <div class="terms-nav-title">📑 Contenido</div>
+            <div class="terms-nav-list">
+                <a href="#general" class="terms-nav-link">📌 Información General</a>
+                <a href="#uso" class="terms-nav-link">📱 Condiciones de Uso</a>
+                <a href="#cuentas" class="terms-nav-link">👤 Cuentas de Usuario</a>
+                <a href="#suscripciones" class="terms-nav-link">🎫 Suscripciones y Pagos</a>
+                <a href="#contenido" class="terms-nav-link">🎵 Contenido y Propiedad</a>
+                <a href="#marketplace" class="terms-nav-link">🛒 Marketplace</a>
+                <a href="#privacidad" class="terms-nav-link">🔒 Política de Privacidad</a>
+                <a href="#reembolsos" class="terms-nav-link">💰 Política de Reembolsos</a>
+                <a href="#conducta" class="terms-nav-link">⚖️ Código de Conducta</a>
+                <a href="#contacto" class="terms-nav-link">📧 Contacto</a>
+            </div>
+        </div>
+
+        <!-- 1. INFORMACIÓN GENERAL -->
+        <div class="terms-section" id="general">
+            <h2 class="terms-section-title"><span class="terms-section-icon">📌</span> 1. Información General</h2>
+            <p class="terms-text">Bienvenido a <strong>KXON</strong>, una plataforma de música digital independiente con sede en <strong>Colombia</strong>. Al acceder y utilizar nuestro sitio web, aplicación móvil y cualquier servicio asociado, usted acepta cumplir con estos Términos y Condiciones.</p>
+            <p class="terms-text">KXON es una plataforma creada para conectar directamente a artistas con sus fans, ofreciendo música, videos, documentales, beats y contenido exclusivo sin intermediarios.</p>
+            <div class="terms-highlight">
+                <strong>Importante:</strong> Al registrarse en KXON, usted declara tener al menos 13 años de edad y acepta estos términos en su totalidad. Si no está de acuerdo con alguna parte, por favor no utilice la plataforma.
+            </div>
+        </div>
+
+        <!-- 2. CONDICIONES DE USO -->
+        <div class="terms-section" id="uso">
+            <h2 class="terms-section-title"><span class="terms-section-icon">📱</span> 2. Condiciones de Uso</h2>
+            <p class="terms-text">Al utilizar KXON, usted se compromete a:</p>
+            <ul class="terms-list">
+                <li>Utilizar la plataforma únicamente para fines personales y no comerciales</li>
+                <li>No copiar, distribuir, modificar o revender el contenido de KXON</li>
+                <li>No intentar acceder a áreas restringidas del sistema sin autorización</li>
+                <li>No utilizar bots, scrapers o herramientas automatizadas</li>
+                <li>No compartir su cuenta con terceros</li>
+                <li>Respetar los derechos de autor y propiedad intelectual</li>
+                <li>Mantener un comportamiento respetuoso en el chat y comunidad</li>
+            </ul>
+            <p class="terms-text">KXON se reserva el derecho de suspender o cancelar cuentas que violen estas condiciones sin previo aviso ni reembolso.</p>
+        </div>
+
+        <!-- 3. CUENTAS DE USUARIO -->
+        <div class="terms-section" id="cuentas">
+            <h2 class="terms-section-title"><span class="terms-section-icon">👤</span> 3. Cuentas de Usuario</h2>
+            <p class="terms-text">Para acceder al contenido de KXON, es necesario crear una cuenta proporcionando:</p>
+            <ul class="terms-list">
+                <li>Una dirección de correo electrónico válida</li>
+                <li>Una contraseña segura (mínimo 6 caracteres)</li>
+                <li>Opcionalmente, un nombre de usuario o nombre artístico</li>
+            </ul>
+            <p class="terms-text"><strong>Responsabilidad de la cuenta:</strong> Usted es responsable de mantener la confidencialidad de sus credenciales de acceso. Cualquier actividad realizada desde su cuenta es su responsabilidad.</p>
+            <p class="terms-text"><strong>Eliminación de cuenta:</strong> Puede solicitar la eliminación de su cuenta en cualquier momento desde la sección de perfil. La eliminación es permanente e irreversible.</p>
+        </div>
+
+        <!-- 4. SUSCRIPCIONES Y PAGOS -->
+        <div class="terms-section" id="suscripciones">
+            <h2 class="terms-section-title"><span class="terms-section-icon">🎫</span> 4. Suscripciones y Pagos</h2>
+            <p class="terms-text">KXON ofrece planes de suscripción para acceder a contenido exclusivo:</p>
+            <ul class="terms-list">
+                <li><strong>Plan Básico ($9.900 COP / 30 días):</strong> Acceso a canciones, radio, playlists, historial y favoritos</li>
+                <li><strong>Plan Pro ($19.900 COP / 30 días):</strong> Acceso completo a todo el contenido incluyendo videos, documentales, chat, en vivo, marketplace y solicitudes de beats</li>
+            </ul>
+            <p class="terms-text"><strong>Método de pago:</strong> Los pagos se realizan a través de transferencia Nequi al número <strong>318 453 0020</strong>. El usuario debe subir un comprobante de pago que será verificado manualmente por el administrador.</p>
+            <p class="terms-text"><strong>Activación:</strong> Las suscripciones se activan una vez el administrador verifica y confirma el comprobante de pago. Este proceso puede tomar hasta 24 horas.</p>
+            <p class="terms-text"><strong>Duración:</strong> Las suscripciones tienen una duración de 30 días a partir de la fecha de activación. No se renuevan automáticamente.</p>
+            <div class="terms-highlight">
+                Los precios están expresados en Pesos Colombianos (COP) y pueden estar sujetos a cambios. Cualquier modificación será notificada con anticipación.
+            </div>
+        </div>
+
+        <!-- 5. CONTENIDO Y PROPIEDAD -->
+        <div class="terms-section" id="contenido">
+            <h2 class="terms-section-title"><span class="terms-section-icon">🎵</span> 5. Contenido y Propiedad Intelectual</h2>
+            <p class="terms-text">Todo el contenido disponible en KXON, incluyendo pero no limitado a:</p>
+            <ul class="terms-list">
+                <li>Canciones, álbumes y composiciones musicales</li>
+                <li>Beats y producciones musicales</li>
+                <li>Videos musicales y documentales</li>
+                <li>Imágenes, portadas y diseño gráfico</li>
+                <li>Textos, letras de canciones y descripciones</li>
+                <li>El código fuente, diseño y funcionalidad de la plataforma</li>
+            </ul>
+            <p class="terms-text">Son propiedad exclusiva de <strong>KXON</strong> y están protegidos por las leyes de derechos de autor de Colombia y tratados internacionales.</p>
+            <p class="terms-text"><strong>Licencia limitada:</strong> Al suscribirse, usted obtiene una licencia personal, intransferible y no exclusiva para escuchar y visualizar el contenido durante la vigencia de su suscripción. Esta licencia no incluye:</p>
+            <ul class="terms-list">
+                <li>Descargar contenido para redistribución</li>
+                <li>Utilizar el contenido con fines comerciales</li>
+                <li>Modificar, adaptar o crear obras derivadas</li>
+                <li>Grabar, capturar o reproducir el contenido fuera de la plataforma</li>
+            </ul>
+        </div>
+
+        <!-- 6. MARKETPLACE -->
+        <div class="terms-section" id="marketplace">
+            <h2 class="terms-section-title"><span class="terms-section-icon">🛒</span> 6. Marketplace</h2>
+            <p class="terms-text">El Marketplace de KXON permite la compra de beats y canciones exclusivas. Al realizar una compra:</p>
+            <ul class="terms-list">
+                <li>El pago se realiza a través de transferencia Nequi con comprobante</li>
+                <li>Los archivos de audio se entregan una vez confirmado el pago</li>
+                <li>Los beats adquiridos incluyen licencia de uso según el tipo de compra</li>
+                <li>Las compras son finales y no reembolsables una vez entregado el producto</li>
+            </ul>
+            <p class="terms-text"><strong>Solicitudes de beats personalizados:</strong> El usuario puede solicitar la producción de beats personalizados. Los precios y tiempos de entrega se acuerdan entre el usuario y KXON. No hay obligación de producción hasta que ambas partes lleguen a un acuerdo.</p>
+        </div>
+
+        <!-- 7. POLÍTICA DE PRIVACIDAD -->
+        <div class="terms-section" id="privacidad">
+            <h2 class="terms-section-title"><span class="terms-section-icon">🔒</span> 7. Política de Privacidad</h2>
+            <p class="terms-text">KXON respeta su privacidad y se compromete a proteger sus datos personales.</p>
+            <p class="terms-text"><strong>Datos que recopilamos:</strong></p>
+            <ul class="terms-list">
+                <li><strong>Datos de registro:</strong> Email, nombre, contraseña encriptada</li>
+                <li><strong>Datos de perfil:</strong> Nombre artístico, foto de perfil, biografía</li>
+                <li><strong>Datos de uso:</strong> Historial de reproducciones, favoritos, playlists</li>
+                <li><strong>Datos de pago:</strong> Comprobantes de transferencia (almacenados de forma segura)</li>
+                <li><strong>Datos técnicos:</strong> Dirección IP, tipo de navegador, dispositivo</li>
+            </ul>
+            <p class="terms-text"><strong>Cómo usamos sus datos:</strong></p>
+            <ul class="terms-list">
+                <li>Para proporcionar y mejorar nuestros servicios</li>
+                <li>Para gestionar su cuenta y suscripción</li>
+                <li>Para personalizar su experiencia (recomendaciones, historial)</li>
+                <li>Para comunicaciones importantes sobre su cuenta</li>
+                <li>Para estadísticas internas y analytics</li>
+            </ul>
+            <p class="terms-text"><strong>No compartimos:</strong> Sus datos personales con terceros, empresas publicitarias o servicios de marketing. Sus datos se almacenan de forma segura en servidores de Supabase con encriptación.</p>
+            <p class="terms-text"><strong>Sus derechos:</strong> Puede solicitar en cualquier momento la consulta, actualización o eliminación de sus datos personales contactándonos por WhatsApp o eliminando su cuenta desde la plataforma.</p>
+        </div>
+
+        <!-- 8. POLÍTICA DE REEMBOLSOS -->
+        <div class="terms-section" id="reembolsos">
+            <h2 class="terms-section-title"><span class="terms-section-icon">💰</span> 8. Política de Reembolsos</h2>
+            <p class="terms-text">Las condiciones de reembolso son las siguientes:</p>
+            <ul class="terms-list">
+                <li><strong>Suscripciones:</strong> Si su suscripción no ha sido activada y su pago aún está pendiente de verificación, puede solicitar la cancelación y reembolso completo</li>
+                <li><strong>Suscripciones activas:</strong> Una vez activada la suscripción, no se realizan reembolsos proporcionales</li>
+                <li><strong>Compras del Marketplace:</strong> Las compras de beats y canciones no son reembolsables una vez entregado el producto digital</li>
+                <li><strong>Beats personalizados:</strong> Los pagos por solicitudes de beats personalizados son reembolsables si el trabajo no ha comenzado</li>
+                <li><strong>Errores de pago:</strong> En caso de cobro duplicado o error en el monto, se realizará el reembolso completo en un plazo de 5 días hábiles</li>
+            </ul>
+            <p class="terms-text">Para solicitar un reembolso, contacte al administrador vía WhatsApp al <strong>318 453 0020</strong>.</p>
+        </div>
+
+        <!-- 9. CÓDIGO DE CONDUCTA -->
+        <div class="terms-section" id="conducta">
+            <h2 class="terms-section-title"><span class="terms-section-icon">⚖️</span> 9. Código de Conducta</h2>
+            <p class="terms-text">Al utilizar el chat, en vivo y cualquier función de comunidad de KXON, se espera que:</p>
+            <ul class="terms-list">
+                <li>Trate a todos los usuarios con respeto y cortesía</li>
+                <li>No publique contenido ofensivo, discriminatorio o ilegal</li>
+                <li>No realice spam, publicidad no autorizada o autopromoción excesiva</li>
+                <li>No comparta información personal de otros usuarios</li>
+                <li>No publique contenido para adultos, violento o perturbador</li>
+                <li>No se haga pasar por otra persona o por el administrador</li>
+            </ul>
+            <p class="terms-text"><strong>Sanciones:</strong> El incumplimiento del código de conducta puede resultar en:</p>
+            <ul class="terms-list">
+                <li>Advertencia por parte del administrador</li>
+                <li>Silenciamiento temporal en el chat</li>
+                <li>Suspensión temporal de la cuenta</li>
+                <li>Eliminación permanente de la cuenta sin reembolso</li>
+            </ul>
+        </div>
+
+        <!-- 10. CONTACTO -->
+        <div class="terms-section" id="contacto">
+            <h2 class="terms-section-title"><span class="terms-section-icon">📧</span> 10. Contacto</h2>
+            <p class="terms-text">Para cualquier consulta, duda o solicitud relacionada con estos términos y condiciones, puede contactarnos a través de:</p>
+            <ul class="terms-list">
+                <li><strong>WhatsApp:</strong> +57 318 453 0020</li>
+                <li><strong>Chat de la plataforma:</strong> Disponible para usuarios con Plan Pro</li>
+            </ul>
+            <div class="terms-highlight">
+                Estos términos y condiciones pueden ser actualizados en cualquier momento. Los cambios significativos serán notificados a los usuarios registrados. El uso continuado de la plataforma después de cualquier modificación constituye la aceptación de los nuevos términos.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="terms-footer">
+        <div class="terms-footer-logo">KXON</div>
+        <p class="terms-footer-text">© 2025 KXON — Todos los derechos reservados — Colombia 🇨🇴</p>
+    </div>
+
+</body>
+</html>
