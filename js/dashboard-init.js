@@ -3,6 +3,7 @@
    Inicialización, sesión, sidebar, navegación,
    player bar, helpers, variables compartidas
    CON BLOQUEO COMPLETO DE TODOS LOS PANELES
+   ✅ FIX: Protección null en todos los getElementById
    ============================================ */
 (function () {
 
@@ -49,9 +50,22 @@
     var K = window.KXON;
 
     /* ══════════════════════════════════════════
+       🛡️ HELPER: Safe getElementById
+       ══════════════════════════════════════════ */
+    function $(id) {
+        return document.getElementById(id);
+    }
+
+    function $on(id, event, fn) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener(event, fn);
+        return el;
+    }
+
+    /* ══════════════════════════════════════════
        🔊 ELEMENTOS DE AUDIO GLOBALES
        ══════════════════════════════════════════ */
-    window.KXON.audioEl = document.getElementById('audioPlayer');
+    window.KXON.audioEl = $('audioPlayer');
     window.KXON.marketPreviewAudio = new Audio();
     window.KXON.archivoPreviewAudio = new Audio();
     window.KXON.radioAudio = new Audio();
@@ -60,7 +74,8 @@
        🔔 HELPERS: TOAST, FORMAT
        ══════════════════════════════════════════ */
     window.KXON.showToast = function (m, t) {
-        var c = document.getElementById('toastContainer');
+        var c = $('toastContainer');
+        if (!c) return;
         var d = document.createElement('div');
         d.className = 'toast toast-' + t;
         d.textContent = m;
@@ -82,16 +97,16 @@
        🛑 HELPER: DETENER TODAS LAS FUENTES DE AUDIO
        ══════════════════════════════════════════ */
     window.KXON.stopAllAudio = function (except) {
-        if (except !== 'player') {
+        if (except !== 'player' && K.audioEl) {
             K.audioEl.pause();
         }
         if (except !== 'radio') {
             K.radioAudio.pause();
             if (K.radioIsPlaying) {
                 K.radioIsPlaying = false;
-                var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
-                var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
-                var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
+                var d = $('radioDisc'); if (d) d.classList.remove('spinning');
+                var pb = $('radioPlayBtn'); if (pb) pb.classList.remove('playing');
+                var pi = $('radioPlayIcon'); if (pi) pi.textContent = '▶';
             }
         }
         if (except !== 'market') {
@@ -195,7 +210,7 @@
     };
 
     function renderLockedPanel(panelId) {
-        var panel = document.getElementById('panel-' + panelId);
+        var panel = $('panel-' + panelId);
         if (!panel) return;
 
         var nombre = panelNombres[panelId] || panelId;
@@ -217,14 +232,14 @@
     var panelOriginalHTML = {};
 
     function savePanelHTML(panelId) {
-        var el = document.getElementById('panel-' + panelId);
+        var el = $('panel-' + panelId);
         if (el && !panelOriginalHTML[panelId]) {
             panelOriginalHTML[panelId] = el.innerHTML;
         }
     }
 
     function restorePanelHTML(panelId) {
-        var el = document.getElementById('panel-' + panelId);
+        var el = $('panel-' + panelId);
         if (el && panelOriginalHTML[panelId]) {
             el.innerHTML = panelOriginalHTML[panelId];
         }
@@ -251,84 +266,84 @@
        🔲 MODALES — ABRIR / CERRAR
        ══════════════════════════════════════════ */
     window.KXON.openModal = function (id) {
-        var el = document.getElementById(id);
+        var el = $(id);
         if (el) el.classList.add('show');
     };
 
     window.KXON.closeModal = function (id) {
-        var el = document.getElementById(id);
+        var el = $(id);
         if (el) el.classList.remove('show');
 
         if (id === 'modalAlbum') {
-            var at = document.getElementById('albumTitulo'); if (at) at.value = '';
-            var ad = document.getElementById('albumDesc'); if (ad) ad.value = '';
-            var fechaAlbum = document.getElementById('albumFechaLanzamiento');
+            var at = $('albumTitulo'); if (at) at.value = '';
+            var ad = $('albumDesc'); if (ad) ad.value = '';
+            var fechaAlbum = $('albumFechaLanzamiento');
             if (fechaAlbum) fechaAlbum.value = '';
             K._selectedCoverFile = null;
-            var area = document.getElementById('albumCoverArea');
+            var area = $('albumCoverArea');
             if (area) { area.classList.remove('has-file'); var ft = area.querySelector('.file-upload-text'); if (ft) ft.textContent = 'Click para subir imagen'; }
-            var acp = document.getElementById('albumCoverPreview'); if (acp) acp.classList.remove('show');
-            var acf = document.getElementById('albumCoverFile'); if (acf) acf.value = '';
+            var acp = $('albumCoverPreview'); if (acp) acp.classList.remove('show');
+            var acf = $('albumCoverFile'); if (acf) acf.value = '';
         }
         if (id === 'modalCancion') {
-            var ct = document.getElementById('cancionTitulo'); if (ct) ct.value = '';
-            var fechaCancion = document.getElementById('cancionFechaLanzamiento');
+            var ct = $('cancionTitulo'); if (ct) ct.value = '';
+            var fechaCancion = $('cancionFechaLanzamiento');
             if (fechaCancion) fechaCancion.value = '';
             K._selectedAudioFile = null;
-            var area2 = document.getElementById('cancionAudioArea');
+            var area2 = $('cancionAudioArea');
             if (area2) { area2.classList.remove('has-file'); var ft2 = area2.querySelector('.file-upload-text'); if (ft2) ft2.textContent = 'Click para subir audio'; }
-            var caf = document.getElementById('cancionAudioFile'); if (caf) caf.value = '';
-            var up = document.getElementById('uploadProgress'); if (up) up.classList.remove('show');
-            var ubf = document.getElementById('uploadBarFill'); if (ubf) ubf.style.width = '0%';
+            var caf = $('cancionAudioFile'); if (caf) caf.value = '';
+            var up = $('uploadProgress'); if (up) up.classList.remove('show');
+            var ubf = $('uploadBarFill'); if (ubf) ubf.style.width = '0%';
         }
         if (id === 'modalNoticia') {
-            var nt = document.getElementById('noticiaTitulo'); if (nt) nt.value = '';
-            var nd = document.getElementById('noticiaDesc'); if (nd) nd.value = '';
+            var nt = $('noticiaTitulo'); if (nt) nt.value = '';
+            var nd = $('noticiaDesc'); if (nd) nd.value = '';
             K._selectedNoticiaFile = null;
-            var area3 = document.getElementById('noticiaCoverArea');
+            var area3 = $('noticiaCoverArea');
             if (area3) { area3.classList.remove('has-file'); var ft3 = area3.querySelector('.file-upload-text'); if (ft3) ft3.textContent = 'Click para subir imagen'; }
-            var ncp = document.getElementById('noticiaCoverPreview'); if (ncp) ncp.classList.remove('show');
-            var ncf = document.getElementById('noticiaCoverFile'); if (ncf) ncf.value = '';
+            var ncp = $('noticiaCoverPreview'); if (ncp) ncp.classList.remove('show');
+            var ncf = $('noticiaCoverFile'); if (ncf) ncf.value = '';
         }
         if (id === 'modalVideo') {
-            var vt = document.getElementById('videoTitulo'); if (vt) vt.value = '';
-            var vd = document.getElementById('videoDesc'); if (vd) vd.value = '';
+            var vt = $('videoTitulo'); if (vt) vt.value = '';
+            var vd = $('videoDesc'); if (vd) vd.value = '';
             K._videoThumbFileSelected = null;
             K._videoFileSelected = null;
-            var a4 = document.getElementById('videoThumbArea');
+            var a4 = $('videoThumbArea');
             if (a4) { a4.classList.remove('has-file'); var ft4 = a4.querySelector('.file-upload-text'); if (ft4) ft4.textContent = 'Click para subir imagen'; }
-            var vtp = document.getElementById('videoThumbPreview'); if (vtp) vtp.classList.remove('show');
-            var vtf = document.getElementById('videoThumbFile'); if (vtf) vtf.value = '';
-            var a5 = document.getElementById('videoFileArea');
+            var vtp = $('videoThumbPreview'); if (vtp) vtp.classList.remove('show');
+            var vtf = $('videoThumbFile'); if (vtf) vtf.value = '';
+            var a5 = $('videoFileArea');
             if (a5) { a5.classList.remove('has-file'); var ft5 = a5.querySelector('.file-upload-text'); if (ft5) ft5.textContent = 'Click para subir video'; }
-            var vfi = document.getElementById('videoFileInput'); if (vfi) vfi.value = '';
-            var vup = document.getElementById('videoUploadProgress'); if (vup) vup.classList.remove('show');
-            var vuf = document.getElementById('videoUploadFill'); if (vuf) vuf.style.width = '0%';
+            var vfi = $('videoFileInput'); if (vfi) vfi.value = '';
+            var vup = $('videoUploadProgress'); if (vup) vup.classList.remove('show');
+            var vuf = $('videoUploadFill'); if (vuf) vuf.style.width = '0%';
         }
         if (id === 'modalDocumental') {
-            var dtt = document.getElementById('docuTitulo'); if (dtt) dtt.value = '';
-            var ddd = document.getElementById('docuDesc'); if (ddd) ddd.value = '';
+            var dtt = $('docuTitulo'); if (dtt) dtt.value = '';
+            var ddd = $('docuDesc'); if (ddd) ddd.value = '';
             K._docuCoverFileSelected = null;
-            var a6 = document.getElementById('docuCoverArea');
+            var a6 = $('docuCoverArea');
             if (a6) { a6.classList.remove('has-file'); var ft6 = a6.querySelector('.file-upload-text'); if (ft6) ft6.textContent = 'Click para subir imagen'; }
-            var dcp = document.getElementById('docuCoverPreview'); if (dcp) dcp.classList.remove('show');
-            var dcf = document.getElementById('docuCoverFile'); if (dcf) dcf.value = '';
+            var dcp = $('docuCoverPreview'); if (dcp) dcp.classList.remove('show');
+            var dcf = $('docuCoverFile'); if (dcf) dcf.value = '';
         }
         if (id === 'modalEpisodio') {
-            var ett = document.getElementById('episodioTitulo'); if (ett) ett.value = '';
-            var edd = document.getElementById('episodioDesc'); if (edd) edd.value = '';
-            var en = document.getElementById('episodioNumero'); if (en) en.value = '1';
+            var ett = $('episodioTitulo'); if (ett) ett.value = '';
+            var edd = $('episodioDesc'); if (edd) edd.value = '';
+            var en = $('episodioNumero'); if (en) en.value = '1';
             K._episodioThumbFileSelected = null;
             K._episodioVideoFileSelected = null;
-            var a7 = document.getElementById('episodioThumbArea');
+            var a7 = $('episodioThumbArea');
             if (a7) { a7.classList.remove('has-file'); var ft7 = a7.querySelector('.file-upload-text'); if (ft7) ft7.textContent = 'Click para subir imagen'; }
-            var etp = document.getElementById('episodioThumbPreview'); if (etp) etp.classList.remove('show');
-            var etf = document.getElementById('episodioThumbFile'); if (etf) etf.value = '';
-            var a8 = document.getElementById('episodioVideoArea');
+            var etp = $('episodioThumbPreview'); if (etp) etp.classList.remove('show');
+            var etf = $('episodioThumbFile'); if (etf) etf.value = '';
+            var a8 = $('episodioVideoArea');
             if (a8) { a8.classList.remove('has-file'); var ft8 = a8.querySelector('.file-upload-text'); if (ft8) ft8.textContent = 'Click para subir video'; }
-            var evf = document.getElementById('episodioVideoFile'); if (evf) evf.value = '';
-            var eup = document.getElementById('episodioUploadProgress'); if (eup) eup.classList.remove('show');
-            var euf = document.getElementById('episodioUploadFill'); if (euf) euf.style.width = '0%';
+            var evf = $('episodioVideoFile'); if (evf) evf.value = '';
+            var eup = $('episodioUploadProgress'); if (eup) eup.classList.remove('show');
+            var euf = $('episodioUploadFill'); if (euf) euf.style.width = '0%';
         }
     };
 
@@ -340,14 +355,20 @@
         var role = K.currentProfile.role || 'fan';
         var av = K.currentProfile.avatar_url || K.currentUser.user_metadata?.avatar_url || K.currentUser.user_metadata?.picture || '';
 
-        document.getElementById('sidebarName').textContent = name;
-        var re = document.getElementById('sidebarRole');
-        re.textContent = role;
-        re.className = 'sidebar-user-role role-' + role;
+        var sn = $('sidebarName');
+        if (sn) sn.textContent = name;
 
-        var ae = document.getElementById('sidebarAvatar');
-        if (av) ae.innerHTML = '<img src="' + av + '" alt="">';
-        else ae.textContent = name.charAt(0).toUpperCase();
+        var re = $('sidebarRole');
+        if (re) {
+            re.textContent = role;
+            re.className = 'sidebar-user-role role-' + role;
+        }
+
+        var ae = $('sidebarAvatar');
+        if (ae) {
+            if (av) ae.innerHTML = '<img src="' + av + '" alt="">';
+            else ae.textContent = name.charAt(0).toUpperCase();
+        }
 
         var adminNavs = document.querySelectorAll('.nav-admin-only');
         for (var an = 0; an < adminNavs.length; an++) {
@@ -364,10 +385,10 @@
             var s = await db.from('canciones').select('id', { count: 'exact', head: true });
             var b = await db.from('beats').select('id', { count: 'exact', head: true });
             var n = await db.from('noticias').select('id', { count: 'exact', head: true });
-            var ea = document.getElementById('statAlbumes'); if (ea) ea.textContent = a.count || 0;
-            var es = document.getElementById('statCanciones'); if (es) es.textContent = s.count || 0;
-            var eb = document.getElementById('statBeats'); if (eb) eb.textContent = b.count || 0;
-            var en2 = document.getElementById('statNoticias'); if (en2) en2.textContent = n.count || 0;
+            var ea = $('statAlbumes'); if (ea) ea.textContent = a.count || 0;
+            var es = $('statCanciones'); if (es) es.textContent = s.count || 0;
+            var eb = $('statBeats'); if (eb) eb.textContent = b.count || 0;
+            var en2 = $('statNoticias'); if (en2) en2.textContent = n.count || 0;
         } catch (e) { console.error(e); }
     };
 
@@ -401,7 +422,7 @@
 
         var panels = document.querySelectorAll('.panel');
         for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
-        var t = document.getElementById('panel-' + id);
+        var t = $('panel-' + id);
         if (t) t.classList.add('active');
 
         for (var j = 0; j < navItems.length; j++) {
@@ -409,19 +430,25 @@
             if (navItems[j].getAttribute('data-panel') === id) navItems[j].classList.add('active');
         }
 
-        document.getElementById('headerTitle').textContent = panelTitles[id] || 'KXON';
+        var ht = $('headerTitle');
+        if (ht) ht.textContent = panelTitles[id] || 'KXON';
 
         var addText = panelAddText[id];
-        var btn = document.getElementById('btnAdminAdd');
-        if (K.isAdmin && addText) {
-            btn.classList.add('visible');
-            document.getElementById('btnAdminText').textContent = addText;
-        } else {
-            btn.classList.remove('visible');
+        var btn = $('btnAdminAdd');
+        var btnText = $('btnAdminText');
+        if (btn) {
+            if (K.isAdmin && addText) {
+                btn.classList.add('visible');
+                if (btnText) btnText.textContent = addText;
+            } else {
+                btn.classList.remove('visible');
+            }
         }
 
-        document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('sidebarOverlay').classList.remove('show');
+        var sb = $('sidebar');
+        if (sb) sb.classList.remove('open');
+        var so = $('sidebarOverlay');
+        if (so) so.classList.remove('show');
 
         if (panelesBloqueados.indexOf(id) >= 0 && !K.checkAccess(id)) {
             renderLockedPanel(id);
@@ -429,9 +456,12 @@
         }
 
         if (panelesBloqueados.indexOf(id) >= 0 && panelOriginalHTML[id]) {
-            var currentHTML = document.getElementById('panel-' + id).innerHTML;
-            if (currentHTML.indexOf('panel-locked') >= 0) {
-                restorePanelHTML(id);
+            var panelEl = $('panel-' + id);
+            if (panelEl) {
+                var currentHTML = panelEl.innerHTML;
+                if (currentHTML.indexOf('panel-locked') >= 0) {
+                    restorePanelHTML(id);
+                }
             }
         }
 
@@ -439,8 +469,8 @@
             if (typeof K.renderInicio === 'function') K.renderInicio();
         }
         if (id === 'albumes') {
-            var alv = document.getElementById('albumesListView'); if (alv) alv.style.display = 'block';
-            var adv = document.getElementById('albumDetailView'); if (adv) adv.classList.remove('show');
+            var alv = $('albumesListView'); if (alv) alv.style.display = 'block';
+            var adv = $('albumDetailView'); if (adv) adv.classList.remove('show');
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
         }
         if (id === 'canciones' && typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
@@ -448,8 +478,8 @@
         if (id === 'videos' && typeof K.loadVideos === 'function') K.loadVideos();
         if (id === 'envivo' && typeof K.loadLiveStatus === 'function') K.loadLiveStatus();
         if (id === 'documentales') {
-            var dlv = document.getElementById('docuListView'); if (dlv) dlv.style.display = 'block';
-            var ddv = document.getElementById('docuDetailView'); if (ddv) ddv.classList.remove('show');
+            var dlv = $('docuListView'); if (dlv) dlv.style.display = 'block';
+            var ddv = $('docuDetailView'); if (ddv) ddv.classList.remove('show');
             if (typeof K.loadDocumentales === 'function') K.loadDocumentales();
         }
         if (id === 'perfil' && typeof K.loadPerfilData === 'function') K.loadPerfilData();
@@ -463,7 +493,7 @@
             window._loadPlaylists();
         }
 
-                if (id === 'historial' && typeof K.loadHistorial === 'function') {
+        if (id === 'historial' && typeof K.loadHistorial === 'function') {
             K.loadHistorial();
         }
 
@@ -481,7 +511,7 @@
        ══════════════════════════════════════════ */
     var audioEl = K.audioEl;
 
-    document.getElementById('playerPlayPause').addEventListener('click', function (e) {
+    $on('playerPlayPause', 'click', function (e) {
         e.stopPropagation();
         var self = this;
 
@@ -489,15 +519,15 @@
             if (K.activeSource === 'radio') {
                 K.radioAudio.pause();
                 K.radioIsPlaying = false;
-                var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
-                var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
-                var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
+                var d = $('radioDisc'); if (d) d.classList.remove('spinning');
+                var pb = $('radioPlayBtn'); if (pb) pb.classList.remove('playing');
+                var pi = $('radioPlayIcon'); if (pi) pi.textContent = '▶';
             } else if (K.activeSource === 'archivo') {
                 K.archivoPreviewAudio.pause();
             } else if (K.activeSource === 'market') {
                 K.marketPreviewAudio.pause();
             } else {
-                audioEl.pause();
+                if (audioEl) audioEl.pause();
             }
             self.textContent = '▶';
             K.isPlaying = false;
@@ -508,23 +538,23 @@
                 } else {
                     K.radioAudio.play();
                     K.radioIsPlaying = true;
-                    var d2 = document.getElementById('radioDisc'); if (d2) d2.classList.add('spinning');
-                    var pb2 = document.getElementById('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
-                    var pi2 = document.getElementById('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
+                    var d2 = $('radioDisc'); if (d2) d2.classList.add('spinning');
+                    var pb2 = $('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
+                    var pi2 = $('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
                 }
             } else if (K.activeSource === 'archivo' && K.archivoPreviewAudio.src) {
                 K.archivoPreviewAudio.play();
             } else if (K.activeSource === 'market' && K.marketPreviewAudio.src) {
                 K.marketPreviewAudio.play();
             } else {
-                audioEl.play();
+                if (audioEl) audioEl.play();
             }
             self.textContent = '⏸';
             K.isPlaying = true;
         }
     });
 
-    document.getElementById('playerNext').addEventListener('click', function (e) {
+    $on('playerNext', 'click', function (e) {
         e.stopPropagation();
         if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
@@ -539,7 +569,7 @@
         }
     });
 
-    document.getElementById('playerPrev').addEventListener('click', function (e) {
+    $on('playerPrev', 'click', function (e) {
         e.stopPropagation();
         if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
@@ -555,21 +585,26 @@
         }
     });
 
-    audioEl.addEventListener('timeupdate', function () {
-        if (K.activeSource !== 'player') return;
-        if (audioEl.duration) {
-            document.getElementById('progressFill').style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
-            document.getElementById('playerCurrentTime').textContent = K.formatTime(audioEl.currentTime);
-            document.getElementById('playerDuration').textContent = K.formatTime(audioEl.duration);
-        }
-    });
+    if (audioEl) {
+        audioEl.addEventListener('timeupdate', function () {
+            if (K.activeSource !== 'player') return;
+            if (audioEl.duration) {
+                var pf = $('progressFill'); if (pf) pf.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+                var pct = $('playerCurrentTime'); if (pct) pct.textContent = K.formatTime(audioEl.currentTime);
+                var pd = $('playerDuration'); if (pd) pd.textContent = K.formatTime(audioEl.duration);
+            }
+        });
 
-    audioEl.addEventListener('ended', function () {
-        if (K.currentTrackIndex < K.currentPlaylist.length - 1) window.KXON.playTrack(K.currentTrackIndex + 1);
-        else { K.isPlaying = false; document.getElementById('playerPlayPause').textContent = '▶'; }
-    });
+        audioEl.addEventListener('ended', function () {
+            if (K.currentTrackIndex < K.currentPlaylist.length - 1) window.KXON.playTrack(K.currentTrackIndex + 1);
+            else {
+                K.isPlaying = false;
+                var pp = $('playerPlayPause'); if (pp) pp.textContent = '▶';
+            }
+        });
+    }
 
-    document.getElementById('progressBar').addEventListener('click', function (e) {
+    $on('progressBar', 'click', function (e) {
         e.stopPropagation();
         if (K.activeSource === 'radio') {
             if (K.radioAudio.duration) {
@@ -578,13 +613,13 @@
             }
             return;
         }
-        if (audioEl.duration) {
+        if (audioEl && audioEl.duration) {
             var r2 = this.getBoundingClientRect();
             audioEl.currentTime = (e.clientX - r2.left) / r2.width * audioEl.duration;
         }
     });
 
-    document.getElementById('volumeBar').addEventListener('click', function (e) {
+    $on('volumeBar', 'click', function (e) {
         e.stopPropagation();
         var r = this.getBoundingClientRect();
         var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
@@ -592,27 +627,29 @@
             K.radioVolume = p;
             K.radioAudio.volume = p;
         } else {
-            audioEl.volume = p;
+            if (audioEl) audioEl.volume = p;
         }
-        document.getElementById('volumeFill').style.width = (p * 100) + '%';
+        var vf = $('volumeFill'); if (vf) vf.style.width = (p * 100) + '%';
     });
 
-        window.KXON.playTrack = function (idx) {
+    window.KXON.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
         var track = K.currentPlaylist[idx];
 
         K.stopAllAudio('player');
         K.activeSource = 'player';
 
-        audioEl.src = track.archivo_url;
-        audioEl.play();
+        if (audioEl) {
+            audioEl.src = track.archivo_url;
+            audioEl.play();
+        }
         K.isPlaying = true;
         K.currentTrackIndex = idx;
 
-        document.getElementById('playerBar').classList.add('show');
-        document.getElementById('playerTitle').textContent = track.titulo;
-        document.getElementById('playerCover').src = track.imagen_url || K.currentAlbumCover || '';
-        document.getElementById('playerPlayPause').textContent = '⏸';
+        var playerBar = $('playerBar'); if (playerBar) playerBar.classList.add('show');
+        var playerTitle = $('playerTitle'); if (playerTitle) playerTitle.textContent = track.titulo;
+        var playerCover = $('playerCover'); if (playerCover) playerCover.src = track.imagen_url || K.currentAlbumCover || '';
+        var playerPP = $('playerPlayPause'); if (playerPP) playerPP.textContent = '⏸';
 
         var items = document.querySelectorAll('.track-item');
         for (var i = 0; i < items.length; i++) {
@@ -666,30 +703,32 @@
         if (idx >= K.currentPlaylist.length) idx = 0;
 
         var track = K.currentPlaylist[idx];
-        audioEl.src = track.archivo_url;
-        audioEl.play();
+        if (audioEl) {
+            audioEl.src = track.archivo_url;
+            audioEl.play();
+        }
         K.isPlaying = true;
         K.currentTrackIndex = idx;
 
-        document.getElementById('playerBar').classList.add('show');
-        document.getElementById('playerTitle').textContent = track.titulo;
-        document.getElementById('playerCover').src = track.imagen_url || '';
-        document.getElementById('playerPlayPause').textContent = '⏸';
+        var playerBar = $('playerBar'); if (playerBar) playerBar.classList.add('show');
+        var playerTitle = $('playerTitle'); if (playerTitle) playerTitle.textContent = track.titulo;
+        var playerCover = $('playerCover'); if (playerCover) playerCover.src = track.imagen_url || '';
+        var playerPP = $('playerPlayPause'); if (playerPP) playerPP.textContent = '⏸';
     };
 
-    document.getElementById('playerCloseBtn').addEventListener('click', function (e) {
+    $on('playerCloseBtn', 'click', function (e) {
         e.stopPropagation();
-        audioEl.pause(); audioEl.currentTime = 0;
+        if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; }
         K.marketPreviewAudio.pause(); K.marketPreviewAudio.currentTime = 0;
         K.archivoPreviewAudio.pause(); K.archivoPreviewAudio.currentTime = 0;
         K.archivoCurrentPlayingUrl = '';
 
         K.radioAudio.pause(); K.radioAudio.currentTime = 0;
         K.radioIsPlaying = false;
-        var rd = document.getElementById('radioDisc'); if (rd) rd.classList.remove('spinning');
-        var rpb = document.getElementById('radioPlayBtn'); if (rpb) rpb.classList.remove('playing');
-        var rpi = document.getElementById('radioPlayIcon'); if (rpi) rpi.textContent = '▶';
-        var rgl = document.getElementById('radioProgressGlow'); if (rgl) rgl.classList.remove('visible');
+        var rd = $('radioDisc'); if (rd) rd.classList.remove('spinning');
+        var rpb = $('radioPlayBtn'); if (rpb) rpb.classList.remove('playing');
+        var rpi = $('radioPlayIcon'); if (rpi) rpi.textContent = '▶';
+        var rgl = $('radioProgressGlow'); if (rgl) rgl.classList.remove('visible');
 
         var archItems = document.querySelectorAll('.archivo-audio-item');
         for (var ai = 0; ai < archItems.length; ai++) {
@@ -700,9 +739,9 @@
 
         K.isPlaying = false;
         K.activeSource = 'none';
-        document.getElementById('playerBar').classList.remove('show');
-        document.getElementById('playerPlayPause').textContent = '▶';
-        document.getElementById('progressFill').style.width = '0%';
+        var playerBar = $('playerBar'); if (playerBar) playerBar.classList.remove('show');
+        var playerPP = $('playerPlayPause'); if (playerPP) playerPP.textContent = '▶';
+        var pf = $('progressFill'); if (pf) pf.style.width = '0%';
 
         var items = document.querySelectorAll('.track-item');
         for (var i = 0; i < items.length; i++) {
@@ -721,23 +760,24 @@
         });
     }
 
-    document.getElementById('btnHamburger').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('sidebarOverlay').classList.toggle('show');
+    $on('btnHamburger', 'click', function () {
+        var sb = $('sidebar'); if (sb) sb.classList.toggle('open');
+        var so = $('sidebarOverlay'); if (so) so.classList.toggle('show');
     });
-    document.getElementById('sidebarOverlay').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.remove('open');
+
+    $on('sidebarOverlay', 'click', function () {
+        var sb = $('sidebar'); if (sb) sb.classList.remove('open');
         this.classList.remove('show');
     });
 
-    document.getElementById('btnLogout').addEventListener('click', async function () {
+    $on('btnLogout', 'click', async function () {
         await db.auth.signOut();
         localStorage.removeItem('kxon_role');
         localStorage.removeItem('kxon_name');
         window.location.href = 'login.html';
     });
 
-    document.getElementById('btnAdminAdd').addEventListener('click', function () {
+    $on('btnAdminAdd', 'click', function () {
         if (K.currentPanel === 'albumes') K.openModal('modalAlbum');
         else if (K.currentPanel === 'inicio') K.openModal('modalNoticia');
         else if (K.currentPanel === 'videos') K.openModal('modalVideo');
@@ -746,10 +786,11 @@
         else K.showToast('Función próximamente', 'success');
     });
 
-    document.getElementById('btnAddTrack').addEventListener('click', function () { K.openModal('modalCancion'); });
-    document.getElementById('btnBackAlbums').addEventListener('click', function () {
-        document.getElementById('albumesListView').style.display = 'block';
-        document.getElementById('albumDetailView').classList.remove('show');
+    /* ✅ FIX: Protección null — estos elementos pueden no existir al inicio */
+    $on('btnAddTrack', 'click', function () { K.openModal('modalCancion'); });
+    $on('btnBackAlbums', 'click', function () {
+        var alv = $('albumesListView'); if (alv) alv.style.display = 'block';
+        var adv = $('albumDetailView'); if (adv) adv.classList.remove('show');
     });
 
     var modalCloseMap = [
@@ -762,45 +803,44 @@
     ];
     for (var mc = 0; mc < modalCloseMap.length; mc++) {
         (function (btnId, modalId) {
-            var el = document.getElementById(btnId);
-            if (el) el.addEventListener('click', function () { K.closeModal(modalId); });
+            $on(btnId, 'click', function () { K.closeModal(modalId); });
         })(modalCloseMap[mc][0], modalCloseMap[mc][1]);
     }
 
     var overlayCloseIds = ['modalAlbum', 'modalCancion', 'modalNoticia', 'modalVideo', 'modalDocumental', 'modalEpisodio', 'modalSolicitudBeat'];
     for (var oc = 0; oc < overlayCloseIds.length; oc++) {
         (function (mid) {
-            var el = document.getElementById(mid);
+            var el = $(mid);
             if (el) el.addEventListener('click', function (e) { if (e.target === this) K.closeModal(mid); });
         })(overlayCloseIds[oc]);
     }
 
-    var mnd = document.getElementById('modalNoticiaDetalle');
+    var mnd = $('modalNoticiaDetalle');
     if (mnd) mnd.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
 
-    var mma = document.getElementById('modalMarketAdd');
+    var mma = $('modalMarketAdd');
     if (mma) mma.addEventListener('click', function (e) { if (e.target === this && typeof window._closeMarketModal === 'function') window._closeMarketModal(); });
 
-    var mdo = document.getElementById('marketDetailOverlay');
+    var mdo = $('marketDetailOverlay');
     if (mdo) mdo.addEventListener('click', function (e) { if (e.target === this) { this.classList.remove('show'); K.marketPreviewAudio.pause(); } });
 
-    var po = document.getElementById('purchaseOverlay');
+    var po = $('purchaseOverlay');
     if (po) po.addEventListener('click', function (e) { if (e.target === this && typeof window._closePurchase === 'function') window._closePurchase(); });
 
-    var mpl = document.getElementById('modalPlaylist');
+    var mpl = $('modalPlaylist');
     if (mpl) mpl.addEventListener('click', function (e) { if (e.target === this && typeof window._closePlaylistModal === 'function') window._closePlaylistModal(); });
 
-    var matp = document.getElementById('modalAddToPlaylist');
+    var matp = $('modalAddToPlaylist');
     if (matp) matp.addEventListener('click', function (e) { if (e.target === this && typeof window._closeAddToPlaylist === 'function') window._closeAddToPlaylist(); });
 
-    var lyricsOv = document.getElementById('lyricsOverlay');
+    var lyricsOv = $('lyricsOverlay');
     if (lyricsOv) lyricsOv.addEventListener('click', function (e) {
-        if (e.target === this) window._closeLyrics();
+        if (e.target === this && typeof window._closeLyrics === 'function') window._closeLyrics();
     });
 
-    var lyricsEditOv = document.getElementById('lyricsEditOverlay');
+    var lyricsEditOv = $('lyricsEditOverlay');
     if (lyricsEditOv) lyricsEditOv.addEventListener('click', function (e) {
-        if (e.target === this) window._closeLyricsEdit();
+        if (e.target === this && typeof window._closeLyricsEdit === 'function') window._closeLyricsEdit();
     });
 
     /* ══════════════════════════════════════════
@@ -865,7 +905,8 @@
             K.showPanel('inicio');
 
             setTimeout(function () {
-                document.getElementById('loadingScreen').classList.add('hide');
+                var ls = $('loadingScreen');
+                if (ls) ls.classList.add('hide');
             }, 500);
         } catch (e) {
             console.error('❌ Error en init:', e);
