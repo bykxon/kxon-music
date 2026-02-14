@@ -2,6 +2,7 @@
    🏠 LANDING JS - KXON PÁGINA DE INICIO
    ✨ VERSIÓN EXPERTA CON 3D ASSEMBLY SCROLL
    + HERO INTRO ANIMATION
+   + 30 SEC PREVIEW PLAYER
    ============================================ */
 
 (function(){
@@ -13,6 +14,123 @@
     var scrollProgressEl = null;
     var landingNoticias = [];
     var landingAlbumes = [];
+
+    /* ══════════════════════════════════════════
+       🎵 PREVIEW PLAYER (30 SEGUNDOS)
+       ══════════════════════════════════════════ */
+    var previewAudio = new Audio();
+    var previewPlaying = false;
+    var previewTrackId = null;
+    var previewTimer = null;
+    var previewInterval = null;
+    var PREVIEW_DURATION = 30; // segundos
+
+    previewAudio.volume = 0.7;
+
+    function playPreview(trackId, audioUrl, buttonEl) {
+        // Si ya está sonando esta misma canción, pausar
+        if (previewPlaying && previewTrackId === trackId) {
+            stopPreview();
+            return;
+        }
+
+        // Detener cualquier preview anterior
+        stopPreview();
+
+        if (!audioUrl) {
+            alert('Esta canción no tiene audio disponible');
+            return;
+        }
+
+        previewTrackId = trackId;
+        previewAudio.src = audioUrl;
+        previewAudio.currentTime = 0;
+
+        previewAudio.play().then(function() {
+            previewPlaying = true;
+            updateAllPreviewButtons();
+
+            // Timer para detener a los 30 segundos
+            previewTimer = setTimeout(function() {
+                stopPreview();
+            }, PREVIEW_DURATION * 1000);
+
+            // Actualizar barra de progreso
+            previewInterval = setInterval(function() {
+                updatePreviewProgress(buttonEl);
+            }, 100);
+
+        }).catch(function(err) {
+            console.error('Error reproduciendo preview:', err);
+            alert('No se pudo reproducir el preview');
+        });
+    }
+
+    function stopPreview() {
+        previewAudio.pause();
+        previewAudio.currentTime = 0;
+        previewPlaying = false;
+        previewTrackId = null;
+
+        if (previewTimer) {
+            clearTimeout(previewTimer);
+            previewTimer = null;
+        }
+        if (previewInterval) {
+            clearInterval(previewInterval);
+            previewInterval = null;
+        }
+
+        updateAllPreviewButtons();
+    }
+
+    function updateAllPreviewButtons() {
+        var allBtns = document.querySelectorAll('.preview-play-btn');
+        for (var i = 0; i < allBtns.length; i++) {
+            var btn = allBtns[i];
+            var id = btn.getAttribute('data-track-id');
+            var progressBar = btn.querySelector('.preview-progress');
+            var icon = btn.querySelector('.preview-icon');
+            var timeLabel = btn.querySelector('.preview-time');
+
+            if (previewPlaying && id === String(previewTrackId)) {
+                btn.classList.add('playing');
+                if (icon) icon.textContent = '⏸';
+                if (timeLabel) timeLabel.textContent = 'Reproduciendo...';
+            } else {
+                btn.classList.remove('playing');
+                if (icon) icon.textContent = '▶';
+                if (progressBar) progressBar.style.width = '0%';
+                if (timeLabel) timeLabel.textContent = '0:30 preview';
+            }
+        }
+    }
+
+    function updatePreviewProgress(buttonEl) {
+        if (!previewPlaying) return;
+        var currentTime = previewAudio.currentTime;
+        var pct = Math.min((currentTime / PREVIEW_DURATION) * 100, 100);
+        var remaining = Math.max(0, PREVIEW_DURATION - Math.floor(currentTime));
+
+        // Actualizar TODOS los botones con el mismo track ID
+        var allBtns = document.querySelectorAll('.preview-play-btn[data-track-id="' + previewTrackId + '"]');
+        for (var i = 0; i < allBtns.length; i++) {
+            var progressBar = allBtns[i].querySelector('.preview-progress');
+            var timeLabel = allBtns[i].querySelector('.preview-time');
+            if (progressBar) progressBar.style.width = pct + '%';
+            if (timeLabel) timeLabel.textContent = '0:' + (remaining < 10 ? '0' : '') + remaining;
+        }
+    }
+
+    // Detener preview cuando el audio termina naturalmente
+    previewAudio.addEventListener('ended', function() {
+        stopPreview();
+    });
+
+    // Exponer globalmente
+    window._playLandingPreview = function(trackId, audioUrl, el) {
+        playPreview(trackId, audioUrl, el);
+    };
 
     /* ══════════════════════════════════════════
        🔝 SCROLL PROGRESS BAR
@@ -167,7 +285,6 @@
        🏠 HERO INTRO - Logo Animation & Particles
        ══════════════════════════════════════════ */
     function initHeroIntro() {
-        // Particles
         var particlesContainer = document.getElementById('heroIntroParticles');
         if (particlesContainer) {
             var count = window.innerWidth < 768 ? 20 : 40;
@@ -185,7 +302,6 @@
             }
         }
 
-        // Scroll arrow click — smooth scroll past hero
         var scrollIndicator = document.getElementById('heroIntroScroll');
         if (scrollIndicator) {
             scrollIndicator.addEventListener('click', function() {
@@ -200,7 +316,6 @@
             });
         }
 
-        // Hide hero intro scroll indicator when scrolling down
         var heroIntro = document.getElementById('kxonHeroIntro');
         if (heroIntro) {
             window.addEventListener('scroll', function() {
@@ -445,7 +560,7 @@
             translateX = (1 - progress) * 50;
             rotateAxis = 'rotate';
         } else if (el.classList.contains('mic-stand')) {
-            // Keep position but animate scaleY
+            // scaleY
         } else if (el.classList.contains('mic-arm')) {
             translateX = -(1 - progress) * 80;
             translateY = (1 - progress) * 60;
@@ -526,7 +641,7 @@
         if (!albumesContainer) return;
         albumesContainer.innerHTML = generarSkeletonAlbumes(2);
         try {
-            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion)').order('created_at', { ascending: false }).limit(2);
+            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, audio_url)').order('created_at', { ascending: false }).limit(2);
             if (r.error) throw r.error;
             if (!r.data || r.data.length === 0) {
                 albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">💿</div><h3 class="empty-state-title">Sin álbumes aún</h3><p class="empty-state-text">Los últimos álbumes aparecerán aquí</p></div>';
@@ -603,9 +718,12 @@
     };
 
     /* ──────────────────────────────────
-       💿 ABRIR ÁLBUM (MODAL SIN REPRODUCIR)
+       💿 ABRIR ÁLBUM (MODAL CON PREVIEW 30s)
        ────────────────────────────────── */
     window._landingAbrirAlbum = function(idx){
+        // Detener cualquier preview al abrir nuevo álbum
+        stopPreview();
+
         var a = landingAlbumes[idx];
         if (!a) return;
         var tituloEl = document.getElementById('albumLandingTitulo');
@@ -627,13 +745,26 @@
                 var h = '';
                 for (var i = 0; i < canciones.length; i++) {
                     var c = canciones[i];
-                    h += '<div class="album-landing-track">' +
+                    var audioUrl = c.audio_url || '';
+                    var escapedUrl = audioUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                    h += '<div class="album-landing-track preview-track" onclick="event.stopPropagation()">' +
                         '<span class="album-landing-track-num">' + (i + 1) + '</span>' +
-                        '<div class="album-landing-track-icon">♪</div>' +
-                        '<span class="album-landing-track-title">' + c.titulo + '</span>' +
-                        '<span class="album-landing-track-duration">' + (c.duracion || '--:--') + '</span></div>';
+                        '<button class="preview-play-btn" data-track-id="' + c.id + '" onclick="window._playLandingPreview(\'' + c.id + '\', \'' + escapedUrl + '\', this)">' +
+                            '<span class="preview-icon">▶</span>' +
+                            '<div class="preview-progress-bar"><div class="preview-progress"></div></div>' +
+                        '</button>' +
+                        '<div class="preview-track-info">' +
+                            '<span class="album-landing-track-title">' + c.titulo + '</span>' +
+                            '<span class="preview-time">0:30 preview</span>' +
+                        '</div>' +
+                        '<span class="album-landing-track-duration">' + (c.duracion || '--:--') + '</span>' +
+                    '</div>';
                 }
-                h += '<div class="album-landing-no-play">🔒 Inicia sesión para reproducir</div>';
+                h += '<div class="album-landing-preview-notice">' +
+                    '<span class="preview-notice-icon">🎧</span>' +
+                    '<span>Preview de 30 segundos · <a href="register.html" class="preview-register-link">Regístrate</a> para escuchar completo</span>' +
+                '</div>';
                 tc.innerHTML = h;
             }
         }
@@ -654,8 +785,21 @@
         }
         if (modalAlbum) {
             modalAlbum.addEventListener('click', function(e){
-                if (e.target === this) this.classList.remove('show');
+                if (e.target === this) {
+                    stopPreview();
+                    this.classList.remove('show');
+                }
             });
+            // También detener preview cuando se cierra con la X
+            var closeBtn = modalAlbum.querySelector('.modal-landing-close');
+            if (closeBtn) {
+                var originalOnclick = closeBtn.getAttribute('onclick');
+                closeBtn.removeAttribute('onclick');
+                closeBtn.addEventListener('click', function() {
+                    stopPreview();
+                    modalAlbum.classList.remove('show');
+                });
+            }
         }
     }
 
@@ -687,30 +831,23 @@
         headerEl = document.getElementById('header');
         scrollProgressEl = document.getElementById('scrollProgress');
 
-        // Init animation systems
         initScrollReveal();
         initCounterAnimation();
         initMagneticButtons();
         initHeroParticles();
         initHeroIntro();
         initSmoothScroll();
-
-        // Init 3D Assembly Engine
         initAssemblyEngine();
-
-        // Init modal close handlers
         initModalClose();
 
-        // Load dynamic content
         if (noticiasContainer) cargarNoticias();
         if (albumesContainer) cargarAlbumesDestacados();
 
-        // Initial state
         handleHeaderScroll();
         updateScrollProgress();
         updateAssembly();
 
-        console.log('🎵 KXON Landing inicializada con Hero Intro + 3D Assembly Engine');
+        console.log('🎵 KXON Landing inicializada con Hero Intro + 3D Assembly + 30s Preview');
     });
 
 })();
