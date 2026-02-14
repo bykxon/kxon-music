@@ -1,18 +1,12 @@
 /* ============================================
    🏠 LANDING JS - KXON PÁGINA DE INICIO
    ✨ VERSIÓN EXPERTA CON 3D ASSEMBLY SCROLL
-   Scroll-driven object assembly, Scroll Reveal,
-   Counter, Parallax, Particles, Magnetic Buttons,
-   Progress Bar, Stagger
+   + HERO INTRO ANIMATION
    ============================================ */
 
 (function(){
     var db = window.db;
 
-    /* ──────────────────────────────────
-       📌 VARIABLES DEL DOM
-       (Se re-asignan en DOMContentLoaded)
-       ────────────────────────────────── */
     var noticiasContainer = null;
     var albumesContainer = null;
     var headerEl = null;
@@ -170,6 +164,63 @@
     }
 
     /* ══════════════════════════════════════════
+       🏠 HERO INTRO - Logo Animation & Particles
+       ══════════════════════════════════════════ */
+    function initHeroIntro() {
+        // Particles
+        var particlesContainer = document.getElementById('heroIntroParticles');
+        if (particlesContainer) {
+            var count = window.innerWidth < 768 ? 20 : 40;
+            for (var i = 0; i < count; i++) {
+                var p = document.createElement('div');
+                p.className = 'hero-intro-particle';
+                var size = Math.random() * 3 + 1;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+                p.style.animationDelay = (Math.random() * 8) + 's';
+                p.style.opacity = Math.random() * 0.4 + 0.1;
+                particlesContainer.appendChild(p);
+            }
+        }
+
+        // Scroll arrow click — smooth scroll past hero
+        var scrollIndicator = document.getElementById('heroIntroScroll');
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', function() {
+                var heroSection = document.getElementById('kxonHeroIntro');
+                if (heroSection) {
+                    var nextSection = heroSection.nextElementSibling;
+                    if (nextSection) {
+                        var offsetTop = nextSection.getBoundingClientRect().top + window.pageYOffset;
+                        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
+                }
+            });
+        }
+
+        // Hide hero intro scroll indicator when scrolling down
+        var heroIntro = document.getElementById('kxonHeroIntro');
+        if (heroIntro) {
+            window.addEventListener('scroll', function() {
+                var scrollY = window.pageYOffset;
+                var heroHeight = heroIntro.offsetHeight;
+                var scrollEl = document.getElementById('heroIntroScroll');
+                if (scrollEl) {
+                    if (scrollY > heroHeight * 0.3) {
+                        scrollEl.style.opacity = '0';
+                        scrollEl.style.pointerEvents = 'none';
+                    } else {
+                        scrollEl.style.opacity = '';
+                        scrollEl.style.pointerEvents = '';
+                    }
+                }
+            }, { passive: true });
+        }
+    }
+
+    /* ══════════════════════════════════════════
        📰🔄 SCROLL REVEAL FOR DYNAMIC CONTENT
        ══════════════════════════════════════════ */
     function applyScrollRevealToChildren(containerSelector) {
@@ -233,7 +284,6 @@
 
     /* ══════════════════════════════════════════════════════
        🎛️🎤 3D ASSEMBLY ENGINE
-       Scroll-driven piece-by-piece object construction
        ══════════════════════════════════════════════════════ */
     var assemblySections = [];
 
@@ -632,7 +682,6 @@
        🚀 INICIALIZAR LANDING
        ══════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function(){
-        // Re-asignar elementos del DOM cuando ya están disponibles
         noticiasContainer = document.getElementById('noticias-grid');
         albumesContainer = document.getElementById('albumes-grid');
         headerEl = document.getElementById('header');
@@ -643,6 +692,7 @@
         initCounterAnimation();
         initMagneticButtons();
         initHeroParticles();
+        initHeroIntro();
         initSmoothScroll();
 
         // Init 3D Assembly Engine
@@ -660,7 +710,7 @@
         updateScrollProgress();
         updateAssembly();
 
-        console.log('🎵 KXON Landing inicializada con 3D Assembly Engine + Scroll Animations');
+        console.log('🎵 KXON Landing inicializada con Hero Intro + 3D Assembly Engine');
     });
 
 })();
