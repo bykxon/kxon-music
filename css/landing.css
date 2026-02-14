@@ -2572,3 +2572,444 @@ body {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(1.2); }
 }
+/* ══════════════════════════════════════════════════════
+   🎛️🎤 ASSEMBLY LAYOUT: IZQUIERDA / DERECHA
+   ══════════════════════════════════════════════════════ */
+
+/* ── Contenedor del instrumento ── */
+.assembly-instrument {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    flex-shrink: 0;
+}
+
+/* ── Layout: instrumento a la izquierda, texto a la derecha ── */
+.assembly-layout-left {
+    display: flex;
+    align-items: center;
+    max-width: 1300px;
+    padding: 0 40px;
+}
+
+.assembly-layout-left .assembly-instrument-left {
+    order: 1;
+}
+
+.assembly-layout-left .assembly-text-side-right {
+    order: 2;
+    width: 45%;
+    padding-left: 40px;
+}
+
+/* ── Layout: texto a la izquierda, instrumento a la derecha ── */
+.assembly-layout-right {
+    display: flex;
+    align-items: center;
+    max-width: 1300px;
+    padding: 0 40px;
+}
+
+.assembly-layout-right .assembly-text-side-left {
+    order: 1;
+    width: 45%;
+    padding-right: 40px;
+}
+
+.assembly-layout-right .assembly-instrument-right {
+    order: 2;
+}
+
+/* ── Texto a los lados ── */
+.assembly-text-side-right,
+.assembly-text-side-left {
+    position: relative;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+.assembly-text-side-right {
+    text-align: left;
+    transform: translateX(40px);
+}
+
+.assembly-text-side-left {
+    text-align: left;
+    transform: translateX(-40px);
+}
+
+.assembly-text-side-right.visible,
+.assembly-text-side-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.assembly-text-side-right .assembly-cta,
+.assembly-text-side-left .assembly-cta {
+    justify-content: flex-start;
+}
+
+/* ── Posiciones piezas dentro del contenedor instrument ── */
+.assembly-instrument .studio-desk {
+    width: 90%;
+    bottom: 12%;
+    left: 50%;
+    transform: translate(-50%, 200px) scale(0.3) rotateX(40deg);
+}
+
+.assembly-instrument .studio-monitor-l {
+    width: 22%;
+    bottom: 38%;
+    left: 5%;
+    transform: translateX(-300px) scale(0.3) rotateY(-60deg);
+}
+
+.assembly-instrument .studio-monitor-r {
+    width: 22%;
+    bottom: 38%;
+    right: 5%;
+    transform: translateX(300px) scale(0.3) rotateY(60deg);
+}
+
+.assembly-instrument .studio-screen {
+    width: 65%;
+    bottom: 28%;
+    left: 50%;
+    transform: translate(-50%, -200px) scale(0.3) rotateX(-30deg);
+}
+
+.assembly-instrument .studio-keyboard {
+    width: 70%;
+    bottom: 6%;
+    left: 50%;
+    transform: translate(-50%, 200px) scale(0.3) rotateX(50deg);
+}
+
+.assembly-instrument .studio-headphones {
+    width: 18%;
+    bottom: 42%;
+    right: -2%;
+    transform: translateY(-200px) scale(0.3) rotate(-30deg);
+}
+
+/* ── Micrófono posiciones ── */
+.assembly-instrument .mic-base {
+    width: 45%;
+    bottom: 8%;
+    left: 50%;
+    transform: translate(-50%, 200px) scale(0.3) rotateX(40deg);
+}
+
+.assembly-instrument .mic-stand {
+    width: 10%;
+    bottom: 14%;
+    left: 50%;
+    transform: translate(-50%, 200px) scale(0.3) scaleY(0);
+}
+
+.assembly-instrument .mic-mount {
+    width: 32%;
+    top: 28%;
+    left: 50%;
+    transform: translate(-50%, 100px) scale(0.3) rotate(-20deg);
+}
+
+.assembly-instrument .mic-body {
+    width: 18%;
+    top: 18%;
+    left: 50%;
+    transform: translate(-50%, -200px) scale(0.3) rotateZ(20deg);
+}
+
+.assembly-instrument .mic-capsule {
+    width: 18%;
+    top: 6%;
+    left: 50%;
+    transform: translate(-50%, -200px) scale(0.3) rotateX(-40deg);
+}
+
+.assembly-instrument .mic-popfilter {
+    width: 24%;
+    top: 12%;
+    left: 15%;
+    transform: translateX(-200px) scale(0.3) rotateY(-50deg);
+}
+
+.assembly-instrument .mic-waves {
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.assembly-instrument .mic-waves.assembled {
+    opacity: 1;
+}
+
+/* ── Assembled states dentro de instrument ── */
+.assembly-instrument .studio-desk.assembled {
+    transform: translate(-50%, 0) scale(1) rotateX(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .studio-monitor-l.assembled {
+    transform: translateX(0) scale(1) rotateY(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .studio-monitor-r.assembled {
+    transform: translateX(0) scale(1) rotateY(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .studio-screen.assembled {
+    transform: translate(-50%, 0) scale(1) rotateX(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .studio-keyboard.assembled {
+    transform: translate(-50%, 0) scale(1) rotateX(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .studio-headphones.assembled {
+    transform: translateY(0) scale(1) rotate(-15deg);
+    opacity: 1;
+}
+
+.assembly-instrument .mic-base.assembled {
+    transform: translate(-50%, 0) scale(1) rotateX(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .mic-stand.assembled {
+    transform: translate(-50%, 0) scale(1) scaleY(1);
+    opacity: 1;
+}
+
+.assembly-instrument .mic-mount.assembled {
+    transform: translate(-50%, 0) scale(1) rotate(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .mic-body.assembled {
+    transform: translate(-50%, 0) scale(1) rotateZ(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .mic-capsule.assembled {
+    transform: translate(-50%, 0) scale(1) rotateX(0deg);
+    opacity: 1;
+}
+
+.assembly-instrument .mic-popfilter.assembled {
+    transform: translateX(0) scale(1) rotateY(0deg);
+    opacity: 1;
+}
+
+/* ── Glow dentro de instrument ── */
+.assembly-instrument .assembly-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(192,192,192,0.06) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 0;
+}
+
+.assembly-instrument .assembly-glow.active {
+    opacity: 1;
+}
+
+/* ── Sound waves ── */
+.sound-wave-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(192,192,192,0.1);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.mic-waves.assembled .sound-wave-ring {
+    animation: soundWaveExpand 2.5s ease-out infinite;
+}
+
+.ring-1 { width: 60px; height: 60px; animation-delay: 0s; }
+.ring-2 { width: 60px; height: 60px; animation-delay: 0.8s; }
+.ring-3 { width: 60px; height: 60px; animation-delay: 1.6s; }
+
+@keyframes soundWaveExpand {
+    0% { width: 60px; height: 60px; opacity: 0.5; }
+    100% { width: 250px; height: 250px; opacity: 0; }
+}
+
+/* ── Background grid sutil ── */
+.assembly-bg-grid {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(192,192,192,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(192,192,192,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+/* ── SVG defs ocultos ── */
+.assembly-defs-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* ── Assembly features mini ── */
+.assembly-features-mini {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.assembly-feat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--plata-clara, #b8b8b8);
+    font-weight: 400;
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
+}
+
+.assembly-feat span {
+    font-size: 0.9rem;
+}
+
+/* ══════════════════════════════════════════
+   📱 RESPONSIVE ASSEMBLY LAYOUTS
+   ══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .assembly-layout-left,
+    .assembly-layout-right {
+        flex-direction: column;
+        padding: 0 20px;
+    }
+
+    .assembly-instrument {
+        width: 100%;
+        height: 55vh;
+    }
+
+    .assembly-layout-left .assembly-text-side-right,
+    .assembly-layout-right .assembly-text-side-left {
+        width: 100%;
+        padding: 0;
+        text-align: center;
+        order: 2;
+    }
+
+    .assembly-layout-right .assembly-instrument-right {
+        order: 1;
+    }
+
+    .assembly-layout-left .assembly-instrument-left {
+        order: 1;
+    }
+
+    .assembly-text-side-right .assembly-cta,
+    .assembly-text-side-left .assembly-cta {
+        justify-content: center;
+    }
+
+    .assembly-features-mini {
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .assembly-text-side-right,
+    .assembly-text-side-left {
+        transform: translateY(30px);
+    }
+
+    .assembly-text-side-right.visible,
+    .assembly-text-side-left.visible {
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .assembly-instrument {
+        height: 50vh;
+    }
+
+    .assembly-instrument .studio-desk { width: 95%; }
+    .assembly-instrument .studio-monitor-l { width: 25%; left: 2%; }
+    .assembly-instrument .studio-monitor-r { width: 25%; right: 2%; }
+    .assembly-instrument .studio-screen { width: 70%; }
+    .assembly-instrument .studio-keyboard { width: 80%; }
+    .assembly-instrument .studio-headphones { width: 22%; }
+
+    .assembly-instrument .mic-base { width: 55%; }
+    .assembly-instrument .mic-stand { width: 12%; }
+    .assembly-instrument .mic-mount { width: 38%; }
+    .assembly-instrument .mic-body { width: 22%; }
+    .assembly-instrument .mic-capsule { width: 22%; }
+    .assembly-instrument .mic-popfilter { width: 28%; }
+
+    .assembly-features-mini {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .assembly-instrument {
+        height: 45vh;
+    }
+
+    .assembly-title {
+        font-size: 1.2rem;
+    }
+
+    .assembly-desc {
+        font-size: 0.82rem;
+    }
+}
+
+/* ── Reducir animaciones ── */
+@media (prefers-reduced-motion: reduce) {
+    .assembly-piece {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .assembly-text-side-right,
+    .assembly-text-side-left {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .assembly-section {
+        height: auto !important;
+    }
+    .assembly-sticky {
+        position: relative !important;
+        height: auto !important;
+    }
+}
