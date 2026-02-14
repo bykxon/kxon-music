@@ -1,8 +1,9 @@
 /* ============================================
    🏠 LANDING JS - KXON PÁGINA DE INICIO
-   ✨ VERSIÓN EXPERTA CON SCROLL ANIMATIONS
-   Scroll Reveal, Counter, Parallax, Particles,
-   Magnetic Buttons, Progress Bar, Stagger
+   ✨ VERSIÓN EXPERTA CON 3D ASSEMBLY SCROLL
+   Scroll-driven object assembly, Scroll Reveal,
+   Counter, Parallax, Particles, Magnetic Buttons,
+   Progress Bar, Stagger
    ============================================ */
 
 (function(){
@@ -62,7 +63,6 @@
             }
         }, options);
 
-        // Observar todos los elementos con scroll-reveal
         var elements = document.querySelectorAll('.scroll-reveal');
         for (var i = 0; i < elements.length; i++) {
             revealObserver.observe(elements[i]);
@@ -72,8 +72,6 @@
     function revealElement(el, delay) {
         setTimeout(function() {
             el.classList.add('is-visible');
-
-            // Si el elemento tiene contadores, animarlos
             var counters = el.querySelectorAll('.counter-animate');
             for (var j = 0; j < counters.length; j++) {
                 animateCounter(counters[j]);
@@ -88,11 +86,7 @@
     var animatedCounters = new Set();
 
     function initCounterAnimation() {
-        var options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5
-        };
+        var options = { root: null, rootMargin: '0px', threshold: 0.5 };
 
         counterObserver = new IntersectionObserver(function(entries) {
             for (var i = 0; i < entries.length; i++) {
@@ -115,7 +109,6 @@
         var suffix = el.getAttribute('data-suffix') || '';
         var duration = 2000;
         var startTime = null;
-        var startValue = 0;
 
         function easeOutExpo(t) {
             return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
@@ -126,13 +119,9 @@
             var elapsed = timestamp - startTime;
             var progress = Math.min(elapsed / duration, 1);
             var easedProgress = easeOutExpo(progress);
-            var currentValue = Math.round(startValue + (target - startValue) * easedProgress);
-
+            var currentValue = Math.round(target * easedProgress);
             el.textContent = currentValue + suffix;
-
-            if (progress < 1) {
-                requestAnimationFrame(update);
-            }
+            if (progress < 1) requestAnimationFrame(update);
         }
 
         requestAnimationFrame(update);
@@ -143,18 +132,14 @@
        ══════════════════════════════════════════ */
     function initMagneticButtons() {
         var buttons = document.querySelectorAll('.magnetic-btn');
-
         for (var i = 0; i < buttons.length; i++) {
             (function(btn) {
                 btn.addEventListener('mousemove', function(e) {
                     var rect = btn.getBoundingClientRect();
                     var x = e.clientX - rect.left - rect.width / 2;
                     var y = e.clientY - rect.top - rect.height / 2;
-                    var strength = 0.15;
-
-                    btn.style.transform = 'translate(' + (x * strength) + 'px, ' + (y * strength) + 'px)';
+                    btn.style.transform = 'translate(' + (x * 0.15) + 'px, ' + (y * 0.15) + 'px)';
                 });
-
                 btn.addEventListener('mouseleave', function() {
                     btn.style.transform = '';
                 });
@@ -168,47 +153,37 @@
     function initHeroParticles() {
         var container = document.getElementById('heroParticles');
         if (!container) return;
-
-        var particleCount = window.innerWidth < 768 ? 15 : 30;
-
-        for (var i = 0; i < particleCount; i++) {
-            var particle = document.createElement('div');
-            particle.className = 'hero-particle';
-
+        var count = window.innerWidth < 768 ? 15 : 30;
+        for (var i = 0; i < count; i++) {
+            var p = document.createElement('div');
+            p.className = 'hero-particle';
             var size = Math.random() * 3 + 1;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
-            particle.style.animationDelay = (Math.random() * 10) + 's';
-            particle.style.opacity = Math.random() * 0.5 + 0.1;
-
-            container.appendChild(particle);
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            p.style.animationDelay = (Math.random() * 10) + 's';
+            p.style.opacity = Math.random() * 0.5 + 0.1;
+            container.appendChild(p);
         }
     }
 
     /* ══════════════════════════════════════════
        📰🔄 SCROLL REVEAL FOR DYNAMIC CONTENT
-       (Noticias y Álbumes cargados vía Supabase)
        ══════════════════════════════════════════ */
     function applyScrollRevealToChildren(containerSelector) {
         var container = document.querySelector(containerSelector);
         if (!container || !container.classList.contains('scroll-reveal-children')) return;
-
         var animation = container.getAttribute('data-animation') || 'scale-up';
         var stagger = parseInt(container.getAttribute('data-stagger')) || 100;
         var children = container.children;
-
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (!child.classList.contains('scroll-reveal')) {
                 child.classList.add('scroll-reveal');
                 child.setAttribute('data-animation', animation);
                 child.setAttribute('data-delay', String(i * stagger));
-
-                if (revealObserver) {
-                    revealObserver.observe(child);
-                }
+                if (revealObserver) revealObserver.observe(child);
             }
         }
     }
@@ -218,18 +193,11 @@
        ══════════════════════════════════════════ */
     function handleParallax() {
         var scrollY = window.pageYOffset;
-
-        // Hero circles parallax
         var circle2 = document.querySelector('.hero-circle-2');
         var circle3 = document.querySelector('.hero-circle-3');
-        if (circle2) {
-            circle2.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.1) + 'px))';
-        }
-        if (circle3) {
-            circle3.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.05) + 'px))';
-        }
+        if (circle2) circle2.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.1) + 'px))';
+        if (circle3) circle3.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.05) + 'px))';
 
-        // Video section parallax
         var videoMedia = document.querySelector('.video-hero-media');
         if (videoMedia) {
             var videoSection = document.getElementById('video-presentacion');
@@ -256,18 +224,226 @@
                 if (target) {
                     e.preventDefault();
                     var offsetTop = target.getBoundingClientRect().top + window.pageYOffset - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                 }
             });
         }
     }
 
+    /* ══════════════════════════════════════════════════════
+       🎛️🎤 3D ASSEMBLY ENGINE
+       Scroll-driven piece-by-piece object construction
+       ══════════════════════════════════════════════════════ */
+    var assemblySections = [];
+
+    function initAssemblyEngine() {
+        var sections = document.querySelectorAll('.assembly-section');
+        for (var i = 0; i < sections.length; i++) {
+            var section = sections[i];
+            var sticky = section.querySelector('.assembly-sticky');
+            var pieces = section.querySelectorAll('.assembly-piece');
+            var texts = section.querySelectorAll('.assembly-text');
+            var glows = section.querySelectorAll('.assembly-glow');
+            var progressBar = section.querySelector('.assembly-progress-bar');
+            var scrollHint = section.querySelector('.assembly-scroll-hint');
+
+            var piecesData = [];
+            for (var j = 0; j < pieces.length; j++) {
+                var piece = pieces[j];
+                piecesData.push({
+                    el: piece,
+                    start: parseFloat(piece.getAttribute('data-assemble-start')) || 0,
+                    end: parseFloat(piece.getAttribute('data-assemble-end')) || 1
+                });
+            }
+
+            var textsData = [];
+            for (var k = 0; k < texts.length; k++) {
+                var text = texts[k];
+                textsData.push({
+                    el: text,
+                    start: parseFloat(text.getAttribute('data-text-start')) || 0.5,
+                    end: parseFloat(text.getAttribute('data-text-end')) || 1
+                });
+            }
+
+            var glowsData = [];
+            for (var g = 0; g < glows.length; g++) {
+                var glow = glows[g];
+                glowsData.push({
+                    el: glow,
+                    start: parseFloat(glow.getAttribute('data-glow-start')) || 0.5
+                });
+            }
+
+            assemblySections.push({
+                section: section,
+                sticky: sticky,
+                pieces: piecesData,
+                texts: textsData,
+                glows: glowsData,
+                progressBar: progressBar,
+                scrollHint: scrollHint
+            });
+        }
+    }
+
+    function updateAssembly() {
+        for (var i = 0; i < assemblySections.length; i++) {
+            var data = assemblySections[i];
+            var section = data.section;
+            var rect = section.getBoundingClientRect();
+            var sectionHeight = section.offsetHeight - window.innerHeight;
+
+            // Calculate scroll progress within this section (0 to 1)
+            var scrolled = -rect.top;
+            var progress = sectionHeight > 0 ? Math.max(0, Math.min(1, scrolled / sectionHeight)) : 0;
+
+            // Update progress bar
+            if (data.progressBar) {
+                data.progressBar.style.width = (progress * 100) + '%';
+            }
+
+            // Hide scroll hint after some progress
+            if (data.scrollHint) {
+                if (progress > 0.15) {
+                    data.scrollHint.classList.add('hidden');
+                } else {
+                    data.scrollHint.classList.remove('hidden');
+                }
+            }
+
+            // Update pieces
+            for (var j = 0; j < data.pieces.length; j++) {
+                var piece = data.pieces[j];
+                var pieceProgress = 0;
+
+                if (progress <= piece.start) {
+                    pieceProgress = 0;
+                } else if (progress >= piece.end) {
+                    pieceProgress = 1;
+                } else {
+                    pieceProgress = (progress - piece.start) / (piece.end - piece.start);
+                }
+
+                // Apply easing
+                pieceProgress = easeOutCubic(pieceProgress);
+
+                // Apply transform based on progress
+                applyPieceTransform(piece.el, pieceProgress);
+            }
+
+            // Update texts
+            for (var k = 0; k < data.texts.length; k++) {
+                var text = data.texts[k];
+                if (progress >= text.start) {
+                    text.el.classList.add('visible');
+                } else {
+                    text.el.classList.remove('visible');
+                }
+            }
+
+            // Update glows
+            for (var g = 0; g < data.glows.length; g++) {
+                var glow = data.glows[g];
+                if (progress >= glow.start) {
+                    glow.el.classList.add('active');
+                } else {
+                    glow.el.classList.remove('active');
+                }
+            }
+
+            // 3D scene rotation based on scroll progress
+            var scene = section.querySelector('.assembly-3d-scene');
+            if (scene) {
+                var rotateX = (1 - progress) * 8 - 4; // slight tilt
+                var rotateY = Math.sin(progress * Math.PI) * 3;
+                var translateZ = -50 + progress * 50;
+                scene.style.transform = 'perspective(1200px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateZ(' + translateZ + 'px)';
+            }
+        }
+    }
+
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    function applyPieceTransform(el, progress) {
+        // progress 0 = initial scattered state, 1 = assembled
+
+        if (progress <= 0) {
+            el.style.opacity = '0';
+            el.classList.remove('assembled');
+            return;
+        }
+
+        if (progress >= 1) {
+            el.style.opacity = '1';
+            el.classList.add('assembled');
+            return;
+        }
+
+        // During transition: interpolate opacity and add assembled class partially
+        el.style.opacity = String(progress);
+        el.classList.remove('assembled');
+
+        // Get the initial transform from CSS and interpolate towards assembled position
+        // We use a simplified approach: scale and translate based on progress
+        var scale = 0.3 + (1 - 0.3) * progress;
+        var translateY = (1 - progress) * 80;
+        var rotateAmount = (1 - progress) * 25;
+
+        // Determine direction based on element class
+        var translateX = 0;
+        var rotateAxis = 'rotateX';
+
+        if (el.classList.contains('studio-monitor-l') || el.classList.contains('mic-popfilter')) {
+            translateX = -(1 - progress) * 120;
+            rotateAxis = 'rotateY';
+        } else if (el.classList.contains('studio-monitor-r')) {
+            translateX = (1 - progress) * 120;
+            rotateAxis = 'rotateY';
+        } else if (el.classList.contains('studio-screen') || el.classList.contains('mic-capsule')) {
+            translateY = -(1 - progress) * 100;
+        } else if (el.classList.contains('studio-headphones')) {
+            translateY = -(1 - progress) * 100;
+            translateX = (1 - progress) * 50;
+            rotateAxis = 'rotate';
+        } else if (el.classList.contains('mic-stand')) {
+            var scaleY = progress;
+            el.style.transform = el.style.transform || '';
+            // Keep position but animate scaleY
+        } else if (el.classList.contains('mic-arm')) {
+            translateX = -(1 - progress) * 80;
+            translateY = (1 - progress) * 60;
+            rotateAxis = 'rotate';
+            rotateAmount = (1 - progress) * -35;
+        } else if (el.classList.contains('mic-body')) {
+            translateY = -(1 - progress) * 120;
+            rotateAxis = 'rotateZ';
+            rotateAmount = (1 - progress) * 15;
+        }
+
+        // Apply inline transform for the intermediate states
+        // We need to preserve the base positioning (left, right, top, bottom from CSS)
+        // Only modify the transform property
+        var transform = '';
+
+        if (el.classList.contains('studio-desk') || el.classList.contains('studio-screen') ||
+            el.classList.contains('studio-keyboard') || el.classList.contains('mic-base')) {
+            // These use translate(-50%, ...) as base
+            transform = 'translate(-50%, ' + translateY + 'px) scale(' + scale + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
+        } else if (el.classList.contains('mic-stand') || el.classList.contains('mic-body') || el.classList.contains('mic-capsule')) {
+            transform = 'translate(-50%, ' + translateY + 'px) scale(' + scale + ') scaleY(' + (el.classList.contains('mic-stand') ? progress : 1) + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
+        } else {
+            transform = 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + scale + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
+        }
+
+        el.style.transform = transform;
+    }
+
     /* ══════════════════════════════════════════
        📜 MASTER SCROLL HANDLER
-       (Optimizado con requestAnimationFrame)
        ══════════════════════════════════════════ */
     var ticking = false;
 
@@ -277,6 +453,7 @@
                 handleHeaderScroll();
                 updateScrollProgress();
                 handleParallax();
+                updateAssembly();
                 ticking = false;
             });
             ticking = true;
@@ -303,11 +480,7 @@
                 html += crearCardNoticia(r.data[i], i);
             }
             noticiasContainer.innerHTML = html;
-
-            // Aplicar scroll reveal a los hijos dinámicos
-            setTimeout(function() {
-                applyScrollRevealToChildren('#noticias-grid');
-            }, 50);
+            setTimeout(function() { applyScrollRevealToChildren('#noticias-grid'); }, 50);
         } catch(err) {
             console.error('Error noticias:', err);
             noticiasContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar noticias</h3></div>';
@@ -332,11 +505,7 @@
                 html += crearCardAlbum(r.data[i], i);
             }
             albumesContainer.innerHTML = html;
-
-            // Aplicar scroll reveal a los hijos dinámicos
-            setTimeout(function() {
-                applyScrollRevealToChildren('#albumes-grid');
-            }, 50);
+            setTimeout(function() { applyScrollRevealToChildren('#albumes-grid'); }, 50);
         } catch(err) {
             console.error('Error álbumes:', err);
             albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar álbumes</h3></div>';
@@ -422,7 +591,7 @@
     };
 
     /* ──────────────────────────────────
-       ✕ CERRAR MODALES (click fuera)
+       ✕ CERRAR MODALES
        ────────────────────────────────── */
     document.getElementById('modalNoticiaLanding').addEventListener('click', function(e){
         if (e.target === this) this.classList.remove('show');
@@ -432,7 +601,7 @@
     });
 
     /* ──────────────────────────────────
-       💀 SKELETONS DE CARGA
+       💀 SKELETONS
        ────────────────────────────────── */
     function generarSkeletonNoticias(n){
         var h = '';
@@ -454,22 +623,26 @@
        🚀 INICIALIZAR LANDING
        ══════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function(){
-        // Inicializar sistemas de animación
+        // Init animation systems
         initScrollReveal();
         initCounterAnimation();
         initMagneticButtons();
         initHeroParticles();
         initSmoothScroll();
 
-        // Cargar contenido dinámico
+        // Init 3D Assembly Engine
+        initAssemblyEngine();
+
+        // Load dynamic content
         cargarNoticias();
         cargarAlbumesDestacados();
 
-        // Estado inicial del scroll
+        // Initial state
         handleHeaderScroll();
         updateScrollProgress();
+        updateAssembly();
 
-        console.log('🎵 KXON Landing inicializada con animaciones de scroll experto');
+        console.log('🎵 KXON Landing inicializada con 3D Assembly Engine + Scroll Animations');
     });
 
 })();

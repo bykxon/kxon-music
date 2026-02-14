@@ -157,6 +157,160 @@
     </section>
 
     <!-- ============================================
+         🎛️ 3D ASSEMBLY: ESTUDIO MUSICAL
+         Sección que se arma al hacer scroll
+         ============================================ -->
+    <section class="assembly-section" id="assembly-studio">
+        <div class="assembly-sticky">
+            <div class="assembly-3d-scene">
+                <!-- Fondo partículas del estudio -->
+                <div class="assembly-bg-particles"></div>
+
+                <!-- PIEZAS DEL ESTUDIO - se ensamblan con scroll -->
+                <div class="assembly-piece studio-desk" data-assemble-start="0" data-assemble-end="0.15">
+                    <svg viewBox="0 0 400 200" class="assembly-svg">
+                        <!-- Mesa / Desk -->
+                        <rect x="20" y="100" width="360" height="80" rx="8" fill="#1a1a1a" stroke="rgba(192,192,192,0.15)" stroke-width="1"/>
+                        <rect x="40" y="110" width="140" height="25" rx="4" fill="#111" stroke="rgba(192,192,192,0.1)" stroke-width="0.5"/>
+                        <rect x="220" y="110" width="140" height="25" rx="4" fill="#111" stroke="rgba(192,192,192,0.1)" stroke-width="0.5"/>
+                        <!-- Patas -->
+                        <rect x="50" y="180" width="12" height="20" rx="2" fill="#151515"/>
+                        <rect x="338" y="180" width="12" height="20" rx="2" fill="#151515"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece studio-monitor-l" data-assemble-start="0.12" data-assemble-end="0.28">
+                    <svg viewBox="0 0 120 160" class="assembly-svg">
+                        <!-- Monitor/Speaker izquierdo -->
+                        <rect x="10" y="10" width="100" height="140" rx="10" fill="#141414" stroke="rgba(192,192,192,0.12)" stroke-width="1"/>
+                        <circle cx="60" cy="60" r="28" fill="#0d0d0d" stroke="rgba(192,192,192,0.1)" stroke-width="1"/>
+                        <circle cx="60" cy="60" r="18" fill="#111" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <circle cx="60" cy="60" r="5" fill="rgba(192,192,192,0.15)"/>
+                        <circle cx="60" cy="115" r="14" fill="#0d0d0d" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <circle cx="60" cy="115" r="6" fill="rgba(192,192,192,0.1)"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece studio-monitor-r" data-assemble-start="0.15" data-assemble-end="0.32">
+                    <svg viewBox="0 0 120 160" class="assembly-svg">
+                        <!-- Monitor/Speaker derecho -->
+                        <rect x="10" y="10" width="100" height="140" rx="10" fill="#141414" stroke="rgba(192,192,192,0.12)" stroke-width="1"/>
+                        <circle cx="60" cy="60" r="28" fill="#0d0d0d" stroke="rgba(192,192,192,0.1)" stroke-width="1"/>
+                        <circle cx="60" cy="60" r="18" fill="#111" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <circle cx="60" cy="60" r="5" fill="rgba(192,192,192,0.15)"/>
+                        <circle cx="60" cy="115" r="14" fill="#0d0d0d" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <circle cx="60" cy="115" r="6" fill="rgba(192,192,192,0.1)"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece studio-screen" data-assemble-start="0.25" data-assemble-end="0.42">
+                    <svg viewBox="0 0 280 180" class="assembly-svg">
+                        <!-- Pantalla del computador -->
+                        <rect x="10" y="10" width="260" height="145" rx="8" fill="#0d0d0d" stroke="rgba(192,192,192,0.15)" stroke-width="1"/>
+                        <rect x="18" y="18" width="244" height="125" rx="4" fill="#080808"/>
+                        <!-- Contenido de la pantalla - DAW -->
+                        <rect x="24" y="24" width="232" height="14" rx="2" fill="rgba(192,192,192,0.06)"/>
+                        <rect x="24" y="44" width="60" height="90" rx="2" fill="rgba(192,192,192,0.03)"/>
+                        <rect x="90" y="44" width="166" height="90" rx="2" fill="rgba(192,192,192,0.02)"/>
+                        <!-- Barras tipo waveform -->
+                        <rect x="96" y="55" width="4" height="25" rx="1" fill="rgba(192,192,192,0.12)"/>
+                        <rect x="104" y="48" width="4" height="38" rx="1" fill="rgba(192,192,192,0.1)"/>
+                        <rect x="112" y="58" width="4" height="20" rx="1" fill="rgba(192,192,192,0.14)"/>
+                        <rect x="120" y="45" width="4" height="42" rx="1" fill="rgba(192,192,192,0.08)"/>
+                        <rect x="128" y="52" width="4" height="30" rx="1" fill="rgba(192,192,192,0.12)"/>
+                        <rect x="136" y="60" width="4" height="18" rx="1" fill="rgba(192,192,192,0.1)"/>
+                        <rect x="144" y="46" width="4" height="40" rx="1" fill="rgba(192,192,192,0.13)"/>
+                        <rect x="152" y="55" width="4" height="25" rx="1" fill="rgba(192,192,192,0.09)"/>
+                        <rect x="160" y="50" width="4" height="34" rx="1" fill="rgba(192,192,192,0.11)"/>
+                        <rect x="168" y="58" width="4" height="20" rx="1" fill="rgba(192,192,192,0.14)"/>
+                        <rect x="176" y="44" width="4" height="44" rx="1" fill="rgba(192,192,192,0.08)"/>
+                        <rect x="184" y="52" width="4" height="30" rx="1" fill="rgba(192,192,192,0.12)"/>
+                        <rect x="192" y="60" width="4" height="16" rx="1" fill="rgba(192,192,192,0.1)"/>
+                        <rect x="200" y="48" width="4" height="36" rx="1" fill="rgba(192,192,192,0.13)"/>
+                        <rect x="208" y="56" width="4" height="22" rx="1" fill="rgba(192,192,192,0.09)"/>
+                        <rect x="216" y="50" width="4" height="32" rx="1" fill="rgba(192,192,192,0.11)"/>
+                        <rect x="224" y="57" width="4" height="19" rx="1" fill="rgba(192,192,192,0.14)"/>
+                        <rect x="232" y="46" width="4" height="40" rx="1" fill="rgba(192,192,192,0.08)"/>
+                        <rect x="240" y="53" width="4" height="28" rx="1" fill="rgba(192,192,192,0.12)"/>
+                        <!-- Base del monitor -->
+                        <rect x="115" y="155" width="50" height="8" rx="3" fill="#151515" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="130" y="155" width="20" height="18" rx="2" fill="#131313"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece studio-keyboard" data-assemble-start="0.35" data-assemble-end="0.5">
+                    <svg viewBox="0 0 300 60" class="assembly-svg">
+                        <!-- Teclado MIDI -->
+                        <rect x="5" y="5" width="290" height="50" rx="6" fill="#131313" stroke="rgba(192,192,192,0.12)" stroke-width="1"/>
+                        <!-- Teclas blancas -->
+                        <rect x="15" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="33" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="51" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="69" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="87" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="105" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="123" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="141" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="159" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="177" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="195" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="213" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="231" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="249" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <rect x="267" y="15" width="14" height="32" rx="1" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        <!-- Teclas negras -->
+                        <rect x="25" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="43" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="79" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="97" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="115" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="151" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="169" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="205" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="223" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <rect x="241" y="15" width="10" height="20" rx="1" fill="#0a0a0a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece studio-headphones" data-assemble-start="0.42" data-assemble-end="0.58">
+                    <svg viewBox="0 0 120 130" class="assembly-svg">
+                        <!-- Headphones -->
+                        <path d="M20,80 Q20,25 60,20 Q100,25 100,80" fill="none" stroke="rgba(192,192,192,0.2)" stroke-width="5" stroke-linecap="round"/>
+                        <!-- Almohadilla izquierda -->
+                        <rect x="8" y="70" width="24" height="40" rx="10" fill="#161616" stroke="rgba(192,192,192,0.12)" stroke-width="1"/>
+                        <rect x="12" y="76" width="16" height="28" rx="6" fill="#111" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                        <!-- Almohadilla derecha -->
+                        <rect x="88" y="70" width="24" height="40" rx="10" fill="#161616" stroke="rgba(192,192,192,0.12)" stroke-width="1"/>
+                        <rect x="92" y="76" width="16" height="28" rx="6" fill="#111" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                    </svg>
+                </div>
+
+                <!-- Glow del estudio cuando se completa -->
+                <div class="assembly-glow" data-glow-start="0.55"></div>
+
+                <!-- Texto de la sección que aparece al completarse -->
+                <div class="assembly-text" data-text-start="0.55" data-text-end="0.85">
+                    <div class="assembly-label">Tu Estudio Digital</div>
+                    <h2 class="assembly-title">Bienvenido al <span class="gradient-text">Universo KXON</span></h2>
+                    <p class="assembly-desc">Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música, nuestros beats y nuestro arte.</p>
+                    <div class="assembly-cta">
+                        <a href="register.html" class="btn-hero-primary magnetic-btn">Comenzar Ahora</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicador de progreso del ensamblaje -->
+            <div class="assembly-progress">
+                <div class="assembly-progress-bar" id="assemblyProgress1"></div>
+            </div>
+            <div class="assembly-scroll-hint" id="assemblyHint1">
+                <span>Sigue bajando para armar el estudio</span>
+                <div class="assembly-scroll-arrow">↓</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
          🎬 VIDEO PRESENTACIÓN
          ============================================ -->
     <section class="video-hero-section" id="video-presentacion" data-parallax="0.3">
@@ -197,7 +351,117 @@
     <div class="section-divider"></div>
 
     <!-- ============================================
-         💎 VENTAJAS — POR QUÉ KXON
+         🎤 3D ASSEMBLY: MICRÓFONO
+         ============================================ -->
+    <section class="assembly-section" id="assembly-mic">
+        <div class="assembly-sticky">
+            <div class="assembly-3d-scene assembly-scene-mic">
+                <div class="assembly-bg-particles"></div>
+
+                <!-- Piezas del micrófono -->
+                <div class="assembly-piece mic-base" data-assemble-start="0" data-assemble-end="0.15">
+                    <svg viewBox="0 0 160 60" class="assembly-svg">
+                        <!-- Base circular pesada -->
+                        <ellipse cx="80" cy="35" rx="70" ry="18" fill="#141414" stroke="rgba(192,192,192,0.12)" stroke-width="1"/>
+                        <ellipse cx="80" cy="30" rx="60" ry="12" fill="#111" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/>
+                        <ellipse cx="80" cy="28" rx="15" ry="5" fill="rgba(192,192,192,0.06)"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece mic-stand" data-assemble-start="0.12" data-assemble-end="0.3">
+                    <svg viewBox="0 0 40 280" class="assembly-svg">
+                        <!-- Poste vertical -->
+                        <rect x="16" y="0" width="8" height="280" rx="4" fill="#171717" stroke="rgba(192,192,192,0.1)" stroke-width="0.5"/>
+                        <rect x="14" y="80" width="12" height="6" rx="2" fill="rgba(192,192,192,0.08)"/>
+                        <rect x="14" y="180" width="12" height="6" rx="2" fill="rgba(192,192,192,0.08)"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece mic-arm" data-assemble-start="0.25" data-assemble-end="0.42">
+                    <svg viewBox="0 0 120 80" class="assembly-svg">
+                        <!-- Brazo articulado -->
+                        <path d="M10,70 L10,40 Q10,10 40,10 L110,10" fill="none" stroke="#181818" stroke-width="7" stroke-linecap="round"/>
+                        <path d="M10,70 L10,40 Q10,10 40,10 L110,10" fill="none" stroke="rgba(192,192,192,0.08)" stroke-width="1" stroke-linecap="round"/>
+                        <circle cx="10" cy="70" r="6" fill="#151515" stroke="rgba(192,192,192,0.1)" stroke-width="1"/>
+                        <circle cx="10" cy="70" r="2" fill="rgba(192,192,192,0.15)"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece mic-body" data-assemble-start="0.35" data-assemble-end="0.52">
+                    <svg viewBox="0 0 80 160" class="assembly-svg">
+                        <!-- Cuerpo del micrófono de condensador -->
+                        <rect x="20" y="50" width="40" height="100" rx="8" fill="#181818" stroke="rgba(192,192,192,0.15)" stroke-width="1"/>
+                        <rect x="25" y="55" width="30" height="10" rx="3" fill="rgba(192,192,192,0.06)"/>
+                        <!-- Logo KXON en el mic -->
+                        <text x="40" y="110" text-anchor="middle" font-family="Oswald" font-size="8" font-weight="700" letter-spacing="2" fill="rgba(192,192,192,0.2)">KXON</text>
+                        <!-- LED indicator -->
+                        <circle cx="40" cy="140" r="3" fill="rgba(192,192,192,0.15)">
+                            <animate attributeName="opacity" values="0.1;0.4;0.1" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece mic-capsule" data-assemble-start="0.45" data-assemble-end="0.6">
+                    <svg viewBox="0 0 80 70" class="assembly-svg">
+                        <!-- Cápsula / Grille -->
+                        <ellipse cx="40" cy="40" rx="28" ry="30" fill="#151515" stroke="rgba(192,192,192,0.18)" stroke-width="1"/>
+                        <!-- Patrón de rejilla -->
+                        <line x1="20" y1="25" x2="60" y2="25" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                        <line x1="18" y1="32" x2="62" y2="32" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                        <line x1="16" y1="39" x2="64" y2="39" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                        <line x1="18" y1="46" x2="62" y2="46" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                        <line x1="20" y1="53" x2="60" y2="53" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                        <line x1="24" y1="60" x2="56" y2="60" stroke="rgba(192,192,192,0.06)" stroke-width="0.5"/>
+                    </svg>
+                </div>
+
+                <div class="assembly-piece mic-popfilter" data-assemble-start="0.55" data-assemble-end="0.68">
+                    <svg viewBox="0 0 100 120" class="assembly-svg">
+                        <!-- Pop filter -->
+                        <line x1="80" y1="100" x2="50" y2="60" stroke="#181818" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="40" cy="50" r="35" fill="none" stroke="rgba(192,192,192,0.08)" stroke-width="1"/>
+                        <circle cx="40" cy="50" r="33" fill="rgba(192,192,192,0.015)"/>
+                        <circle cx="80" cy="100" r="5" fill="#151515" stroke="rgba(192,192,192,0.1)" stroke-width="0.5"/>
+                    </svg>
+                </div>
+
+                <!-- Ondas sonoras cuando se completa -->
+                <div class="assembly-piece mic-waves" data-assemble-start="0.65" data-assemble-end="0.75">
+                    <div class="sound-wave-ring ring-1"></div>
+                    <div class="sound-wave-ring ring-2"></div>
+                    <div class="sound-wave-ring ring-3"></div>
+                </div>
+
+                <div class="assembly-glow" data-glow-start="0.65"></div>
+
+                <!-- Texto que aparece -->
+                <div class="assembly-text assembly-text-right" data-text-start="0.65" data-text-end="0.9">
+                    <div class="assembly-label">💎 Exclusivo</div>
+                    <h2 class="assembly-title">¿Por qué <span class="gradient-text">KXON</span>?</h2>
+                    <p class="assembly-desc">Una plataforma creada para conectar directamente con el artista. 100% directo, sin intermediarios.</p>
+                    <div class="assembly-features-mini">
+                        <div class="assembly-feat"><span>💰</span> 100% Directo</div>
+                        <div class="assembly-feat"><span>🎵</span> Contenido Exclusivo</div>
+                        <div class="assembly-feat"><span>💬</span> Contacto Directo</div>
+                        <div class="assembly-feat"><span>🎹</span> Marketplace</div>
+                        <div class="assembly-feat"><span>🔴</span> En Vivo</div>
+                        <div class="assembly-feat"><span>📱</span> Tu App</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="assembly-progress">
+                <div class="assembly-progress-bar" id="assemblyProgress2"></div>
+            </div>
+            <div class="assembly-scroll-hint" id="assemblyHint2">
+                <span>Sigue bajando para armar el micrófono</span>
+                <div class="assembly-scroll-arrow">↓</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         💎 VENTAJAS — POR QUÉ KXON (COMPLETA)
          ============================================ -->
     <section class="section" id="por-que-kxon">
         <div class="container">
