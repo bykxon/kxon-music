@@ -11,11 +11,12 @@
 
     /* ──────────────────────────────────
        📌 VARIABLES DEL DOM
+       (Se re-asignan en DOMContentLoaded)
        ────────────────────────────────── */
-    var noticiasContainer = document.getElementById('noticias-grid');
-    var albumesContainer = document.getElementById('albumes-grid');
-    var headerEl = document.getElementById('header');
-    var scrollProgressEl = document.getElementById('scrollProgress');
+    var noticiasContainer = null;
+    var albumesContainer = null;
+    var headerEl = null;
+    var scrollProgressEl = null;
     var landingNoticias = [];
     var landingAlbumes = [];
 
@@ -23,18 +24,18 @@
        🔝 SCROLL PROGRESS BAR
        ══════════════════════════════════════════ */
     function updateScrollProgress() {
+        if (!scrollProgressEl) return;
         var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         var docHeight = document.documentElement.scrollHeight - window.innerHeight;
         var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        if (scrollProgressEl) {
-            scrollProgressEl.style.width = progress + '%';
-        }
+        scrollProgressEl.style.width = progress + '%';
     }
 
     /* ══════════════════════════════════════════
        🔄 HEADER SCROLL EFFECT
        ══════════════════════════════════════════ */
     function handleHeaderScroll() {
+        if (!headerEl) return;
         if (window.scrollY > 50) headerEl.classList.add('scrolled');
         else headerEl.classList.remove('scrolled');
     }
@@ -295,16 +296,13 @@
             var rect = section.getBoundingClientRect();
             var sectionHeight = section.offsetHeight - window.innerHeight;
 
-            // Calculate scroll progress within this section (0 to 1)
             var scrolled = -rect.top;
             var progress = sectionHeight > 0 ? Math.max(0, Math.min(1, scrolled / sectionHeight)) : 0;
 
-            // Update progress bar
             if (data.progressBar) {
                 data.progressBar.style.width = (progress * 100) + '%';
             }
 
-            // Hide scroll hint after some progress
             if (data.scrollHint) {
                 if (progress > 0.15) {
                     data.scrollHint.classList.add('hidden');
@@ -313,7 +311,6 @@
                 }
             }
 
-            // Update pieces
             for (var j = 0; j < data.pieces.length; j++) {
                 var piece = data.pieces[j];
                 var pieceProgress = 0;
@@ -326,14 +323,10 @@
                     pieceProgress = (progress - piece.start) / (piece.end - piece.start);
                 }
 
-                // Apply easing
                 pieceProgress = easeOutCubic(pieceProgress);
-
-                // Apply transform based on progress
                 applyPieceTransform(piece.el, pieceProgress);
             }
 
-            // Update texts
             for (var k = 0; k < data.texts.length; k++) {
                 var text = data.texts[k];
                 if (progress >= text.start) {
@@ -343,7 +336,6 @@
                 }
             }
 
-            // Update glows
             for (var g = 0; g < data.glows.length; g++) {
                 var glow = data.glows[g];
                 if (progress >= glow.start) {
@@ -353,10 +345,9 @@
                 }
             }
 
-            // 3D scene rotation based on scroll progress
             var scene = section.querySelector('.assembly-3d-scene');
             if (scene) {
-                var rotateX = (1 - progress) * 8 - 4; // slight tilt
+                var rotateX = (1 - progress) * 8 - 4;
                 var rotateY = Math.sin(progress * Math.PI) * 3;
                 var translateZ = -50 + progress * 50;
                 scene.style.transform = 'perspective(1200px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateZ(' + translateZ + 'px)';
@@ -369,8 +360,6 @@
     }
 
     function applyPieceTransform(el, progress) {
-        // progress 0 = initial scattered state, 1 = assembled
-
         if (progress <= 0) {
             el.style.opacity = '0';
             el.classList.remove('assembled');
@@ -383,17 +372,13 @@
             return;
         }
 
-        // During transition: interpolate opacity and add assembled class partially
         el.style.opacity = String(progress);
         el.classList.remove('assembled');
 
-        // Get the initial transform from CSS and interpolate towards assembled position
-        // We use a simplified approach: scale and translate based on progress
         var scale = 0.3 + (1 - 0.3) * progress;
         var translateY = (1 - progress) * 80;
         var rotateAmount = (1 - progress) * 25;
 
-        // Determine direction based on element class
         var translateX = 0;
         var rotateAxis = 'rotateX';
 
@@ -410,8 +395,6 @@
             translateX = (1 - progress) * 50;
             rotateAxis = 'rotate';
         } else if (el.classList.contains('mic-stand')) {
-            var scaleY = progress;
-            el.style.transform = el.style.transform || '';
             // Keep position but animate scaleY
         } else if (el.classList.contains('mic-arm')) {
             translateX = -(1 - progress) * 80;
@@ -424,14 +407,10 @@
             rotateAmount = (1 - progress) * 15;
         }
 
-        // Apply inline transform for the intermediate states
-        // We need to preserve the base positioning (left, right, top, bottom from CSS)
-        // Only modify the transform property
         var transform = '';
 
         if (el.classList.contains('studio-desk') || el.classList.contains('studio-screen') ||
             el.classList.contains('studio-keyboard') || el.classList.contains('mic-base')) {
-            // These use translate(-50%, ...) as base
             transform = 'translate(-50%, ' + translateY + 'px) scale(' + scale + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
         } else if (el.classList.contains('mic-stand') || el.classList.contains('mic-body') || el.classList.contains('mic-capsule')) {
             transform = 'translate(-50%, ' + translateY + 'px) scale(' + scale + ') scaleY(' + (el.classList.contains('mic-stand') ? progress : 1) + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
@@ -466,6 +445,7 @@
        📰 CARGAR NOTICIAS
        ────────────────────────────────── */
     async function cargarNoticias(){
+        if (!noticiasContainer) return;
         noticiasContainer.innerHTML = generarSkeletonNoticias(3);
         try {
             var r = await db.from('noticias').select('*').order('created_at', { ascending: false }).limit(6);
@@ -483,7 +463,9 @@
             setTimeout(function() { applyScrollRevealToChildren('#noticias-grid'); }, 50);
         } catch(err) {
             console.error('Error noticias:', err);
-            noticiasContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar noticias</h3></div>';
+            if (noticiasContainer) {
+                noticiasContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar noticias</h3></div>';
+            }
         }
     }
 
@@ -491,6 +473,7 @@
        💿 CARGAR ÁLBUMES DESTACADOS
        ────────────────────────────────── */
     async function cargarAlbumesDestacados(){
+        if (!albumesContainer) return;
         albumesContainer.innerHTML = generarSkeletonAlbumes(2);
         try {
             var r = await db.from('albumes').select('*, canciones(id, titulo, duracion)').order('created_at', { ascending: false }).limit(2);
@@ -508,7 +491,9 @@
             setTimeout(function() { applyScrollRevealToChildren('#albumes-grid'); }, 50);
         } catch(err) {
             console.error('Error álbumes:', err);
-            albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar álbumes</h3></div>';
+            if (albumesContainer) {
+                albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar álbumes</h3></div>';
+            }
         }
     }
 
@@ -549,15 +534,22 @@
     window._landingAbrirNoticia = function(idx){
         var n = landingNoticias[idx];
         if (!n) return;
-        document.getElementById('noticiaLandingTitulo').textContent = n.titulo;
-        document.getElementById('noticiaLandingDesc').textContent = n.descripcion;
-        var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-        document.getElementById('noticiaLandingFecha').textContent = fecha;
+        var tituloEl = document.getElementById('noticiaLandingTitulo');
+        var descEl = document.getElementById('noticiaLandingDesc');
+        var fechaEl = document.getElementById('noticiaLandingFecha');
         var imgWrap = document.getElementById('noticiaLandingImgWrap');
         var imgEl = document.getElementById('noticiaLandingImg');
-        if (n.imagen_url) { imgEl.src = n.imagen_url; imgWrap.style.display = 'block'; }
-        else { imgWrap.style.display = 'none'; }
-        document.getElementById('modalNoticiaLanding').classList.add('show');
+        var modalEl = document.getElementById('modalNoticiaLanding');
+
+        if (tituloEl) tituloEl.textContent = n.titulo;
+        if (descEl) descEl.textContent = n.descripcion;
+        var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        if (fechaEl) fechaEl.textContent = fecha;
+        if (imgWrap && imgEl) {
+            if (n.imagen_url) { imgEl.src = n.imagen_url; imgWrap.style.display = 'block'; }
+            else { imgWrap.style.display = 'none'; }
+        }
+        if (modalEl) modalEl.classList.add('show');
     };
 
     /* ──────────────────────────────────
@@ -566,39 +558,56 @@
     window._landingAbrirAlbum = function(idx){
         var a = landingAlbumes[idx];
         if (!a) return;
-        document.getElementById('albumLandingTitulo').textContent = a.titulo;
-        document.getElementById('albumLandingDesc').textContent = a.descripcion || 'Sin descripción';
-        document.getElementById('albumLandingCover').src = a.imagen_url || 'https://placehold.co/300x300/111/333?text=♪';
-        var canciones = a.canciones || [];
-        document.getElementById('albumLandingMeta').textContent = canciones.length + ' CANCIONES';
+        var tituloEl = document.getElementById('albumLandingTitulo');
+        var descEl = document.getElementById('albumLandingDesc');
+        var coverEl = document.getElementById('albumLandingCover');
+        var metaEl = document.getElementById('albumLandingMeta');
         var tc = document.getElementById('albumLandingTracks');
-        if (canciones.length === 0) {
-            tc.innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:.85rem;">Sin canciones en este álbum</div>';
-        } else {
-            var h = '';
-            for (var i = 0; i < canciones.length; i++) {
-                var c = canciones[i];
-                h += '<div class="album-landing-track">' +
-                    '<span class="album-landing-track-num">' + (i + 1) + '</span>' +
-                    '<div class="album-landing-track-icon">♪</div>' +
-                    '<span class="album-landing-track-title">' + c.titulo + '</span>' +
-                    '<span class="album-landing-track-duration">' + (c.duracion || '--:--') + '</span></div>';
+        var modalEl = document.getElementById('modalAlbumLanding');
+
+        if (tituloEl) tituloEl.textContent = a.titulo;
+        if (descEl) descEl.textContent = a.descripcion || 'Sin descripción';
+        if (coverEl) coverEl.src = a.imagen_url || 'https://placehold.co/300x300/111/333?text=♪';
+        var canciones = a.canciones || [];
+        if (metaEl) metaEl.textContent = canciones.length + ' CANCIONES';
+        if (tc) {
+            if (canciones.length === 0) {
+                tc.innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:.85rem;">Sin canciones en este álbum</div>';
+            } else {
+                var h = '';
+                for (var i = 0; i < canciones.length; i++) {
+                    var c = canciones[i];
+                    h += '<div class="album-landing-track">' +
+                        '<span class="album-landing-track-num">' + (i + 1) + '</span>' +
+                        '<div class="album-landing-track-icon">♪</div>' +
+                        '<span class="album-landing-track-title">' + c.titulo + '</span>' +
+                        '<span class="album-landing-track-duration">' + (c.duracion || '--:--') + '</span></div>';
+                }
+                h += '<div class="album-landing-no-play">🔒 Inicia sesión para reproducir</div>';
+                tc.innerHTML = h;
             }
-            h += '<div class="album-landing-no-play">🔒 Inicia sesión para reproducir</div>';
-            tc.innerHTML = h;
         }
-        document.getElementById('modalAlbumLanding').classList.add('show');
+        if (modalEl) modalEl.classList.add('show');
     };
 
     /* ──────────────────────────────────
        ✕ CERRAR MODALES
        ────────────────────────────────── */
-    document.getElementById('modalNoticiaLanding').addEventListener('click', function(e){
-        if (e.target === this) this.classList.remove('show');
-    });
-    document.getElementById('modalAlbumLanding').addEventListener('click', function(e){
-        if (e.target === this) this.classList.remove('show');
-    });
+    function initModalClose() {
+        var modalNoticia = document.getElementById('modalNoticiaLanding');
+        var modalAlbum = document.getElementById('modalAlbumLanding');
+
+        if (modalNoticia) {
+            modalNoticia.addEventListener('click', function(e){
+                if (e.target === this) this.classList.remove('show');
+            });
+        }
+        if (modalAlbum) {
+            modalAlbum.addEventListener('click', function(e){
+                if (e.target === this) this.classList.remove('show');
+            });
+        }
+    }
 
     /* ──────────────────────────────────
        💀 SKELETONS
@@ -623,6 +632,12 @@
        🚀 INICIALIZAR LANDING
        ══════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function(){
+        // Re-asignar elementos del DOM cuando ya están disponibles
+        noticiasContainer = document.getElementById('noticias-grid');
+        albumesContainer = document.getElementById('albumes-grid');
+        headerEl = document.getElementById('header');
+        scrollProgressEl = document.getElementById('scrollProgress');
+
         // Init animation systems
         initScrollReveal();
         initCounterAnimation();
@@ -633,9 +648,12 @@
         // Init 3D Assembly Engine
         initAssemblyEngine();
 
+        // Init modal close handlers
+        initModalClose();
+
         // Load dynamic content
-        cargarNoticias();
-        cargarAlbumesDestacados();
+        if (noticiasContainer) cargarNoticias();
+        if (albumesContainer) cargarAlbumesDestacados();
 
         // Initial state
         handleHeaderScroll();
