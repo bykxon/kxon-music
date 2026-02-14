@@ -220,6 +220,17 @@
         .floating-social-toggle { width: 46px; height: 46px; font-size: 1.1rem; }
         .floating-social-btn .floating-tooltip { display: none; }
     }
+/* SVGs dentro de botones flotantes */
+.floating-social-btn svg {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+.floating-social-btn:hover svg {
+    transform: scale(1.1);
+}
+
     </style>
 </head>
 <body>
