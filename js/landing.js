@@ -641,7 +641,7 @@
         if (!albumesContainer) return;
         albumesContainer.innerHTML = generarSkeletonAlbumes(2);
         try {
-            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, audio_url)').order('created_at', { ascending: false }).limit(2);
+            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(2);
             if (r.error) throw r.error;
             if (!r.data || r.data.length === 0) {
                 albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">💿</div><h3 class="empty-state-title">Sin álbumes aún</h3><p class="empty-state-text">Los últimos álbumes aparecerán aquí</p></div>';
@@ -745,7 +745,7 @@
                 var h = '';
                 for (var i = 0; i < canciones.length; i++) {
                     var c = canciones[i];
-                    var audioUrl = c.audio_url || '';
+                    var audioUrl = c.archivo_url || '';
                     var escapedUrl = audioUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
                     h += '<div class="album-landing-track preview-track" onclick="event.stopPropagation()">' +
