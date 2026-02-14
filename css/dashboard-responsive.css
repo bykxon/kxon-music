@@ -17,6 +17,7 @@
     }
 
     .main-content {
+        left: 0 !important;
         margin-left: 0 !important;
         width: 100% !important;
     }

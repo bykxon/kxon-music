@@ -64,7 +64,7 @@ body {
    📐 APP LAYOUT
    ────────────────────────────────── */
 .app-layout {
-    display: flex;
+    display: block;
     height: 100vh;
     overflow: hidden;
 }
@@ -902,17 +902,17 @@ body {
 /* Content margin shift cuando sidebar colapsa */
 .sidebar.collapsed ~ .main-content,
 .sidebar.collapsed + .main-content {
-    margin-left: var(--sidebar-collapsed-width);
-    width: calc(100% - var(--sidebar-collapsed-width));
+    left: var(--sidebar-collapsed-width);
 }
 
 /* ══════════════════════════════════════════════
    📄 MAIN CONTENT — PREMIUM
    ══════════════════════════════════════════════ */
 .main-content {
-    flex: 1;
-    margin-left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
+    position: absolute;
+    left: var(--sidebar-width);
+    right: 0;
+    top: 0;
     height: 100vh;
     height: 100dvh;
     overflow-y: auto;
@@ -921,8 +921,7 @@ body {
     background: linear-gradient(180deg, rgba(10, 10, 10, 1) 0%, rgba(8, 8, 8, 1) 100%);
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
-    transition: margin-left var(--sidebar-transition),
-                width var(--sidebar-transition);
+    transition: left var(--sidebar-transition);
 }
 
 .main-content::-webkit-scrollbar { width: 5px; }
