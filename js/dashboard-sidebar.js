@@ -1,6 +1,7 @@
 /**
- * 🎵 KXON — World-Class Sidebar Controller
- * Collapse, Search, Ripple, Keyboard, Responsive
+ * 🎵 KXON — Elite Sidebar Controller v3.0
+ * Collapse, Search, Ripple, Mouse-tracking,
+ * Keyboard Nav, Responsive, Scroll Masks
  */
 (function () {
     'use strict';
@@ -24,7 +25,11 @@
         localStorage.setItem(COLLAPSED_KEY, isCollapsed ? '1' : '0');
 
         if (collapseBtn) {
-            collapseBtn.textContent = isCollapsed ? '▶' : '◀';
+            var svg = collapseBtn.querySelector('svg');
+            if (svg) {
+                svg.style.transform = isCollapsed ? 'rotate(180deg)' : '';
+                svg.style.transition = 'transform 0.3s ease';
+            }
         }
     }
 
@@ -35,16 +40,17 @@
         });
     }
 
-    // Restore state on desktop
+    // Restore state
     if (window.innerWidth > 1024) {
         if (localStorage.getItem(COLLAPSED_KEY) === '1') {
             sidebar.classList.add('collapsed');
-            if (collapseBtn) collapseBtn.textContent = '▶';
+            var svg = collapseBtn ? collapseBtn.querySelector('svg') : null;
+            if (svg) svg.style.transform = 'rotate(180deg)';
         }
     }
 
     /* ══════════════════════════════════════
-       SIDEBAR SEARCH (filter nav items)
+       SIDEBAR SEARCH
        ══════════════════════════════════════ */
     if (searchField) {
         searchField.addEventListener('input', function () {
@@ -58,7 +64,6 @@
                 item.style.display = (query === '' || match) ? '' : 'none';
             });
 
-            // Hide empty sections
             sections.forEach(function (sec) {
                 var next = sec.nextElementSibling;
                 var hasVisible = false;
@@ -79,7 +84,8 @@
                 if (sidebar.classList.contains('collapsed')) {
                     sidebar.classList.remove('collapsed');
                     localStorage.setItem(COLLAPSED_KEY, '0');
-                    if (collapseBtn) collapseBtn.textContent = '◀';
+                    var svg = collapseBtn ? collapseBtn.querySelector('svg') : null;
+                    if (svg) svg.style.transform = '';
                 }
                 searchField.focus();
             }
@@ -92,30 +98,29 @@
     }
 
     /* ══════════════════════════════════════
-       RIPPLE EFFECT ON CLICK
+       RIPPLE EFFECT
        ══════════════════════════════════════ */
     navItems.forEach(function (item) {
         item.addEventListener('click', function (e) {
-            // Create ripple
-            var existing = item.querySelector('.nav-item-ripple');
-            if (existing) existing.remove();
+            var existing = item.querySelectorAll('.nav-item-ripple');
+            existing.forEach(function (r) { r.remove(); });
 
             var rect = item.getBoundingClientRect();
             var ripple = document.createElement('span');
             ripple.className = 'nav-item-ripple';
-            var size = Math.max(rect.width, rect.height);
+            var size = Math.max(rect.width, rect.height) * 2;
             ripple.style.width = size + 'px';
             ripple.style.height = size + 'px';
             ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
             ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
             item.appendChild(ripple);
 
-            setTimeout(function () { ripple.remove(); }, 600);
+            setTimeout(function () { ripple.remove(); }, 700);
         });
     });
 
     /* ══════════════════════════════════════
-       MOUSE TRACKING FOR HOVER GLOW
+       MOUSE TRACKING — LIGHT FOLLOW
        ══════════════════════════════════════ */
     navItems.forEach(function (item) {
         item.addEventListener('mousemove', function (e) {
@@ -152,14 +157,13 @@
             }
         });
 
-        // Make items focusable
         navItems.forEach(function (item) {
             item.setAttribute('tabindex', '0');
         });
     }
 
     /* ══════════════════════════════════════
-       DOUBLE CLICK LOGO TO COLLAPSE
+       DOUBLE CLICK LOGO → COLLAPSE
        ══════════════════════════════════════ */
     var logoArea = sidebar.querySelector('.sidebar-header');
     var lastClickTime = 0;
@@ -176,7 +180,40 @@
     }
 
     /* ══════════════════════════════════════
-       RESPONSIVE: Auto-collapse on medium
+       SCROLL FADE MASK
+       ══════════════════════════════════════ */
+    if (sidebarNav) {
+        function updateScrollMask() {
+            var scrollTop = sidebarNav.scrollTop;
+            var scrollHeight = sidebarNav.scrollHeight;
+            var clientHeight = sidebarNav.clientHeight;
+            var atTop = scrollTop < 5;
+            var atBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+            var mask;
+            if (atTop && atBottom) {
+                mask = 'none';
+            } else if (atTop) {
+                mask = 'linear-gradient(to bottom, black 0%, black calc(100% - 28px), transparent 100%)';
+            } else if (atBottom) {
+                mask = 'linear-gradient(to bottom, transparent 0%, black 28px, black 100%)';
+            } else {
+                mask = 'linear-gradient(to bottom, transparent 0%, black 28px, black calc(100% - 28px), transparent 100%)';
+            }
+
+            sidebarNav.style.maskImage = mask;
+            sidebarNav.style.webkitMaskImage = mask;
+        }
+
+        sidebarNav.addEventListener('scroll', updateScrollMask, { passive: true });
+        setTimeout(updateScrollMask, 100);
+
+        // Update on resize
+        window.addEventListener('resize', updateScrollMask);
+    }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
        ══════════════════════════════════════ */
     var lastW = window.innerWidth;
     window.addEventListener('resize', function () {
@@ -184,51 +221,43 @@
 
         if (w > 1024 && lastW <= 1024) {
             sidebar.classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('show');
+            var overlay = document.getElementById('sidebarOverlay');
+            if (overlay) overlay.classList.remove('show');
         }
 
-        // Auto collapse between 1024-1280
         if (w <= 1280 && w > 1024 && lastW > 1280) {
             sidebar.classList.add('collapsed');
-            if (collapseBtn) collapseBtn.textContent = '▶';
+            var svg2 = collapseBtn ? collapseBtn.querySelector('svg') : null;
+            if (svg2) svg2.style.transform = 'rotate(180deg)';
         }
 
-        // Auto expand above 1280 (if user didn't manually collapse)
         if (w > 1280 && lastW <= 1280) {
             if (localStorage.getItem(COLLAPSED_KEY) !== '1') {
                 sidebar.classList.remove('collapsed');
-                if (collapseBtn) collapseBtn.textContent = '◀';
+                var svg3 = collapseBtn ? collapseBtn.querySelector('svg') : null;
+                if (svg3) svg3.style.transform = '';
             }
         }
 
         lastW = w;
     });
 
-    // Initial auto-collapse for medium screens
     if (window.innerWidth <= 1280 && window.innerWidth > 1024) {
         sidebar.classList.add('collapsed');
-        if (collapseBtn) collapseBtn.textContent = '▶';
+        var svg4 = collapseBtn ? collapseBtn.querySelector('svg') : null;
+        if (svg4) svg4.style.transform = 'rotate(180deg)';
     }
 
     /* ══════════════════════════════════════
-       SCROLL SHADOW INDICATOR
+       ACTIVE ITEM SCROLL INTO VIEW
        ══════════════════════════════════════ */
-    if (sidebarNav) {
-        sidebarNav.addEventListener('scroll', function () {
-            if (sidebarNav.scrollTop > 10) {
-                sidebarNav.style.maskImage = 'linear-gradient(to bottom, transparent 0px, black 20px, black calc(100% - 20px), transparent 100%)';
-                sidebarNav.style.webkitMaskImage = sidebarNav.style.maskImage;
-            } else {
-                sidebarNav.style.maskImage = 'linear-gradient(to bottom, black 0%, black calc(100% - 20px), transparent 100%)';
-                sidebarNav.style.webkitMaskImage = sidebarNav.style.maskImage;
-            }
-        });
+    setTimeout(function () {
+        var activeItem = sidebar.querySelector('.nav-item.active');
+        if (activeItem && sidebarNav) {
+            activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }, 300);
 
-        // Initial mask
-        sidebarNav.style.maskImage = 'linear-gradient(to bottom, black 0%, black calc(100% - 20px), transparent 100%)';
-        sidebarNav.style.webkitMaskImage = sidebarNav.style.maskImage;
-    }
-
-    console.log('%c🎵 KXON Sidebar v2.0 — World Class', 'color:#c0c0c0;font-weight:bold;font-size:12px;');
+    console.log('%c🎵 KXON Sidebar Elite v3.0', 'color:#c0c0c0;font-weight:bold;font-size:12px;background:#08080c;padding:4px 12px;border-radius:4px;');
 
 })();

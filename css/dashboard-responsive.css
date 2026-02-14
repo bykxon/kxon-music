@@ -933,3 +933,75 @@
         transition: margin-left var(--sidebar-transition, 0.35s cubic-bezier(0.4, 0, 0.2, 1));
     }
 }
+/* ══════════════════════════════════════════════
+   📱 SIDEBAR ELITE — RESPONSIVE OVERRIDE
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+    .sidebar-collapse-btn {
+        display: none !important;
+    }
+
+    .sidebar-ambient-top {
+        display: none;
+    }
+
+    .sidebar.collapsed {
+        width: var(--sidebar-width, 268px);
+    }
+
+    .sidebar.collapsed .sidebar-logo-text,
+    .sidebar.collapsed .sidebar-logo-dot,
+    .sidebar.collapsed .sidebar-quick-search,
+    .sidebar.collapsed .sidebar-user-info,
+    .sidebar.collapsed .btn-logout-small,
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .nav-live-dot,
+    .sidebar.collapsed .chat-unread-badge {
+        opacity: 1;
+        width: auto;
+        padding: initial;
+        margin: initial;
+        overflow: visible;
+        pointer-events: all;
+    }
+
+    .sidebar.collapsed .nav-section-label {
+        justify-content: flex-start;
+        padding: 20px 12px 6px;
+        font-size: 0.5rem;
+    }
+
+    .sidebar.collapsed .nav-section-label::before { display: none; }
+    .sidebar.collapsed .nav-section-label::after { display: block; }
+
+    .sidebar.collapsed .nav-item {
+        justify-content: flex-start;
+        padding: 8px 12px;
+        gap: 12px;
+    }
+
+    .sidebar.collapsed .sidebar-header {
+        justify-content: flex-start;
+        padding: 22px 18px 18px;
+    }
+
+    .sidebar.collapsed .sidebar-user {
+        justify-content: flex-start;
+        padding: 9px 10px;
+    }
+
+    .sidebar.collapsed .sidebar-footer {
+        padding: 8px 8px 14px;
+    }
+
+    .sidebar.collapsed .sidebar-quick-search {
+        padding: 2px 12px 10px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .main-content {
+        transition: margin-left var(--sidebar-transition, 0.4s cubic-bezier(0.22, 1, 0.36, 1));
+    }
+}
