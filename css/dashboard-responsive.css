@@ -857,3 +857,79 @@
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     }
 }
+/* ══════════════════════════════════════════════
+   📱 SIDEBAR COLLAPSED — RESPONSIVE OVERRIDE
+   ══════════════════════════════════════════════ */
+
+/* Hide collapse button on mobile */
+@media (max-width: 1024px) {
+    .sidebar-collapse-btn {
+        display: none !important;
+    }
+
+    .sidebar.collapsed {
+        width: var(--sidebar-width, 272px);
+    }
+
+    .sidebar.collapsed .sidebar-logo-text,
+    .sidebar.collapsed .sidebar-logo-dot,
+    .sidebar.collapsed .sidebar-quick-search,
+    .sidebar.collapsed .sidebar-user-info,
+    .sidebar.collapsed .btn-logout-small,
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .nav-live-dot,
+    .sidebar.collapsed .chat-unread-badge {
+        opacity: 1;
+        width: auto;
+        padding: initial;
+        margin: initial;
+        overflow: visible;
+        pointer-events: all;
+    }
+
+    .sidebar.collapsed .nav-section-label {
+        justify-content: flex-start;
+        padding: 16px 14px 8px;
+        font-size: 0.55rem;
+    }
+
+    .sidebar.collapsed .nav-section-label::before {
+        display: none;
+    }
+
+    .sidebar.collapsed .nav-section-label::after {
+        display: block;
+    }
+
+    .sidebar.collapsed .nav-item {
+        justify-content: flex-start;
+        padding: 9px 14px;
+        gap: 13px;
+    }
+
+    .sidebar.collapsed .sidebar-header {
+        justify-content: flex-start;
+        padding: 24px 20px 20px;
+    }
+
+    .sidebar.collapsed .sidebar-user {
+        justify-content: flex-start;
+        padding: 10px 12px;
+    }
+
+    .sidebar.collapsed .sidebar-footer {
+        padding: 10px 10px 16px;
+    }
+
+    /* Quick search visible on mobile sidebar */
+    .sidebar.collapsed .sidebar-quick-search {
+        padding: 0 14px 10px;
+    }
+}
+
+/* Smooth margin transition for main content */
+@media (min-width: 1025px) {
+    .main-content {
+        transition: margin-left var(--sidebar-transition, 0.35s cubic-bezier(0.4, 0, 0.2, 1));
+    }
+}
