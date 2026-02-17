@@ -89,7 +89,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="KXON">
 
-    <!-- ESTILOS BOTONES FLOTANTES -->
     <style>
     .floating-social {
         position: fixed;
@@ -263,7 +262,7 @@
 </div>
 
 <!-- ============================================
-     🏠 HERO INTRO KXON - NUEVA SECCIÓN DE ENTRADA
+     1️⃣ HERO INTRO — LOGO + BOTONES
      ============================================ -->
 <section class="kxon-hero-intro" id="kxonHeroIntro">
     <div class="hero-intro-bg">
@@ -273,7 +272,6 @@
     </div>
 
     <div class="hero-intro-content">
-        <!-- Logo KXON animado con SVG -->
         <div class="kxon-logo-animated" id="kxonLogoAnimated">
             <svg class="kxon-logo-svg" viewBox="0 0 480 120" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -303,8 +301,6 @@
                         </feMerge>
                     </filter>
                 </defs>
-
-                <!-- Letra K -->
                 <g class="logo-letter logo-letter-k">
                     <path class="logo-letter-stroke" d="M 20 15 L 20 105" stroke="url(#logoGrad1)" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#logoGlow)"/>
                     <path class="logo-letter-stroke" d="M 20 60 L 70 15" stroke="url(#logoGrad1)" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#logoGlow)"/>
@@ -314,8 +310,6 @@
                     <circle class="logo-dot" cx="70" cy="15" r="3" fill="#888" filter="url(#logoGlowStrong)"/>
                     <circle class="logo-dot" cx="75" cy="105" r="3" fill="#888" filter="url(#logoGlowStrong)"/>
                 </g>
-
-                <!-- Letra X -->
                 <g class="logo-letter logo-letter-x" transform="translate(100, 0)">
                     <path class="logo-letter-stroke" d="M 10 15 L 70 105" stroke="url(#logoGrad1)" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#logoGlow)"/>
                     <path class="logo-letter-stroke" d="M 70 15 L 10 105" stroke="url(#logoGrad1)" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#logoGlow)"/>
@@ -325,8 +319,6 @@
                     <circle class="logo-dot" cx="70" cy="105" r="3" fill="#c0c0c0" filter="url(#logoGlowStrong)"/>
                     <circle class="logo-dot" cx="40" cy="60" r="2.5" fill="#f0f0f0" filter="url(#logoGlowStrong)"/>
                 </g>
-
-                <!-- Letra O -->
                 <g class="logo-letter logo-letter-o" transform="translate(210, 0)">
                     <ellipse class="logo-letter-stroke" cx="40" cy="60" rx="35" ry="45" stroke="url(#logoGrad1)" stroke-width="5" fill="none" filter="url(#logoGlow)"/>
                     <circle class="logo-dot" cx="40" cy="15" r="3" fill="#c0c0c0" filter="url(#logoGlowStrong)"/>
@@ -334,8 +326,6 @@
                     <circle class="logo-dot" cx="5" cy="60" r="3" fill="#888" filter="url(#logoGlowStrong)"/>
                     <circle class="logo-dot" cx="75" cy="60" r="3" fill="#888" filter="url(#logoGlowStrong)"/>
                 </g>
-
-                <!-- Letra N -->
                 <g class="logo-letter logo-letter-n" transform="translate(320, 0)">
                     <path class="logo-letter-stroke" d="M 15 105 L 15 15" stroke="url(#logoGrad1)" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#logoGlow)"/>
                     <path class="logo-letter-stroke" d="M 15 15 L 75 105" stroke="url(#logoGrad1)" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#logoGlow)"/>
@@ -346,15 +336,10 @@
                     <circle class="logo-dot" cx="75" cy="105" r="3" fill="#c0c0c0" filter="url(#logoGlowStrong)"/>
                 </g>
             </svg>
-
-            <!-- Línea de energía -->
             <div class="logo-energy-line"></div>
-
-            <!-- Subtítulo -->
             <p class="hero-intro-subtitle">Tu música · Tu mundo · Tu plataforma</p>
         </div>
 
-        <!-- Botones -->
         <div class="hero-intro-buttons" id="heroIntroButtons">
             <a href="login.html" class="hero-intro-btn hero-intro-btn-login">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -366,7 +351,6 @@
             </a>
         </div>
 
-        <!-- Flecha scroll -->
         <div class="hero-intro-scroll" id="heroIntroScroll">
             <span class="hero-intro-scroll-text">Sigue explorando</span>
             <div class="hero-intro-scroll-arrows">
@@ -377,7 +361,6 @@
         </div>
     </div>
 
-    <!-- Ondas decorativas -->
     <div class="hero-intro-waves">
         <div class="hero-intro-wave hw-1"></div>
         <div class="hero-intro-wave hw-2"></div>
@@ -386,38 +369,158 @@
         <div class="hero-intro-wave hw-5"></div>
     </div>
 </section>
+
 <!-- ============================================
-     FIN HERO INTRO KXON
+     2️⃣ VIDEO
      ============================================ -->
+<section class="video-hero-section" id="video-presentacion" data-parallax="0.3">
+    <div class="video-hero-bg">
+        <video class="video-hero-media" autoplay muted loop playsinline preload="auto" poster="https://placehold.co/1920x1080/0a0a0a/111?text=">
+            <source src="https://zizbbypwwvugyswjfbxr.supabase.co/storage/v1/object/public/videos/mi-presentacion2.mp4?v=2" type="video/mp4">
+        </video>
+        <div class="video-hero-overlay"></div>
+        <div class="video-hero-grain"></div>
+    </div>
+    <div class="video-hero-content">
+        <div class="video-hero-badge scroll-reveal" data-animation="fade-down">Presentación Oficial</div>
+        <h2 class="video-hero-title scroll-reveal" data-animation="fade-up" data-delay="100">Bienvenido al <span class="gradient-text">Universo KXON</span></h2>
+        <p class="video-hero-desc scroll-reveal" data-animation="fade-up" data-delay="200">Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música, nuestros beats y nuestro arte.</p>
+        <div class="video-hero-actions scroll-reveal" data-animation="fade-up" data-delay="300">
+            <a href="register.html" class="btn-hero-primary magnetic-btn">Únete Ahora</a>
+            <button class="btn-video-sound magnetic-btn" id="btnVideoSound" onclick="window._toggleVideoSound()">
+                <span id="videoSoundIcon">🔇</span>
+                <span id="videoSoundText">Activar sonido</span>
+            </button>
+        </div>
+    </div>
+    <div class="video-hero-scroll"><div class="video-hero-scroll-line"></div></div>
+</section>
+<div class="section-divider"></div>
 
+<!-- ============================================
+     3️⃣ ASSEMBLY CD + ÁLBUMES
+     ============================================ -->
+<section class="assembly-section" id="assembly-cd">
+    <div class="assembly-sticky">
+        <div class="assembly-3d-scene assembly-layout-right">
+            <div class="assembly-bg-grid"></div>
+            <div class="assembly-text assembly-text-side-left" data-text-start="0.52" data-text-end="0.85">
+                <div class="assembly-label">💿 Últimos Lanzamientos</div>
+                <h2 class="assembly-title">Álbumes <span class="gradient-text">Destacados</span></h2>
+                <p class="assembly-desc">Los álbumes más recientes de nuestra colección exclusiva. Producción propia, sonido único, directo del artista a tus oídos.</p>
+                <div class="assembly-cta"><a href="#albumes" class="btn-hero-primary magnetic-btn">Ver Álbumes</a></div>
+            </div>
+            <div class="assembly-instrument assembly-instrument-right">
+                <div class="assembly-piece cd-case" data-assemble-start="0" data-assemble-end="0.18">
+                    <svg viewBox="0 0 300 340" class="assembly-svg"><rect x="10" y="10" width="280" height="320" rx="4" fill="url(#cdCase)" filter="url(#heavyShadow)"/><rect x="10" y="10" width="280" height="320" rx="4" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><rect x="12" y="10" width="276" height="3" rx="1" fill="rgba(255,255,255,0.06)"/><rect x="10" y="10" width="8" height="320" fill="rgba(255,255,255,0.02)"/><rect x="25" y="20" width="255" height="255" rx="2" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/><rect x="30" y="25" width="245" height="245" rx="2" fill="#0a0a0a"/><text x="152" y="130" text-anchor="middle" font-family="Oswald,sans-serif" font-size="36" font-weight="700" letter-spacing="10" fill="rgba(192,192,192,0.15)">KXON</text><line x1="80" y1="145" x2="225" y2="145" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/><text x="152" y="165" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="300" letter-spacing="3" fill="rgba(192,192,192,0.1)">ÁLBUM EXCLUSIVO</text><text x="152" y="296" text-anchor="middle" font-family="Inter,sans-serif" font-size="5" fill="rgba(255,255,255,0.06)">© 2025 KXON — Todos los derechos reservados</text></svg>
+                </div>
+                <div class="assembly-piece cd-disc" data-assemble-start="0.14" data-assemble-end="0.35">
+                    <svg viewBox="0 0 280 280" class="assembly-svg"><circle cx="140" cy="140" r="130" fill="#1a1a1a" filter="url(#softShadow)"/><circle cx="140" cy="140" r="130" fill="url(#cdRainbow)"/><circle cx="140" cy="140" r="130" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/><circle cx="140" cy="140" r="120" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="100" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="80" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="60" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="45" fill="#111" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><circle cx="140" cy="140" r="42" fill="#0d0d0d"/><text x="140" y="130" text-anchor="middle" font-family="Oswald,sans-serif" font-size="14" font-weight="700" letter-spacing="4" fill="rgba(192,192,192,0.2)">KXON</text><line x1="110" y1="136" x2="170" y2="136" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/><text x="140" y="148" text-anchor="middle" font-family="Inter,sans-serif" font-size="5" fill="rgba(192,192,192,0.1)" letter-spacing="1">DIGITAL EDITION</text><circle cx="140" cy="140" r="8" fill="#0a0a0a" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/><circle cx="140" cy="140" r="5" fill="#080808"/><circle cx="140" cy="140" r="115" fill="none" stroke="rgba(100,150,255,0.04)" stroke-width="8"/><circle cx="140" cy="140" r="95" fill="none" stroke="rgba(255,100,150,0.03)" stroke-width="6"/><circle cx="140" cy="140" r="75" fill="none" stroke="rgba(100,255,150,0.03)" stroke-width="4"/></svg>
+                </div>
+                <div class="assembly-piece cd-booklet" data-assemble-start="0.30" data-assemble-end="0.46">
+                    <svg viewBox="0 0 200 240" class="assembly-svg"><rect x="5" y="5" width="190" height="230" rx="2" fill="url(#paperWhite)" filter="url(#softShadow)" opacity="0.9"/><text x="100" y="35" text-anchor="middle" font-family="Oswald,sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="rgba(0,0,0,0.2)">KXON</text><line x1="40" y1="42" x2="160" y2="42" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/><text x="100" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="5" fill="rgba(0,0,0,0.15)" letter-spacing="2">TRACKLIST</text><g fill="rgba(0,0,0,0.1)" font-family="Inter,sans-serif" font-size="5"><text x="25" y="75">01</text><rect x="40" y="70" width="130" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="88">02</text><rect x="40" y="83" width="110" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="101">03</text><rect x="40" y="96" width="140" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="114">04</text><rect x="40" y="109" width="100" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="127">05</text><rect x="40" y="122" width="120" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="140">06</text><rect x="40" y="135" width="130" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="153">07</text><rect x="40" y="148" width="90" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="166">08</text><rect x="40" y="161" width="115" height="3" rx="1" fill="rgba(0,0,0,0.06)"/></g><text x="100" y="200" text-anchor="middle" font-family="Inter,sans-serif" font-size="4" fill="rgba(0,0,0,0.08)">Producido por KXON</text><text x="100" y="210" text-anchor="middle" font-family="Inter,sans-serif" font-size="4" fill="rgba(0,0,0,0.08)">© 2025 — Colombia</text></svg>
+                </div>
+                <div class="assembly-piece cd-notes" data-assemble-start="0.42" data-assemble-end="0.55">
+                    <svg viewBox="0 0 200 200" class="assembly-svg"><text x="30" y="40" font-size="20" fill="rgba(192,192,192,0.08)">♪</text><text x="150" y="60" font-size="16" fill="rgba(192,192,192,0.06)">♫</text><text x="80" y="160" font-size="18" fill="rgba(192,192,192,0.07)">♪</text><text x="160" y="150" font-size="14" fill="rgba(192,192,192,0.05)">♬</text></svg>
+                </div>
+                <div class="assembly-glow" data-glow-start="0.50"></div>
+            </div>
+        </div>
+        <svg class="assembly-defs-svg" width="0" height="0">
+            <defs>
+                <linearGradient id="metalDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2a2a"/><stop offset="30%" stop-color="#1a1a1a"/><stop offset="70%" stop-color="#111"/><stop offset="100%" stop-color="#0d0d0d"/></linearGradient>
+                <linearGradient id="metalShine" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#444"/><stop offset="15%" stop-color="#333"/><stop offset="85%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#111"/></linearGradient>
+                <linearGradient id="screenGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1628"/><stop offset="100%" stop-color="#050d18"/></linearGradient>
+                <linearGradient id="speakerCone" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1e1e"/><stop offset="50%" stop-color="#0f0f0f"/><stop offset="100%" stop-color="#1a1a1a"/></linearGradient>
+                <linearGradient id="knobMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#555"/><stop offset="50%" stop-color="#333"/><stop offset="100%" stop-color="#222"/></linearGradient>
+                <linearGradient id="rubberBlack" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#0a0a0a"/></linearGradient>
+                <radialGradient id="ledGreen" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00ff88" stop-opacity="0.9"/><stop offset="60%" stop-color="#00cc66" stop-opacity="0.4"/><stop offset="100%" stop-color="#009944" stop-opacity="0"/></radialGradient>
+                <radialGradient id="speakerCenter" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#333"/><stop offset="70%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#111"/></radialGradient>
+                <linearGradient id="paperWhite" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8e4df"/><stop offset="50%" stop-color="#d9d5d0"/><stop offset="100%" stop-color="#ccc8c3"/></linearGradient>
+                <linearGradient id="paperShadow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#bbb7b2"/><stop offset="100%" stop-color="#a5a19c"/></linearGradient>
+                <linearGradient id="cdCase" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1e1e"/><stop offset="50%" stop-color="#141414"/><stop offset="100%" stop-color="#0e0e0e"/></linearGradient>
+                <radialGradient id="cdRainbow" cx="50%" cy="50%" r="50%"><stop offset="20%" stop-color="rgba(100,150,255,0.08)"/><stop offset="40%" stop-color="rgba(150,100,255,0.06)"/><stop offset="60%" stop-color="rgba(255,100,150,0.05)"/><stop offset="80%" stop-color="rgba(100,255,150,0.04)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+                <filter id="softShadow"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.6"/></filter>
+                <filter id="heavyShadow"><feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000" flood-opacity="0.7"/></filter>
+            </defs>
+        </svg>
+        <div class="assembly-progress"><div class="assembly-progress-bar" id="assemblyProgress4"></div></div>
+        <div class="assembly-scroll-hint" id="assemblyHint4"><span>Sigue bajando</span><div class="assembly-scroll-arrow">↓</div></div>
+    </div>
+</section>
 
-<!-- ═══════════════════════════════════════════
-     🎛️ ASSEMBLY 1: ESTUDIO MUSICAL
-     Estudio IZQUIERDA → Info DERECHA
-     ═══════════════════════════════════════════ -->
+<!-- ÁLBUMES -->
+<section class="section" id="albumes">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label scroll-reveal" data-animation="fade-down">Últimos Lanzamientos</div>
+            <h2 class="section-title scroll-reveal" data-animation="fade-up">Álbumes Destacados</h2>
+            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Los álbumes más recientes de nuestra colección exclusiva</p>
+        </div>
+        <div class="albumes-grid scroll-reveal-children" data-animation="scale-up" data-stagger="120" id="albumes-grid"></div>
+    </div>
+</section>
+<div class="section-divider"></div>
+
+<!-- ============================================
+     4️⃣ ASSEMBLY PERIÓDICO + NOTICIAS
+     ============================================ -->
+<section class="assembly-section" id="assembly-news">
+    <div class="assembly-sticky">
+        <div class="assembly-3d-scene assembly-layout-left">
+            <div class="assembly-bg-grid"></div>
+            <div class="assembly-instrument assembly-instrument-left">
+                <div class="assembly-piece news-page-back" data-assemble-start="0" data-assemble-end="0.18">
+                    <svg viewBox="0 0 320 420" class="assembly-svg"><rect x="5" y="5" width="310" height="410" rx="3" fill="url(#paperShadow)" filter="url(#heavyShadow)"/><g opacity="0.3"><rect x="20" y="30" width="280" height="6" rx="1" fill="rgba(0,0,0,0.12)"/><rect x="20" y="42" width="280" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><rect x="20" y="50" width="280" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><rect x="20" y="80" width="130" height="100" rx="2" fill="rgba(0,0,0,0.05)"/><rect x="160" y="80" width="140" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><rect x="160" y="88" width="140" height="3" rx="1" fill="rgba(0,0,0,0.06)"/></g></svg>
+                </div>
+                <div class="assembly-piece news-page-front" data-assemble-start="0.12" data-assemble-end="0.32">
+                    <svg viewBox="0 0 320 420" class="assembly-svg"><rect x="5" y="5" width="310" height="410" rx="3" fill="url(#paperWhite)" filter="url(#softShadow)"/><rect x="15" y="12" width="290" height="1" fill="rgba(0,0,0,0.2)"/><text x="160" y="35" text-anchor="middle" font-family="'Times New Roman',serif" font-size="22" font-weight="700" fill="rgba(0,0,0,0.75)" letter-spacing="4">KXON TIMES</text><rect x="15" y="42" width="290" height="1.5" fill="rgba(0,0,0,0.3)"/><text x="30" y="53" font-family="'Times New Roman',serif" font-size="5" fill="rgba(0,0,0,0.35)">Vol. 1 — Edición Digital</text><text x="290" y="53" text-anchor="end" font-family="'Times New Roman',serif" font-size="5" fill="rgba(0,0,0,0.35)">Colombia 2025</text><rect x="15" y="56" width="290" height="0.5" fill="rgba(0,0,0,0.1)"/><text x="20" y="78" font-family="'Times New Roman',serif" font-size="14" font-weight="700" fill="rgba(0,0,0,0.8)">Noticias del Universo</text><text x="20" y="95" font-family="'Times New Roman',serif" font-size="14" font-weight="700" fill="rgba(0,0,0,0.8)">Musical KXON</text><rect x="20" y="108" width="280" height="120" rx="2" fill="rgba(0,0,0,0.06)"/><text x="160" y="172" text-anchor="middle" font-size="20" fill="rgba(0,0,0,0.08)">📰</text><g fill="rgba(0,0,0,0.12)"><rect x="20" y="238" width="130" height="3" rx="1"/><rect x="20" y="246" width="130" height="3" rx="1"/><rect x="20" y="254" width="130" height="3" rx="1"/><rect x="20" y="262" width="100" height="3" rx="1"/><rect x="170" y="238" width="130" height="3" rx="1"/><rect x="170" y="246" width="130" height="3" rx="1"/><rect x="170" y="254" width="130" height="3" rx="1"/><rect x="170" y="262" width="100" height="3" rx="1"/></g><rect x="20" y="312" width="280" height="0.5" fill="rgba(0,0,0,0.15)"/><text x="34" y="335" font-family="'Times New Roman',serif" font-size="8" font-weight="700" fill="rgba(0,0,0,0.6)">Nuevos Lanzamientos</text><g fill="rgba(0,0,0,0.1)"><rect x="34" y="342" width="266" height="3" rx="1"/><rect x="34" y="350" width="266" height="3" rx="1"/><rect x="34" y="358" width="200" height="3" rx="1"/></g><rect x="15" y="390" width="290" height="0.5" fill="rgba(0,0,0,0.1)"/><text x="160" y="404" text-anchor="middle" font-family="Inter,sans-serif" font-size="4" fill="rgba(0,0,0,0.2)">kxon-music.vercel.app</text></svg>
+                </div>
+                <div class="assembly-piece news-stamp" data-assemble-start="0.28" data-assemble-end="0.42">
+                    <svg viewBox="0 0 120 120" class="assembly-svg"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(180,40,40,0.25)" stroke-width="3" stroke-dasharray="6 3"/><circle cx="60" cy="60" r="42" fill="none" stroke="rgba(180,40,40,0.15)" stroke-width="1"/><text x="60" y="55" text-anchor="middle" font-family="Oswald,sans-serif" font-size="11" font-weight="700" letter-spacing="3" fill="rgba(180,40,40,0.3)">EXCLUSIVO</text><text x="60" y="70" text-anchor="middle" font-family="Inter,sans-serif" font-size="6" fill="rgba(180,40,40,0.2)">KXON 2025</text></svg>
+                </div>
+                <div class="assembly-piece news-pen" data-assemble-start="0.35" data-assemble-end="0.50">
+                    <svg viewBox="0 0 20 180" class="assembly-svg"><rect x="4" y="0" width="12" height="150" rx="2" fill="#1a1a1a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/><rect x="4" y="0" width="12" height="20" rx="2" fill="url(#knobMetal)"/><rect x="4" y="0" width="12" height="3" rx="1" fill="rgba(255,255,255,0.1)"/><polygon points="4,150 10,175 16,150" fill="#111"/><polygon points="8,165 10,175 12,165" fill="rgba(192,192,192,0.2)"/></svg>
+                </div>
+                <div class="assembly-glow" data-glow-start="0.48"></div>
+            </div>
+            <div class="assembly-text assembly-text-side-right" data-text-start="0.48" data-text-end="0.85">
+                <div class="assembly-label">📰 Últimas Publicaciones</div>
+                <h2 class="assembly-title"><span class="gradient-text">Noticias</span> KXON</h2>
+                <p class="assembly-desc">Mantente al día con las novedades, lanzamientos y anuncios exclusivos. Todo lo que pasa en el universo KXON, directo para ti.</p>
+                <div class="assembly-cta"><a href="#noticias" class="btn-hero-primary magnetic-btn">Ver Noticias</a></div>
+            </div>
+        </div>
+        <div class="assembly-progress"><div class="assembly-progress-bar" id="assemblyProgress3"></div></div>
+        <div class="assembly-scroll-hint" id="assemblyHint3"><span>Sigue bajando</span><div class="assembly-scroll-arrow">↓</div></div>
+    </div>
+</section>
+
+<!-- NOTICIAS -->
+<section class="section" id="noticias">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label scroll-reveal" data-animation="fade-down">Últimas Publicaciones</div>
+            <h2 class="section-title scroll-reveal" data-animation="fade-up">Noticias</h2>
+            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Mantente al día con las novedades, lanzamientos y anuncios</p>
+        </div>
+        <div class="noticias-grid scroll-reveal-children" data-animation="scale-up" data-stagger="100" id="noticias-grid"></div>
+    </div>
+</section>
+<div class="section-divider"></div>
+
+<!-- ============================================
+     5️⃣ ASSEMBLY ESTUDIO + MI ESTUDIO MÚSICA
+     ============================================ -->
 <section class="assembly-section" id="assembly-studio">
     <div class="assembly-sticky">
         <div class="assembly-3d-scene assembly-layout-left">
             <div class="assembly-bg-grid"></div>
             <svg class="assembly-defs-svg" width="0" height="0">
                 <defs>
-                    <linearGradient id="metalDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2a2a"/><stop offset="30%" stop-color="#1a1a1a"/><stop offset="70%" stop-color="#111"/><stop offset="100%" stop-color="#0d0d0d"/></linearGradient>
-                    <linearGradient id="metalShine" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#444"/><stop offset="15%" stop-color="#333"/><stop offset="85%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#111"/></linearGradient>
-                    <linearGradient id="screenGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1628"/><stop offset="100%" stop-color="#050d18"/></linearGradient>
-                    <linearGradient id="speakerCone" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1e1e"/><stop offset="50%" stop-color="#0f0f0f"/><stop offset="100%" stop-color="#1a1a1a"/></linearGradient>
-                    <linearGradient id="knobMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#555"/><stop offset="50%" stop-color="#333"/><stop offset="100%" stop-color="#222"/></linearGradient>
-                    <linearGradient id="rubberBlack" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#0a0a0a"/></linearGradient>
-                    <radialGradient id="ledGreen" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00ff88" stop-opacity="0.9"/><stop offset="60%" stop-color="#00cc66" stop-opacity="0.4"/><stop offset="100%" stop-color="#009944" stop-opacity="0"/></radialGradient>
-                    <radialGradient id="speakerCenter" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#333"/><stop offset="70%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#111"/></radialGradient>
-                    <linearGradient id="paperWhite" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8e4df"/><stop offset="50%" stop-color="#d9d5d0"/><stop offset="100%" stop-color="#ccc8c3"/></linearGradient>
-                    <linearGradient id="paperShadow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#bbb7b2"/><stop offset="100%" stop-color="#a5a19c"/></linearGradient>
-                    <linearGradient id="cdCase" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1e1e"/><stop offset="50%" stop-color="#141414"/><stop offset="100%" stop-color="#0e0e0e"/></linearGradient>
-                    <radialGradient id="cdRainbow" cx="50%" cy="50%" r="50%"><stop offset="20%" stop-color="rgba(100,150,255,0.08)"/><stop offset="40%" stop-color="rgba(150,100,255,0.06)"/><stop offset="60%" stop-color="rgba(255,100,150,0.05)"/><stop offset="80%" stop-color="rgba(100,255,150,0.04)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
-                    <filter id="softShadow"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.6"/></filter>
-                    <filter id="heavyShadow"><feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000" flood-opacity="0.7"/></filter>
+                    <linearGradient id="metalDark2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2a2a"/><stop offset="30%" stop-color="#1a1a1a"/><stop offset="70%" stop-color="#111"/><stop offset="100%" stop-color="#0d0d0d"/></linearGradient>
                 </defs>
             </svg>
-
             <div class="assembly-instrument assembly-instrument-left">
                 <div class="assembly-piece studio-desk" data-assemble-start="0" data-assemble-end="0.15">
                     <svg viewBox="0 0 520 160" class="assembly-svg"><rect x="10" y="10" width="500" height="70" rx="6" fill="url(#metalDark)" filter="url(#softShadow)"/><rect x="10" y="10" width="500" height="3" rx="1" fill="rgba(255,255,255,0.06)"/><rect x="10" y="77" width="500" height="6" rx="2" fill="#0d0d0d"/><rect x="35" y="83" width="18" height="70" rx="3" fill="url(#metalShine)"/><rect x="35" y="83" width="18" height="4" rx="1" fill="rgba(255,255,255,0.08)"/><rect x="467" y="83" width="18" height="70" rx="3" fill="url(#metalShine)"/><rect x="467" y="83" width="18" height="4" rx="1" fill="rgba(255,255,255,0.08)"/><rect x="53" y="120" width="414" height="5" rx="2" fill="#151515"/><rect x="60" y="20" width="160" height="48" rx="4" fill="#0f0f0f" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/><rect x="300" y="20" width="160" height="48" rx="4" fill="#0f0f0f" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/><rect x="95" y="42" width="12" height="3" rx="1" fill="rgba(192,192,192,0.15)"/><rect x="175" y="42" width="12" height="3" rx="1" fill="rgba(192,192,192,0.15)"/><rect x="335" y="42" width="12" height="3" rx="1" fill="rgba(192,192,192,0.15)"/><rect x="415" y="42" width="12" height="3" rx="1" fill="rgba(192,192,192,0.15)"/></svg>
@@ -451,33 +554,11 @@
         <div class="assembly-scroll-hint" id="assemblyHint1"><span>Sigue bajando para armar el estudio</span><div class="assembly-scroll-arrow">↓</div></div>
     </div>
 </section>
-
-<!-- VIDEO -->
-<section class="video-hero-section" id="video-presentacion" data-parallax="0.3">
-    <div class="video-hero-bg">
-        <video class="video-hero-media" autoplay muted loop playsinline preload="auto" poster="https://placehold.co/1920x1080/0a0a0a/111?text=">
-            <source src="https://zizbbypwwvugyswjfbxr.supabase.co/storage/v1/object/public/videos/mi-presentacion2.mp4?v=2" type="video/mp4">
-        </video>
-        <div class="video-hero-overlay"></div>
-        <div class="video-hero-grain"></div>
-    </div>
-    <div class="video-hero-content">
-        <div class="video-hero-badge scroll-reveal" data-animation="fade-down">Presentación Oficial</div>
-        <h2 class="video-hero-title scroll-reveal" data-animation="fade-up" data-delay="100">Bienvenido al <span class="gradient-text">Universo KXON</span></h2>
-        <p class="video-hero-desc scroll-reveal" data-animation="fade-up" data-delay="200">Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música, nuestros beats y nuestro arte.</p>
-        <div class="video-hero-actions scroll-reveal" data-animation="fade-up" data-delay="300">
-            <a href="register.html" class="btn-hero-primary magnetic-btn">Únete Ahora</a>
-            <button class="btn-video-sound magnetic-btn" id="btnVideoSound" onclick="window._toggleVideoSound()">
-                <span id="videoSoundIcon">🔇</span>
-                <span id="videoSoundText">Activar sonido</span>
-            </button>
-        </div>
-    </div>
-    <div class="video-hero-scroll"><div class="video-hero-scroll-line"></div></div>
-</section>
 <div class="section-divider"></div>
 
-<!-- 🎤 ASSEMBLY 2: MICRÓFONO -->
+<!-- ============================================
+     6️⃣ ASSEMBLY MICRÓFONO + ¿POR QUÉ KXON?
+     ============================================ -->
 <section class="assembly-section" id="assembly-mic">
     <div class="assembly-sticky">
         <div class="assembly-3d-scene assembly-layout-right">
@@ -511,7 +592,7 @@
     </div>
 </section>
 
-<!-- VENTAJAS -->
+<!-- VENTAJAS ¿Por qué KXON? -->
 <section class="section" id="por-que-kxon">
     <div class="container">
         <div class="section-header">
@@ -538,8 +619,11 @@
         </div>
     </div>
 </section>
+<div class="section-divider"></div>
 
-<!-- PLANES -->
+<!-- ============================================
+     7️⃣ PLANES
+     ============================================ -->
 <section class="section" id="planes">
     <div class="container">
         <div class="section-header">
@@ -563,81 +647,9 @@
 </section>
 <div class="section-divider"></div>
 
-<!-- 📰 ASSEMBLY 3: PERIÓDICO -->
-<section class="assembly-section" id="assembly-news">
-    <div class="assembly-sticky">
-        <div class="assembly-3d-scene assembly-layout-left">
-            <div class="assembly-bg-grid"></div>
-            <div class="assembly-instrument assembly-instrument-left">
-                <div class="assembly-piece news-page-back" data-assemble-start="0" data-assemble-end="0.18"><svg viewBox="0 0 320 420" class="assembly-svg"><rect x="5" y="5" width="310" height="410" rx="3" fill="url(#paperShadow)" filter="url(#heavyShadow)"/><g opacity="0.3"><rect x="20" y="30" width="280" height="6" rx="1" fill="rgba(0,0,0,0.12)"/><rect x="20" y="42" width="280" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><rect x="20" y="50" width="280" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><rect x="20" y="80" width="130" height="100" rx="2" fill="rgba(0,0,0,0.05)"/><rect x="160" y="80" width="140" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><rect x="160" y="88" width="140" height="3" rx="1" fill="rgba(0,0,0,0.06)"/></g></svg></div>
-                <div class="assembly-piece news-page-front" data-assemble-start="0.12" data-assemble-end="0.32"><svg viewBox="0 0 320 420" class="assembly-svg"><rect x="5" y="5" width="310" height="410" rx="3" fill="url(#paperWhite)" filter="url(#softShadow)"/><rect x="15" y="12" width="290" height="1" fill="rgba(0,0,0,0.2)"/><text x="160" y="35" text-anchor="middle" font-family="'Times New Roman',serif" font-size="22" font-weight="700" fill="rgba(0,0,0,0.75)" letter-spacing="4">KXON TIMES</text><rect x="15" y="42" width="290" height="1.5" fill="rgba(0,0,0,0.3)"/><text x="30" y="53" font-family="'Times New Roman',serif" font-size="5" fill="rgba(0,0,0,0.35)">Vol. 1 — Edición Digital</text><text x="290" y="53" text-anchor="end" font-family="'Times New Roman',serif" font-size="5" fill="rgba(0,0,0,0.35)">Colombia 2025</text><rect x="15" y="56" width="290" height="0.5" fill="rgba(0,0,0,0.1)"/><text x="20" y="78" font-family="'Times New Roman',serif" font-size="14" font-weight="700" fill="rgba(0,0,0,0.8)">Noticias del Universo</text><text x="20" y="95" font-family="'Times New Roman',serif" font-size="14" font-weight="700" fill="rgba(0,0,0,0.8)">Musical KXON</text><rect x="20" y="108" width="280" height="120" rx="2" fill="rgba(0,0,0,0.06)"/><text x="160" y="172" text-anchor="middle" font-size="20" fill="rgba(0,0,0,0.08)">📰</text><g fill="rgba(0,0,0,0.12)"><rect x="20" y="238" width="130" height="3" rx="1"/><rect x="20" y="246" width="130" height="3" rx="1"/><rect x="20" y="254" width="130" height="3" rx="1"/><rect x="20" y="262" width="100" height="3" rx="1"/><rect x="170" y="238" width="130" height="3" rx="1"/><rect x="170" y="246" width="130" height="3" rx="1"/><rect x="170" y="254" width="130" height="3" rx="1"/><rect x="170" y="262" width="100" height="3" rx="1"/></g><rect x="20" y="312" width="280" height="0.5" fill="rgba(0,0,0,0.15)"/><text x="34" y="335" font-family="'Times New Roman',serif" font-size="8" font-weight="700" fill="rgba(0,0,0,0.6)">Nuevos Lanzamientos</text><g fill="rgba(0,0,0,0.1)"><rect x="34" y="342" width="266" height="3" rx="1"/><rect x="34" y="350" width="266" height="3" rx="1"/><rect x="34" y="358" width="200" height="3" rx="1"/></g><rect x="15" y="390" width="290" height="0.5" fill="rgba(0,0,0,0.1)"/><text x="160" y="404" text-anchor="middle" font-family="Inter,sans-serif" font-size="4" fill="rgba(0,0,0,0.2)">kxon-music.vercel.app</text></svg></div>
-                <div class="assembly-piece news-stamp" data-assemble-start="0.28" data-assemble-end="0.42"><svg viewBox="0 0 120 120" class="assembly-svg"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(180,40,40,0.25)" stroke-width="3" stroke-dasharray="6 3"/><circle cx="60" cy="60" r="42" fill="none" stroke="rgba(180,40,40,0.15)" stroke-width="1"/><text x="60" y="55" text-anchor="middle" font-family="Oswald,sans-serif" font-size="11" font-weight="700" letter-spacing="3" fill="rgba(180,40,40,0.3)">EXCLUSIVO</text><text x="60" y="70" text-anchor="middle" font-family="Inter,sans-serif" font-size="6" fill="rgba(180,40,40,0.2)">KXON 2025</text></svg></div>
-                <div class="assembly-piece news-pen" data-assemble-start="0.35" data-assemble-end="0.50"><svg viewBox="0 0 20 180" class="assembly-svg"><rect x="4" y="0" width="12" height="150" rx="2" fill="#1a1a1a" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/><rect x="4" y="0" width="12" height="20" rx="2" fill="url(#knobMetal)"/><rect x="4" y="0" width="12" height="3" rx="1" fill="rgba(255,255,255,0.1)"/><polygon points="4,150 10,175 16,150" fill="#111"/><polygon points="8,165 10,175 12,165" fill="rgba(192,192,192,0.2)"/></svg></div>
-                <div class="assembly-glow" data-glow-start="0.48"></div>
-            </div>
-            <div class="assembly-text assembly-text-side-right" data-text-start="0.48" data-text-end="0.85">
-                <div class="assembly-label">📰 Últimas Publicaciones</div>
-                <h2 class="assembly-title"><span class="gradient-text">Noticias</span> KXON</h2>
-                <p class="assembly-desc">Mantente al día con las novedades, lanzamientos y anuncios exclusivos. Todo lo que pasa en el universo KXON, directo para ti.</p>
-                <div class="assembly-cta"><a href="#noticias" class="btn-hero-primary magnetic-btn">Ver Noticias</a></div>
-            </div>
-        </div>
-        <div class="assembly-progress"><div class="assembly-progress-bar" id="assemblyProgress3"></div></div>
-        <div class="assembly-scroll-hint" id="assemblyHint3"><span>Sigue bajando</span><div class="assembly-scroll-arrow">↓</div></div>
-    </div>
-</section>
-
-<!-- NOTICIAS -->
-<section class="section" id="noticias">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-label scroll-reveal" data-animation="fade-down">Últimas Publicaciones</div>
-            <h2 class="section-title scroll-reveal" data-animation="fade-up">Noticias</h2>
-            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Mantente al día con las novedades, lanzamientos y anuncios</p>
-        </div>
-        <div class="noticias-grid scroll-reveal-children" data-animation="scale-up" data-stagger="100" id="noticias-grid"></div>
-    </div>
-</section>
-<div class="section-divider"></div>
-
-<!-- 💿 ASSEMBLY 4: CD -->
-<section class="assembly-section" id="assembly-cd">
-    <div class="assembly-sticky">
-        <div class="assembly-3d-scene assembly-layout-right">
-            <div class="assembly-bg-grid"></div>
-            <div class="assembly-text assembly-text-side-left" data-text-start="0.52" data-text-end="0.85">
-                <div class="assembly-label">💿 Últimos Lanzamientos</div>
-                <h2 class="assembly-title">Álbumes <span class="gradient-text">Destacados</span></h2>
-                <p class="assembly-desc">Los álbumes más recientes de nuestra colección exclusiva. Producción propia, sonido único, directo del artista a tus oídos.</p>
-                <div class="assembly-cta"><a href="#albumes" class="btn-hero-primary magnetic-btn">Ver Álbumes</a></div>
-            </div>
-            <div class="assembly-instrument assembly-instrument-right">
-                <div class="assembly-piece cd-case" data-assemble-start="0" data-assemble-end="0.18"><svg viewBox="0 0 300 340" class="assembly-svg"><rect x="10" y="10" width="280" height="320" rx="4" fill="url(#cdCase)" filter="url(#heavyShadow)"/><rect x="10" y="10" width="280" height="320" rx="4" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><rect x="12" y="10" width="276" height="3" rx="1" fill="rgba(255,255,255,0.06)"/><rect x="10" y="10" width="8" height="320" fill="rgba(255,255,255,0.02)"/><rect x="25" y="20" width="255" height="255" rx="2" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/><rect x="30" y="25" width="245" height="245" rx="2" fill="#0a0a0a"/><text x="152" y="130" text-anchor="middle" font-family="Oswald,sans-serif" font-size="36" font-weight="700" letter-spacing="10" fill="rgba(192,192,192,0.15)">KXON</text><line x1="80" y1="145" x2="225" y2="145" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/><text x="152" y="165" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="300" letter-spacing="3" fill="rgba(192,192,192,0.1)">ÁLBUM EXCLUSIVO</text><text x="152" y="296" text-anchor="middle" font-family="Inter,sans-serif" font-size="5" fill="rgba(255,255,255,0.06)">© 2025 KXON — Todos los derechos reservados</text></svg></div>
-                <div class="assembly-piece cd-disc" data-assemble-start="0.14" data-assemble-end="0.35"><svg viewBox="0 0 280 280" class="assembly-svg"><circle cx="140" cy="140" r="130" fill="#1a1a1a" filter="url(#softShadow)"/><circle cx="140" cy="140" r="130" fill="url(#cdRainbow)"/><circle cx="140" cy="140" r="130" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/><circle cx="140" cy="140" r="120" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="100" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="80" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="60" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/><circle cx="140" cy="140" r="45" fill="#111" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><circle cx="140" cy="140" r="42" fill="#0d0d0d"/><text x="140" y="130" text-anchor="middle" font-family="Oswald,sans-serif" font-size="14" font-weight="700" letter-spacing="4" fill="rgba(192,192,192,0.2)">KXON</text><line x1="110" y1="136" x2="170" y2="136" stroke="rgba(192,192,192,0.08)" stroke-width="0.5"/><text x="140" y="148" text-anchor="middle" font-family="Inter,sans-serif" font-size="5" fill="rgba(192,192,192,0.1)" letter-spacing="1">DIGITAL EDITION</text><circle cx="140" cy="140" r="8" fill="#0a0a0a" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/><circle cx="140" cy="140" r="5" fill="#080808"/><circle cx="140" cy="140" r="115" fill="none" stroke="rgba(100,150,255,0.04)" stroke-width="8"/><circle cx="140" cy="140" r="95" fill="none" stroke="rgba(255,100,150,0.03)" stroke-width="6"/><circle cx="140" cy="140" r="75" fill="none" stroke="rgba(100,255,150,0.03)" stroke-width="4"/></svg></div>
-                <div class="assembly-piece cd-booklet" data-assemble-start="0.30" data-assemble-end="0.46"><svg viewBox="0 0 200 240" class="assembly-svg"><rect x="5" y="5" width="190" height="230" rx="2" fill="url(#paperWhite)" filter="url(#softShadow)" opacity="0.9"/><text x="100" y="35" text-anchor="middle" font-family="Oswald,sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="rgba(0,0,0,0.2)">KXON</text><line x1="40" y1="42" x2="160" y2="42" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/><text x="100" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="5" fill="rgba(0,0,0,0.15)" letter-spacing="2">TRACKLIST</text><g fill="rgba(0,0,0,0.1)" font-family="Inter,sans-serif" font-size="5"><text x="25" y="75">01</text><rect x="40" y="70" width="130" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="88">02</text><rect x="40" y="83" width="110" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="101">03</text><rect x="40" y="96" width="140" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="114">04</text><rect x="40" y="109" width="100" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="127">05</text><rect x="40" y="122" width="120" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="140">06</text><rect x="40" y="135" width="130" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="153">07</text><rect x="40" y="148" width="90" height="3" rx="1" fill="rgba(0,0,0,0.06)"/><text x="25" y="166">08</text><rect x="40" y="161" width="115" height="3" rx="1" fill="rgba(0,0,0,0.06)"/></g><text x="100" y="200" text-anchor="middle" font-family="Inter,sans-serif" font-size="4" fill="rgba(0,0,0,0.08)">Producido por KXON</text><text x="100" y="210" text-anchor="middle" font-family="Inter,sans-serif" font-size="4" fill="rgba(0,0,0,0.08)">© 2025 — Colombia</text></svg></div>
-                <div class="assembly-piece cd-notes" data-assemble-start="0.42" data-assemble-end="0.55"><svg viewBox="0 0 200 200" class="assembly-svg"><text x="30" y="40" font-size="20" fill="rgba(192,192,192,0.08)">♪</text><text x="150" y="60" font-size="16" fill="rgba(192,192,192,0.06)">♫</text><text x="80" y="160" font-size="18" fill="rgba(192,192,192,0.07)">♪</text><text x="160" y="150" font-size="14" fill="rgba(192,192,192,0.05)">♬</text></svg></div>
-                <div class="assembly-glow" data-glow-start="0.50"></div>
-            </div>
-        </div>
-        <div class="assembly-progress"><div class="assembly-progress-bar" id="assemblyProgress4"></div></div>
-        <div class="assembly-scroll-hint" id="assemblyHint4"><span>Sigue bajando</span><div class="assembly-scroll-arrow">↓</div></div>
-    </div>
-</section>
-
-<!-- ÁLBUMES -->
-<section class="section" id="albumes">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-label scroll-reveal" data-animation="fade-down">Últimos Lanzamientos</div>
-            <h2 class="section-title scroll-reveal" data-animation="fade-up">Álbumes Destacados</h2>
-            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Los álbumes más recientes de nuestra colección exclusiva</p>
-        </div>
-        <div class="albumes-grid scroll-reveal-children" data-animation="scale-up" data-stagger="120" id="albumes-grid"></div>
-    </div>
-</section>
-<div class="section-divider"></div>
-
-<!-- FAQ -->
+<!-- ============================================
+     8️⃣ PREGUNTAS FRECUENTES
+     ============================================ -->
 <section class="section" id="faq">
     <div class="container">
         <div class="section-header">
@@ -659,7 +671,9 @@
 </section>
 <div class="section-divider"></div>
 
-<!-- DESCARGA APP -->
+<!-- ============================================
+     9️⃣ DESCARGA LA APP
+     ============================================ -->
 <section class="section app-download-section" id="descargar">
     <div class="container">
         <div class="section-header">
