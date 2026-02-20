@@ -122,31 +122,15 @@
     animation: logoStrokeDraw 1.5s ease-out forwards;
 }
 
-.logo-letter-k .logo-letter-stroke {
-    animation-delay: 0.5s;
-}
-.logo-letter-x .logo-letter-stroke {
-    animation-delay: 0.8s;
-}
-.logo-letter-o .logo-letter-stroke {
-    animation-delay: 1.1s;
-}
-.logo-letter-n .logo-letter-stroke {
-    animation-delay: 1.4s;
-}
+.logo-letter-k .logo-letter-stroke { animation-delay: 0.5s; }
+.logo-letter-x .logo-letter-stroke { animation-delay: 0.8s; }
+.logo-letter-o .logo-letter-stroke { animation-delay: 1.1s; }
+.logo-letter-n .logo-letter-stroke { animation-delay: 1.4s; }
 
 @keyframes logoStrokeDraw {
-    0% {
-        stroke-dashoffset: 300;
-        opacity: 0.3;
-    }
-    50% {
-        opacity: 0.7;
-    }
-    100% {
-        stroke-dashoffset: 0;
-        opacity: 1;
-    }
+    0% { stroke-dashoffset: 300; opacity: 0.3; }
+    50% { opacity: 0.7; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
 }
 
 /* Puntos en las esquinas de las letras */
@@ -162,17 +146,9 @@
 .logo-letter-n .logo-dot { animation-delay: 2.1s; }
 
 @keyframes logoDotAppear {
-    0% {
-        opacity: 0;
-        r: 0;
-    }
-    50% {
-        opacity: 1;
-        r: 5;
-    }
-    100% {
-        opacity: 1;
-    }
+    0% { opacity: 0; r: 0; }
+    50% { opacity: 1; r: 5; }
+    100% { opacity: 1; }
 }
 
 /* Línea de energía debajo del logo */
@@ -204,16 +180,8 @@
 }
 
 @keyframes subtitleReveal {
-    0% {
-        opacity: 0;
-        transform: translateY(15px);
-        letter-spacing: 10px;
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-        letter-spacing: 4px;
-    }
+    0% { opacity: 0; transform: translateY(15px); letter-spacing: 10px; }
+    100% { opacity: 1; transform: translateY(0); letter-spacing: 4px; }
 }
 
 /* ══════════════════════════════════
@@ -229,14 +197,8 @@
 }
 
 @keyframes heroButtonsReveal {
-    0% {
-        opacity: 0;
-        transform: translateY(25px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(25px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .hero-intro-btn {
@@ -266,9 +228,7 @@
     transition: left 0.5s ease;
 }
 
-.hero-intro-btn:hover::before {
-    left: 100%;
-}
+.hero-intro-btn:hover::before { left: 100%; }
 
 /* Botón Iniciar Sesión */
 .hero-intro-btn-login {
@@ -303,9 +263,7 @@
     transition: transform 0.3s ease;
 }
 
-.hero-intro-btn:hover svg {
-    transform: scale(1.1);
-}
+.hero-intro-btn:hover svg { transform: scale(1.1); }
 
 /* ══════════════════════════════════
    FLECHA SCROLL DOWN
@@ -321,19 +279,11 @@
     transition: opacity 0.3s ease;
 }
 
-.hero-intro-scroll:hover {
-    opacity: 0.9 !important;
-}
+.hero-intro-scroll:hover { opacity: 0.9 !important; }
 
 @keyframes scrollIndicatorReveal {
-    0% {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-    100% {
-        opacity: 0.6;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 0.6; transform: translateY(0); }
 }
 
 .hero-intro-scroll-text {
@@ -357,9 +307,7 @@
     animation: arrowBounce 2s ease-in-out infinite;
 }
 
-.hero-intro-arrow-1 {
-    animation-delay: 0s;
-}
+.hero-intro-arrow-1 { animation-delay: 0s; }
 
 .hero-intro-arrow-2 {
     animation-delay: 0.3s;
@@ -368,14 +316,8 @@
 }
 
 @keyframes arrowBounce {
-    0%, 100% {
-        transform: translateY(0);
-        opacity: 0.4;
-    }
-    50% {
-        transform: translateY(6px);
-        opacity: 1;
-    }
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(6px); opacity: 1; }
 }
 
 .hero-intro-scroll-line {
@@ -386,14 +328,8 @@
 }
 
 @keyframes scrollLinePulse {
-    0%, 100% {
-        opacity: 0.3;
-        transform: scaleY(1);
-    }
-    50% {
-        opacity: 0.7;
-        transform: scaleY(1.3);
-    }
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.7; transform: scaleY(1.3); }
 }
 
 /* ══════════════════════════════════
@@ -428,22 +364,13 @@
 .hw-5 { width: 1100px; height: 1100px; animation-delay: 3.2s; }
 
 @keyframes waveExpand {
-    0% {
-        opacity: 0.5;
-        border-color: rgba(192,192,192,0.06);
-    }
-    50% {
-        opacity: 0.2;
-    }
-    100% {
-        opacity: 0;
-        border-color: rgba(192,192,192,0);
-    }
+    0% { opacity: 0.5; border-color: rgba(192,192,192,0.06); }
+    50% { opacity: 0.2; }
+    100% { opacity: 0; border-color: rgba(192,192,192,0); }
 }
 
 /* ============================================
    🏠 LANDING CSS - KXON
-   VERSIÓN ULTRA PRO - MILLÓN DE DÓLARES
    ============================================ */
 
 /* ── BODY ── */
@@ -651,313 +578,6 @@ body {
     width: 1px; height: 40px;
     background: linear-gradient(180deg, rgba(192,192,192,0.3), transparent);
     animation: pulse 2s infinite;
-}
-
-/* ══════════════════════════════════════════════════════
-   🎛️🎤 3D ASSEMBLY ENGINE - ULTRA PRO
-   ══════════════════════════════════════════════════════ */
-.assembly-section {
-    position: relative;
-    height: 250vh;
-}
-.assembly-sticky {
-    position: sticky; top: 0;
-    height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
-    background: var(--negro-base, #0a0a0a);
-}
-
-/* ── Escena 3D ── */
-.assembly-3d-scene {
-    position: relative;
-    width: 100%; max-width: 1400px;
-    height: 100vh;
-    display: grid;
-    align-items: center;
-    padding: 0 60px;
-    perspective: 1200px;
-    transform-style: preserve-3d;
-}
-
-/* Layout 2 columnas */
-.assembly-3d-scene.assembly-layout-left {
-    grid-template-columns: 55% 45%;
-    gap: 40px;
-}
-.assembly-3d-scene.assembly-layout-right {
-    grid-template-columns: 45% 55%;
-    gap: 40px;
-}
-
-/* ── Contenedor Instrumento ── */
-.assembly-instrument {
-    position: relative;
-    width: 100%;
-    height: 70vh;
-    max-height: 600px;
-    transform-style: preserve-3d;
-}
-
-.assembly-instrument-left { grid-column: 1; }
-.assembly-instrument-right { grid-column: 2; }
-
-/* ── Piezas ── */
-.assembly-piece {
-    position: absolute;
-    opacity: 0;
-    will-change: transform, opacity;
-    z-index: 2;
-    filter: drop-shadow(0 8px 30px rgba(0,0,0,0.5));
-}
-.assembly-svg {
-    width: 100%; height: 100%; display: block;
-}
-.assembly-defs-svg {
-    position: absolute; width: 0; height: 0; overflow: hidden;
-}
-
-/* ── ESTUDIO: posiciones piezas ── */
-.assembly-instrument .studio-desk {
-    width: 92%; bottom: 10%; left: 50%;
-    transform: translate(-50%, 250px) scale(0.2) rotateX(45deg) rotateY(10deg);
-}
-.assembly-instrument .studio-desk.assembled {
-    transform: translate(-50%, 0) scale(1) rotateX(0) rotateY(0);
-    opacity: 1;
-}
-.assembly-instrument .studio-monitor-l {
-    width: 20%; bottom: 36%; left: 3%;
-    transform: translate(-350px, 0) scale(0.2) rotateY(-70deg);
-}
-.assembly-instrument .studio-monitor-l.assembled {
-    transform: translate(0, 0) scale(1) rotateY(0);
-    opacity: 1;
-}
-.assembly-instrument .studio-monitor-r {
-    width: 20%; bottom: 36%; right: 3%;
-    transform: translate(350px, 0) scale(0.2) rotateY(70deg);
-}
-.assembly-instrument .studio-monitor-r.assembled {
-    transform: translate(0, 0) scale(1) rotateY(0);
-    opacity: 1;
-}
-.assembly-instrument .studio-screen {
-    width: 60%; bottom: 26%; left: 50%;
-    transform: translate(-50%, -300px) scale(0.2) rotateX(-40deg);
-}
-.assembly-instrument .studio-screen.assembled {
-    transform: translate(-50%, 0) scale(1) rotateX(0);
-    opacity: 1;
-}
-.assembly-instrument .studio-keyboard {
-    width: 72%; bottom: 4%; left: 50%;
-    transform: translate(-50%, 300px) scale(0.2) rotateX(60deg);
-}
-.assembly-instrument .studio-keyboard.assembled {
-    transform: translate(-50%, 0) scale(1) rotateX(0);
-    opacity: 1;
-}
-.assembly-instrument .studio-headphones {
-    width: 16%; bottom: 44%; right: -4%;
-    transform: translate(100px, -200px) scale(0.2) rotate(-40deg);
-}
-.assembly-instrument .studio-headphones.assembled {
-    transform: translate(0, 0) scale(1) rotate(-12deg);
-    opacity: 1;
-}
-
-/* ── MICRÓFONO: posiciones piezas ── */
-.assembly-instrument .mic-base {
-    width: 42%; bottom: 6%; left: 50%;
-    transform: translate(-50%, 250px) scale(0.2) rotateX(45deg);
-}
-.assembly-instrument .mic-base.assembled {
-    transform: translate(-50%, 0) scale(1) rotateX(0);
-    opacity: 1;
-}
-.assembly-instrument .mic-stand {
-    width: 8%; bottom: 12%; left: 50%;
-    transform: translate(-50%, 200px) scale(0.2) scaleY(0);
-}
-.assembly-instrument .mic-stand.assembled {
-    transform: translate(-50%, 0) scale(1) scaleY(1);
-    opacity: 1;
-}
-.assembly-instrument .mic-mount {
-    width: 30%; top: 30%; left: 50%;
-    transform: translate(-50%, 120px) scale(0.2) rotate(-25deg);
-}
-.assembly-instrument .mic-mount.assembled {
-    transform: translate(-50%, 0) scale(1) rotate(0);
-    opacity: 1;
-}
-.assembly-instrument .mic-body {
-    width: 16%; top: 18%; left: 50%;
-    transform: translate(-50%, -250px) scale(0.2) rotateZ(25deg);
-}
-.assembly-instrument .mic-body.assembled {
-    transform: translate(-50%, 0) scale(1) rotateZ(0);
-    opacity: 1;
-}
-.assembly-instrument .mic-capsule {
-    width: 16%; top: 5%; left: 50%;
-    transform: translate(-50%, -250px) scale(0.2) rotateX(-45deg);
-}
-.assembly-instrument .mic-capsule.assembled {
-    transform: translate(-50%, 0) scale(1) rotateX(0);
-    opacity: 1;
-}
-.assembly-instrument .mic-popfilter {
-    width: 22%; top: 10%; left: 12%;
-    transform: translate(-250px, 0) scale(0.2) rotateY(-60deg);
-}
-.assembly-instrument .mic-popfilter.assembled {
-    transform: translate(0, 0) scale(1) rotateY(0);
-    opacity: 1;
-}
-.assembly-instrument .mic-waves {
-    top: 8%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 220px; height: 220px;
-    opacity: 0; pointer-events: none;
-}
-.assembly-instrument .mic-waves.assembled { opacity: 1; }
-
-/* ── Glow ── */
-.assembly-instrument .assembly-glow {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(192,192,192,0.08) 0%, transparent 55%);
-    border-radius: 50%; pointer-events: none;
-    opacity: 0; transition: opacity 1.2s ease; z-index: 0;
-}
-.assembly-instrument .assembly-glow.active { opacity: 1; }
-
-/* ── Sound Waves ── */
-.sound-wave-ring {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid rgba(192,192,192,0.12);
-    border-radius: 50%; opacity: 0;
-}
-.mic-waves.assembled .sound-wave-ring {
-    animation: soundWaveExpand 2.5s ease-out infinite;
-}
-.ring-1 { width: 50px; height: 50px; }
-.ring-2 { width: 50px; height: 50px; animation-delay: 0.8s; }
-.ring-3 { width: 50px; height: 50px; animation-delay: 1.6s; }
-@keyframes soundWaveExpand {
-    0% { width: 50px; height: 50px; opacity: 0.6; }
-    100% { width: 280px; height: 280px; opacity: 0; }
-}
-
-/* ── TEXTO ASSEMBLY ── */
-.assembly-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-self: center;
-    z-index: 10;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 1s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.assembly-text-side-right {
-    grid-column: 2;
-    text-align: left;
-    padding-left: 20px;
-    transform: translateX(60px);
-}
-.assembly-text-side-left {
-    grid-column: 1;
-    text-align: left;
-    padding-right: 20px;
-    transform: translateX(-60px);
-}
-.assembly-text.visible {
-    opacity: 1; transform: translateX(0);
-    pointer-events: auto;
-}
-.assembly-label {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 18px; background: rgba(192,192,192,0.06);
-    border: 1px solid rgba(192,192,192,0.12); border-radius: 50px;
-    font-size: 0.65rem; font-weight: 700; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--plata-media, #888);
-    margin-bottom: 20px; width: fit-content;
-}
-.assembly-title {
-    font-family: var(--font-titulo, 'Montserrat', sans-serif);
-    font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800;
-    color: var(--plata-titulo, #e0e0e0); margin-bottom: 16px; line-height: 1.2;
-}
-.assembly-desc {
-    font-size: 0.92rem; color: var(--plata-media, #888);
-    font-weight: 300; line-height: 1.8; margin-bottom: 24px;
-    max-width: 420px;
-}
-.assembly-cta { display: flex; gap: 12px; }
-.assembly-features-mini {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 8px; margin-top: 8px;
-}
-.assembly-feat {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 0.8rem; color: var(--plata-clara, #b8b8b8);
-    font-weight: 400; padding: 8px 12px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05); border-radius: 10px;
-    transition: all 0.3s ease;
-}
-.assembly-feat:hover {
-    background: rgba(255,255,255,0.04);
-    border-color: rgba(192,192,192,0.12);
-    transform: translateX(4px);
-}
-.assembly-feat span { font-size: 0.95rem; }
-
-/* ── Progress & Hint ── */
-.assembly-progress {
-    position: absolute; bottom: 30px; left: 50%;
-    transform: translateX(-50%);
-    width: 120px; height: 3px;
-    background: rgba(255,255,255,0.06); border-radius: 10px;
-    overflow: hidden; z-index: 20;
-}
-.assembly-progress-bar {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg, #555, #c0c0c0);
-    border-radius: 10px; transition: width 0.1s linear;
-}
-.assembly-scroll-hint {
-    position: absolute; bottom: 50px; left: 50%;
-    transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center;
-    gap: 6px; z-index: 20; opacity: 0.5; transition: opacity 0.5s ease;
-}
-.assembly-scroll-hint span {
-    font-size: 0.6rem; font-weight: 600; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--plata-oscura, #555);
-}
-.assembly-scroll-arrow {
-    font-size: 1rem; color: var(--plata-oscura, #555);
-    animation: bounceDown 1.5s ease-in-out infinite;
-}
-@keyframes bounceDown {
-    0%, 100% { transform: translateY(0); opacity: 0.5; }
-    50% { transform: translateY(6px); opacity: 1; }
-}
-.assembly-scroll-hint.hidden { opacity: 0; pointer-events: none; }
-
-/* ── Background grid ── */
-.assembly-bg-grid {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-image:
-        linear-gradient(rgba(192,192,192,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(192,192,192,0.015) 1px, transparent 1px);
-    background-size: 80px 80px; pointer-events: none; opacity: 0.4;
 }
 
 /* ══════════════════════════════════════════
@@ -1299,30 +919,37 @@ body {
 .magnetic-btn { position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /* ══════════════════════════════════════════
+   🎧 PREVIEW PLAYER 30 SEGUNDOS
+   ══════════════════════════════════════════ */
+.preview-track { cursor: default !important; }
+.preview-play-btn {
+    width: 36px; height: 36px; min-width: 36px; border-radius: 50%;
+    background: rgba(192,192,192,0.08); border: 1px solid rgba(192,192,192,0.15);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.3s ease; position: relative;
+    overflow: hidden; flex-shrink: 0; padding: 0;
+    color: var(--plata-clara, #b8b8b8); font-size: 0.7rem;
+}
+.preview-play-btn:hover { background: rgba(192,192,192,0.15); border-color: rgba(192,192,192,0.3); transform: scale(1.1); }
+.preview-play-btn.playing { background: rgba(192,192,192,0.12); border-color: rgba(192,192,192,0.35); box-shadow: 0 0 15px rgba(192,192,192,0.1); }
+.preview-icon { position: relative; z-index: 2; font-size: 0.65rem; line-height: 1; }
+.preview-progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.06); border-radius: 0 0 50% 50%; overflow: hidden; }
+.preview-progress { height: 100%; width: 0%; background: linear-gradient(90deg, #888, #c0c0c0); border-radius: 3px; transition: width 0.1s linear; }
+.preview-track-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.preview-time { font-size: 0.6rem; color: var(--plata-oscura, #555); font-weight: 500; font-family: var(--font-titulo, 'Montserrat', sans-serif); letter-spacing: 0.5px; }
+.preview-play-btn.playing + .preview-track-info .preview-time { color: var(--plata-clara, #b8b8b8); }
+.album-landing-preview-notice { display: flex; align-items: center; gap: 10px; padding: 14px 16px; margin-top: 12px; background: rgba(192,192,192,0.04); border: 1px solid rgba(192,192,192,0.08); border-radius: 10px; font-size: 0.72rem; color: var(--plata-media, #888); font-weight: 400; line-height: 1.5; }
+.preview-notice-icon { font-size: 1.2rem; flex-shrink: 0; }
+.preview-register-link { color: var(--plata-blanca, #f0f0f0) !important; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; transition: color 0.3s ease; }
+.preview-register-link:hover { color: var(--acento-principal, #c0c0c0) !important; }
+.album-landing-track.preview-track { display: flex; align-items: center; gap: 12px; padding: 8px 14px; }
+.album-landing-track.preview-track .album-landing-track-num { width: 20px; min-width: 20px; }
+.album-landing-track.preview-track .album-landing-track-title { font-size: 0.82rem; }
+.album-landing-track.preview-track .album-landing-track-duration { font-size: 0.68rem; min-width: 38px; text-align: right; }
+
+/* ══════════════════════════════════════════
    📱 RESPONSIVE
    ══════════════════════════════════════════ */
-@media (max-width: 1024px) {
-    .assembly-3d-scene.assembly-layout-left,
-    .assembly-3d-scene.assembly-layout-right {
-        grid-template-columns: 1fr;
-        padding: 0 24px;
-    }
-    .assembly-instrument { height: 50vh; max-height: 450px; }
-    .assembly-instrument-left,
-    .assembly-instrument-right { grid-column: 1; grid-row: 1; }
-    .assembly-text-side-right,
-    .assembly-text-side-left {
-        grid-column: 1; grid-row: 2;
-        text-align: center; padding: 0;
-        transform: translateY(30px);
-        align-items: center;
-    }
-    .assembly-text.visible { transform: translateY(0); }
-    .assembly-desc { max-width: 100%; }
-    .assembly-cta { justify-content: center; }
-    .assembly-features-mini { max-width: 340px; margin: 8px auto 0; }
-}
-
 @media (max-width: 768px) {
     .header-inner { padding: 0 16px; }
     .logo-text { font-size: 1.5rem; letter-spacing: 5px; }
@@ -1361,122 +988,25 @@ body {
     .scroll-reveal[data-animation="float-up"] { transform: translateY(50px) scale(0.95); }
     @keyframes heroRevealSplit { 0% { opacity: 0; transform: scale(0.8); letter-spacing: 30px; } 100% { opacity: 1; transform: scale(1); letter-spacing: 10px; } }
 
-    /* ── ASSEMBLY MOBILE FIX ── */
-    .assembly-section { height: 220vh; }
-    .assembly-3d-scene { padding: 0 16px; }
-    .assembly-3d-scene.assembly-layout-left,
-    .assembly-3d-scene.assembly-layout-right {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-    .assembly-instrument {
-        height: 40vh;
-        max-height: 350px;
-        width: 100%;
-        position: relative;
-        flex-shrink: 0;
-    }
-    .assembly-text-side-right,
-    .assembly-text-side-left {
-        position: relative;
-        width: 100%;
-        max-width: 100%;
-        text-align: center;
-        padding: 0 10px;
-        transform: translateY(20px);
-        align-items: center;
-        flex-shrink: 0;
-    }
-    .assembly-text.visible {
-        transform: translateY(0);
-    }
-    .assembly-title {
-        font-size: clamp(1.1rem, 4vw, 1.5rem);
-        line-height: 1.3;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-    .assembly-desc {
-        font-size: 0.8rem;
-        line-height: 1.6;
-        max-width: 100%;
-        padding: 0 5px;
-    }
-    .assembly-label {
-        font-size: 0.55rem;
-        padding: 4px 12px;
-        letter-spacing: 2px;
-    }
-    .assembly-features-mini {
-        grid-template-columns: 1fr;
-        max-width: 100%;
-        gap: 6px;
-    }
-    .assembly-feat {
-        font-size: 0.72rem;
-        padding: 6px 10px;
-    }
-    .assembly-cta .btn-hero-primary {
-        padding: 10px 20px;
-        font-size: 0.7rem;
-    }
-
-    /* ── INSTRUMENT SIZES MOBILE ── */
-    .assembly-instrument .studio-desk { width: 95%; }
-    .assembly-instrument .studio-monitor-l { width: 22%; left: 1%; }
-    .assembly-instrument .studio-monitor-r { width: 22%; right: 1%; }
-    .assembly-instrument .studio-screen { width: 65%; }
-    .assembly-instrument .studio-keyboard { width: 78%; }
-    .assembly-instrument .studio-headphones { width: 18%; }
-    .assembly-instrument .mic-base { width: 50%; }
-    .assembly-instrument .mic-stand { width: 10%; }
-    .assembly-instrument .mic-mount { width: 34%; }
-    .assembly-instrument .mic-body { width: 18%; }
-    .assembly-instrument .mic-capsule { width: 18%; }
-    .assembly-instrument .mic-popfilter { width: 24%; }
-
     /* ── HERO INTRO MOBILE ── */
-    .kxon-hero-intro {
-        min-height: 100vh;
-        min-height: 100dvh;
-    }
-    .hero-intro-content {
-        gap: 24px;
-        padding: 0 16px;
-    }
-    .kxon-logo-svg {
-        width: clamp(240px, 65vw, 360px);
-    }
-    .hero-intro-buttons {
-        flex-direction: column;
-        width: 100%;
-        gap: 12px;
-    }
-    .hero-intro-btn {
-        width: 100%;
-        max-width: 280px;
-        justify-content: center;
-        padding: 12px 24px;
-        font-size: 0.75rem;
-    }
-    .hero-intro-subtitle {
-        font-size: 0.68rem;
-        letter-spacing: 2px;
-        padding: 0 10px;
-        word-wrap: break-word;
-    }
-    .hero-intro-radial {
-        width: 400px; height: 400px;
-    }
-    .hero-intro-waves {
-        height: 100px;
-    }
-    .logo-energy-line {
-        max-width: 250px;
-    }
+    .kxon-hero-intro { min-height: 100vh; min-height: 100dvh; }
+    .hero-intro-content { gap: 24px; padding: 0 16px; }
+    .kxon-logo-svg { width: clamp(240px, 65vw, 360px); }
+    .hero-intro-buttons { flex-direction: column; width: 100%; gap: 12px; }
+    .hero-intro-btn { width: 100%; max-width: 280px; justify-content: center; padding: 12px 24px; font-size: 0.75rem; }
+    .hero-intro-subtitle { font-size: 0.68rem; letter-spacing: 2px; padding: 0 10px; word-wrap: break-word; }
+    .hero-intro-radial { width: 400px; height: 400px; }
+    .hero-intro-waves { height: 100px; }
+    .logo-energy-line { max-width: 250px; }
+
+    /* ── Preview mobile ── */
+    .preview-play-btn { width: 32px; height: 32px; min-width: 32px; }
+    .preview-icon { font-size: 0.6rem; }
+    .preview-time { font-size: 0.55rem; }
+    .album-landing-track.preview-track { gap: 8px; padding: 6px 10px; }
+    .album-landing-track.preview-track .album-landing-track-title { font-size: 0.75rem; }
+    .album-landing-preview-notice { font-size: 0.65rem; padding: 10px 12px; gap: 8px; }
+    .preview-notice-icon { font-size: 1rem; }
 }
 
 @media (max-width: 480px) {
@@ -1500,136 +1030,37 @@ body {
     .stats-bar { gap: 16px; padding: 20px; }
     .stat-bar-value { font-size: 1.2rem; }
 
-    /* ── ASSEMBLY SMALL MOBILE ── */
-    .assembly-section { height: 200vh; }
-    .assembly-instrument {
-        height: 35vh;
-        max-height: 280px;
-    }
-    .assembly-title {
-        font-size: 1rem;
-        padding: 0 5px;
-    }
-    .assembly-desc {
-        font-size: 0.75rem;
-        padding: 0 5px;
-    }
-    .assembly-label {
-        font-size: 0.5rem;
-        padding: 3px 10px;
-    }
-    .assembly-feat {
-        font-size: 0.65rem;
-        padding: 5px 8px;
-    }
-    .assembly-feat span {
-        font-size: 0.8rem;
-    }
-
     /* ── HERO INTRO SMALL MOBILE ── */
-    .kxon-logo-svg {
-        width: clamp(200px, 70vw, 300px);
-    }
-    .hero-intro-content {
-        gap: 20px;
-        padding: 0 12px;
-    }
-    .hero-intro-btn {
-        padding: 11px 18px;
-        font-size: 0.68rem;
-        gap: 8px;
-        max-width: 260px;
-    }
-    .hero-intro-btn svg {
-        width: 15px;
-        height: 15px;
-    }
-    .hero-intro-subtitle {
-        font-size: 0.6rem;
-        letter-spacing: 1.5px;
-    }
-    .hero-intro-scroll-text {
-        font-size: 0.5rem;
-    }
-    .hero-intro-scroll {
-        gap: 5px;
-    }
-    .kxon-logo-animated {
-        gap: 14px;
-    }
-    .logo-energy-line {
-        max-width: 180px;
-    }
+    .kxon-logo-svg { width: clamp(200px, 70vw, 300px); }
+    .hero-intro-content { gap: 20px; padding: 0 12px; }
+    .hero-intro-btn { padding: 11px 18px; font-size: 0.68rem; gap: 8px; max-width: 260px; }
+    .hero-intro-btn svg { width: 15px; height: 15px; }
+    .hero-intro-subtitle { font-size: 0.6rem; letter-spacing: 1.5px; }
+    .hero-intro-scroll-text { font-size: 0.5rem; }
+    .hero-intro-scroll { gap: 5px; }
+    .kxon-logo-animated { gap: 14px; }
+    .logo-energy-line { max-width: 180px; }
 
     /* ── VIDEO SECTION SMALL ── */
-    .video-hero-badge {
-        font-size: 0.55rem;
-        padding: 4px 14px;
-        letter-spacing: 2px;
-    }
-    .video-hero-title {
-        font-size: clamp(1.1rem, 5vw, 1.6rem);
-        line-height: 1.25;
-    }
-    .video-hero-desc {
-        font-size: 0.75rem;
-        line-height: 1.6;
-    }
+    .video-hero-badge { font-size: 0.55rem; padding: 4px 14px; letter-spacing: 2px; }
+    .video-hero-title { font-size: clamp(1.1rem, 5vw, 1.6rem); line-height: 1.25; }
+    .video-hero-desc { font-size: 0.75rem; line-height: 1.6; }
 
     /* ── SECTION HEADERS SMALL ── */
-    .section-title {
-        font-size: clamp(1.2rem, 5vw, 1.8rem);
-        padding: 0 10px;
-        word-wrap: break-word;
-    }
-    .section-desc {
-        font-size: 0.82rem;
-        padding: 0 10px;
-    }
-    .section-label {
-        font-size: 0.6rem;
-        letter-spacing: 2px;
-    }
-    .section-label::before, .section-label::after {
-        width: 15px;
-    }
+    .section-title { font-size: clamp(1.2rem, 5vw, 1.8rem); padding: 0 10px; word-wrap: break-word; }
+    .section-desc { font-size: 0.82rem; padding: 0 10px; }
+    .section-label { font-size: 0.6rem; letter-spacing: 2px; }
+    .section-label::before, .section-label::after { width: 15px; }
 }
 
 @media (max-width: 360px) {
-    .kxon-logo-svg {
-        width: 190px;
-    }
-    .hero-intro-btn {
-        padding: 10px 16px;
-        font-size: 0.62rem;
-        max-width: 240px;
-    }
-    .hero-intro-subtitle {
-        font-size: 0.55rem;
-        letter-spacing: 1px;
-    }
-    .assembly-title {
-        font-size: 0.9rem;
-    }
-    .assembly-desc {
-        font-size: 0.7rem;
-    }
-    .assembly-instrument {
-        height: 32vh;
-        max-height: 250px;
-    }
-    .ventaja-title {
-        font-size: 0.88rem;
-    }
-    .ventaja-desc {
-        font-size: 0.75rem;
-    }
-    .plan-landing-price {
-        font-size: 1.8rem;
-    }
-    .plan-landing-card {
-        padding: 24px 16px;
-    }
+    .kxon-logo-svg { width: 190px; }
+    .hero-intro-btn { padding: 10px 16px; font-size: 0.62rem; max-width: 240px; }
+    .hero-intro-subtitle { font-size: 0.55rem; letter-spacing: 1px; }
+    .ventaja-title { font-size: 0.88rem; }
+    .ventaja-desc { font-size: 0.75rem; }
+    .plan-landing-price { font-size: 1.8rem; }
+    .plan-landing-card { padding: 24px 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1638,284 +1069,15 @@ body {
     .reveal-fade, .reveal-blur, .reveal-split { opacity: 1 !important; transform: none !important; filter: none !important; animation: none !important; }
     .section-divider::after { animation: none; }
     .scroll-progress { display: none; }
-    .assembly-piece { opacity: 1 !important; transform: none !important; }
-    .assembly-text { opacity: 1 !important; transform: none !important; }
-    .assembly-section { height: auto !important; }
-    .assembly-sticky { position: relative !important; height: auto !important; }
-    .logo-letter-stroke {
-        stroke-dashoffset: 0 !important;
-        animation: none !important;
-        opacity: 1 !important;
-    }
-    .logo-dot {
-        opacity: 1 !important;
-        animation: none !important;
-    }
-    .logo-energy-line {
-        width: clamp(200px, 40vw, 400px) !important;
-        opacity: 1 !important;
-        animation: none !important;
-    }
-    .hero-intro-subtitle,
-    .hero-intro-buttons,
-    .hero-intro-scroll,
-    .kxon-logo-animated {
-        opacity: 1 !important;
-        transform: none !important;
-        animation: none !important;
-    }
-    .hero-intro-particle {
-        display: none;
-    }
-    .hero-intro-wave {
-        animation: none !important;
-    }
+    .logo-letter-stroke { stroke-dashoffset: 0 !important; animation: none !important; opacity: 1 !important; }
+    .logo-dot { opacity: 1 !important; animation: none !important; }
+    .logo-energy-line { width: clamp(200px, 40vw, 400px) !important; opacity: 1 !important; animation: none !important; }
+    .hero-intro-subtitle, .hero-intro-buttons, .hero-intro-scroll, .kxon-logo-animated { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .hero-intro-particle { display: none; }
+    .hero-intro-wave { animation: none !important; }
 }
 
 /* ── ANIMACIONES BASE ── */
 @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
 @keyframes glow { 0%, 100% { box-shadow: 0 0 5px rgba(192,192,192,0.3); } 50% { box-shadow: 0 0 15px rgba(192,192,192,0.6); } }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
-
-/* ── PERIÓDICO (NEWS) PIEZAS ── */
-.assembly-instrument .news-page-back {
-    width: 55%; top: 12%; left: 50%;
-    transform: translate(-50%, 200px) scale(0.2) rotateY(30deg);
-}
-.assembly-instrument .news-page-back.assembled {
-    transform: translate(-55%, 0) scale(1) rotateY(5deg);
-    opacity: 1;
-}
-.assembly-instrument .news-page-front {
-    width: 55%; top: 8%; left: 50%;
-    transform: translate(-50%, -200px) scale(0.2) rotateY(-30deg);
-}
-.assembly-instrument .news-page-front.assembled {
-    transform: translate(-45%, 0) scale(1) rotateY(-2deg);
-    opacity: 1;
-}
-.assembly-instrument .news-stamp {
-    width: 20%; top: 18%; right: 8%;
-    transform: translate(150px, -100px) scale(0.2) rotate(-30deg);
-}
-.assembly-instrument .news-stamp.assembled {
-    transform: translate(0, 0) scale(1) rotate(-8deg);
-    opacity: 1;
-}
-.assembly-instrument .news-pen {
-    width: 4%; bottom: 8%; right: 22%;
-    transform: translate(100px, 150px) scale(0.2) rotate(45deg);
-}
-.assembly-instrument .news-pen.assembled {
-    transform: translate(0, 0) scale(1) rotate(25deg);
-    opacity: 1;
-}
-
-/* ── CD PIEZAS ── */
-.assembly-instrument .cd-case {
-    width: 55%; top: 8%; left: 50%;
-    transform: translate(-50%, 250px) scale(0.2) rotateX(40deg);
-}
-.assembly-instrument .cd-case.assembled {
-    transform: translate(-50%, 0) scale(1) rotateX(0);
-    opacity: 1;
-}
-.assembly-instrument .cd-disc {
-    width: 45%; top: 12%; left: 55%;
-    transform: translate(200px, 0) scale(0.2) rotate(-180deg);
-}
-.assembly-instrument .cd-disc.assembled {
-    transform: translate(0, 0) scale(1) rotate(0);
-    opacity: 1;
-}
-.assembly-instrument .cd-booklet {
-    width: 35%; bottom: 8%; left: 8%;
-    transform: translate(-200px, 100px) scale(0.2) rotateY(-40deg);
-}
-.assembly-instrument .cd-booklet.assembled {
-    transform: translate(0, 0) scale(1) rotateY(-5deg);
-    opacity: 1;
-}
-.assembly-instrument .cd-notes {
-    width: 30%; top: 5%; right: 5%;
-    transform: translate(100px, -100px) scale(0.2);
-}
-.assembly-instrument .cd-notes.assembled {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-}
-/* ══════════════════════════════════════════
-   🎧 PREVIEW PLAYER 30 SEGUNDOS
-   ══════════════════════════════════════════ */
-.preview-track {
-    cursor: default !important;
-}
-
-.preview-play-btn {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 50%;
-    background: rgba(192,192,192,0.08);
-    border: 1px solid rgba(192,192,192,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-    padding: 0;
-    color: var(--plata-clara, #b8b8b8);
-    font-size: 0.7rem;
-}
-
-.preview-play-btn:hover {
-    background: rgba(192,192,192,0.15);
-    border-color: rgba(192,192,192,0.3);
-    transform: scale(1.1);
-}
-
-.preview-play-btn.playing {
-    background: rgba(192,192,192,0.12);
-    border-color: rgba(192,192,192,0.35);
-    box-shadow: 0 0 15px rgba(192,192,192,0.1);
-}
-
-.preview-icon {
-    position: relative;
-    z-index: 2;
-    font-size: 0.65rem;
-    line-height: 1;
-}
-
-.preview-progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 0 0 50% 50%;
-    overflow: hidden;
-}
-
-.preview-progress {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #888, #c0c0c0);
-    border-radius: 3px;
-    transition: width 0.1s linear;
-}
-
-.preview-track-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-.preview-time {
-    font-size: 0.6rem;
-    color: var(--plata-oscura, #555);
-    font-weight: 500;
-    font-family: var(--font-titulo, 'Montserrat', sans-serif);
-    letter-spacing: 0.5px;
-}
-
-.preview-play-btn.playing + .preview-track-info .preview-time {
-    color: var(--plata-clara, #b8b8b8);
-}
-
-.album-landing-preview-notice {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 16px;
-    margin-top: 12px;
-    background: rgba(192,192,192,0.04);
-    border: 1px solid rgba(192,192,192,0.08);
-    border-radius: 10px;
-    font-size: 0.72rem;
-    color: var(--plata-media, #888);
-    font-weight: 400;
-    line-height: 1.5;
-}
-
-.preview-notice-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-.preview-register-link {
-    color: var(--plata-blanca, #f0f0f0) !important;
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    transition: color 0.3s ease;
-}
-
-.preview-register-link:hover {
-    color: var(--acento-principal, #c0c0c0) !important;
-}
-
-/* ── Preview track layout fix ── */
-.album-landing-track.preview-track {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 14px;
-}
-
-.album-landing-track.preview-track .album-landing-track-num {
-    width: 20px;
-    min-width: 20px;
-}
-
-.album-landing-track.preview-track .album-landing-track-title {
-    font-size: 0.82rem;
-}
-
-.album-landing-track.preview-track .album-landing-track-duration {
-    font-size: 0.68rem;
-    min-width: 38px;
-    text-align: right;
-}
-
-/* ── Mobile preview adjustments ── */
-@media (max-width: 480px) {
-    .preview-play-btn {
-        width: 32px;
-        height: 32px;
-        min-width: 32px;
-    }
-
-    .preview-icon {
-        font-size: 0.6rem;
-    }
-
-    .preview-time {
-        font-size: 0.55rem;
-    }
-
-    .album-landing-track.preview-track {
-        gap: 8px;
-        padding: 6px 10px;
-    }
-
-    .album-landing-track.preview-track .album-landing-track-title {
-        font-size: 0.75rem;
-    }
-
-    .album-landing-preview-notice {
-        font-size: 0.65rem;
-        padding: 10px 12px;
-        gap: 8px;
-    }
-
-    .preview-notice-icon {
-        font-size: 1rem;
-    }
-}

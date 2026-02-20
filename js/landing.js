@@ -1,6 +1,6 @@
 /* ============================================
    🏠 LANDING JS - KXON PÁGINA DE INICIO
-   ✨ VERSIÓN EXPERTA CON 3D ASSEMBLY SCROLL
+   ✨ VERSIÓN SIN ASSEMBLY SECTIONS
    + HERO INTRO ANIMATION
    + 30 SEC PREVIEW PLAYER
    ============================================ */
@@ -23,43 +23,32 @@
     var previewTrackId = null;
     var previewTimer = null;
     var previewInterval = null;
-    var PREVIEW_DURATION = 30; // segundos
+    var PREVIEW_DURATION = 30;
 
     previewAudio.volume = 0.7;
 
     function playPreview(trackId, audioUrl, buttonEl) {
-        // Si ya está sonando esta misma canción, pausar
         if (previewPlaying && previewTrackId === trackId) {
             stopPreview();
             return;
         }
-
-        // Detener cualquier preview anterior
         stopPreview();
-
         if (!audioUrl) {
             alert('Esta canción no tiene audio disponible');
             return;
         }
-
         previewTrackId = trackId;
         previewAudio.src = audioUrl;
         previewAudio.currentTime = 0;
-
         previewAudio.play().then(function() {
             previewPlaying = true;
             updateAllPreviewButtons();
-
-            // Timer para detener a los 30 segundos
             previewTimer = setTimeout(function() {
                 stopPreview();
             }, PREVIEW_DURATION * 1000);
-
-            // Actualizar barra de progreso
             previewInterval = setInterval(function() {
                 updatePreviewProgress(buttonEl);
             }, 100);
-
         }).catch(function(err) {
             console.error('Error reproduciendo preview:', err);
             alert('No se pudo reproducir el preview');
@@ -71,16 +60,8 @@
         previewAudio.currentTime = 0;
         previewPlaying = false;
         previewTrackId = null;
-
-        if (previewTimer) {
-            clearTimeout(previewTimer);
-            previewTimer = null;
-        }
-        if (previewInterval) {
-            clearInterval(previewInterval);
-            previewInterval = null;
-        }
-
+        if (previewTimer) { clearTimeout(previewTimer); previewTimer = null; }
+        if (previewInterval) { clearInterval(previewInterval); previewInterval = null; }
         updateAllPreviewButtons();
     }
 
@@ -92,7 +73,6 @@
             var progressBar = btn.querySelector('.preview-progress');
             var icon = btn.querySelector('.preview-icon');
             var timeLabel = btn.querySelector('.preview-time');
-
             if (previewPlaying && id === String(previewTrackId)) {
                 btn.classList.add('playing');
                 if (icon) icon.textContent = '⏸';
@@ -111,8 +91,6 @@
         var currentTime = previewAudio.currentTime;
         var pct = Math.min((currentTime / PREVIEW_DURATION) * 100, 100);
         var remaining = Math.max(0, PREVIEW_DURATION - Math.floor(currentTime));
-
-        // Actualizar TODOS los botones con el mismo track ID
         var allBtns = document.querySelectorAll('.preview-play-btn[data-track-id="' + previewTrackId + '"]');
         for (var i = 0; i < allBtns.length; i++) {
             var progressBar = allBtns[i].querySelector('.preview-progress');
@@ -122,12 +100,8 @@
         }
     }
 
-    // Detener preview cuando el audio termina naturalmente
-    previewAudio.addEventListener('ended', function() {
-        stopPreview();
-    });
+    previewAudio.addEventListener('ended', function() { stopPreview(); });
 
-    // Exponer globalmente
     window._playLandingPreview = function(trackId, audioUrl, el) {
         playPreview(trackId, audioUrl, el);
     };
@@ -159,12 +133,7 @@
     var revealedElements = new Set();
 
     function initScrollReveal() {
-        var options = {
-            root: null,
-            rootMargin: '0px 0px -80px 0px',
-            threshold: 0.12
-        };
-
+        var options = { root: null, rootMargin: '0px 0px -80px 0px', threshold: 0.12 };
         revealObserver = new IntersectionObserver(function(entries) {
             for (var i = 0; i < entries.length; i++) {
                 var entry = entries[i];
@@ -175,7 +144,6 @@
                 }
             }
         }, options);
-
         var elements = document.querySelectorAll('.scroll-reveal');
         for (var i = 0; i < elements.length; i++) {
             revealObserver.observe(elements[i]);
@@ -200,7 +168,6 @@
 
     function initCounterAnimation() {
         var options = { root: null, rootMargin: '0px', threshold: 0.5 };
-
         counterObserver = new IntersectionObserver(function(entries) {
             for (var i = 0; i < entries.length; i++) {
                 var entry = entries[i];
@@ -210,7 +177,6 @@
                 }
             }
         }, options);
-
         var counters = document.querySelectorAll('.counter-animate');
         for (var i = 0; i < counters.length; i++) {
             counterObserver.observe(counters[i]);
@@ -222,11 +188,7 @@
         var suffix = el.getAttribute('data-suffix') || '';
         var duration = 2000;
         var startTime = null;
-
-        function easeOutExpo(t) {
-            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-        }
-
+        function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
             var elapsed = timestamp - startTime;
@@ -236,7 +198,6 @@
             el.textContent = currentValue + suffix;
             if (progress < 1) requestAnimationFrame(update);
         }
-
         requestAnimationFrame(update);
     }
 
@@ -397,195 +358,6 @@
         }
     }
 
-    /* ══════════════════════════════════════════════════════
-       🎛️🎤 3D ASSEMBLY ENGINE
-       ══════════════════════════════════════════════════════ */
-    var assemblySections = [];
-
-    function initAssemblyEngine() {
-        var sections = document.querySelectorAll('.assembly-section');
-        for (var i = 0; i < sections.length; i++) {
-            var section = sections[i];
-            var sticky = section.querySelector('.assembly-sticky');
-            var pieces = section.querySelectorAll('.assembly-piece');
-            var texts = section.querySelectorAll('.assembly-text');
-            var glows = section.querySelectorAll('.assembly-glow');
-            var progressBar = section.querySelector('.assembly-progress-bar');
-            var scrollHint = section.querySelector('.assembly-scroll-hint');
-
-            var piecesData = [];
-            for (var j = 0; j < pieces.length; j++) {
-                var piece = pieces[j];
-                piecesData.push({
-                    el: piece,
-                    start: parseFloat(piece.getAttribute('data-assemble-start')) || 0,
-                    end: parseFloat(piece.getAttribute('data-assemble-end')) || 1
-                });
-            }
-
-            var textsData = [];
-            for (var k = 0; k < texts.length; k++) {
-                var text = texts[k];
-                textsData.push({
-                    el: text,
-                    start: parseFloat(text.getAttribute('data-text-start')) || 0.5,
-                    end: parseFloat(text.getAttribute('data-text-end')) || 1
-                });
-            }
-
-            var glowsData = [];
-            for (var g = 0; g < glows.length; g++) {
-                var glow = glows[g];
-                glowsData.push({
-                    el: glow,
-                    start: parseFloat(glow.getAttribute('data-glow-start')) || 0.5
-                });
-            }
-
-            assemblySections.push({
-                section: section,
-                sticky: sticky,
-                pieces: piecesData,
-                texts: textsData,
-                glows: glowsData,
-                progressBar: progressBar,
-                scrollHint: scrollHint
-            });
-        }
-    }
-
-    function updateAssembly() {
-        for (var i = 0; i < assemblySections.length; i++) {
-            var data = assemblySections[i];
-            var section = data.section;
-            var rect = section.getBoundingClientRect();
-            var sectionHeight = section.offsetHeight - window.innerHeight;
-
-            var scrolled = -rect.top;
-            var progress = sectionHeight > 0 ? Math.max(0, Math.min(1, scrolled / sectionHeight)) : 0;
-
-            if (data.progressBar) {
-                data.progressBar.style.width = (progress * 100) + '%';
-            }
-
-            if (data.scrollHint) {
-                if (progress > 0.15) {
-                    data.scrollHint.classList.add('hidden');
-                } else {
-                    data.scrollHint.classList.remove('hidden');
-                }
-            }
-
-            for (var j = 0; j < data.pieces.length; j++) {
-                var piece = data.pieces[j];
-                var pieceProgress = 0;
-
-                if (progress <= piece.start) {
-                    pieceProgress = 0;
-                } else if (progress >= piece.end) {
-                    pieceProgress = 1;
-                } else {
-                    pieceProgress = (progress - piece.start) / (piece.end - piece.start);
-                }
-
-                pieceProgress = easeOutCubic(pieceProgress);
-                applyPieceTransform(piece.el, pieceProgress);
-            }
-
-            for (var k = 0; k < data.texts.length; k++) {
-                var text = data.texts[k];
-                if (progress >= text.start) {
-                    text.el.classList.add('visible');
-                } else {
-                    text.el.classList.remove('visible');
-                }
-            }
-
-            for (var g = 0; g < data.glows.length; g++) {
-                var glow = data.glows[g];
-                if (progress >= glow.start) {
-                    glow.el.classList.add('active');
-                } else {
-                    glow.el.classList.remove('active');
-                }
-            }
-
-            var scene = section.querySelector('.assembly-3d-scene');
-            if (scene) {
-                var rotateX = (1 - progress) * 8 - 4;
-                var rotateY = Math.sin(progress * Math.PI) * 3;
-                var translateZ = -50 + progress * 50;
-                scene.style.transform = 'perspective(1200px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateZ(' + translateZ + 'px)';
-            }
-        }
-    }
-
-    function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
-    }
-
-    function applyPieceTransform(el, progress) {
-        if (progress <= 0) {
-            el.style.opacity = '0';
-            el.classList.remove('assembled');
-            return;
-        }
-
-        if (progress >= 1) {
-            el.style.opacity = '1';
-            el.classList.add('assembled');
-            return;
-        }
-
-        el.style.opacity = String(progress);
-        el.classList.remove('assembled');
-
-        var scale = 0.3 + (1 - 0.3) * progress;
-        var translateY = (1 - progress) * 80;
-        var rotateAmount = (1 - progress) * 25;
-
-        var translateX = 0;
-        var rotateAxis = 'rotateX';
-
-        if (el.classList.contains('studio-monitor-l') || el.classList.contains('mic-popfilter')) {
-            translateX = -(1 - progress) * 120;
-            rotateAxis = 'rotateY';
-        } else if (el.classList.contains('studio-monitor-r')) {
-            translateX = (1 - progress) * 120;
-            rotateAxis = 'rotateY';
-        } else if (el.classList.contains('studio-screen') || el.classList.contains('mic-capsule')) {
-            translateY = -(1 - progress) * 100;
-        } else if (el.classList.contains('studio-headphones')) {
-            translateY = -(1 - progress) * 100;
-            translateX = (1 - progress) * 50;
-            rotateAxis = 'rotate';
-        } else if (el.classList.contains('mic-stand')) {
-            // scaleY
-        } else if (el.classList.contains('mic-arm')) {
-            translateX = -(1 - progress) * 80;
-            translateY = (1 - progress) * 60;
-            rotateAxis = 'rotate';
-            rotateAmount = (1 - progress) * -35;
-        } else if (el.classList.contains('mic-body')) {
-            translateY = -(1 - progress) * 120;
-            rotateAxis = 'rotateZ';
-            rotateAmount = (1 - progress) * 15;
-        }
-
-        var transform = '';
-
-        if (el.classList.contains('studio-desk') || el.classList.contains('studio-screen') ||
-            el.classList.contains('studio-keyboard') || el.classList.contains('mic-base')) {
-            transform = 'translate(-50%, ' + translateY + 'px) scale(' + scale + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
-        } else if (el.classList.contains('mic-stand') || el.classList.contains('mic-body') || el.classList.contains('mic-capsule')) {
-            transform = 'translate(-50%, ' + translateY + 'px) scale(' + scale + ') scaleY(' + (el.classList.contains('mic-stand') ? progress : 1) + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
-        } else {
-            transform = 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + scale + ') ' + rotateAxis + '(' + rotateAmount + 'deg)';
-        }
-
-        el.style.transform = transform;
-    }
-
     /* ══════════════════════════════════════════
        📜 MASTER SCROLL HANDLER
        ══════════════════════════════════════════ */
@@ -597,7 +369,6 @@
                 handleHeaderScroll();
                 updateScrollProgress();
                 handleParallax();
-                updateAssembly();
                 ticking = false;
             });
             ticking = true;
@@ -705,7 +476,6 @@
         var imgWrap = document.getElementById('noticiaLandingImgWrap');
         var imgEl = document.getElementById('noticiaLandingImg');
         var modalEl = document.getElementById('modalNoticiaLanding');
-
         if (tituloEl) tituloEl.textContent = n.titulo;
         if (descEl) descEl.textContent = n.descripcion;
         var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -721,9 +491,7 @@
        💿 ABRIR ÁLBUM (MODAL CON PREVIEW 30s)
        ────────────────────────────────── */
     window._landingAbrirAlbum = function(idx){
-        // Detener cualquier preview al abrir nuevo álbum
         stopPreview();
-
         var a = landingAlbumes[idx];
         if (!a) return;
         var tituloEl = document.getElementById('albumLandingTitulo');
@@ -732,7 +500,6 @@
         var metaEl = document.getElementById('albumLandingMeta');
         var tc = document.getElementById('albumLandingTracks');
         var modalEl = document.getElementById('modalAlbumLanding');
-
         if (tituloEl) tituloEl.textContent = a.titulo;
         if (descEl) descEl.textContent = a.descripcion || 'Sin descripción';
         if (coverEl) coverEl.src = a.imagen_url || 'https://placehold.co/300x300/111/333?text=♪';
@@ -747,7 +514,6 @@
                     var c = canciones[i];
                     var audioUrl = c.archivo_url || '';
                     var escapedUrl = audioUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-
                     h += '<div class="album-landing-track preview-track" onclick="event.stopPropagation()">' +
                         '<span class="album-landing-track-num">' + (i + 1) + '</span>' +
                         '<button class="preview-play-btn" data-track-id="' + c.id + '" onclick="window._playLandingPreview(\'' + c.id + '\', \'' + escapedUrl + '\', this)">' +
@@ -777,7 +543,6 @@
     function initModalClose() {
         var modalNoticia = document.getElementById('modalNoticiaLanding');
         var modalAlbum = document.getElementById('modalAlbumLanding');
-
         if (modalNoticia) {
             modalNoticia.addEventListener('click', function(e){
                 if (e.target === this) this.classList.remove('show');
@@ -790,10 +555,8 @@
                     this.classList.remove('show');
                 }
             });
-            // También detener preview cuando se cierra con la X
             var closeBtn = modalAlbum.querySelector('.modal-landing-close');
             if (closeBtn) {
-                var originalOnclick = closeBtn.getAttribute('onclick');
                 closeBtn.removeAttribute('onclick');
                 closeBtn.addEventListener('click', function() {
                     stopPreview();
@@ -837,7 +600,6 @@
         initHeroParticles();
         initHeroIntro();
         initSmoothScroll();
-        initAssemblyEngine();
         initModalClose();
 
         if (noticiasContainer) cargarNoticias();
@@ -845,9 +607,8 @@
 
         handleHeaderScroll();
         updateScrollProgress();
-        updateAssembly();
 
-        console.log('🎵 KXON Landing inicializada con Hero Intro + 3D Assembly + 30s Preview');
+        console.log('🎵 KXON Landing inicializada con Hero Intro + 30s Preview (sin Assembly)');
     });
 
 })();
