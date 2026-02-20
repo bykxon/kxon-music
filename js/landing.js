@@ -1,8 +1,10 @@
 /* ============================================
    🏠 LANDING JS - KXON PÁGINA DE INICIO
-   ✨ VERSIÓN SIN ASSEMBLY SECTIONS
+   ✨ REDISEÑO 2026 — MASTERCLASS + CINEMATIC
    + HERO INTRO ANIMATION
    + 30 SEC PREVIEW PLAYER
+   + SHOWCASE HUD
+   + NEWS PAGINATION
    ============================================ */
 
 (function(){
@@ -14,6 +16,8 @@
     var scrollProgressEl = null;
     var landingNoticias = [];
     var landingAlbumes = [];
+    var currentNewsPage = 0;
+    var newsPerPage = 3;
 
     /* ══════════════════════════════════════════
        🎵 PREVIEW PLAYER (30 SEGUNDOS)
@@ -243,7 +247,7 @@
     }
 
     /* ══════════════════════════════════════════
-       🏠 HERO INTRO - Logo Animation & Particles
+       🏠 HERO INTRO - Masterclass Style
        ══════════════════════════════════════════ */
     function initHeroIntro() {
         var particlesContainer = document.getElementById('heroIntroParticles');
@@ -378,24 +382,22 @@
     window.addEventListener('scroll', onScroll, { passive: true });
 
     /* ──────────────────────────────────
-       📰 CARGAR NOTICIAS
+       📰 CARGAR NOTICIAS — CINEMATIC
        ────────────────────────────────── */
     async function cargarNoticias(){
         if (!noticiasContainer) return;
         noticiasContainer.innerHTML = generarSkeletonNoticias(3);
         try {
-            var r = await db.from('noticias').select('*').order('created_at', { ascending: false }).limit(6);
+            var r = await db.from('noticias').select('*').order('created_at', { ascending: false }).limit(9);
             if (r.error) throw r.error;
             if (!r.data || r.data.length === 0) {
                 noticiasContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">📰</div><h3 class="empty-state-title">Sin noticias aún</h3><p class="empty-state-text">Las últimas novedades aparecerán aquí</p></div>';
                 return;
             }
             landingNoticias = r.data;
-            var html = '';
-            for (var i = 0; i < r.data.length; i++) {
-                html += crearCardNoticia(r.data[i], i);
-            }
-            noticiasContainer.innerHTML = html;
+            currentNewsPage = 0;
+            renderNewsPage();
+            updateNewsPagination();
             setTimeout(function() { applyScrollRevealToChildren('#noticias-grid'); }, 50);
         } catch(err) {
             console.error('Error noticias:', err);
@@ -405,17 +407,83 @@
         }
     }
 
+    function renderNewsPage() {
+        if (!noticiasContainer) return;
+        var start = currentNewsPage * newsPerPage;
+        var end = Math.min(start + newsPerPage, landingNoticias.length);
+        var html = '';
+        for (var i = start; i < end; i++) {
+            html += crearCardNoticia(landingNoticias[i], i);
+        }
+        noticiasContainer.innerHTML = html;
+
+        // Re-apply scroll reveal to new cards
+        var cards = noticiasContainer.querySelectorAll('.noticia-card');
+        for (var j = 0; j < cards.length; j++) {
+            cards[j].classList.add('scroll-reveal', 'is-visible');
+            cards[j].setAttribute('data-animation', 'scale-up');
+        }
+    }
+
+    function updateNewsPagination() {
+        var totalPages = Math.ceil(landingNoticias.length / newsPerPage);
+        var dotsContainer = document.querySelector('.news-pagination-dots');
+        if (dotsContainer && totalPages > 0) {
+            var dotsHtml = '';
+            for (var i = 0; i < totalPages; i++) {
+                dotsHtml += '<span class="news-dot' + (i === currentNewsPage ? ' active' : '') + '" data-page="' + i + '"></span>';
+            }
+            dotsContainer.innerHTML = dotsHtml;
+
+            // Add click to dots
+            var dots = dotsContainer.querySelectorAll('.news-dot');
+            for (var d = 0; d < dots.length; d++) {
+                dots[d].addEventListener('click', function() {
+                    currentNewsPage = parseInt(this.getAttribute('data-page'));
+                    renderNewsPage();
+                    updateNewsPagination();
+                });
+            }
+        }
+    }
+
+    function initNewsPagination() {
+        var prevBtn = document.getElementById('newsPrev');
+        var nextBtn = document.getElementById('newsNext');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                var totalPages = Math.ceil(landingNoticias.length / newsPerPage);
+                if (totalPages === 0) return;
+                currentNewsPage = (currentNewsPage - 1 + totalPages) % totalPages;
+                renderNewsPage();
+                updateNewsPagination();
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                var totalPages = Math.ceil(landingNoticias.length / newsPerPage);
+                if (totalPages === 0) return;
+                currentNewsPage = (currentNewsPage + 1) % totalPages;
+                renderNewsPage();
+                updateNewsPagination();
+            });
+        }
+    }
+
     /* ──────────────────────────────────
-       💿 CARGAR ÁLBUMES DESTACADOS
+       💿 CARGAR ÁLBUMES — SHOWCASE
        ────────────────────────────────── */
     async function cargarAlbumesDestacados(){
         if (!albumesContainer) return;
-        albumesContainer.innerHTML = generarSkeletonAlbumes(2);
+        albumesContainer.innerHTML = generarSkeletonAlbumes(4);
         try {
-            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(2);
+            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(4);
             if (r.error) throw r.error;
             if (!r.data || r.data.length === 0) {
                 albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">💿</div><h3 class="empty-state-title">Sin álbumes aún</h3><p class="empty-state-text">Los últimos álbumes aparecerán aquí</p></div>';
+                hideShowcaseHud();
                 return;
             }
             landingAlbumes = r.data;
@@ -424,24 +492,47 @@
                 html += crearCardAlbum(r.data[i], i);
             }
             albumesContainer.innerHTML = html;
+            updateShowcaseHud(r.data[0]);
             setTimeout(function() { applyScrollRevealToChildren('#albumes-grid'); }, 50);
         } catch(err) {
             console.error('Error álbumes:', err);
             if (albumesContainer) {
                 albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar álbumes</h3></div>';
             }
+            hideShowcaseHud();
         }
     }
 
+    function updateShowcaseHud(album) {
+        if (!album) return;
+        var titleEl = document.getElementById('showcaseTitle');
+        var artistEl = document.getElementById('showcaseArtist');
+        var hudEl = document.getElementById('showcaseHud');
+        var tracksEl = hudEl ? hudEl.querySelector('.showcase-hud-tracks') : null;
+
+        if (titleEl) titleEl.textContent = album.titulo || '';
+        if (artistEl) artistEl.textContent = album.artista ? album.artista + ' • ' + new Date().getFullYear() + ' Edition' : 'KXON • ' + new Date().getFullYear() + ' Edition';
+        if (tracksEl) {
+            var cnt = album.canciones ? album.canciones.length : 0;
+            tracksEl.textContent = '01 / ' + (cnt < 10 ? '0' : '') + cnt + ' TRACKS';
+        }
+        if (hudEl) hudEl.style.display = '';
+    }
+
+    function hideShowcaseHud() {
+        var hudEl = document.getElementById('showcaseHud');
+        if (hudEl) hudEl.style.display = 'none';
+    }
+
     /* ──────────────────────────────────
-       🃏 CREAR CARD NOTICIA HTML
+       🃏 CREAR CARD NOTICIA — CINEMATIC
        ────────────────────────────────── */
     function crearCardNoticia(n, idx){
-        var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
-        var img = n.imagen_url || 'https://placehold.co/600x400/111111/333333?text=KXON+NEWS';
+        var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+        var img = n.imagen_url || 'https://placehold.co/600x400/161616/333333?text=KXON+NEWS';
         return '<article class="noticia-card" onclick="window._landingAbrirNoticia(' + idx + ')">' +
             '<div class="noticia-imagen">' +
-            '<img src="' + img + '" alt="" loading="lazy" onerror="this.src=\'https://placehold.co/600x400/111111/333333?text=KXON\'">' +
+            '<img src="' + img + '" alt="" loading="lazy" onerror="this.src=\'https://placehold.co/600x400/161616/333333?text=KXON\'">' +
             '<span class="noticia-fecha">' + fecha + '</span></div>' +
             '<div class="noticia-body">' +
             '<h3 class="noticia-titulo">' + n.titulo + '</h3>' +
@@ -450,12 +541,12 @@
     }
 
     /* ──────────────────────────────────
-       🃏 CREAR CARD ÁLBUM HTML
+       🃏 CREAR CARD ÁLBUM — SHOWCASE
        ────────────────────────────────── */
     function crearCardAlbum(a, idx){
         var img = a.imagen_url || 'https://placehold.co/400x400/111111/333333?text=♪';
         var cnt = a.canciones ? a.canciones.length : 0;
-        return '<article class="album-card" onclick="window._landingAbrirAlbum(' + idx + ')">' +
+        return '<article class="album-card" onclick="window._landingAbrirAlbum(' + idx + ')" onmouseenter="window._showcaseHover(' + idx + ')">' +
             '<div class="album-cover">' +
             '<img src="' + img + '" alt="" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/111111/333333?text=♪\'">' +
             '<div class="album-cover-overlay"><div class="album-cover-icon">👁</div></div></div>' +
@@ -463,6 +554,14 @@
             '<h4 class="album-titulo">' + a.titulo + '</h4>' +
             '<span class="album-canciones">' + cnt + ' canciones</span></div></article>';
     }
+
+    /* ──────────────────────────────────
+       🎯 SHOWCASE HOVER — Update HUD
+       ────────────────────────────────── */
+    window._showcaseHover = function(idx) {
+        var album = landingAlbumes[idx];
+        if (album) updateShowcaseHud(album);
+    };
 
     /* ──────────────────────────────────
        📰 ABRIR NOTICIA (MODAL)
@@ -572,7 +671,7 @@
     function generarSkeletonNoticias(n){
         var h = '';
         for (var i = 0; i < n; i++) {
-            h += '<article class="noticia-card"><div class="skeleton skeleton-img"></div><div class="noticia-body"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></article>';
+            h += '<article class="noticia-card"><div class="skeleton" style="width:100%;aspect-ratio:16/9;border-radius:8px;"></div><div class="noticia-body"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></article>';
         }
         return h;
     }
@@ -601,6 +700,7 @@
         initHeroIntro();
         initSmoothScroll();
         initModalClose();
+        initNewsPagination();
 
         if (noticiasContainer) cargarNoticias();
         if (albumesContainer) cargarAlbumesDestacados();
@@ -608,7 +708,7 @@
         handleHeaderScroll();
         updateScrollProgress();
 
-        console.log('🎵 KXON Landing inicializada con Hero Intro + 30s Preview (sin Assembly)');
+        console.log('🎵 KXON Landing v2026 — Masterclass + Cinematic + Showcase');
     });
 
 })();
