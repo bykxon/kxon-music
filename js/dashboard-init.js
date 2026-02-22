@@ -97,25 +97,31 @@
        🛑 HELPER: DETENER TODAS LAS FUENTES DE AUDIO
        ══════════════════════════════════════════ */
     window.KXON.stopAllAudio = function (except) {
-        if (except !== 'player' && K.audioEl) {
-            K.audioEl.pause();
-        }
-        if (except !== 'radio') {
-            K.radioAudio.pause();
-            if (K.radioIsPlaying) {
-                K.radioIsPlaying = false;
-                var d = $('radioDisc'); if (d) d.classList.remove('spinning');
-                var pb = $('radioPlayBtn'); if (pb) pb.classList.remove('playing');
-                var pi = $('radioPlayIcon'); if (pi) pi.textContent = '▶';
+    if (except !== 'player' && K.audioEl) {
+        K.audioEl.pause();
+    }
+    if (except !== 'radio') {
+        K.radioAudio.pause();
+        if (K.radioIsPlaying) {
+            K.radioIsPlaying = false;
+            var d = $('kxRadDisc'); if (d) d.classList.remove('is-spinning');
+            var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
+            var pi = $('kxRadPlayBtn');
+            if (pi) {
+                var playIcon = pi.querySelector('.kx-rad-icon-play');
+                var pauseIcon = pi.querySelector('.kx-rad-icon-pause');
+                if (playIcon) playIcon.style.display = 'block';
+                if (pauseIcon) pauseIcon.style.display = 'none';
             }
         }
-        if (except !== 'market') {
-            K.marketPreviewAudio.pause();
-        }
-        if (except !== 'archivo') {
-            K.archivoPreviewAudio.pause();
-        }
-    };
+    }
+    if (except !== 'market') {
+        K.marketPreviewAudio.pause();
+    }
+    if (except !== 'archivo') {
+        K.archivoPreviewAudio.pause();
+    }
+};
 
     /* ══════════════════════════════════════════
        🔒 VERIFICACIÓN DE SUSCRIPCIÓN
@@ -519,8 +525,8 @@
             if (K.activeSource === 'radio') {
                 K.radioAudio.pause();
                 K.radioIsPlaying = false;
-                var d = $('radioDisc'); if (d) d.classList.remove('spinning');
-                var pb = $('radioPlayBtn'); if (pb) pb.classList.remove('playing');
+                var d = $('kxRadDisc'); if (d) d.classList.remove('is-spinning');
+var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
                 var pi = $('radioPlayIcon'); if (pi) pi.textContent = '▶';
             } else if (K.activeSource === 'archivo') {
                 K.archivoPreviewAudio.pause();
@@ -725,10 +731,10 @@
 
         K.radioAudio.pause(); K.radioAudio.currentTime = 0;
         K.radioIsPlaying = false;
-        var rd = $('radioDisc'); if (rd) rd.classList.remove('spinning');
-        var rpb = $('radioPlayBtn'); if (rpb) rpb.classList.remove('playing');
+        var rd = $('kxRadDisc'); if (rd) rd.classList.remove('is-spinning');
+var rpb = $('kxRadPlayBtn'); if (rpb) rpb.classList.remove('is-playing');
         var rpi = $('radioPlayIcon'); if (rpi) rpi.textContent = '▶';
-        var rgl = $('radioProgressGlow'); if (rgl) rgl.classList.remove('visible');
+        var rgl = $('kxRadProgressThumb'); // era radioProgressGlow
 
         var archItems = document.querySelectorAll('.archivo-audio-item');
         for (var ai = 0; ai < archItems.length; ai++) {

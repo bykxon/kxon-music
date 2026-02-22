@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/dashboard-analytics.css">
     <link rel="stylesheet" href="css/dashboard-albumes.css">
     <link rel="stylesheet" href="css/dashboard-canciones.css">
+    <link rel="stylesheet" href="css/dashboard-radio.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -2119,41 +2120,234 @@
     <button class="kx-alb-ctx-item kx-alb-ctx-admin" data-action="delete" role="menuitem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button>
   </div>
 </div>
-                <!-- 📻 PANEL: RADIO -->
-                <div class="panel" id="panel-radio">
-                    <div class="radio-hero">
-                        <div class="radio-hero-bg"></div>
-                        <div class="radio-hero-particles"><div class="radio-particle"></div><div class="radio-particle"></div><div class="radio-particle"></div><div class="radio-particle"></div><div class="radio-particle"></div><div class="radio-particle"></div></div>
-                        <div class="radio-hero-ambient" id="radioAmbient"></div>
-                        <div class="radio-hero-inner">
-                            <div class="radio-vinyl-stage">
-                                <div class="radio-vinyl-glow" id="radioVinylGlow"></div>
-                                <div class="radio-vinyl-wrapper">
-                                    <div class="radio-vinyl" id="radioDisc">
-                                        <div class="radio-vinyl-img-wrap"><img class="radio-vinyl-img" id="radioDiscImg" src="" alt=""></div>
-                                        <div class="radio-vinyl-fallback" id="radioDiscFallback"><span class="radio-vinyl-fallback-note">♪</span><span class="radio-vinyl-fallback-text">KXON</span></div>
-                                        <div class="radio-vinyl-overlay"></div>
-                                        <div class="radio-vinyl-grooves"></div>
-                                        <div class="radio-vinyl-label"><div class="radio-vinyl-label-inner"><span class="radio-vinyl-label-brand">KXON</span><span class="radio-vinyl-label-rpm">33 RPM</span></div></div>
-                                        <div class="radio-vinyl-shine"></div>
-                                    </div>
-                                </div>
-                                <div class="radio-arm" id="radioTonearm"><div class="radio-arm-pivot"></div><div class="radio-arm-bar"></div><div class="radio-arm-head"><div class="radio-arm-needle"></div></div></div>
-                            </div>
-                            <div class="radio-control-panel">
-                                <div class="radio-station"><div class="radio-station-dial"><span class="radio-station-freq">98.7</span><span class="radio-station-unit">FM</span></div><div class="radio-station-info"><span class="radio-station-name">KXON RADIO</span><span class="radio-station-tagline">Exclusivo · Sin límites</span></div></div>
-                                <div class="radio-on-air" id="radioOnAir"><span class="radio-on-air-dot"></span><span class="radio-on-air-text">ON AIR</span><span class="radio-on-air-live">LIVE</span></div>
-                                <div class="radio-now-playing"><div class="radio-now-label">REPRODUCIENDO</div><h2 class="radio-now-title" id="radioTrackTitle">Selecciona una canción</h2><p class="radio-now-album" id="radioTrackAlbum">KXON Radio</p></div>
-                                <div class="radio-visualizer" id="radioWave"><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div><div class="radio-viz-bar"></div></div>
-                                <div class="radio-progress-section"><span class="radio-time" id="radioCurrentTime">0:00</span><div class="radio-progress-bar" id="radioProgressBar"><div class="radio-progress-track"></div><div class="radio-progress-fill" id="radioProgressFill"></div><div class="radio-progress-glow" id="radioProgressGlow"></div></div><span class="radio-time" id="radioDuration">0:00</span></div>
-                                <div class="radio-controls"><button class="radio-ctrl shuffle-btn" id="radioShuffle" title="Aleatorio">🔀</button><button class="radio-ctrl nav-btn" id="radioPrev" title="Anterior">⏮</button><button class="radio-main-play" id="radioPlayBtn" title="Play/Pause"><span class="radio-main-play-icon" id="radioPlayIcon">▶</span><div class="radio-main-play-pulse"></div><div class="radio-main-play-pulse p2"></div><div class="radio-main-play-pulse p3"></div></button><button class="radio-ctrl nav-btn" id="radioNext" title="Siguiente">⏭</button><div class="radio-ctrl" style="visibility:hidden;">_</div></div>
-                                <div class="radio-volume-section"><span class="radio-vol-icon" id="radioVolIcon">🔊</span><div class="radio-volume-bar" id="radioVolumeBar"><div class="radio-volume-fill" id="radioVolumeFill" style="width:70%"><div class="radio-volume-thumb"></div></div></div><span class="radio-vol-pct" id="radioVolPct">70%</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="radio-queue-section"><div class="radio-queue-header"><div class="radio-queue-header-left"><div class="radio-queue-icon-wrap"><div class="radio-queue-icon-eq"><div class="rqi-bar"></div><div class="rqi-bar"></div><div class="rqi-bar"></div></div></div><div><div class="radio-queue-title-text">Cola de Reproducción</div><span class="radio-queue-count" id="radioQueueCount">0 canciones en cola</span></div></div></div><div class="radio-queue-list" id="radioQueueList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Cargando radio...</div></div></div></div>
-                </div>
+                <!-- 📻 PANEL: RADIO KXON — REDESIGN 2026 -->
+<div class="panel" id="panel-radio">
 
+  <!-- ═══ HERO: PLAYER INMERSIVO ═══ -->
+  <section class="kx-rad-hero" aria-label="Reproductor de Radio KXON">
+    <div class="kx-rad-hero-bg" id="kxRadHeroBg"></div>
+    <div class="kx-rad-hero-overlay"></div>
+    <div class="kx-rad-hero-grain"></div>
+
+    <div class="kx-rad-hero-inner">
+
+      <!-- VINYL -->
+      <div class="kx-rad-vinyl-stage" aria-hidden="true">
+        <div class="kx-rad-vinyl-glow" id="kxRadVinylGlow"></div>
+        <div class="kx-rad-vinyl" id="kxRadDisc">
+          <div class="kx-rad-vinyl-art">
+            <img class="kx-rad-vinyl-img" id="kxRadDiscImg" src="" alt="Portada actual" loading="lazy">
+            <div class="kx-rad-vinyl-fallback" id="kxRadDiscFallback">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              <span class="kx-rad-vinyl-fallback-brand">KXON</span>
+            </div>
+          </div>
+          <div class="kx-rad-vinyl-overlay"></div>
+          <div class="kx-rad-vinyl-grooves"></div>
+          <div class="kx-rad-vinyl-label">
+            <span class="kx-rad-vinyl-label-brand">KXON</span>
+            <span class="kx-rad-vinyl-label-rpm">33⅓</span>
+          </div>
+          <div class="kx-rad-vinyl-shine"></div>
+        </div>
+        <!-- Tonearm -->
+        <div class="kx-rad-arm" id="kxRadArm">
+          <div class="kx-rad-arm-pivot"></div>
+          <div class="kx-rad-arm-bar"></div>
+          <div class="kx-rad-arm-head">
+            <div class="kx-rad-arm-needle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTROL PANEL -->
+      <div class="kx-rad-controls-panel">
+
+        <!-- Station ID + On Air -->
+        <div class="kx-rad-station-row">
+          <div class="kx-rad-station-id">
+            <div class="kx-rad-station-dial">
+              <span class="kx-rad-station-freq">98.7</span>
+              <span class="kx-rad-station-unit">FM</span>
+            </div>
+            <div class="kx-rad-station-meta">
+              <span class="kx-rad-station-name">KXON RADIO</span>
+              <span class="kx-rad-station-tagline">Exclusivo · Sin límites</span>
+            </div>
+          </div>
+          <div class="kx-rad-on-air" id="kxRadOnAir" aria-live="polite">
+            <span class="kx-rad-on-air-dot"></span>
+            <span class="kx-rad-on-air-label">ON AIR</span>
+            <span class="kx-rad-on-air-badge">LIVE</span>
+          </div>
+        </div>
+
+        <!-- Now Playing -->
+        <div class="kx-rad-now" aria-live="polite" aria-atomic="true">
+          <span class="kx-rad-now-label">REPRODUCIENDO</span>
+          <h2 class="kx-rad-now-title" id="kxRadTitle">Selecciona una canción</h2>
+          <p class="kx-rad-now-album" id="kxRadAlbum">KXON Radio</p>
+        </div>
+
+        <!-- Visualizer -->
+        <div class="kx-rad-visualizer" id="kxRadWave" aria-hidden="true"></div>
+
+        <!-- Progress -->
+        <div class="kx-rad-progress" role="group" aria-label="Progreso de reproducción">
+          <span class="kx-rad-time" id="kxRadTimeCurrent" aria-label="Tiempo actual">0:00</span>
+          <div class="kx-rad-progress-bar" id="kxRadProgressBar" role="slider" aria-label="Barra de progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+            <div class="kx-rad-progress-track"></div>
+            <div class="kx-rad-progress-fill" id="kxRadProgressFill"></div>
+            <div class="kx-rad-progress-thumb" id="kxRadProgressThumb"></div>
+          </div>
+          <span class="kx-rad-time" id="kxRadTimeDuration" aria-label="Duración total">0:00</span>
+        </div>
+
+        <!-- Transport Controls -->
+        <div class="kx-rad-transport" role="toolbar" aria-label="Controles de reproducción">
+          <button class="kx-rad-btn-ctrl kx-rad-btn-shuffle" id="kxRadShuffle" aria-label="Modo aleatorio" aria-pressed="false" title="Aleatorio">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+          </button>
+          <button class="kx-rad-btn-ctrl kx-rad-btn-nav" id="kxRadPrev" aria-label="Canción anterior" title="Anterior">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+          </button>
+          <button class="kx-rad-btn-play" id="kxRadPlayBtn" aria-label="Reproducir" title="Play/Pause">
+            <span class="kx-rad-btn-play-icon" id="kxRadPlayIcon">
+              <svg class="kx-rad-icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="kx-rad-icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>
+            </span>
+            <div class="kx-rad-btn-play-pulse"></div>
+            <div class="kx-rad-btn-play-pulse kx-rad-p2"></div>
+          </button>
+          <button class="kx-rad-btn-ctrl kx-rad-btn-nav" id="kxRadNext" aria-label="Siguiente canción" title="Siguiente">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6z"/></svg>
+          </button>
+          <div class="kx-rad-btn-ctrl" style="visibility:hidden" aria-hidden="true"></div>
+        </div>
+
+        <!-- Volume -->
+        <div class="kx-rad-volume" role="group" aria-label="Control de volumen">
+          <button class="kx-rad-vol-icon" id="kxRadVolIcon" aria-label="Silenciar" title="Silenciar/Activar">
+            <svg class="kx-rad-icon-vol-high" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg class="kx-rad-icon-vol-mid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg class="kx-rad-icon-vol-low" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+            <svg class="kx-rad-icon-vol-mute" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+          <div class="kx-rad-vol-bar" id="kxRadVolBar" role="slider" aria-label="Volumen" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" tabindex="0">
+            <div class="kx-rad-vol-track"></div>
+            <div class="kx-rad-vol-fill" id="kxRadVolFill" style="width:70%">
+              <div class="kx-rad-vol-thumb"></div>
+            </div>
+          </div>
+          <span class="kx-rad-vol-pct" id="kxRadVolPct">70%</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ QUEUE SECTION ═══ -->
+  <section class="kx-rad-queue" aria-label="Cola de reproducción">
+
+    <!-- Queue Header -->
+    <div class="kx-rad-queue-header">
+      <div class="kx-rad-queue-header-left">
+        <div class="kx-rad-queue-icon">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <h3 class="kx-rad-queue-title">Cola de Reproducción</h3>
+          <span class="kx-rad-queue-count" id="kxRadQueueCount">0 canciones en cola</span>
+        </div>
+      </div>
+      <div class="kx-rad-queue-header-right">
+        <!-- Search -->
+        <div class="kx-rad-queue-search" id="kxRadQueueSearch">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="kx-rad-queue-search-input" id="kxRadSearchInput" placeholder="Buscar en cola..." aria-label="Buscar canciones en la cola" autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <!-- Queue Stats -->
+    <div class="kx-rad-queue-stats" id="kxRadQueueStats">
+      <div class="kx-rad-queue-stat">
+        <span class="kx-rad-queue-stat-value" id="kxRadStatTotal">0</span>
+        <span class="kx-rad-queue-stat-label">CANCIONES</span>
+      </div>
+      <div class="kx-rad-queue-stat-divider"></div>
+      <div class="kx-rad-queue-stat">
+        <span class="kx-rad-queue-stat-value" id="kxRadStatPlays">0</span>
+        <span class="kx-rad-queue-stat-label">REPRODUCCIONES</span>
+      </div>
+      <div class="kx-rad-queue-stat-divider"></div>
+      <div class="kx-rad-queue-stat">
+        <span class="kx-rad-queue-stat-value" id="kxRadStatDuration">0:00</span>
+        <span class="kx-rad-queue-stat-label">DURACIÓN TOTAL</span>
+      </div>
+    </div>
+
+    <!-- Queue List -->
+    <div class="kx-rad-queue-list" id="kxRadQueueList" role="list" aria-label="Lista de canciones en cola">
+      <!-- Skeleton loader initial -->
+      <div class="kx-rad-skeleton-item" aria-hidden="true">
+        <div class="kx-rad-skeleton-num"></div>
+        <div class="kx-rad-skeleton-cover"></div>
+        <div class="kx-rad-skeleton-info">
+          <div class="kx-rad-skeleton-line"></div>
+          <div class="kx-rad-skeleton-line kx-rad-skeleton-line--short"></div>
+        </div>
+        <div class="kx-rad-skeleton-dur"></div>
+      </div>
+      <div class="kx-rad-skeleton-item" aria-hidden="true">
+        <div class="kx-rad-skeleton-num"></div>
+        <div class="kx-rad-skeleton-cover"></div>
+        <div class="kx-rad-skeleton-info">
+          <div class="kx-rad-skeleton-line"></div>
+          <div class="kx-rad-skeleton-line kx-rad-skeleton-line--short"></div>
+        </div>
+        <div class="kx-rad-skeleton-dur"></div>
+      </div>
+      <div class="kx-rad-skeleton-item" aria-hidden="true">
+        <div class="kx-rad-skeleton-num"></div>
+        <div class="kx-rad-skeleton-cover"></div>
+        <div class="kx-rad-skeleton-info">
+          <div class="kx-rad-skeleton-line"></div>
+          <div class="kx-rad-skeleton-line kx-rad-skeleton-line--short"></div>
+        </div>
+        <div class="kx-rad-skeleton-dur"></div>
+      </div>
+      <div class="kx-rad-skeleton-item" aria-hidden="true">
+        <div class="kx-rad-skeleton-num"></div>
+        <div class="kx-rad-skeleton-cover"></div>
+        <div class="kx-rad-skeleton-info">
+          <div class="kx-rad-skeleton-line"></div>
+          <div class="kx-rad-skeleton-line kx-rad-skeleton-line--short"></div>
+        </div>
+        <div class="kx-rad-skeleton-dur"></div>
+      </div>
+      <div class="kx-rad-skeleton-item" aria-hidden="true">
+        <div class="kx-rad-skeleton-num"></div>
+        <div class="kx-rad-skeleton-cover"></div>
+        <div class="kx-rad-skeleton-info">
+          <div class="kx-rad-skeleton-line"></div>
+          <div class="kx-rad-skeleton-line kx-rad-skeleton-line--short"></div>
+        </div>
+        <div class="kx-rad-skeleton-dur"></div>
+      </div>
+    </div>
+
+    <!-- No Results (hidden by default) -->
+    <div class="kx-rad-no-results" id="kxRadNoResults" style="display:none" role="status">
+      <div class="kx-rad-no-results-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <p class="kx-rad-no-results-title">Sin resultados</p>
+      <p class="kx-rad-no-results-text">No se encontraron canciones con ese término</p>
+    </div>
+
+  </section>
+</div>
                 <!-- 🎵 PANEL: CANCIONES — KXON 2026 REBUILD -->
 <div class="panel" id="panel-canciones">
 

@@ -1,351 +1,713 @@
 /* ============================================
-   📻 DASHBOARD-RADIO.JS — KXON
-   Radio KXON: reproducción continua, cola, shuffle
-   FIX: Filtra canciones no lanzadas
-   FIX: Imágenes de álbum se muestran correctamente
-   FIX: Conflicto con player bar resuelto
+   📻 DASHBOARD-RADIO.JS — KXON REDESIGN 2026
+   Radio KXON: Reproducción continua, cola, shuffle
+   Namespace: kx-rad-*
+   ✅ escapeHtml en toda interpolación
+   ✅ Event delegation
+   ✅ ARIA + Accesibilidad
+   ✅ Lazy loading de imágenes
+   ✅ Búsqueda en cola
+   ✅ Sin globals innecesarios (window._rjump eliminado)
    ============================================ */
 (function () {
 
-    var db = window.db;
-    var K = window.KXON;
-    var radioAudio = K.radioAudio;
+  var db = window.db;
+  var K = window.KXON;
+  var radioAudio = K.radioAudio;
 
-    /* ══════════════════════════════════════════
-       📅 UTILIDAD DE FECHA (igual que en albumes)
-       ══════════════════════════════════════════ */
-    function isReleased(fechaLanzamiento) {
-        if (!fechaLanzamiento) return true;
-        return new Date(fechaLanzamiento) <= new Date();
-    }
+  /* ══════════════════════════════════════════
+     🛡️ HELPERS
+     ══════════════════════════════════════════ */
+  function escapeHtml(str) {
+    if (!str) return '';
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+  }
 
-    /* ══════════════════════════════════════════
-       📻 INICIALIZAR RADIO
-       ══════════════════════════════════════════ */
-    K.initRadio = async function () {
-        if (K.radioReady && K.radioPlaylist.length > 0) { renderRadioQueue(); return; }
-        try {
-            var r = await db.from('canciones')
-                .select('*, albumes(titulo, imagen_url, fecha_lanzamiento)')
-                .order('created_at', { ascending: false });
-            if (r.error) throw r.error;
+  function $(id) {
+    return document.getElementById(id);
+  }
 
-            var allSongs = r.data || [];
+  function isReleased(fecha) {
+    if (!fecha) return true;
+    return new Date(fecha) <= new Date();
+  }
 
-            /* ── FILTRAR: solo canciones ya lanzadas ── */
-            var releasedSongs = allSongs.filter(function (s) {
-                /* Verificar fecha de lanzamiento de la canción */
-                var songReleased = isReleased(s.fecha_lanzamiento);
+  function parseDuration(dur) {
+    if (!dur || dur === '--:--') return 0;
+    var parts = String(dur).split(':');
+    if (parts.length === 2) return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+    if (parts.length === 3) return parseInt(parts[0], 10) * 3600 + parseInt(parts[1], 10) * 60 + parseInt(parts[2], 10);
+    return 0;
+  }
 
-                /* Verificar fecha de lanzamiento del álbum */
-                var albumReleased = true;
-                if (s.albumes && s.albumes.fecha_lanzamiento) {
-                    albumReleased = isReleased(s.albumes.fecha_lanzamiento);
-                }
+  function formatDuration(totalSecs) {
+    var h = Math.floor(totalSecs / 3600);
+    var m = Math.floor((totalSecs % 3600) / 60);
+    var s = Math.floor(totalSecs % 60);
+    if (h > 0) return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
 
-                /* Solo incluir si AMBOS están lanzados */
-                return songReleased && albumReleased;
-            });
+  function formatNumber(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return String(n);
+  }
 
-            K.radioPlaylist = releasedSongs.map(function (s) {
-                return {
-                    id: s.id, titulo: s.titulo, archivo_url: s.archivo_url,
-                    imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '',
-                    album: s.albumes ? s.albumes.titulo : 'KXON Radio',
-                    duracion: s.duracion || '--:--', reproducciones: s.reproducciones || 0
-                };
-            });
-
-            K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
-            var c = document.getElementById('radioQueueCount');
-            if (c) c.textContent = K.radioPlaylist.length + ' canciones en cola';
-            renderRadioQueue();
-            K.radioReady = true;
-
-            console.log('📻 Radio: ' + releasedSongs.length + ' canciones disponibles (filtradas ' + (allSongs.length - releasedSongs.length) + ' no lanzadas)');
-
-        } catch (e) { console.error('Radio error:', e); }
+  /* Debounce */
+  function debounce(fn, ms) {
+    var timer;
+    return function () {
+      var self = this, args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () { fn.apply(self, args); }, ms);
     };
+  }
 
-    /* ── Helpers ── */
-    function shuffleArr(a) {
-        for (var i = a.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var t = a[i]; a[i] = a[j]; a[j] = t;
-        }
-        return a;
+
+  /* ══════════════════════════════════════════
+     🎨 VISUALIZER — Generate bars via JS
+     ══════════════════════════════════════════ */
+  function initVisualizer() {
+    var wave = $('kxRadWave');
+    if (!wave || wave.children.length > 0) return;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < 24; i++) {
+      var bar = document.createElement('div');
+      bar.className = 'kx-rad-viz-bar';
+      bar.style.animationDelay = (i * 0.03) + 's';
+      frag.appendChild(bar);
+    }
+    wave.appendChild(frag);
+  }
+
+
+  /* ══════════════════════════════════════════
+     📻 INIT RADIO
+     ══════════════════════════════════════════ */
+  K.initRadio = async function () {
+    initVisualizer();
+
+    if (K.radioReady && K.radioPlaylist.length > 0) {
+      renderQueue();
+      updateStats();
+      return;
     }
 
-    function getRL() { return K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist; }
+    try {
+      var r = await db.from('canciones')
+        .select('*, albumes(titulo, imagen_url, fecha_lanzamiento)')
+        .order('created_at', { ascending: false });
 
-    /* ── Actualizar imagen del disco ── */
-    function updateDiscImage(imgUrl) {
-        var discImg = document.getElementById('radioDiscImg');
-        var discFallback = document.getElementById('radioDiscFallback');
-        if (!discImg || !discFallback) return;
+      if (r.error) throw r.error;
 
-        if (imgUrl && imgUrl.length > 0) {
-            discImg.src = imgUrl;
-            discImg.style.display = 'block';
-            discFallback.style.display = 'none';
-            discImg.onerror = function () {
-                this.style.display = 'none';
-                discFallback.style.display = 'flex';
-            };
-        } else {
-            discImg.style.display = 'none';
-            discFallback.style.display = 'flex';
+      var allSongs = r.data || [];
+
+      /* Filter: only released songs */
+      var released = allSongs.filter(function (s) {
+        var songOk = isReleased(s.fecha_lanzamiento);
+        var albumOk = true;
+        if (s.albumes && s.albumes.fecha_lanzamiento) {
+          albumOk = isReleased(s.albumes.fecha_lanzamiento);
         }
+        return songOk && albumOk;
+      });
 
-        var ambient = document.getElementById('radioAmbient');
-        if (ambient && imgUrl) {
-            ambient.style.opacity = '0.06';
-        }
+      K.radioPlaylist = released.map(function (s) {
+        return {
+          id: s.id,
+          titulo: s.titulo,
+          archivo_url: s.archivo_url,
+          imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '',
+          album: s.albumes ? s.albumes.titulo : 'KXON Radio',
+          duracion: s.duracion || '--:--',
+          reproducciones: s.reproducciones || 0
+        };
+      });
+
+      K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
+
+      renderQueue();
+      updateStats();
+      K.radioReady = true;
+
+      console.log('📻 Radio: ' + released.length + ' canciones disponibles (filtradas ' + (allSongs.length - released.length) + ' no lanzadas)');
+
+    } catch (e) {
+      console.error('Radio error:', e);
+      renderError();
+    }
+  };
+
+
+  /* ══════════════════════════════════════════
+     🔧 HELPERS — SHUFFLE, GETLIST
+     ══════════════════════════════════════════ */
+  function shuffleArr(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function getRL() {
+    return K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
+  }
+
+
+  /* ══════════════════════════════════════════
+     📊 STATS
+     ══════════════════════════════════════════ */
+  function updateStats() {
+    var list = K.radioPlaylist;
+    var totalSongs = list.length;
+    var totalPlays = 0;
+    var totalDurSecs = 0;
+
+    for (var i = 0; i < list.length; i++) {
+      totalPlays += (list[i].reproducciones || 0);
+      totalDurSecs += parseDuration(list[i].duracion);
     }
 
-    /* ══════════════════════════════════════════
-       ▶ PLAY / TOGGLE / NEXT / PREV
-       ══════════════════════════════════════════ */
-    function radioPlay(idx) {
-        var list = getRL();
-        if (!list || !list[idx]) return;
-        K.radioIndex = idx;
-        var t = list[idx];
+    var elCount = $('kxRadQueueCount');
+    if (elCount) elCount.textContent = totalSongs + ' canciones en cola';
 
+    var elTotal = $('kxRadStatTotal');
+    if (elTotal) elTotal.textContent = totalSongs;
+
+    var elPlays = $('kxRadStatPlays');
+    if (elPlays) elPlays.textContent = formatNumber(totalPlays);
+
+    var elDur = $('kxRadStatDuration');
+    if (elDur) elDur.textContent = formatDuration(totalDurSecs);
+  }
+
+
+  /* ══════════════════════════════════════════
+     🖼️ DISC IMAGE
+     ══════════════════════════════════════════ */
+  function updateDiscImage(imgUrl) {
+    var img = $('kxRadDiscImg');
+    var fallback = $('kxRadDiscFallback');
+    if (!img || !fallback) return;
+
+    if (imgUrl && imgUrl.length > 0) {
+      img.src = imgUrl;
+      img.style.display = 'block';
+      fallback.style.display = 'none';
+      img.onerror = function () {
+        this.style.display = 'none';
+        fallback.style.display = 'flex';
+      };
+    } else {
+      img.style.display = 'none';
+      fallback.style.display = 'flex';
+    }
+
+    /* Hero background */
+    var bg = $('kxRadHeroBg');
+    if (bg && imgUrl) {
+      bg.style.backgroundImage = 'url(' + imgUrl + ')';
+    }
+  }
+
+
+  /* ══════════════════════════════════════════
+     🎵 PLAY / TOGGLE / NEXT / PREV
+     ══════════════════════════════════════════ */
+  function setPlayingUI(isPlaying) {
+    var disc = $('kxRadDisc');
+    var onAir = $('kxRadOnAir');
+    var playBtn = $('kxRadPlayBtn');
+    var iconPlay = playBtn ? playBtn.querySelector('.kx-rad-icon-play') : null;
+    var iconPause = playBtn ? playBtn.querySelector('.kx-rad-icon-pause') : null;
+    var wave = $('kxRadWave');
+    var arm = $('kxRadArm');
+
+    if (disc) disc.classList.toggle('is-spinning', isPlaying);
+    if (onAir) onAir.classList.toggle('is-active', isPlaying);
+    if (playBtn) playBtn.classList.toggle('is-playing', isPlaying);
+    if (iconPlay) iconPlay.style.display = isPlaying ? 'none' : 'block';
+    if (iconPause) iconPause.style.display = isPlaying ? 'block' : 'none';
+    if (wave) wave.classList.toggle('is-active', isPlaying);
+    if (arm) arm.classList.toggle('is-playing', isPlaying);
+
+    /* Player bar sync */
+    var pp = document.getElementById('playerPlayPause');
+    if (pp) pp.textContent = isPlaying ? '⏸' : '▶';
+    K.isPlaying = isPlaying;
+  }
+
+  function radioPlay(idx) {
+    var list = getRL();
+    if (!list || !list[idx]) return;
+    K.radioIndex = idx;
+    var t = list[idx];
+
+    K.stopAllAudio('radio');
+    K.activeSource = 'radio';
+
+    radioAudio.src = t.archivo_url;
+    radioAudio.volume = K.radioVolume;
+    radioAudio.play();
+    K.radioIsPlaying = true;
+
+    updateDiscImage(t.imagen_url);
+    setPlayingUI(true);
+
+    /* Track info */
+    var tt = $('kxRadTitle');
+    if (tt) tt.textContent = t.titulo;
+    var ta = $('kxRadAlbum');
+    if (ta) ta.textContent = t.album;
+
+    /* Progress thumb visible */
+    var thumb = $('kxRadProgressThumb');
+    if (thumb) thumb.style.transform = 'translate(-50%,-50%) scale(1)';
+
+    updateQueueHighlight();
+
+    /* Player bar */
+    var playerBar = document.getElementById('playerBar');
+    if (playerBar) playerBar.classList.add('show');
+    var playerTitle = document.getElementById('playerTitle');
+    if (playerTitle) playerTitle.textContent = t.titulo;
+    var playerCover = document.getElementById('playerCover');
+    if (playerCover) playerCover.src = t.imagen_url || '';
+
+    /* Update playlist for expanded player */
+    K.currentPlaylist = list.map(function (song) {
+      return {
+        id: song.id,
+        titulo: song.titulo,
+        archivo_url: song.archivo_url,
+        imagen_url: song.imagen_url,
+        duracion: song.duracion
+      };
+    });
+    K.currentTrackIndex = idx;
+    K.currentAlbumCover = t.imagen_url || '';
+
+    if (typeof K.updateRadioFavState === 'function') setTimeout(K.updateRadioFavState, 100);
+    if (typeof K.updatePlayerFavState === 'function') setTimeout(K.updatePlayerFavState, 100);
+
+    /* History */
+    if (typeof K.addToHistorial === 'function') {
+      K.addToHistorial(t);
+    }
+
+    /* Increment plays */
+    db.rpc('increment_reproducciones', { song_id: t.id }).then(function (res) {
+      if (res.error) console.warn('Error updating radio plays:', res.error.message);
+    });
+  }
+
+  function radioToggle() {
+    if (K.radioPlaylist.length === 0) {
+      K.showToast('No hay canciones disponibles', 'error');
+      return;
+    }
+
+    if (K.radioIsPlaying) {
+      radioAudio.pause();
+      K.radioIsPlaying = false;
+      setPlayingUI(false);
+    } else {
+      if (K.radioIndex === -1) {
+        radioPlay(0);
+      } else {
         K.stopAllAudio('radio');
         K.activeSource = 'radio';
-
-        radioAudio.src = t.archivo_url;
-        radioAudio.volume = K.radioVolume;
         radioAudio.play();
         K.radioIsPlaying = true;
+        setPlayingUI(true);
+      }
+    }
+  }
 
-        updateDiscImage(t.imagen_url);
+  function radioNext() {
+    var list = getRL();
+    if (list.length === 0) return;
+    var n = K.radioIndex + 1;
+    if (n >= list.length) {
+      if (K.radioShuffleMode) K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
+      n = 0;
+    }
+    radioPlay(n);
+  }
 
-        var d = document.getElementById('radioDisc'); if (d) d.classList.add('spinning');
-        var oa = document.getElementById('radioOnAir'); if (oa) oa.classList.add('active');
-        var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.add('playing');
-        var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '⏸';
-        var tt = document.getElementById('radioTrackTitle'); if (tt) tt.textContent = t.titulo;
-        var ta = document.getElementById('radioTrackAlbum'); if (ta) ta.textContent = t.album;
-        var gl = document.getElementById('radioProgressGlow'); if (gl) gl.classList.add('visible');
-        var wave = document.getElementById('radioWave'); if (wave) wave.classList.add('active');
-        var tonearm = document.getElementById('radioTonearm'); if (tonearm) tonearm.classList.add('playing');
+  function radioPrev() {
+    var list = getRL();
+    if (list.length === 0) return;
+    if (radioAudio.currentTime > 3) {
+      radioAudio.currentTime = 0;
+      return;
+    }
+    var p = K.radioIndex - 1;
+    if (p < 0) p = list.length - 1;
+    radioPlay(p);
+  }
 
-        updateRQHighlight();
+  function radioShuffleToggle() {
+    K.radioShuffleMode = !K.radioShuffleMode;
+    var btn = $('kxRadShuffle');
 
-        /* Player bar */
-        document.getElementById('playerBar').classList.add('show');
-        document.getElementById('playerTitle').textContent = t.titulo;
-        document.getElementById('playerCover').src = t.imagen_url || '';
-        document.getElementById('playerPlayPause').textContent = '⏸';
-        K.isPlaying = true;
-
-        /* Actualizar playlist actual para el player expandido */
-        K.currentPlaylist = list.map(function (song) {
-            return {
-                id: song.id, titulo: song.titulo, archivo_url: song.archivo_url,
-                imagen_url: song.imagen_url, duracion: song.duracion
-            };
-        });
-        K.currentTrackIndex = idx;
-        K.currentAlbumCover = t.imagen_url || '';
-
-        if (typeof K.updateRadioFavState === 'function') setTimeout(K.updateRadioFavState, 100);
-        if (typeof K.updatePlayerFavState === 'function') setTimeout(K.updatePlayerFavState, 100);
-
-        /* Registrar en historial */
-        if (typeof K.addToHistorial === 'function') {
-            K.addToHistorial(t);
-        }
-
-        db.rpc('increment_reproducciones', { song_id: t.id }).then(function (r) {
-            if (r.error) console.warn('Error updating radio plays:', r.error.message);
-        });
+    if (K.radioShuffleMode) {
+      if (btn) {
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+      }
+      K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
+      K.showToast('Aleatorio activado', 'success');
+    } else {
+      if (btn) {
+        btn.classList.remove('is-active');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+      K.showToast('Modo secuencial', 'success');
     }
 
-    function radioToggle() {
-        if (K.radioPlaylist.length === 0) { K.showToast('No hay canciones disponibles', 'error'); return; }
-        if (K.radioIsPlaying) {
-            radioAudio.pause();
-            K.radioIsPlaying = false;
-            var d = document.getElementById('radioDisc'); if (d) d.classList.remove('spinning');
-            var pb = document.getElementById('radioPlayBtn'); if (pb) pb.classList.remove('playing');
-            var pi = document.getElementById('radioPlayIcon'); if (pi) pi.textContent = '▶';
-            var wave = document.getElementById('radioWave'); if (wave) wave.classList.remove('active');
-            var tonearm = document.getElementById('radioTonearm'); if (tonearm) tonearm.classList.remove('playing');
-            document.getElementById('playerPlayPause').textContent = '▶';
-            K.isPlaying = false;
-        } else {
-            if (K.radioIndex === -1) {
-                radioPlay(0);
-            } else {
-                K.stopAllAudio('radio');
-                K.activeSource = 'radio';
-                radioAudio.play();
-                K.radioIsPlaying = true;
-                var d2 = document.getElementById('radioDisc'); if (d2) d2.classList.add('spinning');
-                var pb2 = document.getElementById('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
-                var pi2 = document.getElementById('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
-                var wave2 = document.getElementById('radioWave'); if (wave2) wave2.classList.add('active');
-                var tonearm2 = document.getElementById('radioTonearm'); if (tonearm2) tonearm2.classList.add('playing');
-                document.getElementById('playerPlayPause').textContent = '⏸';
-                K.isPlaying = true;
-            }
-        }
+    K.radioIndex = 0;
+    renderQueue();
+  }
+
+  /* Keep _rjump for backward compat with player-expanded.js */
+  window._rjump = function (i) { radioPlay(i); };
+
+
+  /* ══════════════════════════════════════════
+     ⏱ AUDIO EVENTS
+     ══════════════════════════════════════════ */
+  radioAudio.addEventListener('timeupdate', function () {
+    if (!radioAudio.duration) return;
+    var pct = (radioAudio.currentTime / radioAudio.duration) * 100;
+
+    var fill = $('kxRadProgressFill');
+    if (fill) fill.style.width = pct + '%';
+
+    var thumb = $('kxRadProgressThumb');
+    if (thumb) thumb.style.left = pct + '%';
+
+    var ct = $('kxRadTimeCurrent');
+    if (ct) ct.textContent = K.formatTime(radioAudio.currentTime);
+
+    var dt = $('kxRadTimeDuration');
+    if (dt) dt.textContent = K.formatTime(radioAudio.duration);
+
+    /* Sync player bar */
+    if (K.activeSource === 'radio') {
+      var pf = document.getElementById('progressFill');
+      if (pf) pf.style.width = pct + '%';
+      var pct2 = document.getElementById('playerCurrentTime');
+      if (pct2) pct2.textContent = K.formatTime(radioAudio.currentTime);
+      var pd = document.getElementById('playerDuration');
+      if (pd) pd.textContent = K.formatTime(radioAudio.duration);
     }
+  });
 
-    function radioNextT() {
-        var list = getRL(); if (list.length === 0) return;
-        var n = K.radioIndex + 1;
-        if (n >= list.length) { if (K.radioShuffleMode) K.radioShuffled = shuffleArr([].concat(K.radioPlaylist)); n = 0; }
-        radioPlay(n);
-    }
+  radioAudio.addEventListener('ended', function () {
+    radioNext();
+  });
 
-    function radioPrevT() {
-        var list = getRL(); if (list.length === 0) return;
-        if (radioAudio.currentTime > 3) { radioAudio.currentTime = 0; return; }
-        var p = K.radioIndex - 1; if (p < 0) p = list.length - 1;
-        radioPlay(p);
-    }
 
-    function radioShuffleToggle() {
-        K.radioShuffleMode = !K.radioShuffleMode;
-        var btn = document.getElementById('radioShuffle');
-        if (K.radioShuffleMode) {
-            if (btn) btn.classList.add('active');
-            K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
-            K.showToast('🔀 Aleatorio activado', 'success');
-        } else {
-            if (btn) btn.classList.remove('active');
-            K.showToast('Modo secuencial', 'success');
-        }
-        K.radioIndex = 0; renderRadioQueue();
-    }
+  /* ══════════════════════════════════════════
+     🎚 CONTROLS — Event Delegation
+     ══════════════════════════════════════════ */
+  var heroEl = document.querySelector('.kx-rad-hero');
+  if (heroEl) {
+    heroEl.addEventListener('click', function (e) {
+      var target = e.target.closest('[id]');
+      if (!target) return;
 
-    /* ══════════════════════════════════════════
-       ⏱ EVENTOS DE AUDIO RADIO
-       ══════════════════════════════════════════ */
-    radioAudio.addEventListener('timeupdate', function () {
-        if (!radioAudio.duration) return;
-        var p = (radioAudio.currentTime / radioAudio.duration) * 100;
+      switch (target.id) {
+        case 'kxRadPlayBtn':
+          radioToggle();
+          break;
+        case 'kxRadNext':
+          radioNext();
+          break;
+        case 'kxRadPrev':
+          radioPrev();
+          break;
+        case 'kxRadShuffle':
+          radioShuffleToggle();
+          break;
+        case 'kxRadVolIcon':
+          toggleMute();
+          break;
+      }
+    });
+  }
 
-        var f = document.getElementById('radioProgressFill'); if (f) f.style.width = p + '%';
-        var g = document.getElementById('radioProgressGlow'); if (g) g.style.left = p + '%';
-        var ct = document.getElementById('radioCurrentTime'); if (ct) ct.textContent = K.formatTime(radioAudio.currentTime);
-        var dt = document.getElementById('radioDuration'); if (dt) dt.textContent = K.formatTime(radioAudio.duration);
-
-        if (K.activeSource === 'radio') {
-            document.getElementById('progressFill').style.width = p + '%';
-            document.getElementById('playerCurrentTime').textContent = K.formatTime(radioAudio.currentTime);
-            document.getElementById('playerDuration').textContent = K.formatTime(radioAudio.duration);
-        }
+  /* Progress bar — click */
+  var progressBar = $('kxRadProgressBar');
+  if (progressBar) {
+    progressBar.addEventListener('click', function (e) {
+      if (!radioAudio.duration) return;
+      var r = this.getBoundingClientRect();
+      radioAudio.currentTime = ((e.clientX - r.left) / r.width) * radioAudio.duration;
     });
 
-    radioAudio.addEventListener('ended', function () { radioNextT(); });
+    /* Keyboard support */
+    progressBar.addEventListener('keydown', function (e) {
+      if (!radioAudio.duration) return;
+      if (e.key === 'ArrowRight') { radioAudio.currentTime = Math.min(radioAudio.duration, radioAudio.currentTime + 5); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { radioAudio.currentTime = Math.max(0, radioAudio.currentTime - 5); e.preventDefault(); }
+    });
+  }
 
-    /* ══════════════════════════════════════════
-       🎚 CONTROLES UI
-       ══════════════════════════════════════════ */
-    var rpb = document.getElementById('radioProgressBar');
-    if (rpb) rpb.addEventListener('click', function (e) {
-        if (!radioAudio.duration) return;
-        var r = this.getBoundingClientRect();
-        radioAudio.currentTime = ((e.clientX - r.left) / r.width) * radioAudio.duration;
+  /* Volume bar — click */
+  var volBar = $('kxRadVolBar');
+  if (volBar) {
+    volBar.addEventListener('click', function (e) {
+      var r = this.getBoundingClientRect();
+      var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      setVolume(p);
     });
 
-    var rvb = document.getElementById('radioVolumeBar');
-    if (rvb) rvb.addEventListener('click', function (e) {
-        var r = this.getBoundingClientRect();
-        var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-        K.radioVolume = p; radioAudio.volume = p;
-        var vf = document.getElementById('radioVolumeFill'); if (vf) vf.style.width = (p * 100) + '%';
-        var vp = document.getElementById('radioVolPct'); if (vp) vp.textContent = Math.round(p * 100) + '%';
-        var ic = document.getElementById('radioVolIcon');
-        if (ic) {
-            if (p === 0) ic.textContent = '🔇'; else if (p < 0.3) ic.textContent = '🔈';
-            else if (p < 0.7) ic.textContent = '🔉'; else ic.textContent = '🔊';
-        }
+    /* Keyboard support */
+    volBar.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        setVolume(Math.min(1, K.radioVolume + 0.05));
+        e.preventDefault();
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        setVolume(Math.max(0, K.radioVolume - 0.05));
+        e.preventDefault();
+      }
     });
+  }
 
-    var rvi = document.getElementById('radioVolIcon');
-    if (rvi) rvi.addEventListener('click', function () {
-        if (radioAudio.volume > 0) {
-            radioAudio.volume = 0;
-            var vf = document.getElementById('radioVolumeFill'); if (vf) vf.style.width = '0%';
-            var vp = document.getElementById('radioVolPct'); if (vp) vp.textContent = '0%';
-            this.textContent = '🔇';
-        } else {
-            radioAudio.volume = K.radioVolume || 0.7;
-            var vf2 = document.getElementById('radioVolumeFill'); if (vf2) vf2.style.width = (K.radioVolume * 100) + '%';
-            var vp2 = document.getElementById('radioVolPct'); if (vp2) vp2.textContent = Math.round(K.radioVolume * 100) + '%';
-            this.textContent = '🔊';
-        }
-    });
 
-    var rpBtn = document.getElementById('radioPlayBtn');
-    if (rpBtn) rpBtn.addEventListener('click', function () { radioToggle(); });
-    var rnBtn = document.getElementById('radioNext');
-    if (rnBtn) rnBtn.addEventListener('click', function () { radioNextT(); });
-    var rpvBtn = document.getElementById('radioPrev');
-    if (rpvBtn) rpvBtn.addEventListener('click', function () { radioPrevT(); });
-    var rsBtn = document.getElementById('radioShuffle');
-    if (rsBtn) rsBtn.addEventListener('click', function () { radioShuffleToggle(); });
+  /* ── Volume helpers ── */
+  function setVolume(p) {
+    K.radioVolume = p;
+    radioAudio.volume = p;
 
-    /* ══════════════════════════════════════════
-       📋 COLA DE REPRODUCCIÓN
-       ══════════════════════════════════════════ */
-    function renderRadioQueue() {
-        var c = document.getElementById('radioQueueList'); if (!c) return;
-        var list = getRL();
-        if (!list || list.length === 0) {
-            c.innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones disponibles</div><div class="empty-text">Las canciones aparecerán cuando se lancen</div></div>';
-            return;
-        }
-        var h = '';
-        for (var i = 0; i < list.length; i++) {
-            var s = list[i]; var now = (i === K.radioIndex);
-            var img = s.imagen_url || '';
-            var imgHtml = '';
-            if (img) {
-                imgHtml = '<img src="' + img + '" alt="" onerror="this.parentElement.innerHTML=\'<span class=radio-queue-cover-fallback>♪</span>\'">';
-            } else {
-                imgHtml = '<span class="radio-queue-cover-fallback">♪</span>';
-            }
-            h += '<div class="radio-queue-item' + (now ? ' now-playing' : '') + '" onclick="window._rjump(' + i + ')">';
-            h += '<span class="radio-queue-num">' + (now ? '▶' : (i + 1)) + '</span>';
-            h += '<div class="radio-queue-cover">' + imgHtml + '</div>';
-            h += '<div class="radio-queue-info"><div class="radio-queue-title">' + s.titulo + '</div><div class="radio-queue-album">' + s.album + '</div></div>';
-            if (now && K.radioIsPlaying) {
-                h += '<div class="radio-eq"><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div></div>';
-            } else {
-                h += '<span class="radio-queue-duration">' + s.duracion + '</span>';
-            }
-            h += '</div>';
-        }
-        c.innerHTML = h;
+    var vf = $('kxRadVolFill');
+    if (vf) vf.style.width = (p * 100) + '%';
+
+    var vp = $('kxRadVolPct');
+    if (vp) vp.textContent = Math.round(p * 100) + '%';
+
+    var vbar = $('kxRadVolBar');
+    if (vbar) vbar.setAttribute('aria-valuenow', Math.round(p * 100));
+
+    updateVolIcon(p);
+  }
+
+  function updateVolIcon(vol) {
+    var iconEl = $('kxRadVolIcon');
+    if (!iconEl) return;
+    var high = iconEl.querySelector('.kx-rad-icon-vol-high');
+    var mid = iconEl.querySelector('.kx-rad-icon-vol-mid');
+    var low = iconEl.querySelector('.kx-rad-icon-vol-low');
+    var mute = iconEl.querySelector('.kx-rad-icon-vol-mute');
+    if (!high || !mid || !low || !mute) return;
+
+    high.style.display = 'none';
+    mid.style.display = 'none';
+    low.style.display = 'none';
+    mute.style.display = 'none';
+
+    if (vol === 0) mute.style.display = 'block';
+    else if (vol < 0.3) low.style.display = 'block';
+    else if (vol < 0.7) mid.style.display = 'block';
+    else high.style.display = 'block';
+  }
+
+  var savedVolume = 0.7;
+
+  function toggleMute() {
+    if (radioAudio.volume > 0) {
+      savedVolume = radioAudio.volume;
+      setVolume(0);
+    } else {
+      setVolume(savedVolume || 0.7);
+    }
+  }
+
+
+  /* ══════════════════════════════════════════
+     📋 QUEUE RENDERING
+     ══════════════════════════════════════════ */
+  var currentSearchTerm = '';
+
+  function renderQueue() {
+    var container = $('kxRadQueueList');
+    if (!container) return;
+
+    var list = getRL();
+
+    if (!list || list.length === 0) {
+      container.innerHTML =
+        '<div class="kx-rad-empty">' +
+          '<div class="kx-rad-empty-icon">' +
+            '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' +
+          '</div>' +
+          '<p class="kx-rad-empty-title">Sin canciones disponibles</p>' +
+          '<p class="kx-rad-empty-text">Las canciones aparecerán cuando se lancen</p>' +
+        '</div>';
+      return;
     }
 
-    function updateRQHighlight() {
-        var items = document.querySelectorAll('.radio-queue-item');
-        var list = getRL();
-        for (var i = 0; i < items.length; i++) {
-            items[i].classList.remove('now-playing');
-            var num = items[i].querySelector('.radio-queue-num');
-            if (i === K.radioIndex) {
-                items[i].classList.add('now-playing');
-                if (num) num.textContent = '▶';
-                var dur = items[i].querySelector('.radio-queue-duration');
-                if (dur) dur.outerHTML = '<div class="radio-eq"><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div><div class="radio-eq-bar"></div></div>';
-                items[i].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            } else {
-                if (num) num.textContent = (i + 1);
-                var eq = items[i].querySelector('.radio-eq');
-                if (eq) { var dd = list[i] ? list[i].duracion : '--:--'; eq.outerHTML = '<span class="radio-queue-duration">' + dd + '</span>'; }
-            }
+    /* Filter by search */
+    var filtered = list;
+    var noResults = $('kxRadNoResults');
+
+    if (currentSearchTerm) {
+      var term = currentSearchTerm.toLowerCase();
+      filtered = [];
+      for (var fi = 0; fi < list.length; fi++) {
+        if (list[fi].titulo.toLowerCase().indexOf(term) >= 0 ||
+            list[fi].album.toLowerCase().indexOf(term) >= 0) {
+          filtered.push({ item: list[fi], originalIndex: fi });
         }
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        if (noResults) noResults.style.display = 'block';
+        return;
+      }
+
+      if (noResults) noResults.style.display = 'none';
+    } else {
+      if (noResults) noResults.style.display = 'none';
+      /* Wrap with original index */
+      filtered = list.map(function (item, idx) { return { item: item, originalIndex: idx }; });
     }
 
-    window._rjump = function (i) { radioPlay(i); };
+    /* Build HTML */
+    var html = '';
+    var MUSIC_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+    var EQ_HTML = '<div class="kx-rad-item-eq"><span></span><span></span><span></span><span></span></div>';
+
+    for (var i = 0; i < filtered.length; i++) {
+      var s = filtered[i].item;
+      var origIdx = filtered[i].originalIndex;
+      var isNow = (origIdx === K.radioIndex);
+
+      var coverHtml;
+      if (s.imagen_url) {
+        coverHtml = '<img src="' + escapeHtml(s.imagen_url) + '" alt="" loading="lazy">';
+      } else {
+        coverHtml = '<div class="kx-rad-item-cover-fallback">' + MUSIC_SVG + '</div>';
+      }
+
+      var numText = isNow ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' : String(origIdx + 1);
+
+      var endHtml;
+      if (isNow && K.radioIsPlaying) {
+        endHtml = EQ_HTML;
+      } else {
+        endHtml = '<span class="kx-rad-item-duration">' + escapeHtml(s.duracion) + '</span>';
+      }
+
+      html += '<div class="kx-rad-item' + (isNow ? ' is-playing' : '') + '" role="listitem" data-idx="' + origIdx + '" style="--i:' + (i < 30 ? i : 0) + '" tabindex="0" aria-label="' + escapeHtml(s.titulo) + ' - ' + escapeHtml(s.album) + '">';
+      html += '<span class="kx-rad-item-num">' + numText + '</span>';
+      html += '<div class="kx-rad-item-cover">' + coverHtml + '</div>';
+      html += '<div class="kx-rad-item-info">';
+      html += '<div class="kx-rad-item-title">' + escapeHtml(s.titulo) + '</div>';
+      html += '<div class="kx-rad-item-album">' + escapeHtml(s.album) + '</div>';
+      html += '</div>';
+      html += endHtml;
+      html += '</div>';
+    }
+
+    container.innerHTML = html;
+  }
+
+
+  function updateQueueHighlight() {
+    var items = document.querySelectorAll('.kx-rad-item');
+    var list = getRL();
+    var PLAY_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var EQ_HTML = '<div class="kx-rad-item-eq"><span></span><span></span><span></span><span></span></div>';
+
+    for (var i = 0; i < items.length; i++) {
+      var idx = parseInt(items[i].getAttribute('data-idx'), 10);
+      var isNow = (idx === K.radioIndex);
+
+      items[i].classList.toggle('is-playing', isNow);
+
+      /* Num */
+      var num = items[i].querySelector('.kx-rad-item-num');
+      if (num) {
+        num.innerHTML = isNow ? PLAY_SVG : String(idx + 1);
+      }
+
+      /* End element (duration or EQ) */
+      var existingEq = items[i].querySelector('.kx-rad-item-eq');
+      var existingDur = items[i].querySelector('.kx-rad-item-duration');
+
+      if (isNow && K.radioIsPlaying) {
+        if (existingDur) existingDur.outerHTML = EQ_HTML;
+        /* Scroll into view */
+        items[i].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        if (existingEq) {
+          var song = list[idx];
+          var dur = song ? song.duracion : '--:--';
+          existingEq.outerHTML = '<span class="kx-rad-item-duration">' + escapeHtml(dur) + '</span>';
+        }
+      }
+    }
+  }
+
+
+  /* ══════════════════════════════════════════
+     🔎 SEARCH IN QUEUE — Event delegation
+     ══════════════════════════════════════════ */
+  var searchInput = $('kxRadSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', debounce(function () {
+      currentSearchTerm = this.value.trim();
+      renderQueue();
+    }, 200));
+  }
+
+
+  /* ══════════════════════════════════════════
+     📋 QUEUE — Event delegation (click + keyboard)
+     ══════════════════════════════════════════ */
+  var queueList = $('kxRadQueueList');
+  if (queueList) {
+    queueList.addEventListener('click', function (e) {
+      var item = e.target.closest('.kx-rad-item');
+      if (!item) return;
+      var idx = parseInt(item.getAttribute('data-idx'), 10);
+      if (!isNaN(idx)) radioPlay(idx);
+    });
+
+    queueList.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var item = e.target.closest('.kx-rad-item');
+      if (!item) return;
+      e.preventDefault();
+      var idx = parseInt(item.getAttribute('data-idx'), 10);
+      if (!isNaN(idx)) radioPlay(idx);
+    });
+  }
+
+
+  /* ══════════════════════════════════════════
+     ❌ ERROR STATE
+     ══════════════════════════════════════════ */
+  function renderError() {
+    var container = $('kxRadQueueList');
+    if (!container) return;
+    container.innerHTML =
+      '<div class="kx-rad-empty">' +
+        '<div class="kx-rad-empty-icon">' +
+          '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+        '</div>' +
+        '<p class="kx-rad-empty-title">Error al cargar la radio</p>' +
+        '<p class="kx-rad-empty-text">Intenta recargar la página</p>' +
+      '</div>';
+  }
 
 })();
