@@ -1013,5 +1013,49 @@
       K.openModal('modalEpisodio');
     });
   }
+  /* ══════════════════════════════════════════
+     📌 SIDEBAR: Documentales → Videos tab
+     ══════════════════════════════════════════ */
+  var navItems = document.querySelectorAll('.nav-item[data-panel]');
+  for (var n = 0; n < navItems.length; n++) {
+    if (navItems[n].dataset.panel === 'documentales') {
+      navItems[n].addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // 1. Activar panel videos
+        var panels = document.querySelectorAll('.panel');
+        for (var p = 0; p < panels.length; p++) panels[p].classList.remove('active');
+        document.getElementById('panel-videos').classList.add('active');
+
+        // 2. Activar tab documentales
+        var tabs = document.querySelectorAll('.kx-vid-tab');
+        for (var t = 0; t < tabs.length; t++) {
+          var isDocu = tabs[t].dataset.vidTab === 'documentales';
+          tabs[t].classList.toggle('active', isDocu);
+          tabs[t].setAttribute('aria-selected', isDocu ? 'true' : 'false');
+        }
+
+        // 3. Mostrar contenido correcto
+        document.getElementById('vidTabVideos').style.display = 'none';
+        document.getElementById('vidTabDocumentales').style.display = '';
+        var feat = document.getElementById('vidFeatured');
+        if (feat) feat.style.display = 'none';
+
+        // 4. Actualizar sidebar active state
+        var allNav = document.querySelectorAll('.nav-item');
+        for (var a = 0; a < allNav.length; a++) allNav[a].classList.remove('active');
+        this.classList.add('active');
+
+        // 5. Actualizar header
+        var header = document.getElementById('headerTitle');
+        if (header) header.textContent = 'Videos';
+
+        // 6. Actualizar state
+        state.activeTab = 'documentales';
+      });
+      break;
+    }
+  }
 
 })();
