@@ -18,9 +18,7 @@
     <link rel="stylesheet" href="css/dashboard-responsive.css">
     <link rel="stylesheet" href="css/dashboard-favs-share.css">
     <link rel="stylesheet" href="css/dashboard-analytics.css">
-    <link rel="stylesheet" href="css/panel-albumes-elite.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1920,130 +1918,28 @@
                     <div class="panel-section" id="inicioAlbumesWrap"><div class="inicio-section-header"></div><div class="content-grid content-grid-albums" id="inicioAlbumes"></div></div>
                 </div>
 
-                <!-- 💿 PANEL: ÁLBUMES — REDESIGN 2026 -->
-<div class="panel" id="panel-albumes">
-
-    <!-- ═══ LIST VIEW ═══ -->
-    <div id="albumesListView">
-
-        <!-- ── HERO HEADER ── -->
-        <div class="ae-hero">
-            <div class="ae-hero-bg">
-                <div class="ae-hero-orb ae-hero-orb--1"></div>
-                <div class="ae-hero-orb ae-hero-orb--2"></div>
-                <div class="ae-hero-grain"></div>
-            </div>
-            <div class="ae-hero-content">
-                <div class="ae-hero-left">
-                    <div class="ae-hero-badge">
-                        <span class="ae-hero-badge-dot"></span>
-                        <span>DISCOGRAFÍA</span>
+                <!-- 💿 PANEL: ÁLBUMES -->
+                <div class="panel" id="panel-albumes">
+                    <div id="albumesListView">
+                        <div class="panel-header"><h1 class="panel-title">Álbumes</h1><p class="panel-desc">Discografía completa de KXON</p></div>
+                        <div class="content-grid content-grid-albums" id="albumesGrid"><div class="empty-state"><div class="empty-icon">💿</div><div class="empty-title">Cargando álbumes...</div></div></div>
                     </div>
-                    <h1 class="panel-title ae-hero-title">Álbumes</h1>
-                    <p class="panel-desc ae-hero-desc">Explora la discografía completa. Cada álbum es una historia única.</p>
-                </div>
-                <div class="ae-hero-right">
-                    <div class="ae-hero-stat">
-                        <div class="ae-hero-stat-value" id="aeAlbumCount">—</div>
-                        <div class="ae-hero-stat-label">Álbumes</div>
-                    </div>
-                    <div class="ae-hero-stat">
-                        <div class="ae-hero-stat-value" id="aeTotalTracks">—</div>
-                        <div class="ae-hero-stat-label">Tracks</div>
-                    </div>
-                </div>
-            </div>
-            <div class="ae-hero-divider"></div>
-        </div>
-
-        <!-- ── TOOLBAR ── -->
-        <div class="ae-toolbar">
-            <div class="ae-toolbar-left">
-                <span class="ae-toolbar-label">Todos los álbumes</span>
-            </div>
-            <div class="ae-toolbar-right">
-                <div class="ae-view-toggle">
-                    <button class="ae-view-btn ae-view-btn--active" id="aeViewGrid" title="Grid">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                    </button>
-                    <button class="ae-view-btn" id="aeViewList" title="Lista">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── ALBUMS GRID (JS renders here — IDs preserved) ── -->
-        <div class="ae-grid-wrap">
-            <div class="content-grid content-grid-albums" id="albumesGrid">
-                <div class="empty-state">
-                    <div class="empty-icon">💿</div>
-                    <div class="empty-title">Cargando álbumes...</div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ═══ DETAIL VIEW (IDs preserved exactly) ═══ -->
-    <div class="album-detail" id="albumDetailView">
-
-        <!-- ── Navigation ── -->
-        <div class="ae-detail-nav">
-            <button class="btn-back ae-back-btn" id="btnBackAlbums">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-                <span>Álbumes</span>
-            </button>
-        </div>
-
-        <!-- ── Hero Detail ── -->
-        <div class="ae-detail-hero">
-            <div class="ae-detail-hero-bg"></div>
-            <div class="ae-detail-hero-content">
-                <div class="album-detail-header">
-                    <div class="album-detail-cover ae-detail-cover">
-                        <img id="albumDetailCover" src="" alt="">
-                        <div class="ae-cover-shine"></div>
-                    </div>
-                    <div class="album-detail-info ae-detail-info">
-                        <div class="album-detail-label ae-detail-label">ÁLBUM</div>
-                        <h1 class="album-detail-title ae-detail-title" id="albumDetailTitle"></h1>
-                        <p class="album-detail-desc ae-detail-desc" id="albumDetailDesc"></p>
-                        <div class="ae-detail-meta-row">
-                            <span class="album-detail-meta ae-detail-meta" id="albumDetailMeta"></span>
+                    <div class="album-detail" id="albumDetailView">
+                        <button class="btn-back" id="btnBackAlbums">← Volver a Álbumes</button>
+                        <div class="album-detail-header">
+                            <div class="album-detail-cover"><img id="albumDetailCover" src="" alt=""></div>
+                            <div class="album-detail-info">
+                                <div class="album-detail-label">ÁLBUM</div>
+                                <h1 class="album-detail-title" id="albumDetailTitle"></h1>
+                                <p class="album-detail-desc" id="albumDetailDesc"></p>
+                                <span class="album-detail-meta" id="albumDetailMeta"></span>
+                                <div id="albumReleaseInfoWrap"></div>
+                            </div>
                         </div>
-                        <div id="albumReleaseInfoWrap"></div>
+                        <div class="section-header-row"><div class="panel-section-title">🎵 Canciones</div><button class="btn-add-track nav-admin-only" id="btnAddTrack"><span>+</span> Agregar Canción</button></div>
+                        <div class="track-list" id="trackList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones aún</div></div></div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- ── Track Section ── -->
-        <div class="ae-tracks-section">
-            <div class="ae-tracks-header">
-                <div class="section-header-row">
-                    <div class="panel-section-title ae-tracks-title">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                        <span>Canciones</span>
-                    </div>
-                    <button class="btn-add-track ae-add-track nav-admin-only" id="btnAddTrack">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        <span>Agregar</span>
-                    </button>
-                </div>
-            </div>
-            <div class="ae-tracks-container">
-                <div class="track-list" id="trackList">
-                    <div class="empty-state">
-                        <div class="empty-icon">🎵</div>
-                        <div class="empty-title">Sin canciones aún</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
 
                 <!-- 📻 PANEL: RADIO -->
                 <div class="panel" id="panel-radio">
@@ -2292,7 +2188,6 @@
     <script src="js/dashboard-lyrics.js"></script>
     <script src="js/dashboard-solicitudes-beats.js"></script>
     <script src="js/dashboard-player-expanded.js"></script>
-    <script src="js/panel-albumes-elite.js"></script>
 
     <!-- 📱 PWA Service Worker Registration -->
     <script>
