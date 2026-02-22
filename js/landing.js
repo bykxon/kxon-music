@@ -1,23 +1,19 @@
 /* ============================================
    🏠 LANDING JS - KXON PÁGINA DE INICIO
-   ✨ REDISEÑO 2026 — MASTERCLASS + CINEMATIC
-   + HERO INTRO ANIMATION
-   + 30 SEC PREVIEW PLAYER
-   + SHOWCASE HUD
-   + NEWS PAGINATION
+   ✨ REDISEÑO 2026 — 3D CAROUSEL + CINEMATIC NEWS
    ============================================ */
 
 (function(){
     var db = window.db;
 
     var noticiasContainer = null;
-    var albumesContainer = null;
     var headerEl = null;
     var scrollProgressEl = null;
     var landingNoticias = [];
     var landingAlbumes = [];
     var currentNewsPage = 0;
     var newsPerPage = 3;
+    var currentAlbumIndex = 0;
 
     /* ══════════════════════════════════════════
        🎵 PREVIEW PLAYER (30 SEGUNDOS)
@@ -247,7 +243,7 @@
     }
 
     /* ══════════════════════════════════════════
-       🏠 HERO INTRO - Masterclass Style
+       🏠 HERO INTRO
        ══════════════════════════════════════════ */
     function initHeroIntro() {
         var particlesContainer = document.getElementById('heroIntroParticles');
@@ -382,7 +378,7 @@
     window.addEventListener('scroll', onScroll, { passive: true });
 
     /* ──────────────────────────────────
-       📰 CARGAR NOTICIAS — CINEMATIC
+       📰 CARGAR NOTICIAS
        ────────────────────────────────── */
     async function cargarNoticias(){
         if (!noticiasContainer) return;
@@ -416,8 +412,6 @@
             html += crearCardNoticia(landingNoticias[i], i);
         }
         noticiasContainer.innerHTML = html;
-
-        // Re-apply scroll reveal to new cards
         var cards = noticiasContainer.querySelectorAll('.noticia-card');
         for (var j = 0; j < cards.length; j++) {
             cards[j].classList.add('scroll-reveal', 'is-visible');
@@ -434,8 +428,6 @@
                 dotsHtml += '<span class="news-dot' + (i === currentNewsPage ? ' active' : '') + '" data-page="' + i + '"></span>';
             }
             dotsContainer.innerHTML = dotsHtml;
-
-            // Add click to dots
             var dots = dotsContainer.querySelectorAll('.news-dot');
             for (var d = 0; d < dots.length; d++) {
                 dots[d].addEventListener('click', function() {
@@ -473,59 +465,157 @@
     }
 
     /* ──────────────────────────────────
-       💿 CARGAR ÁLBUMES — SHOWCASE
+       💿 CARGAR ÁLBUMES — 3D CAROUSEL
        ────────────────────────────────── */
     async function cargarAlbumesDestacados(){
-        if (!albumesContainer) return;
-        albumesContainer.innerHTML = generarSkeletonAlbumes(4);
         try {
-            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(4);
+            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(8);
             if (r.error) throw r.error;
             if (!r.data || r.data.length === 0) {
-                albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">💿</div><h3 class="empty-state-title">Sin álbumes aún</h3><p class="empty-state-text">Los últimos álbumes aparecerán aquí</p></div>';
-                hideShowcaseHud();
+                hideCarousel();
                 return;
             }
             landingAlbumes = r.data;
-            var html = '';
-            for (var i = 0; i < r.data.length; i++) {
-                html += crearCardAlbum(r.data[i], i);
-            }
-            albumesContainer.innerHTML = html;
-            updateShowcaseHud(r.data[0]);
-            setTimeout(function() { applyScrollRevealToChildren('#albumes-grid'); }, 50);
+            currentAlbumIndex = 0;
+            renderCarousel3D();
+            updateCarouselDots();
+            initCarouselControls();
         } catch(err) {
             console.error('Error álbumes:', err);
-            if (albumesContainer) {
-                albumesContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar álbumes</h3></div>';
-            }
-            hideShowcaseHud();
+            hideCarousel();
         }
     }
 
-    function updateShowcaseHud(album) {
-        if (!album) return;
-        var titleEl = document.getElementById('showcaseTitle');
-        var artistEl = document.getElementById('showcaseArtist');
-        var hudEl = document.getElementById('showcaseHud');
-        var tracksEl = hudEl ? hudEl.querySelector('.showcase-hud-tracks') : null;
+    function hideCarousel() {
+        var stage = document.getElementById('carousel3dStage');
+        var hud = document.getElementById('carouselHud');
+        if (stage) stage.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💿</div><h3 class="empty-state-title">Sin álbumes aún</h3></div>';
+        if (hud) hud.style.display = 'none';
+        var controls = document.querySelector('.carousel-3d-controls');
+        if (controls) controls.style.display = 'none';
+    }
 
-        if (titleEl) titleEl.textContent = album.titulo || '';
-        if (artistEl) artistEl.textContent = album.artista ? album.artista + ' • ' + new Date().getFullYear() + ' Edition' : 'KXON • ' + new Date().getFullYear() + ' Edition';
+    function renderCarousel3D() {
+        if (landingAlbumes.length === 0) return;
+
+        var mainEl = document.getElementById('carouselMain');
+        var prevEl = document.getElementById('carouselPrev');
+        var nextEl = document.getElementById('carouselNext');
+        var stage = document.getElementById('carousel3dStage');
+
+        if (!mainEl || !prevEl || !nextEl) return;
+
+        var current = landingAlbumes[currentAlbumIndex];
+        var prevIdx = (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
+        var nextIdx = (currentAlbumIndex + 1) % landingAlbumes.length;
+        var prevAlbum = landingAlbumes[prevIdx];
+        var nextAlbum = landingAlbumes[nextIdx];
+
+        var placeholder = 'https://placehold.co/400x400/111111/333333?text=♪';
+
+        // Update images
+        var mainImg = mainEl.querySelector('img');
+        var prevImg = prevEl.querySelector('img');
+        var nextImg = nextEl.querySelector('img');
+
+        if (mainImg) mainImg.src = current.imagen_url || placeholder;
+        if (prevImg) prevImg.src = prevAlbum.imagen_url || placeholder;
+        if (nextImg) nextImg.src = nextAlbum.imagen_url || placeholder;
+
+        // Update HUD
+        var titleEl = document.getElementById('carouselTitle');
+        var artistEl = document.getElementById('carouselArtist');
+        var tracksEl = document.getElementById('carouselTracks');
+
+        if (titleEl) titleEl.textContent = current.titulo || '';
+        if (artistEl) {
+            var artistName = current.artista || 'KXON';
+            artistEl.textContent = artistName + ' • ' + new Date().getFullYear() + ' Edition';
+        }
         if (tracksEl) {
-            var cnt = album.canciones ? album.canciones.length : 0;
-            tracksEl.textContent = '01 / ' + (cnt < 10 ? '0' : '') + cnt + ' TRACKS';
+            var cnt = current.canciones ? current.canciones.length : 0;
+            var pos = currentAlbumIndex + 1;
+            tracksEl.textContent = (pos < 10 ? '0' : '') + pos + ' / ' + (cnt < 10 ? '0' : '') + cnt + ' TRACKS';
         }
-        if (hudEl) hudEl.style.display = '';
+
+        // Show/hide prev/next if only 1 album
+        if (landingAlbumes.length <= 1) {
+            prevEl.style.display = 'none';
+            nextEl.style.display = 'none';
+        } else {
+            prevEl.style.display = '';
+            nextEl.style.display = '';
+        }
     }
 
-    function hideShowcaseHud() {
-        var hudEl = document.getElementById('showcaseHud');
-        if (hudEl) hudEl.style.display = 'none';
+    function navigateCarousel(direction) {
+        if (landingAlbumes.length <= 1) return;
+
+        var stage = document.getElementById('carousel3dStage');
+        if (stage) stage.classList.add('transitioning');
+
+        if (direction === 'next') {
+            currentAlbumIndex = (currentAlbumIndex + 1) % landingAlbumes.length;
+        } else {
+            currentAlbumIndex = (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
+        }
+
+        renderCarousel3D();
+        updateCarouselDots();
+
+        setTimeout(function() {
+            if (stage) stage.classList.remove('transitioning');
+        }, 700);
     }
+
+    function updateCarouselDots() {
+        var dotsContainer = document.getElementById('carouselDots');
+        if (!dotsContainer) return;
+
+        var html = '';
+        for (var i = 0; i < landingAlbumes.length; i++) {
+            html += '<div class="carousel-3d-dot' + (i === currentAlbumIndex ? ' active' : '') + '" data-idx="' + i + '"></div>';
+        }
+        dotsContainer.innerHTML = html;
+
+        // Click on dots
+        var dots = dotsContainer.querySelectorAll('.carousel-3d-dot');
+        for (var d = 0; d < dots.length; d++) {
+            dots[d].addEventListener('click', function() {
+                var idx = parseInt(this.getAttribute('data-idx'));
+                if (idx !== currentAlbumIndex) {
+                    currentAlbumIndex = idx;
+                    renderCarousel3D();
+                    updateCarouselDots();
+                }
+            });
+        }
+    }
+
+    function initCarouselControls() {
+        var prevBtn = document.getElementById('carouselBtnPrev');
+        var nextBtn = document.getElementById('carouselBtnNext');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                navigateCarousel('prev');
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                navigateCarousel('next');
+            });
+        }
+    }
+
+    // Open album modal from carousel
+    window._landingAbrirAlbumCarousel = function() {
+        window._landingAbrirAlbum(currentAlbumIndex);
+    };
 
     /* ──────────────────────────────────
-       🃏 CREAR CARD NOTICIA — CINEMATIC
+       🃏 CREAR CARD NOTICIA
        ────────────────────────────────── */
     function crearCardNoticia(n, idx){
         var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
@@ -537,31 +627,8 @@
             '<div class="noticia-body">' +
             '<h3 class="noticia-titulo">' + n.titulo + '</h3>' +
             '<p class="noticia-descripcion">' + n.descripcion + '</p>' +
-            '<div class="noticia-read-more">Leer más →</div></div></article>';
+            '<div class="noticia-read-more">Leer más <span class="material-symbols-outlined" style="font-size:0.85rem;">arrow_forward</span></div></div></article>';
     }
-
-    /* ──────────────────────────────────
-       🃏 CREAR CARD ÁLBUM — SHOWCASE
-       ────────────────────────────────── */
-    function crearCardAlbum(a, idx){
-        var img = a.imagen_url || 'https://placehold.co/400x400/111111/333333?text=♪';
-        var cnt = a.canciones ? a.canciones.length : 0;
-        return '<article class="album-card" onclick="window._landingAbrirAlbum(' + idx + ')" onmouseenter="window._showcaseHover(' + idx + ')">' +
-            '<div class="album-cover">' +
-            '<img src="' + img + '" alt="" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/111111/333333?text=♪\'">' +
-            '<div class="album-cover-overlay"><div class="album-cover-icon">👁</div></div></div>' +
-            '<div class="album-info">' +
-            '<h4 class="album-titulo">' + a.titulo + '</h4>' +
-            '<span class="album-canciones">' + cnt + ' canciones</span></div></article>';
-    }
-
-    /* ──────────────────────────────────
-       🎯 SHOWCASE HOVER — Update HUD
-       ────────────────────────────────── */
-    window._showcaseHover = function(idx) {
-        var album = landingAlbumes[idx];
-        if (album) updateShowcaseHud(album);
-    };
 
     /* ──────────────────────────────────
        📰 ABRIR NOTICIA (MODAL)
@@ -587,7 +654,7 @@
     };
 
     /* ──────────────────────────────────
-       💿 ABRIR ÁLBUM (MODAL CON PREVIEW 30s)
+       💿 ABRIR ÁLBUM (MODAL CON PREVIEW)
        ────────────────────────────────── */
     window._landingAbrirAlbum = function(idx){
         stopPreview();
@@ -676,20 +743,11 @@
         return h;
     }
 
-    function generarSkeletonAlbumes(n){
-        var h = '';
-        for (var i = 0; i < n; i++) {
-            h += '<article class="album-card"><div class="skeleton" style="width:100%;aspect-ratio:1;"></div><div class="album-info"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text short"></div></div></article>';
-        }
-        return h;
-    }
-
     /* ══════════════════════════════════════════
        🚀 INICIALIZAR LANDING
        ══════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function(){
         noticiasContainer = document.getElementById('noticias-grid');
-        albumesContainer = document.getElementById('albumes-grid');
         headerEl = document.getElementById('header');
         scrollProgressEl = document.getElementById('scrollProgress');
 
@@ -703,12 +761,12 @@
         initNewsPagination();
 
         if (noticiasContainer) cargarNoticias();
-        if (albumesContainer) cargarAlbumesDestacados();
+        cargarAlbumesDestacados();
 
         handleHeaderScroll();
         updateScrollProgress();
 
-        console.log('🎵 KXON Landing v2026 — Masterclass + Cinematic + Showcase');
+        console.log('🎵 KXON Landing v2026 — 3D Carousel + Cinematic News');
     });
 
 })();

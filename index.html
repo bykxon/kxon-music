@@ -384,7 +384,7 @@
 <div class="section-divider"></div>
 
 <!-- ============================================
-     3️⃣ ÁLBUMES — 3D STAGE SHOWCASE
+     3️⃣ ÁLBUMES — 3D STAGE SHOWCASE (CARRUSEL)
      ============================================ -->
 <section class="section section-showcase" id="albumes">
     <div class="container">
@@ -394,22 +394,46 @@
             <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Los álbumes más recientes de nuestra colección exclusiva. Producción propia, sonido único, directo del artista a tus oídos.</p>
         </div>
 
-        <!-- 3D Stage Container -->
-        <div class="showcase-stage scroll-reveal" data-animation="fade-up" data-delay="150">
-            <div class="showcase-stage-perspective" id="showcaseStage">
-                <!-- Los álbumes se cargan dinámicamente aquí -->
-                <div class="albumes-grid scroll-reveal-children" data-animation="scale-up" data-stagger="120" id="albumes-grid"></div>
+        <!-- 3D Carousel Stage -->
+        <div class="showcase-carousel scroll-reveal" data-animation="fade-up" data-delay="150">
+            <div class="carousel-3d-stage" id="carousel3dStage">
+                <!-- Prev album (blurred, left) -->
+                <div class="carousel-3d-item carousel-3d-prev" id="carouselPrev">
+                    <img src="" alt="" loading="lazy">
+                </div>
+                <!-- Main album (center, 3D rotated) -->
+                <div class="carousel-3d-item carousel-3d-main" id="carouselMain" onclick="window._landingAbrirAlbumCarousel()">
+                    <img src="" alt="" loading="lazy">
+                    <div class="carousel-3d-light-leak"></div>
+                </div>
+                <!-- Next album (blurred, right) -->
+                <div class="carousel-3d-item carousel-3d-next" id="carouselNext">
+                    <img src="" alt="" loading="lazy">
+                </div>
+                <!-- Depth shadow under main -->
+                <div class="carousel-3d-shadow"></div>
             </div>
 
             <!-- Metadata HUD -->
-            <div class="showcase-hud" id="showcaseHud">
-                <div class="showcase-hud-meta">
-                    <span class="showcase-hud-tracks"></span>
-                    <div class="showcase-hud-divider"></div>
-                    <span class="showcase-hud-quality">HQ Audio</span>
+            <div class="carousel-hud" id="carouselHud">
+                <div class="carousel-hud-meta">
+                    <span class="carousel-hud-tracks" id="carouselTracks">01 / 00 TRACKS</span>
+                    <div class="carousel-hud-divider"></div>
+                    <span class="carousel-hud-quality">HQ Audio</span>
                 </div>
-                <h3 class="showcase-hud-title" id="showcaseTitle"></h3>
-                <p class="showcase-hud-artist" id="showcaseArtist"></p>
+                <h3 class="carousel-hud-title" id="carouselTitle"></h3>
+                <p class="carousel-hud-artist" id="carouselArtist"></p>
+            </div>
+
+            <!-- 3D Navigation Controls -->
+            <div class="carousel-3d-controls">
+                <button class="carousel-3d-btn carousel-3d-btn-prev" id="carouselBtnPrev" title="Anterior">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <div class="carousel-3d-dots" id="carouselDots"></div>
+                <button class="carousel-3d-btn carousel-3d-btn-next" id="carouselBtnNext" title="Siguiente">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
             </div>
 
             <!-- Stats bar -->
@@ -450,7 +474,6 @@
 <section class="section" id="noticias">
     <div class="container">
         <div class="section-header section-header-left">
-            <!-- Silver Pill -->
             <div class="news-pill scroll-reveal" data-animation="fade-down">
                 <span class="material-symbols-outlined news-pill-icon">newspaper</span>
                 <span>Últimas Publicaciones</span>
@@ -468,7 +491,7 @@
             <button class="news-pagination-btn" id="newsPrev">
                 <span class="material-symbols-outlined">chevron_left</span>
             </button>
-            <div class="news-pagination-dots">
+            <div class="news-pagination-dots" id="newsPaginationDots">
                 <span class="news-dot active"></span>
                 <span class="news-dot"></span>
                 <span class="news-dot"></span>
