@@ -1919,262 +1919,204 @@
                     <div class="panel-section" id="inicioAlbumesWrap"><div class="inicio-section-header"></div><div class="content-grid content-grid-albums" id="inicioAlbumes"></div></div>
                 </div>
 
-              <!-- 💿 PANEL: ÁLBUMES — ÉLITE TOTAL 2026 -->
+              <!-- 💿 PANEL: ÁLBUMES — KXON 2026 REBUILD -->
 <div class="panel" id="panel-albumes">
 
-    <!-- ═══ VISTA: LISTA DE ÁLBUMES ═══ -->
-    <div id="albumesListView">
+  <!-- ═══ VISTA: LISTA ═══ -->
+  <div id="albumesListView">
 
-        <!-- HEADER -->
-        <div class="alb-header">
-            <div class="alb-header-left">
-                <div class="alb-header-eyebrow">
-                    <span class="alb-eyebrow-line"></span>
-                    <span class="alb-eyebrow-text">DISCOGRAFÍA COMPLETA</span>
-                    <span class="alb-eyebrow-line"></span>
-                </div>
-                <h1 class="alb-header-title">
-                    <span class="alb-title-word" style="--i:0">Á</span><span class="alb-title-word" style="--i:1">l</span><span class="alb-title-word" style="--i:2">b</span><span class="alb-title-word" style="--i:3">u</span><span class="alb-title-word" style="--i:4">m</span><span class="alb-title-word" style="--i:5">e</span><span class="alb-title-word" style="--i:6">s</span>
-                </h1>
-                <p class="alb-header-desc">Explora toda la música exclusiva de KXON. Cada álbum es una experiencia única.</p>
-            </div>
-            <div class="alb-header-right">
-                <div class="alb-metrics">
-                    <div class="alb-metric">
-                        <div class="alb-metric-ring">
-                            <svg viewBox="0 0 36 36" class="alb-metric-svg">
-                                <path class="alb-metric-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="alb-metric-fill" stroke-dasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <span class="alb-metric-value" id="albStatTotal">0</span>
-                        </div>
-                        <span class="alb-metric-label">Álbumes</span>
-                    </div>
-                    <div class="alb-metric">
-                        <div class="alb-metric-ring">
-                            <svg viewBox="0 0 36 36" class="alb-metric-svg">
-                                <path class="alb-metric-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="alb-metric-fill alb-metric-fill-alt" stroke-dasharray="60, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <span class="alb-metric-value" id="albStatTracks">0</span>
-                        </div>
-                        <span class="alb-metric-label">Canciones</span>
-                    </div>
-                    <div class="alb-metric">
-                        <div class="alb-metric-ring">
-                            <svg viewBox="0 0 36 36" class="alb-metric-svg">
-                                <path class="alb-metric-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="alb-metric-fill alb-metric-fill-plays" stroke-dasharray="45, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <span class="alb-metric-value" id="albStatPlays">0</span>
-                        </div>
-                        <span class="alb-metric-label">Plays</span>
-                    </div>
-                </div>
-            </div>
+    <!-- HEADER -->
+    <header class="kx-alb-header">
+      <div class="kx-alb-header-top">
+        <div class="kx-alb-header-intro">
+          <span class="kx-alb-label">DISCOGRAFÍA</span>
+          <h1 class="kx-alb-title">Álbumes</h1>
+          <p class="kx-alb-subtitle">Explora toda la música exclusiva de KXON.</p>
         </div>
+        <div class="kx-alb-kpis">
+          <div class="kx-alb-kpi">
+            <span class="kx-alb-kpi-value" id="albStatTotal">0</span>
+            <span class="kx-alb-kpi-label">Álbumes</span>
+          </div>
+          <div class="kx-alb-kpi-divider"></div>
+          <div class="kx-alb-kpi">
+            <span class="kx-alb-kpi-value" id="albStatTracks">0</span>
+            <span class="kx-alb-kpi-label">Canciones</span>
+          </div>
+          <div class="kx-alb-kpi-divider"></div>
+          <div class="kx-alb-kpi">
+            <span class="kx-alb-kpi-value" id="albStatPlays">0</span>
+            <span class="kx-alb-kpi-label">Reproducciones</span>
+          </div>
+        </div>
+      </div>
+    </header>
 
-        <!-- SPOTLIGHT -->
-        <div class="alb-spotlight" id="albFeatured" style="display:none;">
-            <div class="alb-spotlight-noise"></div>
-            <div class="alb-spotlight-gradient" id="albSpotlightGradient"></div>
-            <div class="alb-spotlight-particles">
-                <div class="alb-particle" style="--x:15%;--y:20%;--d:7s;--s:0s"></div>
-                <div class="alb-particle" style="--x:80%;--y:35%;--d:9s;--s:1.5s"></div>
-                <div class="alb-particle" style="--x:45%;--y:75%;--d:6s;--s:3s"></div>
-                <div class="alb-particle" style="--x:70%;--y:15%;--d:8s;--s:2s"></div>
-                <div class="alb-particle" style="--x:25%;--y:60%;--d:10s;--s:4s"></div>
-                <div class="alb-particle" style="--x:60%;--y:85%;--d:7.5s;--s:1s"></div>
-            </div>
-            <div class="alb-spotlight-inner">
-                <div class="alb-spotlight-visual">
-                    <div class="alb-spotlight-cover-stack">
-                        <div class="alb-spotlight-vinyl">
-                            <div class="alb-vinyl-surface">
-                                <div class="alb-vinyl-grooves"></div>
-                                <div class="alb-vinyl-label"><span class="alb-vinyl-label-text">KXON</span></div>
-                                <div class="alb-vinyl-shine"></div>
-                            </div>
-                        </div>
-                        <div class="alb-spotlight-cover">
-                            <img id="albFeaturedImg" src="" alt="" crossorigin="anonymous">
-                            <div class="alb-cover-gloss"></div>
-                            <div class="alb-cover-border-glow"></div>
-                        </div>
-                    </div>
-                    <div class="alb-spotlight-eq">
-                        <div class="alb-eq-bar" style="--h:60%;--d:0.4s"></div>
-                        <div class="alb-eq-bar" style="--h:100%;--d:0.3s"></div>
-                        <div class="alb-eq-bar" style="--h:45%;--d:0.5s"></div>
-                        <div class="alb-eq-bar" style="--h:80%;--d:0.35s"></div>
-                        <div class="alb-eq-bar" style="--h:55%;--d:0.45s"></div>
-                    </div>
-                </div>
-                <div class="alb-spotlight-content">
-                    <div class="alb-spotlight-badge">
-                        <span class="alb-badge-pulse"></span>
-                        <span class="alb-badge-text">ÚLTIMO LANZAMIENTO</span>
-                    </div>
-                    <h2 class="alb-spotlight-title" id="albFeaturedTitle"></h2>
-                    <p class="alb-spotlight-desc" id="albFeaturedDesc"></p>
-                    <div class="alb-spotlight-tags">
-                        <span class="alb-tag" id="albFeaturedTracks"><span class="alb-tag-icon">♪</span> 0 canciones</span>
-                        <span class="alb-tag" id="albFeaturedDate"><span class="alb-tag-icon">📅</span> —</span>
-                        <span class="alb-tag" id="albFeaturedPlays"><span class="alb-tag-icon">🔥</span> 0 plays</span>
-                    </div>
-                    <div class="alb-spotlight-cta">
-                        <button class="alb-cta-play" id="albFeaturedPlay">
-                            <span class="alb-cta-play-bg"></span>
-                            <span class="alb-cta-play-icon">▶</span>
-                            <span class="alb-cta-play-text">Reproducir</span>
-                        </button>
-                        <button class="alb-cta-view" id="albFeaturedView">
-                            <span>Explorar Álbum</span>
-                            <span class="alb-cta-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <!-- FEATURED -->
+    <section class="kx-alb-featured" id="albFeatured" style="display:none;" aria-label="Álbum destacado">
+      <div class="kx-alb-featured-bg" id="albFeaturedBg"></div>
+      <div class="kx-alb-featured-overlay"></div>
+      <div class="kx-alb-featured-inner">
+        <div class="kx-alb-featured-cover-wrap">
+          <img class="kx-alb-featured-cover" id="albFeaturedImg" src="" alt="Portada del álbum destacado" crossorigin="anonymous" loading="eager">
+          <div class="kx-alb-featured-cover-shine"></div>
         </div>
+        <div class="kx-alb-featured-info">
+          <span class="kx-alb-featured-badge">ÚLTIMO LANZAMIENTO</span>
+          <h2 class="kx-alb-featured-title" id="albFeaturedTitle"></h2>
+          <p class="kx-alb-featured-desc" id="albFeaturedDesc"></p>
+          <div class="kx-alb-featured-meta">
+            <span class="kx-alb-featured-chip" id="albFeaturedTracks">0 canciones</span>
+            <span class="kx-alb-featured-chip" id="albFeaturedDate">—</span>
+            <span class="kx-alb-featured-chip" id="albFeaturedPlays">0 plays</span>
+          </div>
+          <div class="kx-alb-featured-actions">
+            <button class="kx-alb-btn-primary" id="albFeaturedPlay" aria-label="Reproducir álbum destacado">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Reproducir</span>
+            </button>
+            <button class="kx-alb-btn-secondary" id="albFeaturedView" aria-label="Ver detalle del álbum">
+              <span>Ver álbum</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- TOOLBAR: FILTROS + VISTA + SORT -->
-        <div class="alb-toolbar">
-            <div class="alb-toolbar-left">
-                <div class="alb-filters">
-                    <button class="alb-filter active" data-filter="todos">Todos</button>
-                    <button class="alb-filter" data-filter="recientes">Recientes</button>
-                    <button class="alb-filter" data-filter="proximos">Próximos</button>
-                    <button class="alb-filter" data-filter="az">A — Z</button>
-                </div>
-            </div>
-            <div class="alb-toolbar-right">
-                <div class="alb-sort-wrap">
-                    <button class="alb-sort-btn" id="albSortBtn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-                        <span id="albSortLabel">Reciente</span>
-                    </button>
-                    <div class="alb-sort-dropdown" id="albSortDropdown">
-                        <button class="alb-sort-option active" data-sort="recent">📅 Más reciente</button>
-                        <button class="alb-sort-option" data-sort="oldest">📅 Más antiguo</button>
-                        <button class="alb-sort-option" data-sort="name-az">🔤 Nombre A→Z</button>
-                        <button class="alb-sort-option" data-sort="name-za">🔤 Nombre Z→A</button>
-                        <button class="alb-sort-option" data-sort="tracks">🎵 Más canciones</button>
-                    </div>
-                </div>
-                <div class="alb-view-toggle">
-                    <button class="alb-view-btn active" data-view="grid" title="Vista grid">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                    </button>
-                    <button class="alb-view-btn" data-view="list" title="Vista lista">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
-                    </button>
-                </div>
-            </div>
+    <!-- TOOLBAR -->
+    <div class="kx-alb-toolbar">
+      <div class="kx-alb-toolbar-left">
+        <div class="kx-alb-filters" role="tablist" aria-label="Filtrar álbumes">
+          <button class="kx-alb-filter active" data-filter="todos" role="tab" aria-selected="true">Todos</button>
+          <button class="kx-alb-filter" data-filter="recientes" role="tab" aria-selected="false">Recientes</button>
+          <button class="kx-alb-filter" data-filter="proximos" role="tab" aria-selected="false">Próximos</button>
+          <button class="kx-alb-filter" data-filter="az" role="tab" aria-selected="false">A — Z</button>
         </div>
-
-        <!-- GRID DE ÁLBUMES -->
-        <div class="alb-grid" id="albumesGrid">
-            <!-- Skeleton loaders se inyectan via JS -->
+      </div>
+      <div class="kx-alb-toolbar-right">
+        <div class="kx-alb-sort-wrap">
+          <button class="kx-alb-sort-trigger" id="albSortBtn" aria-haspopup="listbox" aria-expanded="false">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+            <span id="albSortLabel">Reciente</span>
+          </button>
+          <div class="kx-alb-sort-dropdown" id="albSortDropdown" role="listbox">
+            <button class="kx-alb-sort-option active" data-sort="recent" role="option" aria-selected="true">Más reciente</button>
+            <button class="kx-alb-sort-option" data-sort="oldest" role="option">Más antiguo</button>
+            <button class="kx-alb-sort-option" data-sort="name-az" role="option">Nombre A→Z</button>
+            <button class="kx-alb-sort-option" data-sort="name-za" role="option">Nombre Z→A</button>
+            <button class="kx-alb-sort-option" data-sort="tracks" role="option">Más canciones</button>
+          </div>
         </div>
-
-        <!-- LISTA ALTERNATIVA -->
-        <div class="alb-list-view" id="albumesListAlt" style="display:none;">
-            <!-- Se llena via JS -->
+        <div class="kx-alb-view-toggle" role="radiogroup" aria-label="Cambiar vista">
+          <button class="kx-alb-view-btn active" data-view="grid" role="radio" aria-checked="true" aria-label="Vista cuadrícula">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </button>
+          <button class="kx-alb-view-btn" data-view="list" role="radio" aria-checked="false" aria-label="Vista lista">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><circle cx="3.5" cy="6" r="1.5" fill="currentColor"/><circle cx="3.5" cy="12" r="1.5" fill="currentColor"/><circle cx="3.5" cy="18" r="1.5" fill="currentColor"/></svg>
+          </button>
         </div>
+      </div>
     </div>
 
-    <!-- ═══ VISTA: DETALLE DE ÁLBUM ═══ -->
-    <div class="alb-detail" id="albumDetailView">
-        <button class="alb-back" id="btnBackAlbums">
-            <span class="alb-back-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            <span class="alb-back-label">Álbumes</span>
-        </button>
+    <!-- GRID -->
+    <div class="kx-alb-grid" id="albumesGrid" role="list" aria-label="Lista de álbumes"></div>
 
-        <!-- HERO -->
-        <div class="alb-hero" id="albDetailHero">
-            <div class="alb-hero-bg" id="albDetailHeroBg"></div>
-            <div class="alb-hero-noise"></div>
-            <div class="alb-hero-overlay"></div>
-            <div class="alb-hero-vignette"></div>
-            <canvas class="alb-hero-color-canvas" id="albColorCanvas" width="1" height="1"></canvas>
-            <div class="alb-hero-inner">
-                <div class="alb-hero-cover-zone">
-                    <div class="alb-hero-cover" id="albHeroCoverWrap">
-                        <img id="albumDetailCover" src="" alt="" crossorigin="anonymous">
-                        <div class="alb-hero-cover-shine"></div>
-                    </div>
-                </div>
-                <div class="alb-hero-info">
-                    <div class="alb-hero-type">ÁLBUM</div>
-                    <h1 class="alb-hero-title" id="albumDetailTitle"></h1>
-                    <p class="alb-hero-desc" id="albumDetailDesc"></p>
-                    <div class="alb-hero-chips">
-                        <span class="alb-chip" id="albumDetailMeta">0 CANCIONES</span>
-                        <span class="alb-chip" id="albumDetailYear"></span>
-                        <span class="alb-chip alb-chip-duration" id="albumDetailDuration">⏱ 0 min</span>
-                        <span class="alb-chip alb-chip-plays" id="albumDetailPlays">🔥 0 plays</span>
-                    </div>
-                    <div id="albumReleaseInfoWrap"></div>
-                    <div class="alb-hero-controls">
-                        <button class="alb-ctrl-play" id="albPlayAll">
-                            <span class="alb-ctrl-play-ripple"></span>
-                            <span class="alb-ctrl-play-icon">▶</span>
-                            <span>Reproducir Todo</span>
-                        </button>
-                        <button class="alb-ctrl-shuffle" id="albShuffle">
-                            <span>🔀</span><span>Aleatorio</span>
-                        </button>
-                        <button class="alb-ctrl-icon" id="albDetailShare" title="Compartir">↗</button>
-                        <button class="alb-ctrl-icon" id="albDetailFav" title="Favorito">🤍</button>
-                    </div>
-                </div>
-            </div>
+    <!-- LIST VIEW -->
+    <div class="kx-alb-list" id="albumesListAlt" style="display:none;" role="list" aria-label="Lista de álbumes"></div>
+
+  </div>
+
+  <!-- ═══ VISTA: DETALLE ═══ -->
+  <div class="kx-alb-detail" id="albumDetailView">
+
+    <button class="kx-alb-back" id="btnBackAlbums" aria-label="Volver a álbumes">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+      <span>Álbumes</span>
+    </button>
+
+    <!-- HERO -->
+    <section class="kx-alb-hero" id="albDetailHero">
+      <div class="kx-alb-hero-bg" id="albDetailHeroBg"></div>
+      <div class="kx-alb-hero-overlay"></div>
+      <div class="kx-alb-hero-inner">
+        <div class="kx-alb-hero-cover-zone">
+          <div class="kx-alb-hero-cover">
+            <img id="albumDetailCover" src="" alt="Portada del álbum" crossorigin="anonymous">
+            <div class="kx-alb-hero-cover-shine"></div>
+          </div>
         </div>
-
-        <!-- TRACKLIST -->
-        <div class="alb-tracklist">
-            <div class="alb-tracklist-head">
-                <div class="alb-tracklist-head-left">
-                    <div class="alb-tracklist-icon-wrap">
-                        <div class="alb-tracklist-eq"><div class="alb-teq-bar"></div><div class="alb-teq-bar"></div><div class="alb-teq-bar"></div></div>
-                    </div>
-                    <div>
-                        <div class="alb-tracklist-title">Canciones</div>
-                        <div class="alb-tracklist-sub" id="albTracksSub">Lista de reproducción</div>
-                    </div>
-                </div>
-                <div class="alb-tracklist-head-right">
-                    <span class="alb-tracklist-most-popular" id="albMostPopular"></span>
-                    <button class="alb-btn-add nav-admin-only" id="btnAddTrack">
-                        <span class="alb-btn-add-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
-                        <span>Agregar</span>
-                    </button>
-                </div>
-            </div>
-            <div class="alb-columns">
-                <span class="alb-col-num">#</span>
-                <span class="alb-col-title">TÍTULO</span>
-                <span class="alb-col-wave">WAVE</span>
-                <span class="alb-col-dur">DURACIÓN</span>
-                <span class="alb-col-plays-h">PLAYS</span>
-            </div>
-            <div class="alb-tracks" id="trackList">
-                <!-- skeleton or content -->
-            </div>
+        <div class="kx-alb-hero-info">
+          <span class="kx-alb-hero-type">ÁLBUM</span>
+          <h1 class="kx-alb-hero-title" id="albumDetailTitle"></h1>
+          <p class="kx-alb-hero-desc" id="albumDetailDesc"></p>
+          <div class="kx-alb-hero-chips">
+            <span class="kx-alb-chip" id="albumDetailMeta">0 CANCIONES</span>
+            <span class="kx-alb-chip" id="albumDetailYear"></span>
+            <span class="kx-alb-chip kx-alb-chip--dur" id="albumDetailDuration">0 min</span>
+            <span class="kx-alb-chip kx-alb-chip--plays" id="albumDetailPlays">0 plays</span>
+          </div>
+          <div id="albumReleaseInfoWrap"></div>
+          <div class="kx-alb-hero-controls">
+            <button class="kx-alb-btn-primary kx-alb-btn-primary--lg" id="albPlayAll" aria-label="Reproducir todo">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Reproducir</span>
+            </button>
+            <button class="kx-alb-btn-secondary" id="albShuffle" aria-label="Reproducción aleatoria">
+              <span>Aleatorio</span>
+            </button>
+            <button class="kx-alb-btn-icon" id="albDetailShare" title="Compartir" aria-label="Compartir álbum">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+            </button>
+            <button class="kx-alb-btn-icon" id="albDetailFav" title="Favorito" aria-label="Agregar a favoritos">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            </button>
+          </div>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <!-- CONTEXT MENU -->
-    <div class="alb-ctx-menu" id="albCtxMenu">
-        <button class="alb-ctx-item" data-action="play"><span>▶</span> Reproducir</button>
-        <button class="alb-ctx-item" data-action="queue"><span>📋</span> Agregar a cola</button>
-        <button class="alb-ctx-item" data-action="playlist"><span>➕</span> Agregar a playlist</button>
-        <button class="alb-ctx-item" data-action="fav"><span>🤍</span> Favorito</button>
-        <button class="alb-ctx-item" data-action="share"><span>↗</span> Compartir</button>
-        <div class="alb-ctx-separator"></div>
-        <button class="alb-ctx-item alb-ctx-admin" data-action="edit"><span>✏️</span> Editar</button>
-        <button class="alb-ctx-item alb-ctx-admin alb-ctx-danger" data-action="delete"><span>🗑</span> Eliminar</button>
-    </div>
+    <!-- TRACKLIST -->
+    <section class="kx-alb-tracklist" aria-label="Lista de canciones">
+      <div class="kx-alb-tracklist-head">
+        <div class="kx-alb-tracklist-head-left">
+          <div class="kx-alb-tracklist-eq-icon">
+            <span></span><span></span><span></span>
+          </div>
+          <div>
+            <h3 class="kx-alb-tracklist-title">Canciones</h3>
+            <p class="kx-alb-tracklist-sub" id="albTracksSub">Lista de reproducción</p>
+          </div>
+        </div>
+        <div class="kx-alb-tracklist-head-right">
+          <span class="kx-alb-tracklist-popular" id="albMostPopular"></span>
+          <button class="kx-alb-btn-add nav-admin-only" id="btnAddTrack" aria-label="Agregar canción">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            <span>Agregar</span>
+          </button>
+        </div>
+      </div>
+      <div class="kx-alb-columns" aria-hidden="true">
+        <span class="kx-alb-col-num">#</span>
+        <span class="kx-alb-col-title">TÍTULO</span>
+        <span class="kx-alb-col-wave">WAVE</span>
+        <span class="kx-alb-col-dur">DURACIÓN</span>
+        <span class="kx-alb-col-plays">PLAYS</span>
+      </div>
+      <ol class="kx-alb-tracks" id="trackList" role="list"></ol>
+    </section>
+  </div>
+
+  <!-- CONTEXT MENU -->
+  <div class="kx-alb-ctx" id="albCtxMenu" role="menu" aria-label="Menú contextual">
+    <button class="kx-alb-ctx-item" data-action="play" role="menuitem"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Reproducir</button>
+    <button class="kx-alb-ctx-item" data-action="queue" role="menuitem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12H3"/><path d="M16 6H3"/><path d="M12 18H3"/><path d="M21 15V6"/><circle cx="18.5" cy="17.5" r="2.5"/></svg> Cola</button>
+    <button class="kx-alb-ctx-item" data-action="playlist" role="menuitem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg> Playlist</button>
+    <button class="kx-alb-ctx-item" data-action="fav" role="menuitem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg> Favorito</button>
+    <button class="kx-alb-ctx-item" data-action="share" role="menuitem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg> Compartir</button>
+    <div class="kx-alb-ctx-sep"></div>
+    <button class="kx-alb-ctx-item kx-alb-ctx-admin" data-action="delete" role="menuitem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar</button>
+  </div>
 </div>
                 <!-- 📻 PANEL: RADIO -->
                 <div class="panel" id="panel-radio">
