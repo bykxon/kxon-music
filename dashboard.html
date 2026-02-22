@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/dashboard-responsive.css">
     <link rel="stylesheet" href="css/dashboard-favs-share.css">
     <link rel="stylesheet" href="css/dashboard-analytics.css">
+    <link rel="stylesheet" href="css/dashboard-albumes.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -1918,28 +1919,171 @@
                     <div class="panel-section" id="inicioAlbumesWrap"><div class="inicio-section-header"></div><div class="content-grid content-grid-albums" id="inicioAlbumes"></div></div>
                 </div>
 
-                <!-- 💿 PANEL: ÁLBUMES -->
-                <div class="panel" id="panel-albumes">
-                    <div id="albumesListView">
-                        <div class="panel-header"><h1 class="panel-title">Álbumes</h1><p class="panel-desc">Discografía completa de KXON</p></div>
-                        <div class="content-grid content-grid-albums" id="albumesGrid"><div class="empty-state"><div class="empty-icon">💿</div><div class="empty-title">Cargando álbumes...</div></div></div>
+                <!-- 💿 PANEL: ÁLBUMES — REDISEÑO TOTAL -->
+<div class="panel" id="panel-albumes">
+
+    <!-- ═══ VISTA: LISTA DE ÁLBUMES ═══ -->
+    <div id="albumesListView">
+
+        <!-- HEADER PREMIUM -->
+        <div class="alb-header">
+            <div class="alb-header-content">
+                <div class="alb-header-badge">DISCOGRAFÍA</div>
+                <h1 class="alb-header-title">Álbumes</h1>
+                <p class="alb-header-desc">Explora la colección completa de música exclusiva de KXON</p>
+            </div>
+            <div class="alb-header-actions">
+                <div class="alb-header-stats">
+                    <div class="alb-stat-chip">
+                        <span class="alb-stat-chip-value" id="albStatTotal">0</span>
+                        <span class="alb-stat-chip-label">Álbumes</span>
                     </div>
-                    <div class="album-detail" id="albumDetailView">
-                        <button class="btn-back" id="btnBackAlbums">← Volver a Álbumes</button>
-                        <div class="album-detail-header">
-                            <div class="album-detail-cover"><img id="albumDetailCover" src="" alt=""></div>
-                            <div class="album-detail-info">
-                                <div class="album-detail-label">ÁLBUM</div>
-                                <h1 class="album-detail-title" id="albumDetailTitle"></h1>
-                                <p class="album-detail-desc" id="albumDetailDesc"></p>
-                                <span class="album-detail-meta" id="albumDetailMeta"></span>
-                                <div id="albumReleaseInfoWrap"></div>
-                            </div>
-                        </div>
-                        <div class="section-header-row"><div class="panel-section-title">🎵 Canciones</div><button class="btn-add-track nav-admin-only" id="btnAddTrack"><span>+</span> Agregar Canción</button></div>
-                        <div class="track-list" id="trackList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones aún</div></div></div>
+                    <div class="alb-stat-chip">
+                        <span class="alb-stat-chip-value" id="albStatTracks">0</span>
+                        <span class="alb-stat-chip-label">Canciones</span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ALBUM DESTACADO -->
+        <div class="alb-featured" id="albFeatured" style="display:none;">
+            <div class="alb-featured-glow"></div>
+            <div class="alb-featured-inner">
+                <div class="alb-featured-cover-wrap">
+                    <div class="alb-featured-cover">
+                        <img id="albFeaturedImg" src="" alt="">
+                        <div class="alb-featured-cover-shine"></div>
+                    </div>
+                    <div class="alb-featured-vinyl">
+                        <div class="alb-featured-vinyl-grooves"></div>
+                        <div class="alb-featured-vinyl-label"></div>
+                    </div>
+                </div>
+                <div class="alb-featured-info">
+                    <div class="alb-featured-label">
+                        <span class="alb-featured-label-dot"></span>
+                        ÚLTIMO LANZAMIENTO
+                    </div>
+                    <h2 class="alb-featured-title" id="albFeaturedTitle"></h2>
+                    <p class="alb-featured-desc" id="albFeaturedDesc"></p>
+                    <div class="alb-featured-meta">
+                        <span class="alb-featured-meta-item" id="albFeaturedTracks">
+                            <span class="alb-meta-icon">♪</span> 0 canciones
+                        </span>
+                        <span class="alb-featured-meta-item" id="albFeaturedDate">
+                            <span class="alb-meta-icon">📅</span> —
+                        </span>
+                    </div>
+                    <div class="alb-featured-actions">
+                        <button class="alb-featured-btn-play" id="albFeaturedPlay">
+                            <span class="alb-btn-play-icon">▶</span>
+                            <span>Reproducir</span>
+                        </button>
+                        <button class="alb-featured-btn-view" id="albFeaturedView">
+                            Ver Álbum
+                            <span class="alb-btn-arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEPARADOR DE SECCIÓN -->
+        <div class="alb-section-divider" id="albAllSection">
+            <div class="alb-section-line"></div>
+            <span class="alb-section-label">TODOS LOS ÁLBUMES</span>
+            <div class="alb-section-line"></div>
+        </div>
+
+        <!-- GRID DE ÁLBUMES -->
+        <div class="alb-grid" id="albumesGrid">
+            <div class="alb-loading">
+                <div class="alb-loading-spinner"></div>
+                <span>Cargando álbumes...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ VISTA: DETALLE DE ÁLBUM ═══ -->
+    <div class="alb-detail" id="albumDetailView">
+
+        <!-- BOTÓN VOLVER -->
+        <button class="alb-back" id="btnBackAlbums">
+            <span class="alb-back-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+            <span>Volver a Álbumes</span>
+        </button>
+
+        <!-- HERO DEL ÁLBUM -->
+        <div class="alb-detail-hero">
+            <div class="alb-detail-hero-bg" id="albDetailHeroBg"></div>
+            <div class="alb-detail-hero-overlay"></div>
+            <div class="alb-detail-hero-inner">
+                <div class="alb-detail-cover-section">
+                    <div class="alb-detail-cover">
+                        <img id="albumDetailCover" src="" alt="">
+                        <div class="alb-detail-cover-reflection"></div>
+                    </div>
+                </div>
+                <div class="alb-detail-info-section">
+                    <div class="alb-detail-type-badge">ÁLBUM</div>
+                    <h1 class="alb-detail-title" id="albumDetailTitle"></h1>
+                    <p class="alb-detail-desc" id="albumDetailDesc"></p>
+                    <div class="alb-detail-meta-row">
+                        <span class="alb-detail-meta-chip" id="albumDetailMeta">0 CANCIONES</span>
+                        <span class="alb-detail-meta-chip" id="albumDetailYear"></span>
+                    </div>
+                    <div id="albumReleaseInfoWrap"></div>
+                    <div class="alb-detail-controls">
+                        <button class="alb-detail-play-all" id="albPlayAll">
+                            <span class="alb-play-all-icon">▶</span>
+                            Reproducir Todo
+                        </button>
+                        <button class="alb-detail-shuffle" id="albShuffle">
+                            🔀 Aleatorio
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTA DE CANCIONES -->
+        <div class="alb-tracks-section">
+            <div class="alb-tracks-header">
+                <div class="alb-tracks-header-left">
+                    <span class="alb-tracks-icon">🎵</span>
+                    <div>
+                        <div class="alb-tracks-title">Canciones</div>
+                        <div class="alb-tracks-subtitle" id="albTracksSub">Lista de reproducción</div>
+                    </div>
+                </div>
+                <button class="alb-add-track nav-admin-only" id="btnAddTrack">
+                    <span class="alb-add-icon">+</span>
+                    <span>Agregar</span>
+                </button>
+            </div>
+
+            <!-- HEADER DE COLUMNAS -->
+            <div class="alb-tracks-columns">
+                <span class="alb-col-num">#</span>
+                <span class="alb-col-title">TÍTULO</span>
+                <span class="alb-col-duration">DURACIÓN</span>
+                <span class="alb-col-plays">PLAYS</span>
+            </div>
+
+            <!-- LISTA -->
+            <div class="alb-track-list" id="trackList">
+                <div class="alb-empty">
+                    <div class="alb-empty-icon">🎵</div>
+                    <div class="alb-empty-title">Sin canciones aún</div>
+                    <div class="alb-empty-text">Agrega canciones a este álbum</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- 📻 PANEL: RADIO -->
                 <div class="panel" id="panel-radio">

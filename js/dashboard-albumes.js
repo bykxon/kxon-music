@@ -1,8 +1,6 @@
 /* ============================================
-   💿 DASHBOARD-ALBUMES.JS — KXON
-   Álbumes, detalle, canciones, CRUD
-   Con sistema de lanzamiento programado
-   FIX: IDs corregidos para coincidir con HTML
+   💿 DASHBOARD-ALBUMES.JS — KXON 2026
+   Rediseño Total — Lógica del Panel de Álbumes
    ============================================ */
 (function () {
 
@@ -45,6 +43,11 @@
         return diffHours >= 0 && diffHours <= 48;
     }
 
+    function formatYear(dateStr) {
+        if (!dateStr) return '';
+        return new Date(dateStr).getFullYear().toString();
+    }
+
     /* ══════════════════════════════════════════
        💿 CARGAR ÁLBUMES
        ══════════════════════════════════════════ */
@@ -53,12 +56,151 @@
             var r = await db.from('albumes').select('*, canciones(id)').order('created_at', { ascending: false });
             if (r.error) throw r.error;
             var data = r.data || [];
-            renderAlbums(data, 'albumesGrid');
-            renderAlbums(data.slice(0, 5), 'inicioAlbumes');
+
+            /* Stats */
+            var totalAlbums = data.length;
+            var totalTracks = 0;
+            for (var t = 0; t < data.length; t++) {
+                totalTracks += (data[t].canciones ? data[t].canciones.length : 0);
+            }
+            var elStatTotal = document.getElementById('albStatTotal');
+            var elStatTracks = document.getElementById('albStatTracks');
+            if (elStatTotal) elStatTotal.textContent = totalAlbums;
+            if (elStatTracks) elStatTracks.textContent = totalTracks;
+
+            /* Featured — primer álbum released */
+            renderFeatured(data);
+
+            /* Grid */
+            renderAlbumGrid(data, 'albumesGrid');
+
+            /* Inicio (legacy support) */
+            renderAlbumsLegacy(data.slice(0, 5), 'inicioAlbumes');
         } catch (e) { console.error(e); }
     };
 
-    function renderAlbums(albums, cid) {
+    /* ══════════════════════════════════════════
+       ⭐ RENDER FEATURED ALBUM
+       ══════════════════════════════════════════ */
+    function renderFeatured(albums) {
+        var featured = document.getElementById('albFeatured');
+        if (!featured) return;
+
+        /* Find first released album */
+        var album = null;
+        for (var i = 0; i < albums.length; i++) {
+            if (isReleased(albums[i].fecha_lanzamiento) || K.isAdmin) {
+                album = albums[i];
+                break;
+            }
+        }
+
+        if (!album) {
+            featured.style.display = 'none';
+            return;
+        }
+
+        featured.style.display = 'block';
+
+        var img = album.imagen_url || 'https://placehold.co/400x400/111/333?text=♪';
+        var cnt = album.canciones ? album.canciones.length : 0;
+
+        var elImg = document.getElementById('albFeaturedImg');
+        var elTitle = document.getElementById('albFeaturedTitle');
+        var elDesc = document.getElementById('albFeaturedDesc');
+        var elTracks = document.getElementById('albFeaturedTracks');
+        var elDate = document.getElementById('albFeaturedDate');
+
+        if (elImg) elImg.src = img;
+        if (elTitle) elTitle.textContent = album.titulo;
+        if (elDesc) elDesc.textContent = album.descripcion || 'Álbum exclusivo de KXON';
+        if (elTracks) elTracks.innerHTML = '<span class="alb-meta-icon">♪</span> ' + cnt + ' canciones';
+        if (elDate) elDate.innerHTML = '<span class="alb-meta-icon">📅</span> ' + formatYear(album.created_at);
+
+        /* Play button */
+        var btnPlay = document.getElementById('albFeaturedPlay');
+        if (btnPlay) {
+            btnPlay.onclick = function () {
+                window._openAlbum(album.id);
+                setTimeout(function () {
+                    if (K.currentPlaylist.length > 0) {
+                        K.playTrack(0);
+                    }
+                }, 800);
+            };
+        }
+
+        /* View button */
+        var btnView = document.getElementById('albFeaturedView');
+        if (btnView) {
+            btnView.onclick = function () {
+                window._openAlbum(album.id);
+            };
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       🎴 RENDER ALBUM GRID — NEW CARDS
+       ══════════════════════════════════════════ */
+    function renderAlbumGrid(albums, cid) {
+        var c = document.getElementById(cid);
+        if (!c) return;
+
+        if (!albums || !albums.length) {
+            c.innerHTML = '<div class="alb-empty"><div class="alb-empty-icon">💿</div><div class="alb-empty-title">Sin álbumes</div><div class="alb-empty-text">Aún no hay álbumes publicados</div></div>';
+            return;
+        }
+
+        var h = '';
+        for (var i = 0; i < albums.length; i++) {
+            var a = albums[i];
+            var img = a.imagen_url || 'https://placehold.co/400x400/111/333?text=♪';
+            var cnt = a.canciones ? a.canciones.length : 0;
+            var released = isReleased(a.fecha_lanzamiento);
+            var locked = !released && !K.isAdmin;
+
+            if (locked) {
+                /* LOCKED CARD */
+                h += '<div class="alb-card alb-locked" onclick="window._albumLockedMsg(\'' + formatReleaseDate(a.fecha_lanzamiento) + '\')">';
+                h += '<div class="alb-card-visual">';
+                h += '<img class="alb-card-img" src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/400x400/111/333?text=♪\'">';
+                h += '<div class="alb-card-lock-overlay">';
+                h += '<div class="alb-lock-icon">🔒</div>';
+                h += '<div class="alb-lock-date">' + formatReleaseDate(a.fecha_lanzamiento) + '</div>';
+                var countdown = getCountdown(a.fecha_lanzamiento);
+                if (countdown) h += '<div class="alb-lock-countdown">' + countdown + '</div>';
+                h += '</div>';
+                h += '</div>';
+                h += '<div class="alb-card-body">';
+                h += '<div class="alb-card-title">' + a.titulo + '</div>';
+                h += '<div class="alb-card-subtitle">🔒 Próximamente</div>';
+                h += '</div>';
+                h += '</div>';
+            } else {
+                /* NORMAL CARD */
+                h += '<div class="alb-card" onclick="window._openAlbum(\'' + a.id + '\')">';
+                h += '<div class="alb-card-visual">';
+                h += '<img class="alb-card-img" src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/400x400/111/333?text=♪\'">';
+                h += '<div class="alb-card-hover">';
+                h += '<button class="alb-card-play" onclick="event.stopPropagation();window._quickPlayAlbum(\'' + a.id + '\')">▶</button>';
+                h += '<span class="alb-card-track-count">' + cnt + ' tracks</span>';
+                h += '</div>';
+                if (K.isAdmin) {
+                    h += '<button class="alb-card-delete" onclick="event.stopPropagation();window._deleteAlbum(\'' + a.id + '\')">✕</button>';
+                }
+                h += '</div>';
+                h += '<div class="alb-card-body">';
+                h += '<div class="alb-card-title">' + a.titulo + '</div>';
+                h += '<div class="alb-card-subtitle">♪ ' + cnt + ' canciones</div>';
+                h += '</div>';
+                h += '</div>';
+            }
+        }
+        c.innerHTML = h;
+    }
+
+    /* ── Legacy render for Inicio panel ── */
+    function renderAlbumsLegacy(albums, cid) {
         var c = document.getElementById(cid);
         if (!c) return;
         if (!albums || !albums.length) {
@@ -76,13 +218,10 @@
             if (locked) {
                 h += '<div class="card album-locked" onclick="window._albumLockedMsg(\'' + formatReleaseDate(a.fecha_lanzamiento) + '\')">';
                 h += '<div class="card-img square"><img src="' + img + '" alt="" onerror="this.src=\'https://placehold.co/400x400/111/333?text=♪\'">';
-                h += '<div class="album-lock-badge">';
-                h += '<div class="album-lock-icon">🔒</div>';
-                h += '<div class="album-lock-date">' + formatReleaseDate(a.fecha_lanzamiento) + '</div>';
-                var countdown = getCountdown(a.fecha_lanzamiento);
-                if (countdown) h += '<div class="album-lock-countdown">' + countdown + '</div>';
-                h += '</div>';
-                h += '</div>';
+                h += '<div class="album-lock-badge"><div class="album-lock-icon">🔒</div><div class="album-lock-date">' + formatReleaseDate(a.fecha_lanzamiento) + '</div>';
+                var cd = getCountdown(a.fecha_lanzamiento);
+                if (cd) h += '<div class="album-lock-countdown">' + cd + '</div>';
+                h += '</div></div>';
                 h += '<div class="card-body"><div class="card-title">' + a.titulo + '</div><div class="card-subtitle">🔒 Próximamente</div></div></div>';
             } else {
                 h += '<div class="card" onclick="window._openAlbum(\'' + a.id + '\')">';
@@ -99,8 +238,34 @@
         K.showToast('🔒 Este álbum se desbloquea el ' + dateStr, 'error');
     };
 
+    /* ── Quick play album from card ── */
+    window._quickPlayAlbum = async function (aid) {
+        try {
+            var sr = await db.from('canciones').select('*').eq('album_id', aid).order('created_at', { ascending: true });
+            var songs = sr.data || [];
+            var playable = [];
+            for (var i = 0; i < songs.length; i++) {
+                if (isReleased(songs[i].fecha_lanzamiento) || K.isAdmin) {
+                    playable.push(songs[i]);
+                }
+            }
+            if (playable.length === 0) {
+                K.showToast('No hay canciones disponibles', 'error');
+                return;
+            }
+
+            var albumR = await db.from('albumes').select('imagen_url').eq('id', aid).single();
+            K.currentAlbumCover = albumR.data ? albumR.data.imagen_url : '';
+            K.currentPlaylist = playable;
+            K.playTrack(0);
+        } catch (e) {
+            console.error(e);
+            K.showToast('Error al reproducir', 'error');
+        }
+    };
+
     /* ══════════════════════════════════════════
-       💿 ALBUM DETAIL — FIX: IDs correctos
+       💿 ALBUM DETAIL
        ══════════════════════════════════════════ */
     window._openAlbum = async function (aid) {
         K.currentAlbumId = aid;
@@ -110,15 +275,23 @@
             var album = r.data;
             K.currentAlbumCover = album.imagen_url || 'https://placehold.co/400x400/111/333?text=♪';
 
-            /* ── FIX: Usar IDs que existen en el HTML ── */
             var elTitle = document.getElementById('albumDetailTitle');
             var elDesc = document.getElementById('albumDetailDesc');
             var elCover = document.getElementById('albumDetailCover');
+            var elYear = document.getElementById('albumDetailYear');
+            var elHeroBg = document.getElementById('albDetailHeroBg');
 
             if (elTitle) elTitle.textContent = album.titulo;
             if (elDesc) elDesc.textContent = album.descripcion || 'Sin descripción';
             if (elCover) elCover.src = K.currentAlbumCover;
+            if (elYear) elYear.textContent = formatYear(album.created_at);
 
+            /* Dynamic hero background */
+            if (elHeroBg) {
+                elHeroBg.style.backgroundImage = 'url(' + K.currentAlbumCover + ')';
+            }
+
+            /* Release info */
             var existingRelease = document.getElementById('albumReleaseInfo');
             if (existingRelease) existingRelease.remove();
 
@@ -131,41 +304,84 @@
                     releaseDiv.innerHTML = '✅ Lanzado el ' + formatReleaseDate(album.fecha_lanzamiento);
                 } else {
                     releaseDiv.innerHTML = '📅 Lanzamiento: ' + formatReleaseDate(album.fecha_lanzamiento);
-                    var cd = getCountdown(album.fecha_lanzamiento);
-                    if (cd) releaseDiv.innerHTML += ' — ' + cd;
+                    var cd2 = getCountdown(album.fecha_lanzamiento);
+                    if (cd2) releaseDiv.innerHTML += ' — ' + cd2;
                 }
-                var detailInfo = document.querySelector('.album-detail-info');
-                if (detailInfo) detailInfo.appendChild(releaseDiv);
+                var wrap = document.getElementById('albumReleaseInfoWrap');
+                if (wrap) wrap.appendChild(releaseDiv);
             }
 
+            /* Admin btn */
             var btnAdd = document.getElementById('btnAddTrack');
             if (btnAdd) {
-                if (K.isAdmin) btnAdd.classList.add('visible'); else btnAdd.classList.remove('visible');
+                if (K.isAdmin) btnAdd.classList.add('visible');
+                else btnAdd.classList.remove('visible');
             }
 
             await loadAlbumTracks(aid);
 
             document.getElementById('albumesListView').style.display = 'none';
             document.getElementById('albumDetailView').classList.add('show');
-        } catch (e) { console.error(e); K.showToast('Error al cargar álbum', 'error'); }
+        } catch (e) {
+            console.error(e);
+            K.showToast('Error al cargar álbum', 'error');
+        }
     };
 
+    /* ── Play All ── */
+    var albPlayAll = document.getElementById('albPlayAll');
+    if (albPlayAll) {
+        albPlayAll.addEventListener('click', function () {
+            if (K.currentPlaylist.length > 0) {
+                K.playTrack(0);
+            } else {
+                K.showToast('No hay canciones para reproducir', 'error');
+            }
+        });
+    }
+
+    /* ── Shuffle ── */
+    var albShuffle = document.getElementById('albShuffle');
+    if (albShuffle) {
+        albShuffle.addEventListener('click', function () {
+            if (K.currentPlaylist.length === 0) {
+                K.showToast('No hay canciones para reproducir', 'error');
+                return;
+            }
+            /* Fisher-Yates shuffle */
+            var shuffled = K.currentPlaylist.slice();
+            for (var i = shuffled.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = shuffled[i];
+                shuffled[i] = shuffled[j];
+                shuffled[j] = temp;
+            }
+            K.currentPlaylist = shuffled;
+            K.playTrack(0);
+            K.showToast('🔀 Reproducción aleatoria', 'success');
+        });
+    }
+
+    /* ══════════════════════════════════════════
+       🎵 LOAD ALBUM TRACKS
+       ══════════════════════════════════════════ */
     async function loadAlbumTracks(aid) {
         var sr = await db.from('canciones').select('*').eq('album_id', aid).order('created_at', { ascending: true });
         var songs = sr.data || [];
         var releasedSongs = [];
         var totalSongs = songs.length;
 
-        /* ── FIX: Usar ID correcto del HTML ── */
         var elMeta = document.getElementById('albumDetailMeta');
         if (elMeta) elMeta.textContent = totalSongs + ' CANCIONES';
 
-        /* ── FIX: Usar ID correcto del HTML (trackList, no detailTracks) ── */
+        var elSub = document.getElementById('albTracksSub');
+
         var trackListEl = document.getElementById('trackList');
 
         if (!songs.length) {
-            if (trackListEl) trackListEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Sin canciones</div></div>';
+            if (trackListEl) trackListEl.innerHTML = '<div class="alb-empty"><div class="alb-empty-icon">🎵</div><div class="alb-empty-title">Sin canciones</div><div class="alb-empty-text">Agrega canciones a este álbum</div></div>';
             K.currentPlaylist = [];
+            if (elSub) elSub.textContent = 'Álbum vacío';
             return;
         }
 
@@ -184,8 +400,8 @@
                 h += '<div class="track-lock-info">';
                 h += '<span class="track-lock-icon">🔒</span>';
                 h += '<span class="track-lock-date">' + formatReleaseDate(s.fecha_lanzamiento) + '</span>';
-                var cd2 = getCountdown(s.fecha_lanzamiento);
-                if (cd2) h += '<span class="track-lock-date" style="color:var(--acento-dorado);border-color:rgba(255,215,0,.15)">' + cd2 + '</span>';
+                var cd3 = getCountdown(s.fecha_lanzamiento);
+                if (cd3) h += '<span class="track-lock-date" style="color:var(--acento-dorado);border-color:rgba(255,215,0,.15)">' + cd3 + '</span>';
                 h += '</div>';
                 h += '</div>';
             } else if (songLocked && K.isAdmin) {
@@ -221,17 +437,28 @@
         for (var j = 0; j < songs.length; j++) {
             if (!isReleased(songs[j].fecha_lanzamiento)) unreleasedCount++;
         }
+
         if (elMeta) {
             if (unreleasedCount > 0 && !K.isAdmin) {
-                elMeta.textContent = (totalSongs - unreleasedCount) + ' DISPONIBLES · ' + unreleasedCount + ' POR DESBLOQUEAR';
+                elMeta.textContent = (totalSongs - unreleasedCount) + ' DISPONIBLES';
             } else if (unreleasedCount > 0 && K.isAdmin) {
-                elMeta.textContent = totalSongs + ' CANCIONES · ' + unreleasedCount + ' PROGRAMADAS';
+                elMeta.textContent = totalSongs + ' CANCIONES';
+            }
+        }
+
+        if (elSub) {
+            if (unreleasedCount > 0 && !K.isAdmin) {
+                elSub.textContent = (totalSongs - unreleasedCount) + ' disponibles · ' + unreleasedCount + ' por desbloquear';
+            } else if (unreleasedCount > 0 && K.isAdmin) {
+                elSub.textContent = totalSongs + ' canciones · ' + unreleasedCount + ' programadas';
+            } else {
+                elSub.textContent = totalSongs + ' canciones en este álbum';
             }
         }
     }
 
     /* ══════════════════════════════════════════
-       🎵 TODAS LAS CANCIONES — FIX: ID correcto
+       🎵 TODAS LAS CANCIONES
        ══════════════════════════════════════════ */
     K.loadAllCanciones = async function () {
         try {
@@ -243,7 +470,6 @@
                 return isReleased(s.fecha_lanzamiento);
             });
 
-            /* ── FIX: Usar ID correcto del HTML ── */
             renderAllCanciones(filtered, 'allCancionesList');
             renderAllCanciones(filtered.slice(0, 5), 'inicioCanciones');
         } catch (e) { console.error(e); }
@@ -479,6 +705,7 @@
         } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
     };
 
+    /* ── Auto-refresh ── */
     setInterval(function () {
         var albumPanel = document.getElementById('panel-albumes');
         var inicioPanel = document.getElementById('panel-inicio');
