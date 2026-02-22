@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/dashboard-favs-share.css">
     <link rel="stylesheet" href="css/dashboard-analytics.css">
     <link rel="stylesheet" href="css/dashboard-albumes.css">
+    <link rel="stylesheet" href="css/dashboard-canciones.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -2153,8 +2154,111 @@
                     <div class="radio-queue-section"><div class="radio-queue-header"><div class="radio-queue-header-left"><div class="radio-queue-icon-wrap"><div class="radio-queue-icon-eq"><div class="rqi-bar"></div><div class="rqi-bar"></div><div class="rqi-bar"></div></div></div><div><div class="radio-queue-title-text">Cola de Reproducción</div><span class="radio-queue-count" id="radioQueueCount">0 canciones en cola</span></div></div></div><div class="radio-queue-list" id="radioQueueList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Cargando radio...</div></div></div></div>
                 </div>
 
-                <!-- 🎵 PANEL: CANCIONES -->
-                <div class="panel" id="panel-canciones"><div class="panel-header"><h1 class="panel-title">Todas las Canciones</h1><p class="panel-desc">Biblioteca completa de música KXON</p></div><div class="track-list" id="allCancionesList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Cargando canciones...</div></div></div></div>
+                <!-- 🎵 PANEL: CANCIONES — KXON 2026 REBUILD -->
+<div class="panel" id="panel-canciones">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-trk-header">
+    <div class="kx-trk-header-top">
+      <div class="kx-trk-header-intro">
+        <span class="kx-trk-label">BIBLIOTECA MUSICAL</span>
+        <h1 class="kx-trk-title">Canciones</h1>
+        <p class="kx-trk-subtitle">Toda la música exclusiva de KXON en un solo lugar.</p>
+      </div>
+      <div class="kx-trk-kpis">
+        <div class="kx-trk-kpi">
+          <span class="kx-trk-kpi-value" id="trkStatTotal">0</span>
+          <span class="kx-trk-kpi-label">Canciones</span>
+        </div>
+        <div class="kx-trk-kpi-divider"></div>
+        <div class="kx-trk-kpi">
+          <span class="kx-trk-kpi-value" id="trkStatPlays">0</span>
+          <span class="kx-trk-kpi-label">Reproducciones</span>
+        </div>
+        <div class="kx-trk-kpi-divider"></div>
+        <div class="kx-trk-kpi">
+          <span class="kx-trk-kpi-value" id="trkStatDuration">0m</span>
+          <span class="kx-trk-kpi-label">Duración Total</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ TOOLBAR ═══ -->
+  <div class="kx-trk-toolbar">
+    <div class="kx-trk-toolbar-left">
+      <!-- Search -->
+      <div class="kx-trk-search-wrap">
+        <svg class="kx-trk-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text"
+               class="kx-trk-search"
+               id="trkSearchInput"
+               placeholder="Buscar canciones..."
+               autocomplete="off"
+               aria-label="Buscar canciones">
+        <button class="kx-trk-search-clear" id="trkSearchClear" aria-label="Limpiar búsqueda" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <!-- Filters -->
+      <div class="kx-trk-filters" role="tablist" aria-label="Filtrar canciones">
+        <button class="kx-trk-filter active" data-filter="todas" role="tab" aria-selected="true">Todas</button>
+        <button class="kx-trk-filter" data-filter="recientes" role="tab" aria-selected="false">Recientes</button>
+        <button class="kx-trk-filter" data-filter="populares" role="tab" aria-selected="false">Populares</button>
+        <button class="kx-trk-filter" data-filter="album" role="tab" aria-selected="false">Por Álbum</button>
+      </div>
+    </div>
+    <div class="kx-trk-toolbar-right">
+      <!-- Sort -->
+      <div class="kx-trk-sort-wrap">
+        <button class="kx-trk-sort-trigger" id="trkSortBtn" aria-haspopup="listbox" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+          <span id="trkSortLabel">Reciente</span>
+        </button>
+        <div class="kx-trk-sort-dropdown" id="trkSortDropdown" role="listbox">
+          <button class="kx-trk-sort-option active" data-sort="recent" role="option" aria-selected="true">Más reciente</button>
+          <button class="kx-trk-sort-option" data-sort="oldest" role="option">Más antiguo</button>
+          <button class="kx-trk-sort-option" data-sort="name-az" role="option">Nombre A→Z</button>
+          <button class="kx-trk-sort-option" data-sort="name-za" role="option">Nombre Z→A</button>
+          <button class="kx-trk-sort-option" data-sort="most-played" role="option">Más reproducidas</button>
+        </div>
+      </div>
+      <!-- Play all -->
+      <button class="kx-trk-btn-play-all" id="trkPlayAll" aria-label="Reproducir todas">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span>Reproducir todo</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ ACTIVE FILTERS BADGE ═══ -->
+  <div class="kx-trk-active-filters" id="trkActiveFilters" style="display:none;">
+    <span class="kx-trk-active-filter-text" id="trkActiveFilterText"></span>
+    <button class="kx-trk-active-filter-clear" id="trkClearFilters" aria-label="Limpiar filtros">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      <span>Limpiar</span>
+    </button>
+  </div>
+
+  <!-- ═══ COLUMNS HEADER ═══ -->
+  <div class="kx-trk-columns" aria-hidden="true">
+    <span class="kx-trk-col-num">#</span>
+    <span class="kx-trk-col-cover"></span>
+    <span class="kx-trk-col-title">TÍTULO</span>
+    <span class="kx-trk-col-album">ÁLBUM</span>
+    <span class="kx-trk-col-dur">DURACIÓN</span>
+    <span class="kx-trk-col-plays">PLAYS</span>
+  </div>
+
+  <!-- ═══ TRACK LIST ═══ -->
+  <ol class="kx-trk-list" id="allCancionesList" role="list" aria-label="Lista de canciones"></ol>
+
+  <!-- ═══ RESULTS COUNT ═══ -->
+  <div class="kx-trk-results-info" id="trkResultsInfo" style="display:none;">
+    <span id="trkResultsText"></span>
+  </div>
+
+</div>
 
                 <!-- 🎶 PANEL: PLAYLISTS -->
                 <div class="panel" id="panel-playlists">
@@ -2346,6 +2450,7 @@
     <script src="js/dashboard-sidebar.js"></script>
     <script src="js/dashboard-init.js"></script>
     <script src="js/dashboard-albumes.js"></script>
+    <script src="js/dashboard-canciones.js"></script>
     <script src="js/dashboard-historial.js"></script>
     <script src="js/dashboard-radio.js"></script>
     <script src="js/dashboard-marketplace.js"></script>
