@@ -1,44 +1,49 @@
 /* ============================================
-   💿 PANEL ÁLBUMES — KXON ULTRA ELITE 2026
+   💿 PANEL ÁLBUMES — KXON 2026 TOTAL REDESIGN
    ════════════════════════════════════════════
-   Diseño radicalmente innovador
-   Floating Cards · Holographic Effects
-   Audio Reactive Background · Cinema UI
-   Depth System · Liquid Animations
+   REDISEÑO COMPLETO: Layout, Cards, Detail,
+   Tracks, Typography, Spacing, Everything.
+   NO solo efectos — NUEVA CARA COMPLETA
    ============================================ */
 
 /* ══════════════════════════════════════════════
-   🎨 VARIABLES EXCLUSIVAS
+   🎨 DESIGN TOKENS
    ══════════════════════════════════════════════ */
 :root {
-    --alb-bg-void: #030305;
-    --alb-bg-card: rgba(12, 12, 18, 0.55);
+    --alb-surface-0: rgba(8, 8, 12, 1);
+    --alb-surface-1: rgba(12, 12, 18, 0.6);
+    --alb-surface-2: rgba(16, 16, 24, 0.5);
+    --alb-surface-3: rgba(22, 22, 32, 0.4);
     --alb-glass: rgba(255, 255, 255, 0.015);
-    --alb-glass-border: rgba(255, 255, 255, 0.035);
-    --alb-glass-hover: rgba(255, 255, 255, 0.05);
-    --alb-glow: rgba(160, 160, 220, 0.08);
-    --alb-glow-intense: rgba(180, 180, 255, 0.12);
-    --alb-accent-cold: rgba(120, 130, 220, 0.15);
-    --alb-accent-warm: rgba(220, 180, 120, 0.08);
-    --alb-radius: 18px;
-    --alb-radius-lg: 24px;
-    --alb-radius-xl: 28px;
+    --alb-glass-hover: rgba(255, 255, 255, 0.035);
+    --alb-border-0: rgba(255, 255, 255, 0.03);
+    --alb-border-1: rgba(255, 255, 255, 0.05);
+    --alb-border-2: rgba(120, 130, 220, 0.1);
+    --alb-border-3: rgba(120, 130, 220, 0.2);
+    --alb-text-0: rgba(255, 255, 255, 0.97);
+    --alb-text-1: rgba(230, 230, 240, 0.85);
+    --alb-text-2: rgba(192, 192, 210, 0.5);
+    --alb-text-3: rgba(160, 160, 180, 0.3);
+    --alb-accent: rgba(120, 130, 220, 1);
+    --alb-accent-soft: rgba(120, 130, 220, 0.08);
+    --alb-accent-glow: rgba(120, 130, 220, 0.15);
+    --alb-r: 18px;
+    --alb-r-lg: 24px;
+    --alb-r-xl: 28px;
     --alb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --alb-ease-out: cubic-bezier(0.0, 0, 0.2, 1);
     --alb-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --alb-ease-smooth: cubic-bezier(0.4, 0, 0, 1);
 }
 
 /* ══════════════════════════════════════════════
-   🌌 FONDO INMERSIVO — AUDIO REACTIVE
+   🌌 FONDO INMERSIVO
    ══════════════════════════════════════════════ */
 #panel-albumes {
     position: relative;
     overflow: hidden;
-    min-height: 100%;
 }
 
-/* ── Mesh gradient vivo ── */
-#panel-albumes .alb-bg-layer {
+#panel-albumes .alb-env {
     position: fixed;
     top: 0;
     left: var(--sidebar-width, 268px);
@@ -46,166 +51,100 @@
     bottom: 0;
     pointer-events: none;
     z-index: 0;
-    overflow: hidden;
 }
 
-#panel-albumes .alb-bg-layer .alb-orb {
+#panel-albumes .alb-env-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0;
-    animation: albOrbPulse 8s ease-in-out infinite;
+    filter: blur(90px);
+    animation: albOrb 10s ease-in-out infinite;
 }
 
-#panel-albumes .alb-bg-layer .alb-orb:nth-child(1) {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(100, 100, 200, 0.06) 0%, transparent 70%);
-    top: -10%;
-    left: 10%;
-    animation-delay: 0s;
-    animation-duration: 10s;
+#panel-albumes .alb-env-orb:nth-child(1) {
+    width: 450px; height: 450px;
+    background: radial-gradient(circle, rgba(100, 105, 200, 0.05) 0%, transparent 70%);
+    top: -5%; left: 5%;
+    animation-duration: 11s;
 }
 
-#panel-albumes .alb-bg-layer .alb-orb:nth-child(2) {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(192, 192, 192, 0.04) 0%, transparent 70%);
-    bottom: 10%;
-    right: 5%;
-    animation-delay: 3s;
-    animation-duration: 12s;
+#panel-albumes .alb-env-orb:nth-child(2) {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(192, 192, 220, 0.035) 0%, transparent 70%);
+    bottom: 5%; right: 8%;
+    animation-delay: 4s;
+    animation-duration: 13s;
 }
 
-#panel-albumes .alb-bg-layer .alb-orb:nth-child(3) {
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(150, 120, 200, 0.04) 0%, transparent 70%);
-    top: 40%;
-    left: 50%;
-    animation-delay: 5s;
+#panel-albumes .alb-env-orb:nth-child(3) {
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(140, 120, 200, 0.03) 0%, transparent 70%);
+    top: 50%; left: 40%;
+    animation-delay: 7s;
     animation-duration: 9s;
 }
 
-@keyframes albOrbPulse {
-    0%, 100% {
-        opacity: 0.3;
-        transform: scale(1) translate(0, 0);
-    }
-    25% {
-        opacity: 0.7;
-        transform: scale(1.1) translate(20px, -15px);
-    }
-    50% {
-        opacity: 0.5;
-        transform: scale(0.95) translate(-10px, 20px);
-    }
-    75% {
-        opacity: 0.8;
-        transform: scale(1.05) translate(15px, 10px);
-    }
+@keyframes albOrb {
+    0%, 100% { opacity: 0.4; transform: translate(0, 0) scale(1); }
+    30% { opacity: 0.8; transform: translate(25px, -20px) scale(1.08); }
+    60% { opacity: 0.5; transform: translate(-15px, 25px) scale(0.95); }
 }
 
-/* ── Audio frequency bars (bottom) ── */
-#panel-albumes .alb-freq-bars {
+/* ── Frequency bars ── */
+#panel-albumes .alb-env-freq {
     position: fixed;
     bottom: 0;
     left: var(--sidebar-width, 268px);
     right: 0;
-    height: 120px;
+    height: 100px;
     display: flex;
     align-items: flex-end;
-    justify-content: center;
     gap: 3px;
+    padding: 0 12%;
     pointer-events: none;
     z-index: 0;
-    mask-image: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 100%);
-    padding: 0 10%;
+    mask-image: linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%);
 }
 
-#panel-albumes .alb-freq-bars .alb-freq-bar {
+#panel-albumes .alb-env-freq .alb-fbar {
     flex: 1;
-    max-width: 4px;
-    min-width: 2px;
-    background: linear-gradient(to top, rgba(120, 120, 200, 0.06), rgba(192, 192, 192, 0.12));
-    border-radius: 4px 4px 0 0;
+    max-width: 3px;
+    background: linear-gradient(to top, rgba(120, 130, 220, 0.04), rgba(120, 130, 220, 0.1));
+    border-radius: 3px 3px 0 0;
     transform-origin: bottom;
-    animation: albFreqPump 1.2s ease-in-out infinite;
+    animation: albFreq 1.2s ease-in-out infinite;
 }
 
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(odd) {
-    animation-duration: 0.8s;
+#panel-albumes .alb-env-freq .alb-fbar:nth-child(odd) { animation-duration: 0.9s; }
+#panel-albumes .alb-env-freq .alb-fbar:nth-child(3n) { animation-duration: 1.4s; }
+#panel-albumes .alb-env-freq .alb-fbar:nth-child(5n) { animation-duration: 1s; }
+
+@keyframes albFreq {
+    0%, 100% { transform: scaleY(0.12); opacity: 0.3; }
+    50% { transform: scaleY(1); opacity: 0.6; }
 }
 
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(3n) {
-    animation-duration: 1.5s;
-}
-
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(5n) {
-    animation-duration: 1s;
-}
-
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(1) { animation-delay: 0s; height: 30%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(2) { animation-delay: 0.05s; height: 50%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(3) { animation-delay: 0.1s; height: 35%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(4) { animation-delay: 0.15s; height: 65%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(5) { animation-delay: 0.2s; height: 40%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(6) { animation-delay: 0.25s; height: 80%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(7) { animation-delay: 0.3s; height: 55%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(8) { animation-delay: 0.35s; height: 70%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(9) { animation-delay: 0.4s; height: 45%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(10) { animation-delay: 0.45s; height: 90%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(11) { animation-delay: 0.5s; height: 60%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(12) { animation-delay: 0.55s; height: 75%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(13) { animation-delay: 0.6s; height: 50%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(14) { animation-delay: 0.65s; height: 85%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(15) { animation-delay: 0.7s; height: 40%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(16) { animation-delay: 0.75s; height: 65%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(17) { animation-delay: 0.8s; height: 55%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(18) { animation-delay: 0.85s; height: 70%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(19) { animation-delay: 0.9s; height: 35%; }
-#panel-albumes .alb-freq-bars .alb-freq-bar:nth-child(20) { animation-delay: 0.95s; height: 80%; }
-
-@keyframes albFreqPump {
-    0%, 100% { transform: scaleY(0.15); opacity: 0.3; }
-    50% { transform: scaleY(1); opacity: 0.7; }
-}
-
-/* ── Scan line ── */
-#panel-albumes .alb-scanline {
+/* ── Scanline ── */
+#panel-albumes .alb-env-scan {
     position: fixed;
     top: 0;
     left: var(--sidebar-width, 268px);
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(192, 192, 192, 0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(120, 130, 220, 0.06), transparent);
     pointer-events: none;
     z-index: 0;
-    animation: albScanMove 6s linear infinite;
+    animation: albScan 7s linear infinite;
 }
 
-@keyframes albScanMove {
-    0% { top: 0; opacity: 0; }
-    5% { opacity: 0.8; }
-    95% { opacity: 0.8; }
-    100% { top: 100%; opacity: 0; }
+@keyframes albScan {
+    0% { top: -2%; opacity: 0; }
+    5% { opacity: 0.7; }
+    95% { opacity: 0.7; }
+    100% { top: 102%; opacity: 0; }
 }
 
-/* ── Grid noise texture ── */
-#panel-albumes .alb-noise {
-    position: fixed;
-    top: 0;
-    left: var(--sidebar-width, 268px);
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.015;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ── Content above BG ── */
+/* ── Content z-index ── */
 #panel-albumes > #albumesListView,
 #panel-albumes > #albumDetailView {
     position: relative;
@@ -213,103 +152,77 @@
 }
 
 /* ══════════════════════════════════════════════
-   📋 HEADER — CINEMA STYLE
+   📋 HEADER — TOTALMENTE NUEVO
    ══════════════════════════════════════════════ */
 #panel-albumes > #albumesListView > .panel-header {
     margin-bottom: 40px;
-    padding: 32px 0 28px;
+    padding: 0 0 32px;
     position: relative;
-    animation: albReveal 0.7s var(--alb-ease) both;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation: albFadeUp 0.6s var(--alb-ease) both;
 }
 
-@keyframes albReveal {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-        filter: blur(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-    }
+@keyframes albFadeUp {
+    from { opacity: 0; transform: translateY(-16px); filter: blur(8px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
+/* ── Título completamente nuevo ── */
 #panel-albumes > #albumesListView > .panel-header .panel-title {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     font-weight: 900;
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
     line-height: 1;
+    color: transparent;
     background: linear-gradient(
         135deg,
         #ffffff 0%,
-        #888888 25%,
-        #ffffff 50%,
-        #666666 75%,
-        #ffffff 100%
+        #999 30%,
+        #fff 50%,
+        #777 70%,
+        #fff 100%
     );
     background-size: 400% auto;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: albTitleFlow 8s ease-in-out infinite;
+    animation: albTitleShift 8s ease-in-out infinite;
     position: relative;
-    display: inline-block;
 }
 
-/* ── Holographic glow behind title ── */
 #panel-albumes > #albumesListView > .panel-header .panel-title::after {
-    content: 'Álbumes';
+    content: attr(data-text);
     position: absolute;
     top: 0;
     left: 0;
-    background: linear-gradient(135deg, rgba(120, 120, 220, 0.15), transparent);
+    color: transparent;
+    background: linear-gradient(135deg, rgba(120, 130, 220, 0.2), transparent);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: blur(20px);
+    filter: blur(25px);
     z-index: -1;
-    animation: albTitleGlow 4s ease-in-out infinite;
+    pointer-events: none;
 }
 
-@keyframes albTitleFlow {
+@keyframes albTitleShift {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
 }
 
-@keyframes albTitleGlow {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.02); }
-}
-
+/* ── Descripción con badge ── */
 #panel-albumes > #albumesListView > .panel-header .panel-desc {
-    margin-top: 10px;
-    font-size: 0.88rem;
-    color: rgba(192, 192, 192, 0.3);
-    font-weight: 300;
-    letter-spacing: 0.5px;
-    animation: albReveal 0.7s var(--alb-ease) 0.15s both;
+    font-size: 0.82rem;
+    color: var(--alb-text-3);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: albFadeUp 0.6s var(--alb-ease) 0.1s both;
 }
 
-/* ── Decorative accent bar ── */
-#panel-albumes > #albumesListView > .panel-header::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, rgba(120, 120, 220, 0.4), rgba(192, 192, 192, 0.1), transparent);
-    border-radius: 3px;
-    animation: albBarPulse 3s ease-in-out infinite;
-}
-
-@keyframes albBarPulse {
-    0%, 100% { width: 60px; opacity: 0.7; }
-    50% { width: 100px; opacity: 1; }
-}
-
-/* ── Stats counter badge ── */
+/* ── Bottom accent ── */
 #panel-albumes > #albumesListView > .panel-header::after {
     content: '';
     position: absolute;
@@ -318,68 +231,88 @@
     right: 0;
     height: 1px;
     background: linear-gradient(90deg,
-        rgba(120, 120, 220, 0.15),
-        rgba(192, 192, 192, 0.04) 30%,
-        transparent 60%
+        var(--alb-accent-glow),
+        var(--alb-border-0) 40%,
+        transparent 70%
     );
 }
 
+/* ── Animated bar ── */
+#panel-albumes > #albumesListView > .panel-header::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--alb-accent), transparent);
+    border-radius: 3px;
+    animation: albBarWidth 3.5s ease-in-out infinite;
+}
+
+@keyframes albBarWidth {
+    0%, 100% { width: 50px; opacity: 0.6; }
+    50% { width: 90px; opacity: 1; }
+}
+
 /* ══════════════════════════════════════════════
-   🃏 GRID — FLOATING GALLERY
+   🏗️ NUEVO GRID — LAYOUT PREMIUM
    ══════════════════════════════════════════════ */
 #panel-albumes #albumesGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
     perspective: 1500px;
-    perspective-origin: 50% 50%;
 }
 
 /* ══════════════════════════════════════════════
-   💿 TARJETAS — HOLOGRAPHIC 3D
+   💿 CARDS — REDISEÑO TOTAL
+   Antes: card-img cuadrado + card-body simple
+   Ahora: Glass card con inner padding,
+   imagen con bordes redondeados internos,
+   metadata con nuevo layout, hover cinema
    ══════════════════════════════════════════════ */
 #panel-albumes #albumesGrid > .card {
-    background: linear-gradient(
-        165deg,
-        rgba(18, 18, 28, 0.7) 0%,
-        rgba(10, 10, 16, 0.85) 40%,
-        rgba(8, 8, 14, 0.95) 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: var(--alb-radius);
+    background: var(--alb-surface-1);
+    border: 1px solid var(--alb-border-0);
+    border-radius: var(--alb-r);
     overflow: hidden;
+    padding: 10px;
     position: relative;
     transform-style: preserve-3d;
-    transform: perspective(1000px) rotateX(0) rotateY(0) scale(1);
+    transform: perspective(1000px) rotateX(0) rotateY(0);
     transition:
         transform 0.5s var(--alb-ease),
         box-shadow 0.5s var(--alb-ease),
-        border-color 0.4s ease;
+        border-color 0.4s ease,
+        background 0.4s ease;
     will-change: transform;
     cursor: pointer;
     isolation: isolate;
-    animation: albCardEnter 0.6s var(--alb-ease) both;
+    animation: albCardIn 0.55s var(--alb-ease) both;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
-/* ── Stagger delays ── */
-#panel-albumes #albumesGrid > .card:nth-child(1) { animation-delay: 0.05s; }
-#panel-albumes #albumesGrid > .card:nth-child(2) { animation-delay: 0.1s; }
-#panel-albumes #albumesGrid > .card:nth-child(3) { animation-delay: 0.15s; }
-#panel-albumes #albumesGrid > .card:nth-child(4) { animation-delay: 0.2s; }
-#panel-albumes #albumesGrid > .card:nth-child(5) { animation-delay: 0.25s; }
-#panel-albumes #albumesGrid > .card:nth-child(6) { animation-delay: 0.3s; }
-#panel-albumes #albumesGrid > .card:nth-child(7) { animation-delay: 0.35s; }
-#panel-albumes #albumesGrid > .card:nth-child(8) { animation-delay: 0.4s; }
-#panel-albumes #albumesGrid > .card:nth-child(9) { animation-delay: 0.45s; }
-#panel-albumes #albumesGrid > .card:nth-child(10) { animation-delay: 0.5s; }
-#panel-albumes #albumesGrid > .card:nth-child(11) { animation-delay: 0.55s; }
-#panel-albumes #albumesGrid > .card:nth-child(12) { animation-delay: 0.6s; }
+/* ── Stagger ── */
+#panel-albumes #albumesGrid > .card:nth-child(1) { animation-delay: 0.03s; }
+#panel-albumes #albumesGrid > .card:nth-child(2) { animation-delay: 0.07s; }
+#panel-albumes #albumesGrid > .card:nth-child(3) { animation-delay: 0.11s; }
+#panel-albumes #albumesGrid > .card:nth-child(4) { animation-delay: 0.15s; }
+#panel-albumes #albumesGrid > .card:nth-child(5) { animation-delay: 0.19s; }
+#panel-albumes #albumesGrid > .card:nth-child(6) { animation-delay: 0.23s; }
+#panel-albumes #albumesGrid > .card:nth-child(7) { animation-delay: 0.27s; }
+#panel-albumes #albumesGrid > .card:nth-child(8) { animation-delay: 0.31s; }
+#panel-albumes #albumesGrid > .card:nth-child(9) { animation-delay: 0.35s; }
+#panel-albumes #albumesGrid > .card:nth-child(10) { animation-delay: 0.39s; }
+#panel-albumes #albumesGrid > .card:nth-child(11) { animation-delay: 0.43s; }
+#panel-albumes #albumesGrid > .card:nth-child(12) { animation-delay: 0.47s; }
 
-@keyframes albCardEnter {
+@keyframes albCardIn {
     from {
         opacity: 0;
-        transform: perspective(1000px) rotateX(12deg) rotateY(-5deg) translateY(60px) translateZ(-50px) scale(0.9);
-        filter: blur(8px);
+        transform: perspective(1000px) rotateX(10deg) rotateY(-4deg) translateY(50px) translateZ(-40px) scale(0.92);
+        filter: blur(6px);
     }
     to {
         opacity: 1;
@@ -388,52 +321,51 @@
     }
 }
 
-/* ── Holographic shine layer ── */
+/* ── Holographic sweep ── */
 #panel-albumes #albumesGrid > .card::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: var(--alb-radius);
+    border-radius: var(--alb-r);
     background: linear-gradient(
-        105deg,
+        110deg,
         transparent 0%,
         transparent 35%,
-        rgba(255, 255, 255, 0.03) 40%,
-        rgba(120, 130, 255, 0.04) 45%,
-        rgba(255, 200, 120, 0.03) 50%,
-        rgba(255, 255, 255, 0.03) 55%,
+        rgba(255, 255, 255, 0.025) 42%,
+        rgba(120, 140, 255, 0.03) 46%,
+        rgba(255, 220, 150, 0.02) 50%,
+        rgba(255, 255, 255, 0.025) 54%,
         transparent 60%,
         transparent 100%
     );
     background-size: 250% 100%;
     background-position: 200% 0;
-    z-index: 4;
+    z-index: 5;
     pointer-events: none;
-    transition: background-position 0.8s ease;
-    mix-blend-mode: overlay;
+    transition: background-position 0.7s ease;
 }
 
 #panel-albumes #albumesGrid > .card:hover::before {
     background-position: -50% 0;
 }
 
-/* ── Animated border glow ── */
+/* ── Rotating border glow ── */
 #panel-albumes #albumesGrid > .card::after {
     content: '';
     position: absolute;
     inset: -1px;
-    border-radius: calc(var(--alb-radius) + 1px);
+    border-radius: calc(var(--alb-r) + 1px);
     padding: 1px;
     background: conic-gradient(
         from var(--alb-border-angle, 0deg),
         transparent 0%,
-        rgba(120, 130, 220, 0.2) 8%,
+        rgba(120, 130, 220, 0.18) 8%,
         transparent 16%,
-        transparent 42%,
-        rgba(192, 192, 192, 0.15) 50%,
-        transparent 58%,
-        transparent 84%,
-        rgba(220, 180, 120, 0.1) 92%,
+        transparent 44%,
+        rgba(192, 192, 220, 0.12) 50%,
+        transparent 56%,
+        transparent 86%,
+        rgba(200, 180, 140, 0.08) 92%,
         transparent 100%
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -443,11 +375,7 @@
     z-index: -1;
     opacity: 0;
     transition: opacity 0.5s ease;
-    animation: albBorderSpin 4s linear infinite paused;
-}
-
-@keyframes albBorderSpin {
-    to { --alb-border-angle: 360deg; }
+    animation: albBorderRot 4s linear infinite paused;
 }
 
 @property --alb-border-angle {
@@ -456,15 +384,20 @@
     inherits: false;
 }
 
-/* ── HOVER STATE ── */
+@keyframes albBorderRot {
+    to { --alb-border-angle: 360deg; }
+}
+
+/* ── HOVER ── */
 #panel-albumes #albumesGrid > .card:hover {
-    border-color: rgba(120, 130, 220, 0.12);
+    background: var(--alb-surface-2);
+    border-color: var(--alb-border-2);
     box-shadow:
-        0 25px 70px rgba(0, 0, 0, 0.5),
-        0 10px 30px rgba(0, 0, 0, 0.3),
-        0 0 60px rgba(120, 130, 220, 0.04),
-        0 0 120px rgba(120, 130, 220, 0.02),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        0 25px 60px rgba(0, 0, 0, 0.45),
+        0 8px 25px rgba(0, 0, 0, 0.25),
+        0 0 50px rgba(120, 130, 220, 0.03),
+        0 0 100px rgba(120, 130, 220, 0.015),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 #panel-albumes #albumesGrid > .card:hover::after {
@@ -472,62 +405,74 @@
     animation-play-state: running;
 }
 
-/* ── Image ── */
+/* ══════════════════════════════════════════════
+   🖼️ CARD IMAGE — NUEVO DISEÑO
+   Antes: imagen pegada al borde
+   Ahora: imagen con inner radius, separada
+   ══════════════════════════════════════════════ */
 #panel-albumes #albumesGrid > .card > .card-img {
-    position: relative;
+    border-radius: calc(var(--alb-r) - 6px);
     overflow: hidden;
-    border-radius: var(--alb-radius) var(--alb-radius) 0 0;
+    position: relative;
+    aspect-ratio: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 
 #panel-albumes #albumesGrid > .card > .card-img > img {
-    transition:
-        transform 0.7s var(--alb-ease),
-        filter 0.5s ease;
+    transition: transform 0.65s var(--alb-ease), filter 0.5s ease;
     will-change: transform;
 }
 
 #panel-albumes #albumesGrid > .card:hover > .card-img > img {
-    transform: scale(1.12);
-    filter: brightness(1.08) saturate(1.1);
+    transform: scale(1.1);
+    filter: brightness(1.06) saturate(1.08);
 }
 
-/* ── Overlay — Glass Play ── */
+/* ── Overlay completo nuevo ── */
 #panel-albumes #albumesGrid > .card > .card-img > .card-overlay {
     background: linear-gradient(
         180deg,
-        rgba(5, 5, 10, 0) 0%,
-        rgba(5, 5, 10, 0.2) 30%,
-        rgba(5, 5, 10, 0.6) 70%,
-        rgba(5, 5, 10, 0.85) 100%
+        rgba(5, 5, 12, 0) 0%,
+        rgba(5, 5, 12, 0.15) 40%,
+        rgba(5, 5, 12, 0.55) 70%,
+        rgba(5, 5, 12, 0.8) 100%
     );
-    backdrop-filter: blur(6px) saturate(1.5);
-    -webkit-backdrop-filter: blur(6px) saturate(1.5);
+    backdrop-filter: blur(4px) saturate(1.3);
+    -webkit-backdrop-filter: blur(4px) saturate(1.3);
     opacity: 0;
     transition: opacity 0.4s ease;
     z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 #panel-albumes #albumesGrid > .card:hover > .card-img > .card-overlay {
     opacity: 1;
 }
 
+/* ── Play button nuevo ── */
 #panel-albumes #albumesGrid > .card > .card-img > .card-overlay > .card-overlay-icon {
-    width: 54px;
-    height: 54px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    width: 52px;
+    height: 52px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1.5px solid rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 50%;
-    font-size: 1.1rem;
+    border-radius: 16px;
+    font-size: 1rem;
     color: #fff;
-    transform: scale(0.5) translateY(20px);
+    transform: scale(0.5) translateY(15px);
     opacity: 0;
     transition:
-        transform 0.5s var(--alb-ease-bounce),
-        opacity 0.35s ease,
-        background 0.3s ease,
-        box-shadow 0.3s ease;
+        transform 0.45s var(--alb-ease-bounce),
+        opacity 0.3s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        border-radius 0.3s ease;
 }
 
 #panel-albumes #albumesGrid > .card:hover > .card-img > .card-overlay > .card-overlay-icon {
@@ -536,94 +481,27 @@
 }
 
 #panel-albumes #albumesGrid > .card > .card-img > .card-overlay > .card-overlay-icon:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.35);
-    transform: scale(1.15);
-    box-shadow:
-        0 0 30px rgba(192, 192, 192, 0.15),
-        0 0 60px rgba(120, 130, 220, 0.08);
+    background: rgba(120, 130, 220, 0.2);
+    border-color: rgba(120, 130, 220, 0.4);
+    border-radius: 50%;
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(120, 130, 220, 0.15);
 }
 
-/* ── Card Body — Glass Bottom ── */
-#panel-albumes #albumesGrid > .card > .card-body {
-    padding: 16px 18px 20px;
-    background: linear-gradient(
-        180deg,
-        rgba(12, 12, 18, 0.3) 0%,
-        rgba(8, 8, 14, 0.7) 100%
-    );
+/* ── Delete admin ── */
+#panel-albumes #albumesGrid > .card > .card-img > .card-admin-delete {
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    background: rgba(5, 5, 10, 0.6);
+    border: 1px solid rgba(255, 71, 87, 0.2);
+    border-radius: 10px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-}
-
-/* ── Subtle equalizer decoration ── */
-#panel-albumes #albumesGrid > .card > .card-body::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 16px;
-    width: 30px;
-    height: 2px;
-    background: linear-gradient(90deg, rgba(120, 130, 220, 0.3), transparent);
-    border-radius: 2px;
-    opacity: 0;
-    transition: opacity 0.35s ease, width 0.35s ease;
-}
-
-#panel-albumes #albumesGrid > .card:hover > .card-body::before {
-    opacity: 1;
-    width: 50px;
-}
-
-#panel-albumes #albumesGrid > .card > .card-body > .card-title {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: rgba(240, 240, 248, 0.92);
-    letter-spacing: 0.1px;
-    transition: all 0.3s ease;
-    line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-#panel-albumes #albumesGrid > .card:hover > .card-body > .card-title {
-    color: #fff;
-    text-shadow: 0 0 20px rgba(192, 192, 192, 0.15);
-}
-
-#panel-albumes #albumesGrid > .card > .card-body > .card-subtitle {
-    font-size: 0.68rem;
-    color: rgba(192, 192, 192, 0.3);
-    font-weight: 500;
-    margin-top: 5px;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-#panel-albumes #albumesGrid > .card:hover > .card-body > .card-subtitle {
-    color: rgba(192, 192, 192, 0.55);
-}
-
-/* ── Delete button ── */
-#panel-albumes #albumesGrid > .card > .card-img > .card-admin-delete {
-    top: 10px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 71, 87, 0.3);
-    border-radius: 10px;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
     z-index: 10;
     opacity: 0;
-    transform: scale(0.6) translateY(-8px);
+    transform: scale(0.5) translateY(-6px);
     transition: all 0.3s var(--alb-ease-bounce);
 }
 
@@ -634,60 +512,118 @@
 
 #panel-albumes #albumesGrid > .card > .card-img > .card-admin-delete:hover {
     background: rgba(255, 71, 87, 0.9);
-    border-color: rgba(255, 71, 87, 0.6);
-    transform: scale(1.1);
-    box-shadow: 0 4px 20px rgba(255, 71, 87, 0.35);
+    border-color: rgba(255, 71, 87, 0.5);
+    transform: scale(1.12);
+    box-shadow: 0 4px 18px rgba(255, 71, 87, 0.3);
 }
 
 /* ══════════════════════════════════════════════
-   🔒 ÁLBUM BLOQUEADO — FROSTED LOCK
+   📝 CARD BODY — NUEVO LAYOUT
+   Antes: padding simple, título + subtitle
+   Ahora: flex layout, meta row, dot separator
+   ══════════════════════════════════════════════ */
+#panel-albumes #albumesGrid > .card > .card-body {
+    padding: 14px 8px 8px;
+    background: transparent;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#panel-albumes #albumesGrid > .card > .card-body > .card-title {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--alb-text-1);
+    letter-spacing: -0.1px;
+    line-height: 1.25;
+    transition: color 0.25s ease, text-shadow 0.25s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-body > .card-title {
+    color: var(--alb-text-0);
+    text-shadow: 0 0 20px rgba(192, 192, 220, 0.1);
+}
+
+#panel-albumes #albumesGrid > .card > .card-body > .card-subtitle {
+    font-size: 0.66rem;
+    color: var(--alb-text-3);
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    transition: color 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-body > .card-subtitle {
+    color: var(--alb-text-2);
+}
+
+/* ── Hover accent line ── */
+#panel-albumes #albumesGrid > .card > .card-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--alb-accent-glow), transparent);
+    border-radius: 2px;
+    transition: width 0.4s var(--alb-ease);
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-body::before {
+    width: 40px;
+}
+
+/* ══════════════════════════════════════════════
+   🔒 LOCKED — NUEVO ESTILO
    ══════════════════════════════════════════════ */
 #panel-albumes #albumesGrid > .card.album-locked {
-    border-color: rgba(255, 215, 0, 0.05);
+    border-color: rgba(255, 215, 0, 0.04);
 }
 
 #panel-albumes #albumesGrid > .card.album-locked:hover {
-    transform: perspective(1000px) translateY(-4px) scale(1.01);
-    border-color: rgba(255, 215, 0, 0.1);
-    box-shadow:
-        0 15px 45px rgba(0, 0, 0, 0.4),
-        0 0 40px rgba(255, 215, 0, 0.02);
+    transform: perspective(1000px) translateY(-3px) scale(1.005);
+    border-color: rgba(255, 215, 0, 0.08);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 30px rgba(255, 215, 0, 0.015);
 }
 
 #panel-albumes #albumesGrid > .card.album-locked > .card-img > .album-lock-badge > .album-lock-icon {
-    font-size: 2.8rem;
-    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.25));
+    font-size: 2.6rem;
+    filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.2));
 }
 
 /* ══════════════════════════════════════════════
-   💿 ALBUM DETAIL — IMMERSIVE VIEW
+   💿 ALBUM DETAIL — REDISEÑO TOTAL
+   Antes: header flex simple + lista
+   Ahora: Hero immersivo con glassmorphism,
+   cover con reflection, info con nuevo layout,
+   track list glassmorphism container
    ══════════════════════════════════════════════ */
 #panel-albumes #albumDetailView {
-    animation: albDetailSlide 0.6s var(--alb-ease) both;
+    animation: albSlideIn 0.55s var(--alb-ease) both;
 }
 
-@keyframes albDetailSlide {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-        filter: blur(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-        filter: blur(0);
-    }
+@keyframes albSlideIn {
+    from { opacity: 0; transform: translateX(25px); filter: blur(10px); }
+    to { opacity: 1; transform: translateX(0); filter: blur(0); }
 }
 
-/* ── Back Button ── */
+/* ── Back Button — Nuevo ── */
 #panel-albumes #albumDetailView > .btn-back {
     margin-bottom: 28px;
     padding: 10px 20px;
     border-radius: 12px;
     font-size: 0.72rem;
-    color: rgba(192, 192, 192, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    background: rgba(255, 255, 255, 0.015);
+    font-weight: 600;
+    color: var(--alb-text-3);
+    border: 1px solid var(--alb-border-0);
+    background: var(--alb-glass);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: all 0.35s var(--alb-ease);
@@ -696,66 +632,73 @@
     overflow: hidden;
 }
 
-#panel-albumes #albumDetailView > .btn-back::before {
+#panel-albumes #albumDetailView > .btn-back::after {
     content: '';
     position: absolute;
     left: 0;
     top: 0;
-    width: 3px;
+    width: 0;
     height: 100%;
-    background: linear-gradient(180deg, rgba(120, 130, 220, 0.3), transparent);
-    border-radius: 3px 0 0 3px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    background: linear-gradient(90deg, var(--alb-accent-soft), transparent);
+    transition: width 0.35s var(--alb-ease);
+    border-radius: 12px;
+    z-index: -1;
 }
 
 #panel-albumes #albumDetailView > .btn-back:hover {
-    color: var(--plata-blanca);
-    background: rgba(255, 255, 255, 0.035);
-    border-color: rgba(120, 130, 220, 0.1);
+    color: var(--alb-text-0);
+    border-color: var(--alb-border-2);
     transform: translateX(-6px);
 }
 
-#panel-albumes #albumDetailView > .btn-back:hover::before {
-    opacity: 1;
+#panel-albumes #albumDetailView > .btn-back:hover::after {
+    width: 100%;
 }
 
-/* ── Detail Header Container ── */
+/* ── Detail Header — HERO CONTAINER ── */
 #panel-albumes .album-detail-header {
     gap: 32px;
     margin-bottom: 40px;
-    padding: 32px;
-    background: rgba(12, 12, 18, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    border-radius: var(--alb-radius-xl);
-    backdrop-filter: blur(25px) saturate(1.2);
-    -webkit-backdrop-filter: blur(25px) saturate(1.2);
+    padding: 36px;
+    background: linear-gradient(
+        145deg,
+        rgba(14, 14, 22, 0.5) 0%,
+        rgba(10, 10, 16, 0.4) 50%,
+        rgba(14, 14, 22, 0.3) 100%
+    );
+    border: 1px solid var(--alb-border-0);
+    border-radius: var(--alb-r-xl);
+    backdrop-filter: blur(30px) saturate(1.15);
+    -webkit-backdrop-filter: blur(30px) saturate(1.15);
     position: relative;
     overflow: hidden;
-    animation: albDetailSlide 0.6s var(--alb-ease) 0.1s both;
+    animation: albSlideIn 0.55s var(--alb-ease) 0.1s both;
 }
 
-/* ── Ambient glow ── */
+/* ── Ambient behind cover ── */
 #panel-albumes .album-detail-header::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -20%;
-    width: 60%;
-    height: 200%;
-    background: radial-gradient(ellipse at center, rgba(120, 130, 220, 0.04) 0%, transparent 60%);
+    top: 0;
+    left: 0;
+    width: 55%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse at 25% 50%,
+        rgba(120, 130, 220, 0.04) 0%,
+        transparent 55%
+    );
     pointer-events: none;
     z-index: 0;
-    animation: albAmbientFloat 8s ease-in-out infinite;
+    animation: albDriftSlow 10s ease-in-out infinite;
 }
 
-@keyframes albAmbientFloat {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    33% { transform: translate(10px, -20px) rotate(2deg); }
-    66% { transform: translate(-15px, 10px) rotate(-1deg); }
+@keyframes albDriftSlow {
+    0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+    50% { transform: translate(8px, -12px); opacity: 1; }
 }
 
-/* ── Top edge light ── */
+/* ── Top light ── */
 #panel-albumes .album-detail-header::after {
     content: '';
     position: absolute;
@@ -764,11 +707,11 @@
     right: 0;
     height: 1px;
     background: linear-gradient(90deg,
-        rgba(120, 130, 220, 0.15),
-        rgba(192, 192, 192, 0.05) 40%,
+        var(--alb-accent-glow),
+        rgba(192, 192, 220, 0.04) 40%,
         transparent
     );
-    border-radius: var(--alb-radius-xl) var(--alb-radius-xl) 0 0;
+    border-radius: var(--alb-r-xl) var(--alb-r-xl) 0 0;
 }
 
 #panel-albumes .album-detail-header > * {
@@ -776,30 +719,30 @@
     z-index: 1;
 }
 
-/* ── Cover ── */
+/* ── COVER — Con reflection ── */
 #panel-albumes .album-detail-cover {
-    width: 210px;
-    height: 210px;
-    border-radius: var(--alb-radius-lg);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    width: 220px;
+    height: 220px;
+    border-radius: var(--alb-r-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow:
-        0 16px 50px rgba(0, 0, 0, 0.55),
-        0 0 80px rgba(120, 130, 220, 0.04),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        0 18px 55px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(120, 130, 220, 0.035);
     transition: all 0.5s var(--alb-ease);
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 #panel-albumes .album-detail-cover:hover {
-    transform: scale(1.04) rotate(-1.5deg);
+    transform: scale(1.04) rotate(-1deg);
     box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.6),
-        0 0 100px rgba(120, 130, 220, 0.06);
-    border-color: rgba(120, 130, 220, 0.12);
+        0 22px 65px rgba(0, 0, 0, 0.55),
+        0 0 100px rgba(120, 130, 220, 0.05);
+    border-color: var(--alb-border-2);
 }
 
-/* ── Cover holographic shine ── */
+/* ── Holographic sweep on cover ── */
 #panel-albumes .album-detail-cover::after {
     content: '';
     position: absolute;
@@ -810,14 +753,14 @@
     background: linear-gradient(
         135deg,
         transparent 30%,
-        rgba(255, 255, 255, 0.03) 40%,
-        rgba(120, 130, 255, 0.05) 45%,
-        rgba(255, 200, 120, 0.03) 50%,
-        rgba(255, 255, 255, 0.03) 55%,
+        rgba(255, 255, 255, 0.025) 42%,
+        rgba(120, 150, 255, 0.04) 46%,
+        rgba(255, 200, 120, 0.025) 50%,
+        rgba(255, 255, 255, 0.025) 54%,
         transparent 65%
     );
     transform: rotate(0deg);
-    transition: transform 1.2s ease;
+    transition: transform 1s ease;
     pointer-events: none;
     z-index: 2;
 }
@@ -826,96 +769,142 @@
     transform: rotate(180deg);
 }
 
-/* ── Detail Info ── */
+/* ── Reflection (CSS only) ── */
+#panel-albumes .album-detail-cover .alb-reflection {
+    position: absolute;
+    bottom: -60%;
+    left: 5%;
+    right: 5%;
+    height: 60%;
+    border-radius: 0 0 var(--alb-r-lg) var(--alb-r-lg);
+    overflow: hidden;
+    opacity: 0.12;
+    transform: scaleY(-1);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 60%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Info — Nuevo layout ── */
 #panel-albumes .album-detail-label {
-    font-size: 0.5rem;
+    font-size: 0.48rem;
     font-weight: 800;
-    letter-spacing: 4px;
-    color: rgba(120, 130, 220, 0.4);
+    letter-spacing: 4.5px;
+    color: rgba(120, 130, 220, 0.45);
     padding: 5px 14px;
-    background: rgba(120, 130, 220, 0.04);
+    background: var(--alb-accent-soft);
     border: 1px solid rgba(120, 130, 220, 0.08);
     border-radius: 8px;
-    display: inline-block;
-    margin-bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+#panel-albumes .album-detail-label::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--alb-accent);
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: albDotPulse 2s ease-in-out infinite;
+}
+
+@keyframes albDotPulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.3); }
 }
 
 #panel-albumes .album-detail-title {
-    font-size: 2rem;
+    font-size: 2.1rem;
     font-weight: 900;
     letter-spacing: -0.5px;
     line-height: 1.1;
-    background: linear-gradient(
-        135deg,
-        #ffffff 0%,
-        #c0c0c0 30%,
-        #ffffff 60%,
-        #aaaaaa 100%
-    );
+    color: transparent;
+    background: linear-gradient(135deg, #fff 0%, #bbb 40%, #fff 70%, #999 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    margin-bottom: 10px;
 }
 
 #panel-albumes .album-detail-desc {
-    font-size: 0.88rem;
-    color: rgba(192, 192, 192, 0.4);
+    font-size: 0.86rem;
+    color: var(--alb-text-2);
     line-height: 1.8;
     font-weight: 300;
+    max-width: 500px;
 }
 
 #panel-albumes .album-detail-meta {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 2.5px;
-    color: rgba(192, 192, 192, 0.25);
-    padding: 7px 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
-    display: inline-block;
-    margin-top: 16px;
+    color: var(--alb-text-3);
+    padding: 8px 18px;
+    background: var(--alb-glass);
+    border: 1px solid var(--alb-border-0);
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
     font-variant-numeric: tabular-nums;
 }
 
 /* ══════════════════════════════════════════════
-   🎵 TRACK LIST — GLASS ROWS
+   🎵 TRACK LIST — NUEVO DISEÑO COMPLETO
+   Antes: lista simple con bordes
+   Ahora: Glass container, numbered rows,
+   hover light-follow, animated transitions
    ══════════════════════════════════════════════ */
 #panel-albumes .section-header-row {
     margin-bottom: 20px;
-    animation: albDetailSlide 0.6s var(--alb-ease) 0.2s both;
+    padding: 0 4px;
+    animation: albSlideIn 0.55s var(--alb-ease) 0.2s both;
 }
 
 #panel-albumes .section-header-row > .panel-section-title {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 700;
-    color: rgba(192, 192, 192, 0.55);
+    color: var(--alb-text-2);
+    letter-spacing: 0.3px;
 }
 
+/* ── Container glass ── */
 #panel-albumes #trackList {
-    animation: albDetailSlide 0.6s var(--alb-ease) 0.3s both;
+    background: var(--alb-surface-1);
+    border: 1px solid var(--alb-border-0);
+    border-radius: var(--alb-r-lg);
+    padding: 8px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    animation: albSlideIn 0.55s var(--alb-ease) 0.3s both;
+    overflow: hidden;
 }
 
+/* ── Track items — Nuevo ── */
 #panel-albumes #trackList > .track-item {
-    padding: 14px 18px;
-    background: rgba(255, 255, 255, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.02);
+    padding: 14px 16px;
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: 14px;
-    margin-bottom: 4px;
-    transition: all 0.35s var(--alb-ease);
+    margin-bottom: 2px;
+    transition: all 0.3s var(--alb-ease);
     position: relative;
     overflow: hidden;
 }
 
-/* ── Track hover gradient ── */
+/* ── Mouse-follow gradient ── */
 #panel-albumes #trackList > .track-item::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 14px;
     background: radial-gradient(
-        250px ellipse at var(--mx, 50%) var(--my, 50%),
-        rgba(120, 130, 220, 0.04),
-        transparent 60%
+        280px ellipse at var(--mx, 50%) var(--my, 50%),
+        rgba(120, 130, 220, 0.045),
+        transparent 55%
     );
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -927,82 +916,113 @@
 }
 
 #panel-albumes #trackList > .track-item:hover {
-    background: rgba(255, 255, 255, 0.025);
-    border-color: rgba(120, 130, 220, 0.08);
-    transform: translateX(6px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    background: var(--alb-glass-hover);
+    border-color: var(--alb-border-1);
+    transform: translateX(4px);
+}
+
+/* ── Active indicator on hover ── */
+#panel-albumes #trackList > .track-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    width: 0;
+    height: 60%;
+    background: linear-gradient(180deg, transparent, var(--alb-accent-glow), transparent);
+    border-radius: 0 3px 3px 0;
+    transition: width 0.3s var(--alb-ease);
+}
+
+#panel-albumes #trackList > .track-item:hover::after {
+    width: 3px;
 }
 
 /* ── Track number ── */
 #panel-albumes #trackList > .track-item > .track-num {
-    font-size: 0.68rem;
-    color: rgba(192, 192, 192, 0.18);
+    font-size: 0.7rem;
+    color: var(--alb-text-3);
     font-weight: 700;
-    transition: all 0.3s ease;
-    font-variant-numeric: tabular-nums;
-    min-width: 22px;
+    min-width: 24px;
     text-align: center;
+    transition: color 0.25s ease;
+    font-variant-numeric: tabular-nums;
 }
 
 #panel-albumes #trackList > .track-item:hover > .track-num {
     color: rgba(120, 130, 220, 0.5);
 }
 
-/* ── Play Button ── */
+/* ── Play button ── */
 #panel-albumes #trackList > .track-item > .track-play-btn {
     width: 34px;
     height: 34px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 50%;
-    transition: all 0.35s var(--alb-ease-bounce);
-    position: relative;
+    background: var(--alb-glass);
+    border: 1px solid var(--alb-border-0);
+    border-radius: 10px;
+    transition: all 0.3s var(--alb-ease-bounce);
 }
 
 #panel-albumes #trackList > .track-item:hover > .track-play-btn {
-    background: rgba(120, 130, 220, 0.08);
-    border-color: rgba(120, 130, 220, 0.2);
-    transform: scale(1.12);
-    box-shadow: 0 0 18px rgba(120, 130, 220, 0.1);
+    background: var(--alb-accent-soft);
+    border-color: var(--alb-border-2);
+    transform: scale(1.08);
+    box-shadow: 0 0 15px rgba(120, 130, 220, 0.08);
+    border-radius: 50%;
 }
 
-/* ── Track title ── */
+/* ── Title ── */
 #panel-albumes #trackList > .track-item > .track-info > .track-title {
-    transition: all 0.3s ease;
+    transition: color 0.25s ease, text-shadow 0.25s ease;
 }
 
 #panel-albumes #trackList > .track-item:hover > .track-info > .track-title {
-    color: #fff;
-    text-shadow: 0 0 15px rgba(192, 192, 192, 0.1);
+    color: var(--alb-text-0);
+    text-shadow: 0 0 12px rgba(192, 192, 220, 0.08);
 }
 
-/* ── Track duration ── */
+/* ── Duration ── */
 #panel-albumes #trackList > .track-item > .track-duration {
-    transition: color 0.3s ease;
+    transition: color 0.25s ease;
+    font-variant-numeric: tabular-nums;
 }
 
 #panel-albumes #trackList > .track-item:hover > .track-duration {
-    color: rgba(192, 192, 192, 0.5);
+    color: var(--alb-text-2);
 }
 
-/* ── Playing state ── */
+/* ── Playing state — Nuevo ── */
 #panel-albumes #trackList > .track-item.playing {
-    background: linear-gradient(135deg, rgba(120, 130, 220, 0.04), rgba(120, 130, 220, 0.01));
-    border-color: rgba(120, 130, 220, 0.1);
-    border-left: 3px solid rgba(120, 130, 220, 0.4);
+    background: linear-gradient(135deg,
+        rgba(120, 130, 220, 0.05),
+        rgba(120, 130, 220, 0.015)
+    );
+    border-color: rgba(120, 130, 220, 0.08);
+}
+
+#panel-albumes #trackList > .track-item.playing::after {
+    width: 3px;
+    background: linear-gradient(180deg, transparent, var(--alb-accent), transparent);
+    opacity: 0.6;
+    animation: albPlayingPulse 2s ease-in-out infinite;
+}
+
+@keyframes albPlayingPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
 }
 
 #panel-albumes #trackList > .track-item.playing > .track-num {
-    color: rgba(120, 130, 220, 0.6);
+    color: var(--alb-accent);
 }
 
 /* ══════════════════════════════════════════════
-   ➕ ADD TRACK BUTTON
+   ➕ ADD TRACK BUTTON — NUEVO
    ══════════════════════════════════════════════ */
 #panel-albumes .btn-add-track {
     border-radius: 12px;
     padding: 10px 22px;
-    background: rgba(120, 130, 220, 0.03);
+    background: var(--alb-accent-soft);
     border: 1px solid rgba(120, 130, 220, 0.08);
     transition: all 0.35s var(--alb-ease);
     position: relative;
@@ -1017,95 +1037,90 @@
     width: 200%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(120, 130, 220, 0.04), transparent);
-    transition: left 0.6s ease;
+    transition: left 0.5s ease;
 }
 
-#panel-albumes .btn-add-track:hover::before {
-    left: 0;
-}
+#panel-albumes .btn-add-track:hover::before { left: 0; }
 
 #panel-albumes .btn-add-track:hover {
-    background: rgba(120, 130, 220, 0.06);
-    border-color: rgba(120, 130, 220, 0.18);
+    background: rgba(120, 130, 220, 0.08);
+    border-color: var(--alb-border-3);
     transform: translateY(-2px);
-    box-shadow:
-        0 4px 20px rgba(120, 130, 220, 0.06),
-        0 0 40px rgba(120, 130, 220, 0.02);
+    box-shadow: 0 4px 20px rgba(120, 130, 220, 0.06);
 }
 
 /* ══════════════════════════════════════════════
-   🫙 EMPTY STATE
+   🫙 EMPTY STATE — NUEVO
    ══════════════════════════════════════════════ */
 #panel-albumes .empty-state {
     padding: 100px 24px;
-    animation: albCardEnter 0.6s var(--alb-ease) both;
+    animation: albCardIn 0.55s var(--alb-ease) both;
 }
 
 #panel-albumes .empty-state > .empty-icon {
     font-size: 3.5rem;
-    opacity: 0.1;
-    margin-bottom: 20px;
-    animation: albEmptyPulse 4s ease-in-out infinite;
+    opacity: 0.08;
+    margin-bottom: 18px;
+    animation: albFloat 4s ease-in-out infinite;
 }
 
-@keyframes albEmptyPulse {
-    0%, 100% { transform: translateY(0) scale(1); opacity: 0.1; }
-    50% { transform: translateY(-12px) scale(1.05); opacity: 0.2; }
+@keyframes albFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.04); }
 }
 
 #panel-albumes .empty-state > .empty-title {
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: rgba(192, 192, 192, 0.35);
+    color: var(--alb-text-3);
     letter-spacing: 0.5px;
 }
 
 /* ══════════════════════════════════════════════
-   🖱️ CURSOR PERSONALIZADO
+   🖱️ CURSOR
    ══════════════════════════════════════════════ */
 #panel-albumes .alb-cursor {
     position: fixed;
     width: 18px;
     height: 18px;
-    border: 1.5px solid rgba(120, 130, 220, 0.25);
+    border: 1.5px solid rgba(120, 130, 220, 0.2);
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
     mix-blend-mode: exclusion;
     transition:
-        width 0.3s var(--alb-ease),
-        height 0.3s var(--alb-ease),
-        border-color 0.3s ease,
-        background 0.3s ease;
+        width 0.28s var(--alb-ease),
+        height 0.28s var(--alb-ease),
+        border-color 0.28s ease,
+        background 0.28s ease,
+        border-radius 0.28s ease;
     transform: translate(-50%, -50%);
 }
 
 #panel-albumes .alb-cursor.on-card {
-    width: 50px;
-    height: 50px;
-    border-color: rgba(120, 130, 220, 0.35);
+    width: 52px;
+    height: 52px;
+    border-color: rgba(120, 130, 220, 0.3);
     background: rgba(120, 130, 220, 0.03);
 }
 
 #panel-albumes .alb-cursor.on-track {
-    width: 10px;
-    height: 40px;
-    border-radius: 6px;
-    border-color: rgba(120, 130, 220, 0.3);
+    width: 8px;
+    height: 35px;
+    border-radius: 5px;
+    border-color: rgba(120, 130, 220, 0.25);
     background: rgba(120, 130, 220, 0.04);
 }
 
-/* ── Cursor follower dot ── */
 #panel-albumes .alb-cursor-dot {
     position: fixed;
     width: 4px;
     height: 4px;
-    background: rgba(120, 130, 220, 0.5);
+    background: rgba(120, 130, 220, 0.45);
     border-radius: 50%;
     pointer-events: none;
     z-index: 10000;
     transform: translate(-50%, -50%);
-    transition: opacity 0.2s ease;
 }
 
 /* ══════════════════════════════════════════════
@@ -1114,29 +1129,33 @@
 #panel-albumes .alb-ripple {
     position: absolute;
     border-radius: 50%;
-    background: rgba(120, 130, 220, 0.06);
+    background: rgba(120, 130, 220, 0.05);
     transform: scale(0);
-    animation: albRippleOut 0.7s ease-out forwards;
+    animation: albRipple 0.65s ease-out forwards;
     pointer-events: none;
 }
 
-@keyframes albRippleOut {
+@keyframes albRipple {
     to { transform: scale(4); opacity: 0; }
 }
 
 /* ══════════════════════════════════════════════
    📱 RESPONSIVE
    ══════════════════════════════════════════════ */
+@media (max-width: 1200px) {
+    #panel-albumes #albumesGrid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+    }
+}
+
 @media (max-width: 1024px) {
     #panel-albumes #albumesGrid {
-        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-        gap: 18px;
+        grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+        gap: 16px;
     }
 
-    #panel-albumes .album-detail-cover {
-        width: 180px;
-        height: 180px;
-    }
+    #panel-albumes .album-detail-cover { width: 180px; height: 180px; }
 }
 
 @media (max-width: 768px) {
@@ -1145,37 +1164,31 @@
         gap: 14px;
     }
 
+    #panel-albumes #albumesGrid > .card { padding: 8px; }
+
     #panel-albumes .album-detail-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 24px 20px;
-        gap: 20px;
+        padding: 28px 20px;
+        gap: 24px;
     }
 
-    #panel-albumes .album-detail-cover {
-        width: 160px;
-        height: 160px;
-    }
-
+    #panel-albumes .album-detail-cover { width: 170px; height: 170px; }
     #panel-albumes .album-detail-title { font-size: 1.5rem; }
+    #panel-albumes .album-detail-desc { max-width: 100%; }
     #panel-albumes .album-detail-label { margin-left: auto; margin-right: auto; }
 
-    #panel-albumes > #albumesListView > .panel-header .panel-title {
-        font-size: 1.6rem;
-    }
+    #panel-albumes > #albumesListView > .panel-header .panel-title { font-size: 1.8rem; }
 
-    #panel-albumes .alb-bg-layer,
-    #panel-albumes .alb-freq-bars,
-    #panel-albumes .alb-scanline,
-    #panel-albumes .alb-noise {
-        left: 0;
-    }
+    #panel-albumes .alb-env,
+    #panel-albumes .alb-env-freq,
+    #panel-albumes .alb-env-scan { left: 0; }
 
     #panel-albumes .alb-cursor,
-    #panel-albumes .alb-cursor-dot {
-        display: none !important;
-    }
+    #panel-albumes .alb-cursor-dot { display: none !important; }
+
+    #panel-albumes #trackList { padding: 6px; border-radius: var(--alb-r); }
 }
 
 @media (max-width: 480px) {
@@ -1184,33 +1197,41 @@
         gap: 10px;
     }
 
+    #panel-albumes #albumesGrid > .card { padding: 6px; border-radius: 14px; }
+    #panel-albumes #albumesGrid > .card > .card-img { border-radius: 10px; }
+
     #panel-albumes #albumesGrid > .card > .card-body {
-        padding: 12px 14px 14px;
+        padding: 10px 6px 6px;
     }
 
-    #panel-albumes #albumesGrid > .card > .card-body > .card-title {
-        font-size: 0.78rem;
-    }
+    #panel-albumes #albumesGrid > .card > .card-body > .card-title { font-size: 0.78rem; }
+    #panel-albumes #albumesGrid > .card > .card-body > .card-subtitle { font-size: 0.6rem; }
 
-    #panel-albumes .album-detail-header { padding: 18px 16px; }
-    #panel-albumes .album-detail-cover { width: 130px; height: 130px; }
+    #panel-albumes .album-detail-header { padding: 20px 16px; }
+    #panel-albumes .album-detail-cover { width: 140px; height: 140px; }
     #panel-albumes .album-detail-title { font-size: 1.3rem; }
 
-    #panel-albumes .alb-freq-bars { display: none; }
+    #panel-albumes .alb-env-freq { display: none; }
+
+    #panel-albumes #trackList { padding: 4px; border-radius: 14px; }
+    #panel-albumes #trackList > .track-item { padding: 10px 12px; border-radius: 10px; }
 }
 
 /* ══════════════════════════════════════════════
    ♿ REDUCED MOTION
    ══════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-    #panel-albumes .alb-bg-layer .alb-orb,
-    #panel-albumes .alb-freq-bars .alb-freq-bar,
-    #panel-albumes .alb-scanline,
+    #panel-albumes .alb-env-orb,
+    #panel-albumes .alb-env-freq .alb-fbar,
+    #panel-albumes .alb-env-scan,
     #panel-albumes #albumesGrid > .card,
     #panel-albumes #albumesGrid > .card::after,
     #panel-albumes .empty-state > .empty-icon,
     #panel-albumes > #albumesListView > .panel-header .panel-title,
-    #panel-albumes > #albumesListView > .panel-header::before {
+    #panel-albumes > #albumesListView > .panel-header::before,
+    #panel-albumes .album-detail-header::before,
+    #panel-albumes .album-detail-label::before,
+    #panel-albumes #trackList > .track-item.playing::after {
         animation: none !important;
     }
 
@@ -1222,5 +1243,11 @@
 
     #panel-albumes #albumesGrid > .card:hover {
         transform: translateY(-4px) scale(1.01);
+    }
+
+    #panel-albumes #albumDetailView {
+        opacity: 1;
+        transform: none;
+        filter: none;
     }
 }

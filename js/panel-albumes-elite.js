@@ -1,7 +1,8 @@
 /* ============================================
-   💿 PANEL ÁLBUMES — ULTRA ELITE INTERACTIONS
+   💿 PANEL ÁLBUMES — TOTAL REDESIGN ENGINE
+   Background injection + Cursor + 3D Tilt +
+   Ripple + Track mouse-follow + Reflection
    ⚠️ NO modifica lógica existente
-   Cursor + 3D Tilt + Ripple + BG Injection
    ============================================ */
 (function () {
     'use strict';
@@ -12,214 +13,226 @@
     var isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     /* ══════════════════════════════════════════
-       🌌 INYECTAR FONDO DINÁMICO
+       🌌 INYECTAR FONDO
        ══════════════════════════════════════════ */
-    function injectBackground() {
-        if (panel.querySelector('.alb-bg-layer')) return;
+    function injectEnv() {
+        if (panel.querySelector('.alb-env')) return;
 
-        /* ── Orbs ── */
-        var bgLayer = document.createElement('div');
-        bgLayer.className = 'alb-bg-layer';
-        bgLayer.innerHTML = '<div class="alb-orb"></div><div class="alb-orb"></div><div class="alb-orb"></div>';
-        panel.insertBefore(bgLayer, panel.firstChild);
+        var env = document.createElement('div');
+        env.className = 'alb-env';
+        env.innerHTML =
+            '<div class="alb-env-orb"></div>' +
+            '<div class="alb-env-orb"></div>' +
+            '<div class="alb-env-orb"></div>';
+        panel.insertBefore(env, panel.firstChild);
 
-        /* ── Frequency bars ── */
-        var freqBars = document.createElement('div');
-        freqBars.className = 'alb-freq-bars';
-        var barsHTML = '';
-        for (var i = 0; i < 40; i++) {
-            barsHTML += '<div class="alb-freq-bar" style="animation-delay:' + (i * 0.04) + 's"></div>';
+        var freq = document.createElement('div');
+        freq.className = 'alb-env-freq';
+        var bars = '';
+        for (var i = 0; i < 50; i++) {
+            var h = 15 + Math.random() * 75;
+            bars += '<div class="alb-fbar" style="height:' + h + '%;animation-delay:' + (i * 0.035) + 's"></div>';
         }
-        freqBars.innerHTML = barsHTML;
-        panel.insertBefore(freqBars, panel.firstChild);
+        freq.innerHTML = bars;
+        panel.insertBefore(freq, panel.firstChild);
 
-        /* ── Scanline ── */
-        var scanline = document.createElement('div');
-        scanline.className = 'alb-scanline';
-        panel.insertBefore(scanline, panel.firstChild);
-
-        /* ── Noise ── */
-        var noise = document.createElement('div');
-        noise.className = 'alb-noise';
-        panel.insertBefore(noise, panel.firstChild);
+        var scan = document.createElement('div');
+        scan.className = 'alb-env-scan';
+        panel.insertBefore(scan, panel.firstChild);
     }
 
-    injectBackground();
+    injectEnv();
 
     /* ══════════════════════════════════════════
-       🖱️ CURSOR PERSONALIZADO DUAL
+       🖼️ REFLECTION EN COVER DEL DETAIL
        ══════════════════════════════════════════ */
-    if (isMobile) return; /* No cursor en mobile */
+    function injectReflection() {
+        var cover = document.querySelector('#panel-albumes .album-detail-cover');
+        if (!cover || cover.querySelector('.alb-reflection')) return;
 
-    var cursor = document.createElement('div');
-    cursor.className = 'alb-cursor';
-    panel.appendChild(cursor);
+        var ref = document.createElement('div');
+        ref.className = 'alb-reflection';
 
-    var cursorDot = document.createElement('div');
-    cursorDot.className = 'alb-cursor-dot';
-    panel.appendChild(cursorDot);
+        var coverImg = cover.querySelector('img');
+        if (coverImg) {
+            var refImg = coverImg.cloneNode(true);
+            refImg.style.width = '100%';
+            refImg.style.height = '100%';
+            refImg.style.objectFit = 'cover';
+            ref.appendChild(refImg);
 
-    var cx = 0, cy = 0;
-    var dx = 0, dy = 0;
-    var cursorVisible = false;
+            var mo = new MutationObserver(function () {
+                refImg.src = coverImg.src;
+            });
+            mo.observe(coverImg, { attributes: true, attributeFilter: ['src'] });
+        }
 
-    function animateCursor() {
-        dx += (cx - dx) * 0.15;
-        dy += (cy - dy) * 0.15;
-        cursor.style.left = dx + 'px';
-        cursor.style.top = dy + 'px';
-        cursorDot.style.left = cx + 'px';
-        cursorDot.style.top = cy + 'px';
-        requestAnimationFrame(animateCursor);
+        cover.style.overflow = 'visible';
+        cover.appendChild(ref);
     }
 
-    animateCursor();
+    /* ══════════════════════════════════════════
+       🖱️ CURSOR DUAL (desktop only)
+       ══════════════════════════════════════════ */
+    var cursor, cursorDot;
+    var cx = 0, cy = 0, dx = 0, dy = 0;
+    var cursorOn = false;
 
-    panel.addEventListener('mousemove', function (e) {
-        cx = e.clientX;
-        cy = e.clientY;
-
-        if (!cursorVisible) {
-            cursor.style.display = 'block';
-            cursorDot.style.display = 'block';
-            cursorVisible = true;
-        }
-    });
-
-    panel.addEventListener('mouseleave', function () {
+    if (!isMobile) {
+        cursor = document.createElement('div');
+        cursor.className = 'alb-cursor';
         cursor.style.display = 'none';
+        panel.appendChild(cursor);
+
+        cursorDot = document.createElement('div');
+        cursorDot.className = 'alb-cursor-dot';
         cursorDot.style.display = 'none';
-        cursorVisible = false;
-    });
+        panel.appendChild(cursorDot);
 
-    /* ══════════════════════════════════════════
-       🃏 3D TILT AVANZADO
-       ══════════════════════════════════════════ */
-    function handleTilt(e) {
-        var card = e.currentTarget;
-        var rect = card.getBoundingClientRect();
-        var x = e.clientX - rect.left;
-        var y = e.clientY - rect.top;
-        var px = x / rect.width;
-        var py = y / rect.height;
+        function lerpCursor() {
+            dx += (cx - dx) * 0.13;
+            dy += (cy - dy) * 0.13;
+            cursor.style.left = dx + 'px';
+            cursor.style.top = dy + 'px';
+            cursorDot.style.left = cx + 'px';
+            cursorDot.style.top = cy + 'px';
+            requestAnimationFrame(lerpCursor);
+        }
+        lerpCursor();
 
-        var rotateX = (py - 0.5) * -8;
-        var rotateY = (px - 0.5) * 8;
-        var translateZ = 15;
+        panel.addEventListener('mousemove', function (e) {
+            cx = e.clientX;
+            cy = e.clientY;
+            if (!cursorOn) {
+                cursor.style.display = 'block';
+                cursorDot.style.display = 'block';
+                cursorOn = true;
+            }
+        });
 
-        card.style.transform =
-            'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-8px) translateZ(' + translateZ + 'px) scale(1.02)';
+        panel.addEventListener('mouseleave', function () {
+            cursor.style.display = 'none';
+            cursorDot.style.display = 'none';
+            cursorOn = false;
+        });
+
+        panel.addEventListener('mouseover', function (e) {
+            var onCard = e.target.closest('#albumesGrid > .card');
+            var onTrack = e.target.closest('#trackList > .track-item');
+            cursor.classList.remove('on-card', 'on-track');
+            if (onCard) cursor.classList.add('on-card');
+            else if (onTrack) cursor.classList.add('on-track');
+        });
     }
 
-    function resetTilt(e) {
-        var card = e.currentTarget;
-        card.style.transform = '';
+    /* ══════════════════════════════════════════
+       🃏 3D TILT
+       ══════════════════════════════════════════ */
+    function tiltMove(e) {
+        var c = e.currentTarget;
+        var r = c.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width;
+        var py = (e.clientY - r.top) / r.height;
+        var rx = (py - 0.5) * -10;
+        var ry = (px - 0.5) * 10;
+        c.style.transform =
+            'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-10px) translateZ(18px) scale(1.02)';
+    }
+
+    function tiltReset(e) {
+        e.currentTarget.style.transform = '';
     }
 
     /* ══════════════════════════════════════════
        🎵 TRACK MOUSE LIGHT
        ══════════════════════════════════════════ */
-    function handleTrackMouse(e) {
-        var track = e.currentTarget;
-        var rect = track.getBoundingClientRect();
-        var x = ((e.clientX - rect.left) / rect.width) * 100;
-        var y = ((e.clientY - rect.top) / rect.height) * 100;
-        track.style.setProperty('--mx', x + '%');
-        track.style.setProperty('--my', y + '%');
+    function trackMouse(e) {
+        var t = e.currentTarget;
+        var r = t.getBoundingClientRect();
+        t.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        t.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
     }
-
-    /* ══════════════════════════════════════════
-       🖱️ CURSOR STATE POR HOVER
-       ══════════════════════════════════════════ */
-    panel.addEventListener('mouseover', function (e) {
-        var card = e.target.closest('#albumesGrid > .card');
-        var track = e.target.closest('#trackList > .track-item');
-
-        cursor.classList.remove('on-card', 'on-track');
-
-        if (card) {
-            cursor.classList.add('on-card');
-        } else if (track) {
-            cursor.classList.add('on-track');
-        }
-    });
 
     /* ══════════════════════════════════════════
        🔊 RIPPLE
        ══════════════════════════════════════════ */
-    function createRipple(e) {
+    function ripple(e) {
         var el = e.currentTarget;
-        var rect = el.getBoundingClientRect();
-        var ripple = document.createElement('span');
-        ripple.className = 'alb-ripple';
-        var size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-        el.appendChild(ripple);
-        setTimeout(function () { ripple.remove(); }, 750);
+        var r = el.getBoundingClientRect();
+        var rp = document.createElement('span');
+        rp.className = 'alb-ripple';
+        var s = Math.max(r.width, r.height);
+        rp.style.width = rp.style.height = s + 'px';
+        rp.style.left = (e.clientX - r.left - s / 2) + 'px';
+        rp.style.top = (e.clientY - r.top - s / 2) + 'px';
+        el.appendChild(rp);
+        setTimeout(function () { rp.remove(); }, 700);
     }
 
     /* ══════════════════════════════════════════
-       🔄 BIND EVENTS DINÁMICAMENTE
+       🔄 BIND DINÁMICO
        ══════════════════════════════════════════ */
     function bindCards() {
         var grid = document.getElementById('albumesGrid');
         if (!grid) return;
-
-        var cards = grid.querySelectorAll('.card:not([data-alb-bound])');
+        var cards = grid.querySelectorAll('.card:not([data-ae])');
         for (var i = 0; i < cards.length; i++) {
-            var card = cards[i];
-            card.setAttribute('data-alb-bound', '1');
-
-            if (!card.classList.contains('album-locked')) {
-                card.addEventListener('mousemove', handleTilt);
-                card.addEventListener('mouseleave', resetTilt);
+            var c = cards[i];
+            c.setAttribute('data-ae', '1');
+            if (!c.classList.contains('album-locked') && !isMobile) {
+                c.addEventListener('mousemove', tiltMove);
+                c.addEventListener('mouseleave', tiltReset);
             }
-            card.addEventListener('click', createRipple);
+            c.addEventListener('click', ripple);
         }
     }
 
     function bindTracks() {
-        var trackList = document.getElementById('trackList');
-        if (!trackList) return;
-
-        var tracks = trackList.querySelectorAll('.track-item:not([data-alb-bound])');
+        var tl = document.getElementById('trackList');
+        if (!tl) return;
+        var tracks = tl.querySelectorAll('.track-item:not([data-ae])');
         for (var i = 0; i < tracks.length; i++) {
-            tracks[i].setAttribute('data-alb-bound', '1');
-            tracks[i].addEventListener('mousemove', handleTrackMouse);
+            tracks[i].setAttribute('data-ae', '1');
+            if (!isMobile) {
+                tracks[i].addEventListener('mousemove', trackMouse);
+            }
         }
     }
 
-    /* ── MutationObserver ── */
-    var observer = new MutationObserver(function () {
+    /* ── Observer ── */
+    var obs = new MutationObserver(function () {
         bindCards();
         bindTracks();
+        injectReflection();
     });
 
-    var grid = document.getElementById('albumesGrid');
-    if (grid) observer.observe(grid, { childList: true, subtree: true });
+    var albumesGrid = document.getElementById('albumesGrid');
+    if (albumesGrid) obs.observe(albumesGrid, { childList: true, subtree: true });
 
     var trackListEl = document.getElementById('trackList');
-    if (trackListEl) observer.observe(trackListEl, { childList: true, subtree: true });
+    if (trackListEl) obs.observe(trackListEl, { childList: true, subtree: true });
 
     var detailView = document.getElementById('albumDetailView');
-    if (detailView) observer.observe(detailView, { childList: true, subtree: true });
+    if (detailView) obs.observe(detailView, { childList: true, subtree: true });
 
-    /* ── Initial bind ── */
+    /* ── Initial ── */
     bindCards();
     bindTracks();
+    injectReflection();
 
-    /* ── Ripple on add-track button ── */
+    /* ── Btn ripple ── */
     var btnAdd = document.getElementById('btnAddTrack');
-    if (btnAdd) btnAdd.addEventListener('click', createRipple);
+    if (btnAdd) btnAdd.addEventListener('click', ripple);
 
-    /* ── Re-inject BG when panel becomes active ── */
-    var panelObserver = new MutationObserver(function () {
+    /* ── Re-inject on panel activate ── */
+    var panelObs = new MutationObserver(function () {
         if (panel.classList.contains('active')) {
-            injectBackground();
+            injectEnv();
+            injectReflection();
+            bindCards();
+            bindTracks();
         }
     });
-    panelObserver.observe(panel, { attributes: true, attributeFilter: ['class'] });
+    panelObs.observe(panel, { attributes: true, attributeFilter: ['class'] });
 
 })();
