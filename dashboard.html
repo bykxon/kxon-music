@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/dashboard-canciones.css">
     <link rel="stylesheet" href="css/dashboard-radio.css">
     <link rel="stylesheet" href="css/dashboard-envivo.css">
+    <link rel="stylesheet" href="css/dashboard-chat.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -601,182 +602,6 @@
     .empty-state-sm .empty-text {
         font-size: .72rem;
         margin-top: 4px;
-    }
-
-    
-    /* ============================================
-       💬 CHAT EN TIEMPO REAL
-       ============================================ */
-    .chat-container {
-        background: var(--negro-card);
-        border: 1px solid rgba(255,255,255,0.04);
-        border-radius: 16px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: calc(100vh - 220px);
-        max-height: 700px;
-    }
-    .chat-header-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 20px;
-        background: rgba(255,255,255,0.02);
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-    .chat-header-left { display: flex; align-items: center; gap: 10px; }
-    .chat-header-dot {
-        width: 8px; height: 8px;
-        background: var(--acento-exito);
-        border-radius: 50%;
-        box-shadow: 0 0 6px rgba(46,213,115,0.4);
-        animation: pulse 2s infinite;
-    }
-    .chat-header-status {
-        font-family: var(--font-titulo);
-        font-size: .75rem;
-        font-weight: 700;
-        color: var(--plata-titulo);
-        letter-spacing: 0.5px;
-    }
-    .chat-header-online { font-size: .65rem; color: var(--plata-oscura); font-weight: 500; }
-    .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-    .chat-messages::-webkit-scrollbar { width: 3px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: rgba(192,192,192,0.06); border-radius: 4px; }
-    .chat-empty {
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        flex: 1; gap: 10px; padding: 40px;
-    }
-    .chat-empty-icon { font-size: 2rem; opacity: 0.2; }
-    .chat-empty-title { font-family: var(--font-titulo); font-size: .88rem; font-weight: 600; color: var(--plata-oscura); }
-    .chat-empty-text { font-size: .75rem; color: rgba(192,192,192,0.25); }
-    .chat-date-sep { text-align: center; padding: 12px 0; }
-    .chat-date-sep span {
-        font-family: var(--font-titulo);
-        font-size: .58rem; font-weight: 700;
-        letter-spacing: 2px; text-transform: uppercase;
-        color: rgba(192,192,192,0.2);
-        background: var(--negro-card);
-        padding: 4px 16px;
-        border: 1px solid rgba(255,255,255,0.03);
-        border-radius: 50px;
-    }
-    .chat-msg {
-        display: flex; gap: 10px;
-        padding: 8px 12px; border-radius: 10px;
-        transition: background 0.2s ease;
-        animation: fadeIn 0.3s ease;
-    }
-    .chat-msg:hover { background: rgba(255,255,255,0.015); }
-    .chat-msg-me { flex-direction: row-reverse; }
-    .chat-msg-avatar {
-        width: 32px; height: 32px;
-        border-radius: 50%;
-        background: var(--negro-hover);
-        border: 1px solid rgba(192,192,192,0.08);
-        overflow: hidden; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-    }
-    .chat-msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .chat-avatar-letter {
-        font-family: var(--font-titulo);
-        font-size: .65rem; font-weight: 700;
-        color: var(--plata-media);
-    }
-    .chat-msg-content { flex: 1; min-width: 0; }
-    .chat-msg-me .chat-msg-content { text-align: right; }
-    .chat-msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
-    .chat-msg-me .chat-msg-header { flex-direction: row-reverse; }
-    .chat-msg-name {
-        font-family: var(--font-titulo);
-        font-size: .7rem; font-weight: 700;
-        color: var(--plata-titulo);
-    }
-    .chat-msg-name.me { color: var(--acento-principal); }
-    .chat-msg-time { font-size: .55rem; color: rgba(192,192,192,0.2); font-weight: 500; }
-    .chat-msg-delete {
-        background: none; border: none;
-        font-size: .6rem; cursor: pointer;
-        opacity: 0; transition: opacity 0.2s;
-        padding: 2px 4px; border-radius: 4px;
-    }
-    .chat-msg:hover .chat-msg-delete { opacity: 0.4; }
-    .chat-msg-delete:hover { opacity: 1 !important; background: rgba(255,71,87,0.1); }
-    .chat-msg-text {
-        font-size: .82rem; color: var(--plata-clara);
-        font-weight: 400; line-height: 1.6;
-        word-break: break-word;
-    }
-    .chat-msg-me .chat-msg-text {
-        background: rgba(192,192,192,0.04);
-        display: inline-block;
-        padding: 6px 14px;
-        border-radius: 12px 12px 2px 12px;
-    }
-    .chat-link { color: var(--acento-principal); text-decoration: underline; }
-    .chat-input-section {
-        padding: 14px 20px;
-        border-top: 1px solid rgba(255,255,255,0.04);
-        background: rgba(255,255,255,0.01);
-    }
-    .chat-input-wrap { display: flex; gap: 10px; align-items: flex-end; }
-    .chat-input {
-        flex: 1; padding: 10px 14px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 12px;
-        color: var(--plata-blanca);
-        font-family: var(--font-cuerpo);
-        font-size: .85rem;
-        resize: none; min-height: 40px; max-height: 100px;
-        transition: border-color 0.3s ease;
-        outline: none;
-    }
-    .chat-input:focus { border-color: rgba(192,192,192,0.2); }
-    .chat-input::placeholder { color: var(--plata-oscura); }
-    .chat-send-btn {
-        width: 40px; height: 40px;
-        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-        border: 1px solid rgba(192,192,192,0.15);
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: all 0.3s ease;
-        flex-shrink: 0;
-    }
-    .chat-send-btn:hover {
-        background: linear-gradient(135deg, #c0c0c0, #888);
-        border-color: var(--acento-principal);
-        transform: scale(1.05);
-    }
-    .chat-send-icon { font-size: .9rem; color: var(--plata-blanca); }
-    .chat-send-btn:hover .chat-send-icon { color: var(--negro-base); }
-    .chat-input-footer { display: flex; justify-content: space-between; margin-top: 6px; padding: 0 4px; }
-    .chat-char-count {
-        font-family: var(--font-titulo);
-        font-size: .55rem; font-weight: 600;
-        color: rgba(192,192,192,0.15);
-        letter-spacing: 0.5px;
-    }
-    .chat-char-count.warn { color: var(--acento-error); }
-    .chat-input-hint { font-size: .55rem; color: rgba(192,192,192,0.12); }
-    .chat-unread-badge {
-        min-width: 18px; height: 18px;
-        background: var(--acento-error);
-        border-radius: 50%;
-        font-family: var(--font-titulo);
-        font-size: .55rem; font-weight: 800;
-        color: #fff;
-        display: flex; align-items: center; justify-content: center;
-        margin-left: auto; padding: 0 5px;
     }
 
     /* ============================================
@@ -2573,15 +2398,94 @@
                 <!-- 📊 PANEL: ANALYTICS (Admin) -->
                 <div class="panel" id="panel-analytics"></div>
 
-                <!-- 💬 PANEL: CHAT -->
-                <div class="panel" id="panel-chat">
-                    <div class="panel-header"><h1 class="panel-title">💬 Chat KXON</h1><p class="panel-desc">Habla en tiempo real con la comunidad</p></div>
-                    <div class="chat-container">
-                        <div class="chat-header-bar"><div class="chat-header-left"><div class="chat-header-dot"></div><span class="chat-header-status">Chat General</span></div><div class="chat-header-right"><span class="chat-header-online">🟢 En línea</span></div></div>
-                        <div class="chat-messages" id="chatMessagesList"><div class="chat-empty"><div class="chat-empty-icon">💬</div><div class="chat-empty-title">Cargando chat...</div></div></div>
-                        <div class="chat-input-section"><div class="chat-input-wrap"><textarea class="chat-input" id="chatInput" placeholder="Escribe un mensaje..." rows="1" maxlength="500"></textarea><button class="chat-send-btn" id="chatSendBtn" title="Enviar"><span class="chat-send-icon">➤</span></button></div><div class="chat-input-footer"><span class="chat-char-count" id="chatCharCount">0/500</span><span class="chat-input-hint">Enter para enviar · Shift+Enter nueva línea</span></div></div>
-                    </div>
-                </div>
+                <!-- 💬 PANEL: CHAT — KXON 2026 REBUILD -->
+<div class="panel" id="panel-chat">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-chat-header">
+    <div class="kx-chat-header-top">
+      <div class="kx-chat-header-intro">
+        <span class="kx-chat-label">COMUNIDAD</span>
+        <h1 class="kx-chat-title">Chat</h1>
+        <p class="kx-chat-subtitle">Habla en tiempo real con la comunidad KXON.</p>
+      </div>
+      <div class="kx-chat-kpis">
+        <div class="kx-chat-kpi">
+          <span class="kx-chat-kpi-value" id="chatKpiMessages">0</span>
+          <span class="kx-chat-kpi-label">Mensajes</span>
+        </div>
+        <div class="kx-chat-kpi-divider"></div>
+        <div class="kx-chat-kpi">
+          <span class="kx-chat-kpi-value" id="chatKpiOnline">—</span>
+          <span class="kx-chat-kpi-label">Estado</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ CHAT CONTAINER ═══ -->
+  <div class="kx-chat-container" role="region" aria-label="Chat en tiempo real">
+
+    <!-- Status Bar -->
+    <div class="kx-chat-status-bar">
+      <div class="kx-chat-status-left">
+        <span class="kx-chat-status-dot"></span>
+        <span class="kx-chat-status-label">Chat General</span>
+      </div>
+      <div class="kx-chat-status-right">
+        <span class="kx-chat-online-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"/></svg>
+          En línea
+        </span>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="kx-chat-messages" id="chatMessagesList" role="log" aria-live="polite" aria-label="Mensajes del chat">
+      <!-- Skeletons -->
+      <div class="kx-chat-skeleton" aria-hidden="true">
+        <div class="kx-chat-skeleton-avatar"></div>
+        <div class="kx-chat-skeleton-body">
+          <div class="kx-chat-skeleton-line kx-chat-skeleton-line--name"></div>
+          <div class="kx-chat-skeleton-line kx-chat-skeleton-line--text"></div>
+        </div>
+      </div>
+      <div class="kx-chat-skeleton" aria-hidden="true">
+        <div class="kx-chat-skeleton-avatar"></div>
+        <div class="kx-chat-skeleton-body">
+          <div class="kx-chat-skeleton-line kx-chat-skeleton-line--name"></div>
+          <div class="kx-chat-skeleton-line kx-chat-skeleton-line--text"></div>
+          <div class="kx-chat-skeleton-line kx-chat-skeleton-line--short"></div>
+        </div>
+      </div>
+      <div class="kx-chat-skeleton" aria-hidden="true">
+        <div class="kx-chat-skeleton-avatar"></div>
+        <div class="kx-chat-skeleton-body">
+          <div class="kx-chat-skeleton-line kx-chat-skeleton-line--name"></div>
+          <div class="kx-chat-skeleton-line kx-chat-skeleton-line--short"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="kx-chat-input-section">
+      <div class="kx-chat-input-wrap">
+        <textarea class="kx-chat-input" id="chatInput" placeholder="Escribe un mensaje..." rows="1" maxlength="500" aria-label="Escribir mensaje"></textarea>
+        <button class="kx-chat-send-btn" id="chatSendBtn" title="Enviar mensaje" aria-label="Enviar mensaje">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="kx-chat-input-footer">
+        <span class="kx-chat-char-count" id="chatCharCount">0/500</span>
+        <span class="kx-chat-input-hint">Enter para enviar · Shift+Enter nueva línea</span>
+      </div>
+    </div>
+
+  </div>
+</div>
 
                 <!-- 📋 PANEL: SOLICITAR BEAT -->
                 <div class="panel" id="panel-solicitar-beat">
