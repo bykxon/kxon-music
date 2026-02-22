@@ -1,0 +1,948 @@
+/* ============================================
+   💿 PANEL ÁLBUMES — KXON ELITE 2026
+   Glassmorphism · 3D Cards · Audio Waves
+   Microinteractions · Depth Layering
+   ============================================ */
+
+/* ══════════════════════════════════════════════
+   🎨 VARIABLES EXCLUSIVAS ÁLBUMES
+   ══════════════════════════════════════════════ */
+:root {
+    --alb-bg-deep: #060608;
+    --alb-bg-card: rgba(14, 14, 20, 0.65);
+    --alb-bg-glass: rgba(18, 18, 28, 0.45);
+    --alb-border-glass: rgba(255, 255, 255, 0.04);
+    --alb-border-hover: rgba(192, 192, 192, 0.12);
+    --alb-border-active: rgba(192, 192, 192, 0.2);
+    --alb-glow-primary: rgba(192, 192, 192, 0.08);
+    --alb-glow-intense: rgba(192, 192, 192, 0.15);
+    --alb-gradient-card: linear-gradient(145deg, rgba(20, 20, 30, 0.7) 0%, rgba(10, 10, 16, 0.9) 100%);
+    --alb-transition: cubic-bezier(0.22, 1, 0.36, 1);
+    --alb-transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --alb-radius: 16px;
+    --alb-radius-lg: 20px;
+    --alb-radius-xl: 24px;
+}
+
+/* ══════════════════════════════════════════════
+   🌊 FONDO DINÁMICO — ONDAS MUSICALES
+   ══════════════════════════════════════════════ */
+#panel-albumes {
+    position: relative;
+    overflow: hidden;
+}
+
+#panel-albumes::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(100, 100, 180, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(192, 192, 192, 0.02) 0%, transparent 50%),
+        radial-gradient(ellipse 90% 60% at 50% 50%, rgba(80, 80, 120, 0.015) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+    animation: albAmbientShift 12s ease-in-out infinite;
+}
+
+#panel-albumes::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    height: 200px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 18px,
+        rgba(192, 192, 192, 0.008) 18px,
+        rgba(192, 192, 192, 0.008) 19px
+    );
+    mask-image: linear-gradient(to top,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.1) 40%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(to top,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.1) 40%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: albWaveFloat 6s ease-in-out infinite;
+}
+
+@keyframes albAmbientShift {
+    0%, 100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    33% {
+        opacity: 1;
+        transform: scale(1.02) translateX(1%);
+    }
+    66% {
+        opacity: 0.85;
+        transform: scale(1.01) translateX(-0.5%);
+    }
+}
+
+@keyframes albWaveFloat {
+    0%, 100% {
+        transform: translateY(0) scaleY(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateY(-8px) scaleY(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* ── Panel content above background ── */
+#panel-albumes > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ══════════════════════════════════════════════
+   📋 HEADER DEL PANEL — ÁLBUMES
+   ══════════════════════════════════════════════ */
+#panel-albumes > #albumesListView > .panel-header {
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+    position: relative;
+    animation: albHeaderReveal 0.6s var(--alb-transition) both;
+}
+
+@keyframes albHeaderReveal {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+        filter: blur(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+#panel-albumes > #albumesListView > .panel-header .panel-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #f0f0f0 0%, #888 40%, #c0c0c0 60%, #f0f0f0 100%);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: albTitleShimmer 6s ease-in-out infinite;
+    line-height: 1.1;
+}
+
+@keyframes albTitleShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+#panel-albumes > #albumesListView > .panel-header .panel-desc {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: rgba(192, 192, 192, 0.35);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+}
+
+/* ── Decorative line under header ── */
+#panel-albumes > #albumesListView > .panel-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.3), transparent);
+    border-radius: 2px;
+}
+
+/* ══════════════════════════════════════════════
+   🃏 GRID DE ÁLBUMES — REDISEÑO
+   ══════════════════════════════════════════════ */
+#panel-albumes #albumesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    gap: 20px;
+    perspective: 1200px;
+}
+
+/* ══════════════════════════════════════════════
+   💿 TARJETAS DE ÁLBUM — 3D PREMIUM
+   ══════════════════════════════════════════════ */
+#panel-albumes #albumesGrid > .card {
+    background: var(--alb-gradient-card);
+    border: 1px solid var(--alb-border-glass);
+    border-radius: var(--alb-radius);
+    overflow: visible;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0);
+    transition:
+        transform 0.45s var(--alb-transition),
+        box-shadow 0.45s var(--alb-transition),
+        border-color 0.35s ease;
+    will-change: transform, box-shadow;
+    cursor: pointer;
+    isolation: isolate;
+    animation: albCardStagger 0.5s var(--alb-transition) both;
+}
+
+/* ── Stagger animation ── */
+#panel-albumes #albumesGrid > .card:nth-child(1) { animation-delay: 0.05s; }
+#panel-albumes #albumesGrid > .card:nth-child(2) { animation-delay: 0.1s; }
+#panel-albumes #albumesGrid > .card:nth-child(3) { animation-delay: 0.15s; }
+#panel-albumes #albumesGrid > .card:nth-child(4) { animation-delay: 0.2s; }
+#panel-albumes #albumesGrid > .card:nth-child(5) { animation-delay: 0.25s; }
+#panel-albumes #albumesGrid > .card:nth-child(6) { animation-delay: 0.3s; }
+#panel-albumes #albumesGrid > .card:nth-child(7) { animation-delay: 0.35s; }
+#panel-albumes #albumesGrid > .card:nth-child(8) { animation-delay: 0.4s; }
+#panel-albumes #albumesGrid > .card:nth-child(9) { animation-delay: 0.45s; }
+#panel-albumes #albumesGrid > .card:nth-child(10) { animation-delay: 0.5s; }
+
+@keyframes albCardStagger {
+    from {
+        opacity: 0;
+        transform: perspective(800px) rotateX(8deg) translateY(40px) translateZ(-30px);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(800px) rotateX(0deg) translateY(0) translateZ(0);
+        filter: blur(0);
+    }
+}
+
+/* ── Glassmorphism shine layer ── */
+#panel-albumes #albumesGrid > .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 10%,
+        rgba(255, 255, 255, 0.06) 30%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.06) 70%,
+        transparent 90%
+    );
+    border-radius: var(--alb-radius) var(--alb-radius) 0 0;
+    z-index: 3;
+    opacity: 0.6;
+    transition: opacity 0.35s ease;
+}
+
+/* ── Animated gradient border on hover ── */
+#panel-albumes #albumesGrid > .card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: calc(var(--alb-radius) + 1px);
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        rgba(192, 192, 192, 0.15) 10%,
+        transparent 20%,
+        transparent 50%,
+        rgba(192, 192, 192, 0.1) 60%,
+        transparent 70%,
+        transparent 100%
+    );
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    animation: albBorderRotate 4s linear infinite paused;
+}
+
+@keyframes albBorderRotate {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Hover Effects ── */
+#panel-albumes #albumesGrid > .card:hover {
+    transform: perspective(800px) rotateX(-2deg) rotateY(2deg) translateY(-8px) translateZ(10px);
+    border-color: var(--alb-border-hover);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(192, 192, 192, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+#panel-albumes #albumesGrid > .card:hover::before {
+    opacity: 1;
+}
+
+#panel-albumes #albumesGrid > .card:hover::after {
+    opacity: 1;
+    animation-play-state: running;
+}
+
+/* ── Card Image ── */
+#panel-albumes #albumesGrid > .card > .card-img {
+    border-radius: var(--alb-radius) var(--alb-radius) 0 0;
+    overflow: hidden;
+    position: relative;
+}
+
+#panel-albumes #albumesGrid > .card > .card-img > img {
+    transition: transform 0.6s var(--alb-transition), filter 0.4s ease;
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-img > img {
+    transform: scale(1.1);
+    filter: brightness(1.05) contrast(1.02);
+}
+
+/* ── Card Overlay — Redesigned ── */
+#panel-albumes #albumesGrid > .card > .card-img > .card-overlay {
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.3) 40%,
+        rgba(0, 0, 0, 0.7) 100%
+    );
+    backdrop-filter: blur(4px) saturate(1.4);
+    -webkit-backdrop-filter: blur(4px) saturate(1.4);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-img > .card-overlay {
+    opacity: 1;
+}
+
+#panel-albumes #albumesGrid > .card > .card-img > .card-overlay > .card-overlay-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-size: 1rem;
+    transform: scale(0.7) translateY(10px);
+    opacity: 0;
+    transition:
+        transform 0.4s var(--alb-transition-bounce),
+        opacity 0.3s ease,
+        background 0.25s ease;
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-img > .card-overlay > .card-overlay-icon {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+#panel-albumes #albumesGrid > .card > .card-img > .card-overlay > .card-overlay-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: scale(1.12);
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.15);
+}
+
+/* ── Card Body ── */
+#panel-albumes #albumesGrid > .card > .card-body {
+    padding: 16px 16px 18px;
+    background: linear-gradient(180deg, rgba(14, 14, 20, 0.4) 0%, rgba(10, 10, 14, 0.8) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: relative;
+}
+
+#panel-albumes #albumesGrid > .card > .card-body > .card-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(240, 240, 245, 0.95);
+    letter-spacing: 0.1px;
+    transition: color 0.25s ease;
+    line-height: 1.3;
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-body > .card-title {
+    color: #fff;
+}
+
+#panel-albumes #albumesGrid > .card > .card-body > .card-subtitle {
+    font-size: 0.68rem;
+    color: rgba(192, 192, 192, 0.35);
+    font-weight: 500;
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+    transition: color 0.25s ease;
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-body > .card-subtitle {
+    color: rgba(192, 192, 192, 0.55);
+}
+
+/* ── Delete Button ── */
+#panel-albumes #albumesGrid > .card > .card-img > .card-admin-delete {
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 71, 87, 0.85);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    transition: all 0.25s var(--alb-transition);
+    z-index: 10;
+    opacity: 0;
+    transform: scale(0.8) translateY(-4px);
+}
+
+#panel-albumes #albumesGrid > .card:hover > .card-img > .card-admin-delete.visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+#panel-albumes #albumesGrid > .card > .card-img > .card-admin-delete:hover {
+    background: #ff4757;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+}
+
+/* ══════════════════════════════════════════════
+   🔒 ÁLBUM BLOQUEADO — PREMIUM
+   ══════════════════════════════════════════════ */
+#panel-albumes #albumesGrid > .card.album-locked {
+    border-color: rgba(255, 215, 0, 0.06);
+}
+
+#panel-albumes #albumesGrid > .card.album-locked:hover {
+    transform: perspective(800px) translateY(-4px);
+    border-color: rgba(255, 215, 0, 0.12);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.35),
+        0 0 30px rgba(255, 215, 0, 0.03);
+}
+
+#panel-albumes #albumesGrid > .card.album-locked > .card-img > .album-lock-badge {
+    z-index: 10;
+}
+
+#panel-albumes #albumesGrid > .card.album-locked > .card-img > .album-lock-badge > .album-lock-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.2));
+}
+
+/* ══════════════════════════════════════════════
+   💿 ALBUM DETAIL — REDESIGN
+   ══════════════════════════════════════════════ */
+#panel-albumes #albumDetailView {
+    animation: albDetailReveal 0.5s var(--alb-transition) both;
+}
+
+@keyframes albDetailReveal {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+        filter: blur(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* ── Back Button ── */
+#panel-albumes #albumDetailView > .btn-back {
+    margin-bottom: 24px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    color: rgba(192, 192, 192, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.015);
+    transition: all 0.3s var(--alb-transition);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+#panel-albumes #albumDetailView > .btn-back:hover {
+    color: var(--plata-blanca);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(192, 192, 192, 0.1);
+    transform: translateX(-4px);
+}
+
+/* ── Detail Header ── */
+#panel-albumes .album-detail-header {
+    gap: 28px;
+    margin-bottom: 36px;
+    padding: 28px;
+    background: var(--alb-bg-glass);
+    border: 1px solid var(--alb-border-glass);
+    border-radius: var(--alb-radius-xl);
+    backdrop-filter: blur(20px) saturate(1.3);
+    -webkit-backdrop-filter: blur(20px) saturate(1.3);
+    position: relative;
+    overflow: hidden;
+    animation: albDetailHeaderReveal 0.6s var(--alb-transition) 0.1s both;
+}
+
+@keyframes albDetailHeaderReveal {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+        filter: blur(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* ── Ambient glow behind header ── */
+#panel-albumes .album-detail-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: radial-gradient(ellipse at 20% 50%, rgba(192, 192, 192, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+#panel-albumes .album-detail-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent 50%);
+    border-radius: var(--alb-radius-xl) var(--alb-radius-xl) 0 0;
+}
+
+#panel-albumes .album-detail-header > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Detail Cover ── */
+#panel-albumes .album-detail-cover {
+    width: 200px;
+    height: 200px;
+    border-radius: var(--alb-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.02),
+        0 0 60px rgba(192, 192, 192, 0.03);
+    transition: all 0.4s var(--alb-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+#panel-albumes .album-detail-cover:hover {
+    transform: scale(1.03) rotate(-1deg);
+    box-shadow:
+        0 16px 50px rgba(0, 0, 0, 0.6),
+        0 0 80px rgba(192, 192, 192, 0.05);
+    border-color: rgba(192, 192, 192, 0.1);
+}
+
+/* ── Cover shine ── */
+#panel-albumes .album-detail-cover::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        135deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.04) 45%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.04) 55%,
+        transparent 60%
+    );
+    transform: rotate(0deg);
+    transition: transform 0.8s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+
+#panel-albumes .album-detail-cover:hover::after {
+    transform: rotate(180deg);
+}
+
+/* ── Detail Info ── */
+#panel-albumes .album-detail-label {
+    font-size: 0.52rem;
+    font-weight: 800;
+    letter-spacing: 3.5px;
+    color: rgba(192, 192, 192, 0.25);
+    padding: 4px 12px;
+    background: rgba(192, 192, 192, 0.04);
+    border: 1px solid rgba(192, 192, 192, 0.06);
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+#panel-albumes .album-detail-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+    line-height: 1.15;
+    background: linear-gradient(135deg, #f5f5f5, #c0c0c0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#panel-albumes .album-detail-desc {
+    font-size: 0.85rem;
+    color: rgba(192, 192, 192, 0.45);
+    line-height: 1.7;
+    font-weight: 300;
+}
+
+#panel-albumes .album-detail-meta {
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    color: rgba(192, 192, 192, 0.3);
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 14px;
+}
+
+/* ══════════════════════════════════════════════
+   🎵 TRACK LIST — REDESIGN
+   ══════════════════════════════════════════════ */
+#panel-albumes .section-header-row {
+    margin-bottom: 18px;
+    animation: albDetailHeaderReveal 0.6s var(--alb-transition) 0.2s both;
+}
+
+#panel-albumes .section-header-row > .panel-section-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: rgba(192, 192, 192, 0.6);
+}
+
+/* ── Track Items ── */
+#panel-albumes #trackList {
+    animation: albDetailHeaderReveal 0.6s var(--alb-transition) 0.3s both;
+}
+
+#panel-albumes #trackList > .track-item {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.012);
+    border: 1px solid rgba(255, 255, 255, 0.025);
+    border-radius: 12px;
+    margin-bottom: 3px;
+    transition: all 0.3s var(--alb-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+/* ── Track hover light-follow effect ── */
+#panel-albumes #trackList > .track-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: radial-gradient(
+        200px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(192, 192, 192, 0.04),
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+
+#panel-albumes #trackList > .track-item:hover::before {
+    opacity: 1;
+}
+
+#panel-albumes #trackList > .track-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(192, 192, 192, 0.08);
+    transform: translateX(4px);
+}
+
+#panel-albumes #trackList > .track-item > .track-play-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    transition: all 0.3s var(--alb-transition-bounce);
+}
+
+#panel-albumes #trackList > .track-item:hover > .track-play-btn {
+    background: rgba(192, 192, 192, 0.1);
+    border-color: rgba(192, 192, 192, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(192, 192, 192, 0.08);
+}
+
+#panel-albumes #trackList > .track-item > .track-info > .track-title {
+    transition: color 0.25s ease;
+}
+
+#panel-albumes #trackList > .track-item:hover > .track-info > .track-title {
+    color: #fff;
+}
+
+#panel-albumes #trackList > .track-item > .track-num {
+    font-size: 0.68rem;
+    color: rgba(192, 192, 192, 0.2);
+    font-weight: 700;
+    transition: color 0.25s ease;
+    font-variant-numeric: tabular-nums;
+}
+
+#panel-albumes #trackList > .track-item:hover > .track-num {
+    color: rgba(192, 192, 192, 0.45);
+}
+
+#panel-albumes #trackList > .track-item > .track-duration {
+    transition: color 0.25s ease;
+}
+
+#panel-albumes #trackList > .track-item:hover > .track-duration {
+    color: rgba(192, 192, 192, 0.5);
+}
+
+/* ── Track Playing State ── */
+#panel-albumes #trackList > .track-item.playing {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.04), rgba(192, 192, 192, 0.01));
+    border-color: rgba(192, 192, 192, 0.1);
+    border-left: 3px solid rgba(192, 192, 192, 0.3);
+}
+
+#panel-albumes #trackList > .track-item.playing > .track-num {
+    color: var(--plata-blanca);
+}
+
+/* ══════════════════════════════════════════════
+   🎯 ADD TRACK BUTTON — REDESIGN
+   ══════════════════════════════════════════════ */
+#panel-albumes .btn-add-track {
+    border-radius: 10px;
+    padding: 9px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(192, 192, 192, 0.08);
+    transition: all 0.3s var(--alb-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+#panel-albumes .btn-add-track::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    transition: left 0.5s ease;
+}
+
+#panel-albumes .btn-add-track:hover::before {
+    left: 100%;
+}
+
+#panel-albumes .btn-add-track:hover {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.08), rgba(192, 192, 192, 0.03));
+    border-color: rgba(192, 192, 192, 0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(192, 192, 192, 0.06);
+}
+
+/* ══════════════════════════════════════════════
+   🫙 EMPTY STATE — ÁLBUMES
+   ══════════════════════════════════════════════ */
+#panel-albumes .empty-state {
+    padding: 80px 24px;
+    animation: albCardStagger 0.5s var(--alb-transition) both;
+}
+
+#panel-albumes .empty-state > .empty-icon {
+    font-size: 3rem;
+    opacity: 0.15;
+    margin-bottom: 18px;
+    animation: albEmptyFloat 3s ease-in-out infinite;
+}
+
+@keyframes albEmptyFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+#panel-albumes .empty-state > .empty-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(192, 192, 192, 0.4);
+}
+
+/* ══════════════════════════════════════════════
+   🖱️ CURSOR DINÁMICO (dentro del panel)
+   ══════════════════════════════════════════════ */
+#panel-albumes .alb-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid rgba(192, 192, 192, 0.2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition:
+        width 0.25s var(--alb-transition),
+        height 0.25s var(--alb-transition),
+        border-color 0.25s ease,
+        background 0.25s ease,
+        transform 0.08s linear;
+    mix-blend-mode: difference;
+}
+
+#panel-albumes .alb-cursor.alb-cursor-hover {
+    width: 44px;
+    height: 44px;
+    border-color: rgba(192, 192, 192, 0.35);
+    background: rgba(192, 192, 192, 0.04);
+}
+
+/* ══════════════════════════════════════════════
+   🔊 RIPPLE EFFECT — BOTONES
+   ══════════════════════════════════════════════ */
+#panel-albumes .alb-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(192, 192, 192, 0.08);
+    transform: scale(0);
+    animation: albRipple 0.6s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes albRipple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* ══════════════════════════════════════════════
+   📱 RESPONSIVE — ÁLBUMES
+   ══════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    #panel-albumes #albumesGrid {
+        grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+        gap: 16px;
+    }
+
+    #panel-albumes .album-detail-cover {
+        width: 170px;
+        height: 170px;
+    }
+}
+
+@media (max-width: 768px) {
+    #panel-albumes #albumesGrid {
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+        gap: 12px;
+    }
+
+    #panel-albumes .album-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 24px 20px;
+    }
+
+    #panel-albumes .album-detail-cover {
+        width: 160px;
+        height: 160px;
+    }
+
+    #panel-albumes .album-detail-title {
+        font-size: 1.4rem;
+    }
+
+    #panel-albumes .album-detail-label {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #panel-albumes::before,
+    #panel-albumes::after {
+        left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    #panel-albumes #albumesGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    #panel-albumes #albumesGrid > .card > .card-body {
+        padding: 12px;
+    }
+
+    #panel-albumes #albumesGrid > .card > .card-body > .card-title {
+        font-size: 0.78rem;
+    }
+
+    #panel-albumes .album-detail-header {
+        padding: 18px 16px;
+    }
+
+    #panel-albumes .album-detail-cover {
+        width: 140px;
+        height: 140px;
+    }
+}
+
+/* ══════════════════════════════════════════════
+   ♿ REDUCED MOTION
+   ══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    #panel-albumes::before,
+    #panel-albumes::after,
+    #panel-albumes #albumesGrid > .card,
+    #panel-albumes #albumesGrid > .card::after,
+    #panel-albumes .empty-state > .empty-icon {
+        animation: none !important;
+    }
+
+    #panel-albumes #albumesGrid > .card {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+
+    #panel-albumes #albumesGrid > .card:hover {
+        transform: translateY(-4px);
+    }
+}
