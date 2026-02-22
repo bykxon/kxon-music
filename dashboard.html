@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/dashboard-albumes.css">
     <link rel="stylesheet" href="css/dashboard-canciones.css">
     <link rel="stylesheet" href="css/dashboard-radio.css">
+    <link rel="stylesheet" href="css/dashboard-envivo.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -602,337 +603,7 @@
         margin-top: 4px;
     }
 
-    /* ============================================
-       🔴 EN VIVO - ESTILOS COMPLETOS
-       ============================================ */
-    .nav-live-dot {
-        width: 8px;
-        height: 8px;
-        background: #ff4757;
-        border-radius: 50%;
-        margin-left: auto;
-        animation: livePulse 1.5s ease-in-out infinite;
-        box-shadow: 0 0 8px rgba(255, 71, 87, 0.6);
-    }
-    @keyframes livePulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(1.3); }
-    }
-    .live-banner {
-        position: relative;
-        background: linear-gradient(135deg, rgba(255,71,87,0.08), rgba(255,71,87,0.02));
-        border: 1px solid rgba(255,71,87,0.15);
-        border-radius: var(--radio-md);
-        padding: 28px 32px;
-        margin-bottom: 24px;
-        overflow: hidden;
-    }
-    .live-banner-pulse {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(ellipse at center, rgba(255,71,87,0.05) 0%, transparent 70%);
-        animation: bannerPulse 3s ease-in-out infinite;
-        pointer-events: none;
-    }
-    @keyframes bannerPulse {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 1; }
-    }
-    .live-banner-content {
-        position: relative;
-        z-index: 2;
-    }
-    .live-badge-big {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 16px;
-        background: rgba(255,71,87,0.15);
-        border: 1px solid rgba(255,71,87,0.3);
-        border-radius: 50px;
-        font-family: var(--font-titulo);
-        font-size: .72rem;
-        font-weight: 800;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: #ff4757;
-        margin-bottom: 14px;
-    }
-    .live-dot-anim {
-        width: 8px;
-        height: 8px;
-        background: #ff4757;
-        border-radius: 50%;
-        animation: livePulse 1s ease-in-out infinite;
-    }
-    .live-stream-title {
-        font-family: var(--font-titulo);
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--plata-blanca);
-        margin-bottom: 12px;
-    }
-    .live-meta-row {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-    .live-viewers {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 14px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 50px;
-        font-family: var(--font-titulo);
-        font-size: .72rem;
-        font-weight: 600;
-        color: var(--plata-clara);
-    }
-    .live-viewers-icon { font-size: .85rem; }
-    .live-viewers-num { color: #ff4757; font-weight: 800; }
-    .live-duration {
-        font-family: var(--font-titulo);
-        font-size: .68rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-        color: var(--plata-oscura);
-    }
-    .live-player-wrapper { margin-bottom: 24px; }
-    .live-player-container {
-        position: relative;
-        width: 100%;
-        padding-bottom: 56.25%;
-        background: #000;
-        border-radius: var(--radio-md);
-        overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.06);
-    }
-    .live-player-container iframe {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-    }
-    .live-info-section { margin-bottom: 24px; }
-    .live-description {
-        font-size: .88rem;
-        color: var(--plata-media);
-        font-weight: 300;
-        line-height: 1.7;
-        padding: 18px;
-        background: var(--negro-card);
-        border: 1px solid rgba(255,255,255,0.04);
-        border-radius: var(--radio-sm);
-    }
-    .live-chat-section { margin-bottom: 24px; }
-    .live-chat-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-    }
-    .live-chat-title {
-        font-family: var(--font-titulo);
-        font-size: .82rem;
-        font-weight: 700;
-        color: var(--plata-titulo);
-    }
-    .live-chat-toggle {
-        padding: 5px 14px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 6px;
-        color: var(--plata-oscura);
-        font-family: var(--font-titulo);
-        font-size: .65rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: var(--trans-suave);
-    }
-    .live-chat-toggle:hover {
-        background: rgba(255,255,255,0.08);
-        color: var(--plata-clara);
-    }
-    .live-chat-container {
-        width: 100%;
-        height: 400px;
-        border-radius: var(--radio-md);
-        overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.06);
-        background: #000;
-    }
-    .live-offline-card {
-        text-align: center;
-        padding: 60px 30px;
-        background: var(--negro-card);
-        border: 1px solid rgba(255,255,255,0.04);
-        border-radius: var(--radio-md);
-    }
-    .live-offline-icon { font-size: 3.5rem; margin-bottom: 20px; opacity: 0.4; }
-    .live-offline-title {
-        font-family: var(--font-titulo);
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: var(--plata-titulo);
-        margin-bottom: 10px;
-    }
-    .live-offline-desc {
-        font-size: .85rem;
-        color: var(--plata-oscura);
-        font-weight: 300;
-        line-height: 1.7;
-        max-width: 500px;
-        margin: 0 auto 24px;
-    }
-    .live-offline-last {
-        font-family: var(--font-titulo);
-        font-size: .68rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-        color: var(--plata-oscura);
-        margin-top: 16px;
-    }
-    .live-admin-section {
-        margin-top: 32px;
-        padding-top: 24px;
-        border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    .live-admin-card {
-        background: var(--negro-card);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: var(--radio-md);
-        padding: 24px;
-    }
-    .live-admin-status {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 20px;
-        padding: 12px 18px;
-        background: rgba(255,255,255,0.02);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: var(--radio-sm);
-        font-family: var(--font-titulo);
-        font-size: .78rem;
-        color: var(--plata-clara);
-    }
-    .live-admin-status-dot {
-        width: 10px; height: 10px;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-    .live-admin-status-dot.offline { background: var(--plata-oscura); }
-    .live-admin-status-dot.online {
-        background: #ff4757;
-        animation: livePulse 1s ease-in-out infinite;
-        box-shadow: 0 0 8px rgba(255, 71, 87, 0.5);
-    }
-    .live-admin-form {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-    .live-admin-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 8px;
-    }
-    .live-btn-start {
-        flex: 1;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, rgba(255,71,87,0.15), rgba(255,71,87,0.08));
-        border: 1px solid rgba(255,71,87,0.3);
-        border-radius: var(--radio-sm);
-        color: #ff4757;
-        font-family: var(--font-titulo);
-        font-size: .78rem;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all .3s ease;
-    }
-    .live-btn-start:hover {
-        background: linear-gradient(135deg, rgba(255,71,87,0.25), rgba(255,71,87,0.15));
-        border-color: rgba(255,71,87,0.5);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(255,71,87,0.2);
-    }
-    .live-btn-stop {
-        flex: 1;
-        padding: 14px 28px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: var(--radio-sm);
-        color: var(--plata-clara);
-        font-family: var(--font-titulo);
-        font-size: .78rem;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all .3s ease;
-    }
-    .live-btn-stop:hover {
-        background: rgba(255,71,87,0.1);
-        border-color: rgba(255,71,87,0.3);
-        color: #ff4757;
-    }
-    .live-history-item {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 16px;
-        background: rgba(255,255,255,0.02);
-        border: 1px solid rgba(255,255,255,0.04);
-        border-radius: var(--radio-sm);
-        margin-bottom: 6px;
-        transition: var(--trans-normal);
-    }
-    .live-history-item:hover {
-        background: rgba(255,255,255,0.04);
-        border-color: rgba(192,192,192,0.08);
-    }
-    .live-history-dot {
-        width: 8px; height: 8px;
-        border-radius: 50%;
-        background: var(--plata-oscura);
-        flex-shrink: 0;
-    }
-    .live-history-dot.was-live { background: rgba(255,71,87,0.4); }
-    .live-history-info { flex: 1; min-width: 0; }
-    .live-history-title {
-        font-size: .82rem;
-        font-weight: 600;
-        color: var(--plata-titulo);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .live-history-meta { font-size: .65rem; color: var(--plata-oscura); margin-top: 2px; }
-    .live-history-delete {
-        background: none; border: none;
-        font-size: .75rem; cursor: pointer;
-        opacity: 0; transition: var(--trans-normal);
-        padding: 4px 8px; border-radius: 4px;
-        color: var(--plata-oscura);
-    }
-    .live-history-item:hover .live-history-delete { opacity: 0.5; }
-    .live-history-delete:hover { opacity: 1 !important; background: rgba(255,71,87,0.1); color: #ff4757; }
-    .notif-live { border-left: 3px solid #ff4757; }
-    .notif-item-icon.icon-live { background: rgba(255,71,87,0.1); border-color: rgba(255,71,87,0.2); }
-    @media (max-width: 768px) {
-        .live-banner { padding: 20px; }
-        .live-stream-title { font-size: 1.15rem; }
-        .live-meta-row { flex-direction: column; align-items: flex-start; gap: 8px; }
-        .live-chat-container { height: 300px; }
-        .live-admin-actions { flex-direction: column; }
-    }
-
+    
     /* ============================================
        💬 CHAT EN TIEMPO REAL
        ============================================ */
@@ -2679,31 +2350,185 @@
 
 </div>
 
-                <!-- 🔴 PANEL: EN VIVO -->
-                <div class="panel" id="panel-envivo">
-                    <div class="panel-header"><h1 class="panel-title">🔴 En Vivo</h1><p class="panel-desc">Transmisiones en directo exclusivas de KXON</p></div>
-                    <div id="liveActiveSection" style="display:none;">
-                        <div class="live-banner"><div class="live-banner-pulse"></div><div class="live-banner-content"><div class="live-badge-big"><span class="live-dot-anim"></span>EN VIVO</div><h2 class="live-stream-title" id="liveStreamTitle">KXON en directo</h2><div class="live-meta-row"><span class="live-viewers" id="liveViewerCount"><span class="live-viewers-icon">👁</span><span class="live-viewers-num" id="liveViewersNum">0</span><span>viendo ahora</span></span><span class="live-duration" id="liveDuration">⏱ Iniciado hace 0 min</span></div></div></div>
-                        <div class="live-player-wrapper"><div class="live-player-container" id="livePlayerContainer"><iframe id="liveIframe" src="" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></div>
-                        <div class="live-info-section"><div class="live-description" id="liveDescription"></div></div>
-                        <div class="live-chat-section" id="liveChatSection" style="display:none;"><div class="live-chat-header"><span class="live-chat-title">💬 Chat en vivo</span><button class="live-chat-toggle" id="liveChatToggle" onclick="window._toggleLiveChat()">Ocultar</button></div><div class="live-chat-container" id="liveChatContainer"><iframe id="liveChatIframe" src="" width="100%" height="100%" frameborder="0"></iframe></div></div>
-                    </div>
-                    <div id="liveOfflineSection"><div class="live-offline-card"><div class="live-offline-icon">📺</div><h2 class="live-offline-title">No hay transmisión en vivo</h2><p class="live-offline-desc">Cuando KXON inicie una transmisión en directo, aparecerá aquí automáticamente.</p><div class="live-offline-last" id="liveOfflineLast"></div></div></div>
-                    <div class="live-admin-section nav-admin-only" id="liveAdminSection" style="display:none;">
-                        <div class="panel-section-title">⚙️ Control de Transmisión (Admin)</div>
-                        <div class="live-admin-card">
-                            <div class="live-admin-status" id="liveAdminStatus"><span class="live-admin-status-dot offline"></span><span>Estado: <strong id="liveAdminStatusText">Offline</strong></span></div>
-                            <form class="live-admin-form" id="formLiveConfig">
-                                <div class="form-group"><label class="form-label">ID del video de YouTube</label><input type="text" class="form-input" id="liveYoutubeId" placeholder="Ej: dQw4w9WgXcQ o URL completa"><span style="font-size:.68rem;color:var(--plata-oscura);font-style:italic;margin-top:4px;display:block;">Pega el ID o la URL completa</span></div>
-                                <div class="form-group"><label class="form-label">Título del directo</label><input type="text" class="form-input" id="liveTitle" placeholder="Ej: KXON Session en vivo #12"></div>
-                                <div class="form-group"><label class="form-label">Descripción (opcional)</label><textarea class="form-textarea" id="liveDesc" placeholder="Descripción..." rows="3"></textarea></div>
-                                <div class="form-group"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><input type="checkbox" id="liveIncludeChat" style="width:18px;height:18px;accent-color:var(--acento-principal);"><span class="form-label" style="margin:0;">Incluir chat de YouTube</span></label></div>
-                                <div class="live-admin-actions"><button type="button" class="live-btn-start" id="btnGoLive" onclick="window._goLive()">🔴 Iniciar En Vivo</button><button type="button" class="live-btn-stop" id="btnStopLive" onclick="window._stopLive()" style="display:none;">⏹ Terminar Transmisión</button></div>
-                            </form>
-                            <div class="live-admin-history"><div class="panel-section-title" style="font-size:.72rem;margin-top:20px;">📋 Últimas transmisiones</div><div id="liveHistory"></div></div>
-                        </div>
-                    </div>
-                </div>
+                <!-- 🔴 PANEL: EN VIVO — KXON 2026 REBUILD -->
+<div class="panel" id="panel-envivo">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-live-header">
+    <div class="kx-live-header-top">
+      <div class="kx-live-header-intro">
+        <span class="kx-live-label">
+          <span class="kx-live-label-dot" id="kxLiveHeaderDot"></span>
+          TRANSMISIONES
+        </span>
+        <h1 class="kx-live-title">En Vivo</h1>
+        <p class="kx-live-subtitle">Transmisiones en directo exclusivas de KXON.</p>
+      </div>
+      <div class="kx-live-kpis">
+        <div class="kx-live-kpi">
+          <span class="kx-live-kpi-value" id="liveKpiViewers">0</span>
+          <span class="kx-live-kpi-label">Viendo</span>
+        </div>
+        <div class="kx-live-kpi-divider"></div>
+        <div class="kx-live-kpi">
+          <span class="kx-live-kpi-value" id="liveKpiStatus">—</span>
+          <span class="kx-live-kpi-label">Estado</span>
+        </div>
+        <div class="kx-live-kpi-divider"></div>
+        <div class="kx-live-kpi">
+          <span class="kx-live-kpi-value" id="liveKpiDuration">0m</span>
+          <span class="kx-live-kpi-label">Duración</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ LIVE STATE ═══ -->
+  <div id="kxLiveActiveSection">
+
+    <!-- Hero Banner -->
+    <section class="kx-live-hero" id="kxLiveHero" aria-label="Transmisión en vivo">
+      <div class="kx-live-hero-pulse"></div>
+      <div class="kx-live-hero-gradient"></div>
+      <div class="kx-live-hero-inner">
+        <div class="kx-live-on-air" role="status" aria-live="polite">
+          <span class="kx-live-on-air-dot"></span>
+          <span class="kx-live-on-air-text">EN VIVO</span>
+          <span class="kx-live-on-air-badge">LIVE</span>
+        </div>
+        <h2 class="kx-live-stream-title" id="kxLiveStreamTitle">KXON en directo</h2>
+        <div class="kx-live-meta-row">
+          <span class="kx-live-viewers" id="kxLiveViewerBadge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span class="kx-live-viewers-num" id="kxLiveViewersNum">0</span>
+            <span>viendo</span>
+          </span>
+          <span class="kx-live-duration" id="kxLiveDuration">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Iniciado hace 0 min
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Player -->
+    <div class="kx-live-player" id="kxLivePlayer">
+      <div class="kx-live-player-wrap">
+        <iframe id="kxLiveIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="kx-live-desc-section" id="kxLiveDescSection" style="display:none;">
+      <p class="kx-live-desc" id="kxLiveDescription"></p>
+    </div>
+
+    <!-- Chat -->
+    <section class="kx-live-chat" id="kxLiveChatSection" aria-label="Chat en vivo">
+      <div class="kx-live-chat-header">
+        <span class="kx-live-chat-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
+          Chat en vivo
+        </span>
+        <button class="kx-live-chat-toggle" id="kxLiveChatToggle">Ocultar</button>
+      </div>
+      <div class="kx-live-chat-container" id="kxLiveChatContainer">
+        <iframe id="kxLiveChatIframe" src="" width="100%" height="100%" frameborder="0"></iframe>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══ OFFLINE STATE ═══ -->
+  <div class="kx-live-offline" id="kxLiveOfflineSection">
+    <div class="kx-live-offline-card">
+      <div class="kx-live-offline-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect width="18" height="14" x="3" y="3" rx="2"/>
+          <path d="M3 9h18"/>
+          <path d="m15 13-6 6"/>
+          <path d="m9 13 6 6"/>
+        </svg>
+      </div>
+      <div class="kx-live-offline-wave" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <h2 class="kx-live-offline-title">No hay transmisión en vivo</h2>
+      <p class="kx-live-offline-desc">Cuando KXON inicie una transmisión en directo, aparecerá aquí automáticamente.</p>
+      <div class="kx-live-offline-last" id="kxLiveOfflineLast" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+        <span id="kxLiveOfflineLastText">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN SECTION ═══ -->
+  <section class="kx-live-admin" id="kxLiveAdminSection" aria-label="Control de transmisión">
+
+    <div class="kx-live-admin-label">
+      <div class="kx-live-admin-label-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <div>
+        <div class="kx-live-admin-label-text">Control de Transmisión</div>
+        <div class="kx-live-admin-label-sub">Panel de administración</div>
+      </div>
+    </div>
+
+    <div class="kx-live-admin-card">
+
+      <div class="kx-live-admin-status">
+        <span class="kx-live-admin-status-dot offline" id="kxLiveAdminDot"></span>
+        <span>Estado:</span>
+        <span class="kx-live-admin-status-text" id="kxLiveAdminStatusText">Offline</span>
+      </div>
+
+      <form class="kx-live-admin-form" id="kxFormLiveConfig">
+        <div class="form-group">
+          <label class="form-label">ID del video de YouTube</label>
+          <input type="text" class="form-input" id="kxLiveYoutubeId" placeholder="Ej: dQw4w9WgXcQ o URL completa">
+          <span style="font-size:.68rem;color:var(--kx-t4);font-style:italic;margin-top:4px;display:block;">Pega el ID o la URL completa</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Título del directo</label>
+          <input type="text" class="form-input" id="kxLiveTitle" placeholder="Ej: KXON Session en vivo #12">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción (opcional)</label>
+          <textarea class="form-textarea" id="kxLiveDesc" placeholder="Descripción..." rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="kxLiveIncludeChat" style="width:18px;height:18px;accent-color:var(--kx-red);">
+            <span class="form-label" style="margin:0;">Incluir chat de YouTube</span>
+          </label>
+        </div>
+        <div class="kx-live-admin-actions">
+          <button type="button" class="kx-live-btn-start" id="kxBtnGoLive">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
+            Iniciar En Vivo
+          </button>
+          <button type="button" class="kx-live-btn-stop" id="kxBtnStopLive">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+            Terminar Transmisión
+          </button>
+        </div>
+      </form>
+
+      <div class="kx-live-history">
+        <div class="kx-live-history-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+          Últimas transmisiones
+        </div>
+        <div class="kx-live-history-list" id="kxLiveHistory">
+          <div class="kx-live-history-empty">Sin transmisiones anteriores</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
 
                         <!-- 🛒 PANEL: MARKETPLACE -->
                 <div class="panel" id="panel-marketplace">
