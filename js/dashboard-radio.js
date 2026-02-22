@@ -7,13 +7,14 @@
    ✅ ARIA + Accesibilidad
    ✅ Lazy loading de imágenes
    ✅ Búsqueda en cola
-   ✅ Sin globals innecesarios (window._rjump eliminado)
+   ✅ FIX: Event listeners se registran en initRadio
    ============================================ */
 (function () {
 
   var db = window.db;
   var K = window.KXON;
   var radioAudio = K.radioAudio;
+  var eventsReady = false;
 
   /* ══════════════════════════════════════════
      🛡️ HELPERS
@@ -56,7 +57,6 @@
     return String(n);
   }
 
-  /* Debounce */
   function debounce(fn, ms) {
     var timer;
     return function () {
@@ -85,10 +85,130 @@
 
 
   /* ══════════════════════════════════════════
+     🎚 BIND ALL EVENTS — Called once on first init
+     ══════════════════════════════════════════ */
+  function bindEvents() {
+    if (eventsReady) return;
+    eventsReady = true;
+
+    console.log('📻 Radio: Binding events...');
+
+    /* ── Play / Nav / Shuffle buttons ── */
+    var playBtn = $('kxRadPlayBtn');
+    if (playBtn) playBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      radioToggle();
+    });
+
+    var nextBtn = $('kxRadNext');
+    if (nextBtn) nextBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      radioNext();
+    });
+
+    var prevBtn = $('kxRadPrev');
+    if (prevBtn) prevBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      radioPrev();
+    });
+
+    var shuffleBtn = $('kxRadShuffle');
+    if (shuffleBtn) shuffleBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      radioShuffleToggle();
+    });
+
+    /* ── Volume icon (mute toggle) ── */
+    var volIcon = $('kxRadVolIcon');
+    if (volIcon) volIcon.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMute();
+    });
+
+    /* ── Progress bar ── */
+    var progressBar = $('kxRadProgressBar');
+    if (progressBar) {
+      progressBar.addEventListener('click', function (e) {
+        if (!radioAudio.duration) return;
+        var r = this.getBoundingClientRect();
+        radioAudio.currentTime = ((e.clientX - r.left) / r.width) * radioAudio.duration;
+      });
+
+      progressBar.addEventListener('keydown', function (e) {
+        if (!radioAudio.duration) return;
+        if (e.key === 'ArrowRight') { radioAudio.currentTime = Math.min(radioAudio.duration, radioAudio.currentTime + 5); e.preventDefault(); }
+        if (e.key === 'ArrowLeft') { radioAudio.currentTime = Math.max(0, radioAudio.currentTime - 5); e.preventDefault(); }
+      });
+    }
+
+    /* ── Volume bar ── */
+    var volBar = $('kxRadVolBar');
+    if (volBar) {
+      volBar.addEventListener('click', function (e) {
+        var r = this.getBoundingClientRect();
+        var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+        setVolume(p);
+      });
+
+      volBar.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+          setVolume(Math.min(1, K.radioVolume + 0.05));
+          e.preventDefault();
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+          setVolume(Math.max(0, K.radioVolume - 0.05));
+          e.preventDefault();
+        }
+      });
+    }
+
+    /* ── Queue list — Event delegation ── */
+    var queueList = $('kxRadQueueList');
+    if (queueList) {
+      queueList.addEventListener('click', function (e) {
+        var item = e.target.closest('.kx-rad-item');
+        if (!item) return;
+        var idx = parseInt(item.getAttribute('data-idx'), 10);
+        console.log('📻 Queue click, idx:', idx);
+        if (!isNaN(idx)) radioPlay(idx);
+      });
+
+      queueList.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var item = e.target.closest('.kx-rad-item');
+        if (!item) return;
+        e.preventDefault();
+        var idx = parseInt(item.getAttribute('data-idx'), 10);
+        if (!isNaN(idx)) radioPlay(idx);
+      });
+    } else {
+      console.warn('📻 Radio: kxRadQueueList NOT FOUND');
+    }
+
+    /* ── Search ── */
+    var searchInput = $('kxRadSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', debounce(function () {
+        currentSearchTerm = this.value.trim();
+        renderQueue();
+      }, 200));
+    }
+
+    console.log('📻 Radio: Events bound ✅');
+  }
+
+
+  /* ══════════════════════════════════════════
      📻 INIT RADIO
      ══════════════════════════════════════════ */
   K.initRadio = async function () {
     initVisualizer();
+    bindEvents();
 
     if (K.radioReady && K.radioPlaylist.length > 0) {
       renderQueue();
@@ -105,7 +225,6 @@
 
       var allSongs = r.data || [];
 
-      /* Filter: only released songs */
       var released = allSongs.filter(function (s) {
         var songOk = isReleased(s.fecha_lanzamiento);
         var albumOk = true;
@@ -143,7 +262,7 @@
 
 
   /* ══════════════════════════════════════════
-     🔧 HELPERS — SHUFFLE, GETLIST
+     🔧 HELPERS
      ══════════════════════════════════════════ */
   function shuffleArr(a) {
     for (var i = a.length - 1; i > 0; i--) {
@@ -163,7 +282,6 @@
      ══════════════════════════════════════════ */
   function updateStats() {
     var list = K.radioPlaylist;
-    var totalSongs = list.length;
     var totalPlays = 0;
     var totalDurSecs = 0;
 
@@ -173,10 +291,10 @@
     }
 
     var elCount = $('kxRadQueueCount');
-    if (elCount) elCount.textContent = totalSongs + ' canciones en cola';
+    if (elCount) elCount.textContent = list.length + ' canciones en cola';
 
     var elTotal = $('kxRadStatTotal');
-    if (elTotal) elTotal.textContent = totalSongs;
+    if (elTotal) elTotal.textContent = list.length;
 
     var elPlays = $('kxRadStatPlays');
     if (elPlays) elPlays.textContent = formatNumber(totalPlays);
@@ -207,7 +325,6 @@
       fallback.style.display = 'flex';
     }
 
-    /* Hero background */
     var bg = $('kxRadHeroBg');
     if (bg && imgUrl) {
       bg.style.backgroundImage = 'url(' + imgUrl + ')';
@@ -235,7 +352,6 @@
     if (wave) wave.classList.toggle('is-active', isPlaying);
     if (arm) arm.classList.toggle('is-playing', isPlaying);
 
-    /* Player bar sync */
     var pp = document.getElementById('playerPlayPause');
     if (pp) pp.textContent = isPlaying ? '⏸' : '▶';
     K.isPlaying = isPlaying;
@@ -243,28 +359,33 @@
 
   function radioPlay(idx) {
     var list = getRL();
-    if (!list || !list[idx]) return;
+    if (!list || !list[idx]) {
+      console.warn('📻 radioPlay: No track at index', idx, 'list length:', list ? list.length : 0);
+      return;
+    }
     K.radioIndex = idx;
     var t = list[idx];
+
+    console.log('📻 Playing:', t.titulo, 'idx:', idx);
 
     K.stopAllAudio('radio');
     K.activeSource = 'radio';
 
     radioAudio.src = t.archivo_url;
     radioAudio.volume = K.radioVolume;
-    radioAudio.play();
+    radioAudio.play().catch(function(err) {
+      console.error('📻 Play error:', err);
+    });
     K.radioIsPlaying = true;
 
     updateDiscImage(t.imagen_url);
     setPlayingUI(true);
 
-    /* Track info */
     var tt = $('kxRadTitle');
     if (tt) tt.textContent = t.titulo;
     var ta = $('kxRadAlbum');
     if (ta) ta.textContent = t.album;
 
-    /* Progress thumb visible */
     var thumb = $('kxRadProgressThumb');
     if (thumb) thumb.style.transform = 'translate(-50%,-50%) scale(1)';
 
@@ -278,7 +399,7 @@
     var playerCover = document.getElementById('playerCover');
     if (playerCover) playerCover.src = t.imagen_url || '';
 
-    /* Update playlist for expanded player */
+    /* Playlist for expanded player */
     K.currentPlaylist = list.map(function (song) {
       return {
         id: song.id,
@@ -294,12 +415,10 @@
     if (typeof K.updateRadioFavState === 'function') setTimeout(K.updateRadioFavState, 100);
     if (typeof K.updatePlayerFavState === 'function') setTimeout(K.updatePlayerFavState, 100);
 
-    /* History */
     if (typeof K.addToHistorial === 'function') {
       K.addToHistorial(t);
     }
 
-    /* Increment plays */
     db.rpc('increment_reproducciones', { song_id: t.id }).then(function (res) {
       if (res.error) console.warn('Error updating radio plays:', res.error.message);
     });
@@ -321,7 +440,9 @@
       } else {
         K.stopAllAudio('radio');
         K.activeSource = 'radio';
-        radioAudio.play();
+        radioAudio.play().catch(function(err) {
+          console.error('📻 Resume error:', err);
+        });
         K.radioIsPlaying = true;
         setPlayingUI(true);
       }
@@ -374,7 +495,7 @@
     renderQueue();
   }
 
-  /* Keep _rjump for backward compat with player-expanded.js */
+  /* Backward compat */
   window._rjump = function (i) { radioPlay(i); };
 
 
@@ -397,7 +518,6 @@
     var dt = $('kxRadTimeDuration');
     if (dt) dt.textContent = K.formatTime(radioAudio.duration);
 
-    /* Sync player bar */
     if (K.activeSource === 'radio') {
       var pf = document.getElementById('progressFill');
       if (pf) pf.style.width = pct + '%';
@@ -414,75 +534,8 @@
 
 
   /* ══════════════════════════════════════════
-     🎚 CONTROLS — Event Delegation
+     🔊 VOLUME HELPERS
      ══════════════════════════════════════════ */
-  var heroEl = document.querySelector('.kx-rad-hero');
-  if (heroEl) {
-    heroEl.addEventListener('click', function (e) {
-      var target = e.target.closest('[id]');
-      if (!target) return;
-
-      switch (target.id) {
-        case 'kxRadPlayBtn':
-          radioToggle();
-          break;
-        case 'kxRadNext':
-          radioNext();
-          break;
-        case 'kxRadPrev':
-          radioPrev();
-          break;
-        case 'kxRadShuffle':
-          radioShuffleToggle();
-          break;
-        case 'kxRadVolIcon':
-          toggleMute();
-          break;
-      }
-    });
-  }
-
-  /* Progress bar — click */
-  var progressBar = $('kxRadProgressBar');
-  if (progressBar) {
-    progressBar.addEventListener('click', function (e) {
-      if (!radioAudio.duration) return;
-      var r = this.getBoundingClientRect();
-      radioAudio.currentTime = ((e.clientX - r.left) / r.width) * radioAudio.duration;
-    });
-
-    /* Keyboard support */
-    progressBar.addEventListener('keydown', function (e) {
-      if (!radioAudio.duration) return;
-      if (e.key === 'ArrowRight') { radioAudio.currentTime = Math.min(radioAudio.duration, radioAudio.currentTime + 5); e.preventDefault(); }
-      if (e.key === 'ArrowLeft') { radioAudio.currentTime = Math.max(0, radioAudio.currentTime - 5); e.preventDefault(); }
-    });
-  }
-
-  /* Volume bar — click */
-  var volBar = $('kxRadVolBar');
-  if (volBar) {
-    volBar.addEventListener('click', function (e) {
-      var r = this.getBoundingClientRect();
-      var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-      setVolume(p);
-    });
-
-    /* Keyboard support */
-    volBar.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-        setVolume(Math.min(1, K.radioVolume + 0.05));
-        e.preventDefault();
-      }
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-        setVolume(Math.max(0, K.radioVolume - 0.05));
-        e.preventDefault();
-      }
-    });
-  }
-
-
-  /* ── Volume helpers ── */
   function setVolume(p) {
     K.radioVolume = p;
     radioAudio.volume = p;
@@ -538,7 +591,10 @@
 
   function renderQueue() {
     var container = $('kxRadQueueList');
-    if (!container) return;
+    if (!container) {
+      console.warn('📻 renderQueue: container not found');
+      return;
+    }
 
     var list = getRL();
 
@@ -554,8 +610,7 @@
       return;
     }
 
-    /* Filter by search */
-    var filtered = list;
+    var filtered;
     var noResults = $('kxRadNoResults');
 
     if (currentSearchTerm) {
@@ -577,11 +632,9 @@
       if (noResults) noResults.style.display = 'none';
     } else {
       if (noResults) noResults.style.display = 'none';
-      /* Wrap with original index */
       filtered = list.map(function (item, idx) { return { item: item, originalIndex: idx }; });
     }
 
-    /* Build HTML */
     var html = '';
     var MUSIC_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
     var EQ_HTML = '<div class="kx-rad-item-eq"><span></span><span></span><span></span><span></span></div>';
@@ -598,7 +651,9 @@
         coverHtml = '<div class="kx-rad-item-cover-fallback">' + MUSIC_SVG + '</div>';
       }
 
-      var numText = isNow ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' : String(origIdx + 1);
+      var numText = isNow
+        ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+        : String(origIdx + 1);
 
       var endHtml;
       if (isNow && K.radioIsPlaying) {
@@ -619,6 +674,7 @@
     }
 
     container.innerHTML = html;
+    console.log('📻 Queue rendered:', filtered.length, 'items');
   }
 
 
@@ -634,19 +690,16 @@
 
       items[i].classList.toggle('is-playing', isNow);
 
-      /* Num */
       var num = items[i].querySelector('.kx-rad-item-num');
       if (num) {
         num.innerHTML = isNow ? PLAY_SVG : String(idx + 1);
       }
 
-      /* End element (duration or EQ) */
       var existingEq = items[i].querySelector('.kx-rad-item-eq');
       var existingDur = items[i].querySelector('.kx-rad-item-duration');
 
       if (isNow && K.radioIsPlaying) {
         if (existingDur) existingDur.outerHTML = EQ_HTML;
-        /* Scroll into view */
         items[i].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } else {
         if (existingEq) {
@@ -656,41 +709,6 @@
         }
       }
     }
-  }
-
-
-  /* ══════════════════════════════════════════
-     🔎 SEARCH IN QUEUE — Event delegation
-     ══════════════════════════════════════════ */
-  var searchInput = $('kxRadSearchInput');
-  if (searchInput) {
-    searchInput.addEventListener('input', debounce(function () {
-      currentSearchTerm = this.value.trim();
-      renderQueue();
-    }, 200));
-  }
-
-
-  /* ══════════════════════════════════════════
-     📋 QUEUE — Event delegation (click + keyboard)
-     ══════════════════════════════════════════ */
-  var queueList = $('kxRadQueueList');
-  if (queueList) {
-    queueList.addEventListener('click', function (e) {
-      var item = e.target.closest('.kx-rad-item');
-      if (!item) return;
-      var idx = parseInt(item.getAttribute('data-idx'), 10);
-      if (!isNaN(idx)) radioPlay(idx);
-    });
-
-    queueList.addEventListener('keydown', function (e) {
-      if (e.key !== 'Enter' && e.key !== ' ') return;
-      var item = e.target.closest('.kx-rad-item');
-      if (!item) return;
-      e.preventDefault();
-      var idx = parseInt(item.getAttribute('data-idx'), 10);
-      if (!isNaN(idx)) radioPlay(idx);
-    });
   }
 
 
