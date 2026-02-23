@@ -2343,7 +2343,7 @@
 
 </div>
 
-                        <!-- 🛒 PANEL: MARKETPLACE — KXON 2026 REBUILD -->
+<!-- 🛒 PANEL: MARKETPLACE — KXON 2026 REBUILD -->
 <div class="panel" id="panel-marketplace">
 
   <!-- ═══ HEADER ═══ -->
@@ -2376,7 +2376,6 @@
   <!-- ═══ TOOLBAR ═══ -->
   <div class="kx-mkt-toolbar">
     <div class="kx-mkt-toolbar-left">
-      <!-- Tabs -->
       <div class="kx-mkt-tabs" role="tablist" aria-label="Tipo de producto">
         <button class="kx-mkt-tab active" data-mkt-tab="beat" role="tab" aria-selected="true">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 11h10"/><path d="M7 7h10"/><path d="M7 15h4"/></svg>
@@ -2387,7 +2386,6 @@
           <span>Canciones</span>
         </button>
       </div>
-      <!-- Search -->
       <div class="kx-mkt-search-wrap">
         <svg class="kx-mkt-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <input type="text" class="kx-mkt-search" id="mktSearchInput" placeholder="Buscar productos..." autocomplete="off" aria-label="Buscar productos">
@@ -2397,7 +2395,6 @@
       </div>
     </div>
     <div class="kx-mkt-toolbar-right">
-      <!-- Sort -->
       <div class="kx-mkt-sort-wrap">
         <button class="kx-mkt-sort-trigger" id="mktSortBtn" aria-haspopup="listbox" aria-expanded="false">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
@@ -2410,7 +2407,6 @@
           <button class="kx-mkt-sort-option" data-sort="name-az" role="option">Nombre A→Z</button>
         </div>
       </div>
-      <!-- View toggle -->
       <div class="kx-mkt-view-toggle" role="radiogroup" aria-label="Cambiar vista">
         <button class="kx-mkt-view-btn active" data-view="grid" role="radio" aria-checked="true" aria-label="Vista cuadrícula">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -2432,7 +2428,13 @@
   </div>
 
   <!-- ═══ GRID VIEW ═══ -->
-  <div class="kx-mkt-grid" id="marketGrid" role="list" aria-label="Lista de productos"></div>
+  <div class="kx-mkt-grid" id="marketGrid" role="list" aria-label="Lista de productos">
+    <!-- Skeletons -->
+    <div class="kx-mkt-skeleton" aria-hidden="true"><div class="kx-mkt-skeleton-img"></div><div class="kx-mkt-skeleton-body"><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--title"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--desc"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--actions"></div></div></div>
+    <div class="kx-mkt-skeleton" aria-hidden="true"><div class="kx-mkt-skeleton-img"></div><div class="kx-mkt-skeleton-body"><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--title"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--desc"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--actions"></div></div></div>
+    <div class="kx-mkt-skeleton" aria-hidden="true"><div class="kx-mkt-skeleton-img"></div><div class="kx-mkt-skeleton-body"><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--title"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--desc"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--actions"></div></div></div>
+    <div class="kx-mkt-skeleton" aria-hidden="true"><div class="kx-mkt-skeleton-img"></div><div class="kx-mkt-skeleton-body"><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--title"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--desc"></div><div class="kx-mkt-skeleton-line kx-mkt-skeleton-line--actions"></div></div></div>
+  </div>
 
   <!-- ═══ LIST VIEW ═══ -->
   <div class="kx-mkt-list-view" id="marketListView" style="display:none;" role="list" aria-label="Lista de productos"></div>
@@ -2459,7 +2461,6 @@
   </section>
 
 </div>
-
                 <!-- 📁 PANEL: ARCHIVO -->
                 <div class="panel" id="panel-archivo">
                     <div class="panel-header"><h1 class="panel-title">Mi Archivo</h1><p class="panel-desc">Tus beats y canciones compradas</p></div>
