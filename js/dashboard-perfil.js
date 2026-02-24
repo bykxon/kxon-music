@@ -1,230 +1,587 @@
 /* ============================================
-   👤 DASHBOARD-PERFIL.JS — KXON
-   Perfil: info personal, avatar, contraseña,
-   cuenta, eliminar cuenta
+   👤 DASHBOARD-PERFIL.JS — KXON 2026 REBUILD
+   Namespace: kx-prf-*
+   Event delegation · escapeHtml · A11y
    ============================================ */
 (function () {
 
-    var db = window.db;
-    var K = window.KXON;
+  var db = window.db;
+  var K = window.KXON;
 
-    /* ══════════════════════════════════════════
-       👤 CARGAR DATOS PERFIL
-       ══════════════════════════════════════════ */
-    K.loadPerfilData = function () {
-        if (!K.currentUser || !K.currentProfile) return;
+  /* ══════════════════════════════════════════
+     🛡️ UTILIDADES
+     ══════════════════════════════════════════ */
+  function esc(str) {
+    if (!str) return '';
+    if (typeof K.escapeHtml === 'function') return K.escapeHtml(str);
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+  }
 
-        var name = K.currentProfile.full_name || K.currentUser.email.split('@')[0];
-        var email = K.currentUser.email;
-        var role = K.currentProfile.role || 'fan';
-        var bio = K.currentProfile.bio || '';
-        var avatar = K.currentProfile.avatar_url || K.currentUser.user_metadata?.avatar_url || K.currentUser.user_metadata?.picture || '';
+  function $(id) { return document.getElementById(id); }
 
-        /* Display */
-        document.getElementById('perfilNombreDisplay').textContent = name;
-        document.getElementById('perfilEmailDisplay').textContent = email;
+  function setText(id, text) {
+    var el = $(id);
+    if (el) el.textContent = text;
+  }
 
-        /* Role badge */
-        var roleBadge = document.getElementById('perfilRoleBadge');
-        roleBadge.textContent = role.toUpperCase();
-        roleBadge.className = 'perfil-role-badge role-' + role;
+  /* ══════════════════════════════════════════
+     👤 CARGAR DATOS PERFIL
+     ══════════════════════════════════════════ */
+  K.loadPerfilData = function () {
+    if (!K.currentUser || !K.currentProfile) return;
 
-        /* Avatar */
-        var avatarImg = document.getElementById('perfilAvatarImg');
-        var avatarLetter = document.getElementById('perfilAvatarLetter');
-        if (avatar) {
-            avatarImg.src = avatar;
-            avatarImg.style.display = 'block';
-            avatarLetter.style.display = 'none';
-        } else {
-            avatarImg.style.display = 'none';
-            avatarLetter.style.display = 'flex';
-            avatarLetter.textContent = name.charAt(0).toUpperCase();
-        }
+    var profile = K.currentProfile;
+    var user = K.currentUser;
+    var name = profile.full_name || user.email.split('@')[0];
+    var email = user.email;
+    var role = profile.role || 'fan';
+    var bio = profile.bio || '';
+    var avatar = profile.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || '';
+    var provider = user.app_metadata?.provider || 'email';
 
-        /* Form fields */
-        document.getElementById('perfilNombre').value = name;
-        document.getElementById('perfilEmail').value = email;
-        document.getElementById('perfilBio').value = bio;
-        document.getElementById('perfilBioCount').textContent = bio.length;
+    /* ── Hero Display ── */
+    setText('perfilNombreDisplay', name);
+    setText('perfilEmailDisplay', email);
 
-        /* Cuenta info */
-        document.getElementById('perfilCuentaRol').textContent = role.charAt(0).toUpperCase() + role.slice(1);
-        document.getElementById('perfilCuentaId').textContent = K.currentUser.id;
+    /* ── Role Badge ── */
+    var roleBadge = $('perfilRoleBadge');
+    if (roleBadge) {
+      roleBadge.textContent = role.toUpperCase();
+      roleBadge.className = 'kx-prf-badge role-' + role;
+    }
 
-        var createdAt = K.currentProfile.created_at || K.currentUser.created_at;
-        if (createdAt) {
-            var fecha = new Date(createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('perfilCuentaFecha').textContent = fecha;
-        }
+    /* ── Provider Badge ── */
+    setText('perfilProviderText', provider.charAt(0).toUpperCase() + provider.slice(1));
 
-        var provider = K.currentUser.app_metadata?.provider || 'email';
-        document.getElementById('perfilCuentaProvider').textContent = provider.charAt(0).toUpperCase() + provider.slice(1);
-    };
+    /* ── Avatar ── */
+    var avatarImg = $('perfilAvatarImg');
+    var avatarLetter = $('perfilAvatarLetter');
+    if (avatar && avatarImg) {
+      avatarImg.src = avatar;
+      avatarImg.style.display = 'block';
+      if (avatarLetter) avatarLetter.style.display = 'none';
+    } else if (avatarImg) {
+      avatarImg.style.display = 'none';
+      if (avatarLetter) {
+        avatarLetter.style.display = 'flex';
+        avatarLetter.textContent = name.charAt(0).toUpperCase();
+      }
+    }
 
-    /* ══════════════════════════════════════════
-       📝 BIO COUNTER
-       ══════════════════════════════════════════ */
-    document.getElementById('perfilBio').addEventListener('input', function () {
-        var count = this.value.length;
-        document.getElementById('perfilBioCount').textContent = count;
-        if (count > 500) {
-            this.value = this.value.substring(0, 500);
-            document.getElementById('perfilBioCount').textContent = 500;
-        }
-    });
+    /* ── Form fields ── */
+    var inputNombre = $('perfilNombre');
+    var inputEmail = $('perfilEmail');
+    var inputBio = $('perfilBio');
+    if (inputNombre) inputNombre.value = name;
+    if (inputEmail) inputEmail.value = email;
+    if (inputBio) inputBio.value = bio;
+    setText('perfilBioCount', String(bio.length));
 
-    /* ══════════════════════════════════════════
-       📷 SUBIR AVATAR
-       ══════════════════════════════════════════ */
-    document.getElementById('perfilAvatarOverlay').addEventListener('click', function () {
-        document.getElementById('perfilAvatarFile').click();
-    });
+    /* ── Account info ── */
+    setText('perfilCuentaRol', role.charAt(0).toUpperCase() + role.slice(1));
+    setText('perfilCuentaId', user.id);
 
-    document.getElementById('perfilAvatarFile').addEventListener('change', async function (e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        if (file.size > 5 * 1024 * 1024) { K.showToast('La imagen debe ser menor a 5MB', 'error'); return; }
+    var createdAt = profile.created_at || user.created_at;
+    if (createdAt) {
+      var fecha = new Date(createdAt).toLocaleDateString('es-ES', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+      setText('perfilCuentaFecha', fecha);
 
-        K.showToast('Subiendo foto...', 'success');
+      /* KPI: member since */
+      var shortDate = new Date(createdAt).toLocaleDateString('es-ES', {
+        month: 'short', year: 'numeric'
+      });
+      setText('prfKpiMember', shortDate);
+    }
 
-        try {
-            var ext = file.name.split('.').pop();
-            var fileName = K.currentUser.id + '_avatar_' + Date.now() + '.' + ext;
+    setText('perfilCuentaProvider', provider.charAt(0).toUpperCase() + provider.slice(1));
 
-            var up = await db.storage.from('imagenes').upload('avatars/' + fileName, file, { contentType: file.type, upsert: true });
-            if (up.error) throw up.error;
+    /* ── OAuth notice ── */
+    var oauthNotice = $('kxPrfOauthNotice');
+    if (provider !== 'email' && oauthNotice) {
+      oauthNotice.style.display = 'flex';
+      setText('kxPrfOauthProvider', provider.charAt(0).toUpperCase() + provider.slice(1));
+    }
 
-            var avatarUrl = db.storage.from('imagenes').getPublicUrl('avatars/' + fileName).data.publicUrl;
+    /* ── KPIs ── */
+    _loadProfileKPIs();
+  };
 
-            var upd = await db.from('profiles').update({ avatar_url: avatarUrl, updated_at: new Date().toISOString() }).eq('id', K.currentUser.id);
-            if (upd.error) throw upd.error;
+  /* ── Load KPIs async ── */
+  async function _loadProfileKPIs() {
+    try {
+      /* Plan actual */
+      var planText = 'Free';
+      if (K.currentProfile && K.currentProfile.plan_activo) {
+        planText = K.currentProfile.plan_activo;
+      }
+      setText('prfKpiPlan', planText);
 
-            K.currentProfile.avatar_url = avatarUrl;
-            document.getElementById('perfilAvatarImg').src = avatarUrl;
-            document.getElementById('perfilAvatarImg').style.display = 'block';
-            document.getElementById('perfilAvatarLetter').style.display = 'none';
+      /* Favoritos count */
+      if (K.currentUser) {
+        var fav = await db.from('favoritos')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', K.currentUser.id);
+        setText('prfKpiFavs', String(fav.count || 0));
+      }
+    } catch (e) {
+      console.warn('KPIs perfil:', e);
+    }
+  }
 
-            var sidebarAv = document.getElementById('sidebarAvatar');
-            sidebarAv.innerHTML = '<img src="' + avatarUrl + '" alt="">';
+  /* ══════════════════════════════════════════
+     📑 TABS — EVENT DELEGATION
+     ══════════════════════════════════════════ */
+  var panelPerfil = $('panel-perfil');
+  if (!panelPerfil) return;
 
-            K.showToast('¡Foto actualizada!', 'success');
-        } catch (err) {
-            console.error('Error subiendo avatar:', err);
-            K.showToast('Error al subir foto: ' + err.message, 'error');
-        }
-    });
+  panelPerfil.addEventListener('click', function (e) {
 
-    /* ══════════════════════════════════════════
-       💾 GUARDAR PERFIL
-       ══════════════════════════════════════════ */
-    document.getElementById('formPerfil').addEventListener('submit', async function (e) {
+    /* ── Tab switching ── */
+    var tab = e.target.closest('.kx-prf-tab');
+    if (tab) {
+      e.preventDefault();
+      var target = tab.getAttribute('data-prf-tab');
+      if (!target) return;
+
+      /* Update tabs */
+      var allTabs = panelPerfil.querySelectorAll('.kx-prf-tab');
+      for (var i = 0; i < allTabs.length; i++) {
+        allTabs[i].classList.remove('active');
+        allTabs[i].setAttribute('aria-selected', 'false');
+      }
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      /* Update sections */
+      var allSections = panelPerfil.querySelectorAll('.kx-prf-section');
+      for (var j = 0; j < allSections.length; j++) {
+        allSections[j].classList.remove('active');
+        allSections[j].style.display = 'none';
+      }
+      var mapping = { info: 'kxPrfTabInfo', security: 'kxPrfTabSecurity', account: 'kxPrfTabAccount' };
+      var targetSection = $(mapping[target]);
+      if (targetSection) {
+        targetSection.classList.add('active');
+        targetSection.style.display = 'block';
+      }
+      return;
+    }
+
+    /* ── Avatar click ── */
+    var avatarWrap = e.target.closest('.kx-prf-avatar-wrap');
+    if (avatarWrap) {
+      e.preventDefault();
+      var fileInput = $('perfilAvatarFile');
+      if (fileInput) fileInput.click();
+      return;
+    }
+
+    /* ── Password toggle ── */
+    var passToggle = e.target.closest('.kx-prf-pass-toggle');
+    if (passToggle) {
+      e.preventDefault();
+      var targetId = passToggle.getAttribute('data-target');
+      var input = $(targetId);
+      if (!input) return;
+      var eyeOpen = passToggle.querySelector('.kx-prf-eye-open');
+      var eyeClosed = passToggle.querySelector('.kx-prf-eye-closed');
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (eyeOpen) eyeOpen.style.display = 'none';
+        if (eyeClosed) eyeClosed.style.display = 'block';
+      } else {
+        input.type = 'password';
+        if (eyeOpen) eyeOpen.style.display = 'block';
+        if (eyeClosed) eyeClosed.style.display = 'none';
+      }
+      return;
+    }
+
+    /* ── Copy ID ── */
+    var copyBtn = e.target.closest('#kxPrfCopyId');
+    if (copyBtn) {
+      e.preventDefault();
+      var idEl = $('perfilCuentaId');
+      if (idEl && navigator.clipboard) {
+        navigator.clipboard.writeText(idEl.textContent).then(function () {
+          K.showToast('ID copiado al portapapeles', 'success');
+        });
+      }
+      return;
+    }
+
+    /* ── Delete account button ── */
+    var deleteBtn = e.target.closest('#btnEliminarCuenta');
+    if (deleteBtn) {
+      e.preventDefault();
+      _openDeleteConfirm();
+      return;
+    }
+
+    /* ── Confirm cancel ── */
+    var confirmCancel = e.target.closest('#kxPrfConfirmCancel');
+    if (confirmCancel) {
+      e.preventDefault();
+      _closeDeleteConfirm();
+      return;
+    }
+
+    /* ── Confirm accept ── */
+    var confirmAccept = e.target.closest('#kxPrfConfirmAccept');
+    if (confirmAccept && !confirmAccept.disabled) {
+      e.preventDefault();
+      _executeDelete();
+      return;
+    }
+
+    /* ── Close overlay on backdrop click ── */
+    var overlay = e.target.closest('.kx-prf-confirm-overlay');
+    if (overlay && e.target === overlay) {
+      _closeDeleteConfirm();
+      return;
+    }
+  });
+
+  /* ── Avatar keyboard ── */
+  panelPerfil.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      var avatarWrap = e.target.closest('.kx-prf-avatar-wrap');
+      if (avatarWrap) {
         e.preventDefault();
-        var nombre = document.getElementById('perfilNombre').value.trim();
-        var bio = document.getElementById('perfilBio').value.trim();
-        if (!nombre) { K.showToast('El nombre no puede estar vacío', 'error'); return; }
+        var fileInput = $('perfilAvatarFile');
+        if (fileInput) fileInput.click();
+      }
+    }
+  });
 
-        var btn = document.getElementById('btnGuardarPerfil');
-        var statusEl = document.getElementById('perfilSaveStatus');
-        btn.classList.add('loading'); btn.disabled = true;
-        statusEl.textContent = '';
+  /* ══════════════════════════════════════════
+     📝 BIO COUNTER
+     ══════════════════════════════════════════ */
+  panelPerfil.addEventListener('input', function (e) {
+    /* Bio counter */
+    if (e.target.id === 'perfilBio') {
+      var count = e.target.value.length;
+      if (count > 500) {
+        e.target.value = e.target.value.substring(0, 500);
+        count = 500;
+      }
+      setText('perfilBioCount', String(count));
+      return;
+    }
 
-        try {
-            var upd = await db.from('profiles').update({
-                full_name: nombre, bio: bio, updated_at: new Date().toISOString()
-            }).eq('id', K.currentUser.id);
-            if (upd.error) throw upd.error;
+    /* Password strength */
+    if (e.target.id === 'perfilNewPass') {
+      _updatePasswordStrength(e.target.value);
+      _checkPasswordMatch();
+      return;
+    }
 
-            K.currentProfile.full_name = nombre;
-            K.currentProfile.bio = bio;
-            localStorage.setItem('kxon_name', nombre);
+    /* Password match */
+    if (e.target.id === 'perfilConfirmPass') {
+      _checkPasswordMatch();
+      return;
+    }
 
-            document.getElementById('sidebarName').textContent = nombre;
-            document.getElementById('perfilNombreDisplay').textContent = nombre;
+    /* Delete confirm input */
+    if (e.target.id === 'kxPrfDeleteConfirm') {
+      var acceptBtn = $('kxPrfConfirmAccept');
+      if (acceptBtn) {
+        acceptBtn.disabled = e.target.value !== 'ELIMINAR';
+      }
+      return;
+    }
+  });
 
-            if (!K.currentProfile.avatar_url) {
-                document.getElementById('perfilAvatarLetter').textContent = nombre.charAt(0).toUpperCase();
-            }
+  /* ══════════════════════════════════════════
+     🔑 PASSWORD STRENGTH
+     ══════════════════════════════════════════ */
+  function _updatePasswordStrength(pass) {
+    var container = $('kxPrfPassStrength');
+    var textEl = $('kxPrfPassText');
+    if (!container) return;
 
-            statusEl.textContent = '✓ Guardado';
-            statusEl.className = 'perfil-save-status success';
-            K.showToast('¡Perfil actualizado!', 'success');
+    if (!pass || pass.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+    container.style.display = 'flex';
 
-            setTimeout(function () { statusEl.textContent = ''; }, 3000);
-        } catch (err) {
-            console.error('Error guardando perfil:', err);
-            statusEl.textContent = '✗ Error';
-            statusEl.className = 'perfil-save-status error';
-            K.showToast('Error: ' + err.message, 'error');
+    var score = 0;
+    if (pass.length >= 6) score++;
+    if (pass.length >= 10) score++;
+    if (/[A-Z]/.test(pass) && /[a-z]/.test(pass)) score++;
+    if (/[0-9]/.test(pass)) score++;
+    if (/[^A-Za-z0-9]/.test(pass)) score++;
+
+    var levels = ['weak', 'weak', 'fair', 'good', 'strong', 'strong'];
+    var labels = ['Muy débil', 'Débil', 'Regular', 'Buena', 'Fuerte', 'Muy fuerte'];
+    var level = levels[score] || 'weak';
+    var label = labels[score] || 'Débil';
+
+    var bars = container.querySelectorAll('.kx-prf-pass-bar');
+    var fillCount = score <= 1 ? 1 : score <= 2 ? 2 : score <= 3 ? 3 : 4;
+    for (var i = 0; i < bars.length; i++) {
+      bars[i].className = 'kx-prf-pass-bar' + (i < fillCount ? ' ' + level : '');
+    }
+
+    if (textEl) {
+      textEl.textContent = label;
+      textEl.className = 'kx-prf-pass-text ' + level;
+    }
+  }
+
+  function _checkPasswordMatch() {
+    var passEl = $('perfilNewPass');
+    var confirmEl = $('perfilConfirmPass');
+    var matchEl = $('kxPrfPassMatch');
+    if (!passEl || !confirmEl || !matchEl) return;
+
+    var pass = passEl.value;
+    var confirm = confirmEl.value;
+
+    if (!confirm || confirm.length === 0) {
+      matchEl.style.display = 'none';
+      return;
+    }
+
+    matchEl.style.display = 'flex';
+    if (pass === confirm) {
+      matchEl.className = 'kx-prf-pass-match';
+      matchEl.querySelector('span').textContent = 'Las contraseñas coinciden';
+    } else {
+      matchEl.className = 'kx-prf-pass-match no-match';
+      matchEl.querySelector('span').textContent = 'Las contraseñas no coinciden';
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     📷 SUBIR AVATAR
+     ══════════════════════════════════════════ */
+  var avatarFile = $('perfilAvatarFile');
+  if (avatarFile) {
+    avatarFile.addEventListener('change', async function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        K.showToast('La imagen debe ser menor a 5MB', 'error');
+        return;
+      }
+
+      K.showToast('Subiendo foto...', 'success');
+
+      try {
+        var ext = file.name.split('.').pop();
+        var fileName = K.currentUser.id + '_avatar_' + Date.now() + '.' + ext;
+
+        var up = await db.storage.from('imagenes').upload('avatars/' + fileName, file, {
+          contentType: file.type, upsert: true
+        });
+        if (up.error) throw up.error;
+
+        var avatarUrl = db.storage.from('imagenes').getPublicUrl('avatars/' + fileName).data.publicUrl;
+
+        var upd = await db.from('profiles').update({
+          avatar_url: avatarUrl,
+          updated_at: new Date().toISOString()
+        }).eq('id', K.currentUser.id);
+        if (upd.error) throw upd.error;
+
+        K.currentProfile.avatar_url = avatarUrl;
+
+        /* Update panel avatar */
+        var img = $('perfilAvatarImg');
+        var letter = $('perfilAvatarLetter');
+        if (img) { img.src = avatarUrl; img.style.display = 'block'; }
+        if (letter) letter.style.display = 'none';
+
+        /* Update sidebar avatar safely (NO innerHTML) */
+        var sidebarAv = $('sidebarAvatar');
+        if (sidebarAv) {
+          sidebarAv.textContent = '';
+          var sidebarImg = document.createElement('img');
+          sidebarImg.src = avatarUrl;
+          sidebarImg.alt = 'Avatar';
+          sidebarAv.appendChild(sidebarImg);
         }
-        btn.classList.remove('loading'); btn.disabled = false;
+
+        K.showToast('¡Foto actualizada!', 'success');
+      } catch (err) {
+        console.error('Error subiendo avatar:', err);
+        K.showToast('Error al subir foto: ' + esc(err.message), 'error');
+      }
+
+      /* Reset file input */
+      avatarFile.value = '';
     });
+  }
 
-    /* ══════════════════════════════════════════
-       🔑 CAMBIAR CONTRASEÑA
-       ══════════════════════════════════════════ */
-    document.getElementById('formPassword').addEventListener('submit', async function (e) {
-        e.preventDefault();
-        var newPass = document.getElementById('perfilNewPass').value;
-        var confirmPass = document.getElementById('perfilConfirmPass').value;
-        if (!newPass || newPass.length < 6) { K.showToast('La contraseña debe tener mínimo 6 caracteres', 'error'); return; }
-        if (newPass !== confirmPass) { K.showToast('Las contraseñas no coinciden', 'error'); return; }
+  /* ══════════════════════════════════════════
+     💾 GUARDAR PERFIL
+     ══════════════════════════════════════════ */
+  var formPerfil = $('formPerfil');
+  if (formPerfil) {
+    formPerfil.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var nombre = ($('perfilNombre')?.value || '').trim();
+      var bio = ($('perfilBio')?.value || '').trim();
 
-        var btn = document.getElementById('btnCambiarPass');
-        btn.classList.add('loading'); btn.disabled = true;
+      if (!nombre) {
+        K.showToast('El nombre no puede estar vacío', 'error');
+        return;
+      }
 
-        try {
-            var r = await db.auth.updateUser({ password: newPass });
-            if (r.error) throw r.error;
-            K.showToast('¡Contraseña actualizada correctamente!', 'success');
-            document.getElementById('perfilNewPass').value = '';
-            document.getElementById('perfilConfirmPass').value = '';
-        } catch (err) {
-            console.error('Error cambiando contraseña:', err);
-            var msg = 'Error al cambiar contraseña';
-            if (err.message.indexOf('same') >= 0) msg = 'La nueva contraseña debe ser diferente';
-            else if (err.message.indexOf('weak') >= 0) msg = 'Contraseña muy débil';
-            K.showToast(msg, 'error');
+      var btn = $('btnGuardarPerfil');
+      var statusEl = $('perfilSaveStatus');
+      if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+      if (statusEl) statusEl.textContent = '';
+
+      try {
+        var upd = await db.from('profiles').update({
+          full_name: nombre,
+          bio: bio,
+          updated_at: new Date().toISOString()
+        }).eq('id', K.currentUser.id);
+        if (upd.error) throw upd.error;
+
+        K.currentProfile.full_name = nombre;
+        K.currentProfile.bio = bio;
+        localStorage.setItem('kxon_name', nombre);
+
+        /* Update sidebar name */
+        setText('sidebarName', nombre);
+
+        /* Update hero display */
+        setText('perfilNombreDisplay', nombre);
+
+        /* Update avatar letter if no photo */
+        if (!K.currentProfile.avatar_url) {
+          var letter = $('perfilAvatarLetter');
+          if (letter) letter.textContent = nombre.charAt(0).toUpperCase();
         }
-        btn.classList.remove('loading'); btn.disabled = false;
+
+        if (statusEl) {
+          statusEl.textContent = '✓ Guardado correctamente';
+          statusEl.className = 'kx-prf-save-status success';
+        }
+        K.showToast('¡Perfil actualizado!', 'success');
+
+        setTimeout(function () { if (statusEl) statusEl.textContent = ''; }, 4000);
+      } catch (err) {
+        console.error('Error guardando perfil:', err);
+        if (statusEl) {
+          statusEl.textContent = '✗ Error al guardar';
+          statusEl.className = 'kx-prf-save-status error';
+        }
+        K.showToast('Error: ' + esc(err.message), 'error');
+      }
+      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
     });
+  }
 
-    /* ── Toggle password visibility ── */
-    window._togglePerfilPass = function (inputId, btn) {
-        var input = document.getElementById(inputId);
-        if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
-        else { input.type = 'password'; btn.textContent = '👁️'; }
-    };
+  /* ══════════════════════════════════════════
+     🔑 CAMBIAR CONTRASEÑA
+     ══════════════════════════════════════════ */
+  var formPassword = $('formPassword');
+  if (formPassword) {
+    formPassword.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var newPass = ($('perfilNewPass')?.value) || '';
+      var confirmPass = ($('perfilConfirmPass')?.value) || '';
 
-    /* ══════════════════════════════════════════
-       🗑️ ELIMINAR CUENTA
-       ══════════════════════════════════════════ */
-    document.getElementById('btnEliminarCuenta').addEventListener('click', async function () {
-        var confirmText = prompt(
-            '⚠️ ADVERTENCIA: Esta acción eliminará tu cuenta permanentemente.\n\n' +
-            'Se perderán todos tus datos, compras y archivos.\n\n' +
-            'Escribe "ELIMINAR" para confirmar:'
-        );
+      if (!newPass || newPass.length < 6) {
+        K.showToast('La contraseña debe tener mínimo 6 caracteres', 'error');
+        return;
+      }
+      if (newPass !== confirmPass) {
+        K.showToast('Las contraseñas no coinciden', 'error');
+        return;
+      }
 
-        if (confirmText !== 'ELIMINAR') {
-            if (confirmText !== null) K.showToast('Debes escribir ELIMINAR para confirmar', 'error');
-            return;
-        }
+      var btn = $('btnCambiarPass');
+      if (btn) { btn.classList.add('loading'); btn.disabled = true; }
 
-        try {
-            K.showToast('Eliminando cuenta...', 'error');
-            await db.from('compras').delete().eq('comprador_id', K.currentUser.id);
-            await db.from('solicitudes_compra').delete().eq('comprador_id', K.currentUser.id);
-            await db.from('profiles').delete().eq('id', K.currentUser.id);
-            await db.auth.signOut();
-            localStorage.removeItem('kxon_role');
-            localStorage.removeItem('kxon_name');
-            K.showToast('Cuenta eliminada', 'success');
-            setTimeout(function () { window.location.href = 'index.html'; }, 1500);
-        } catch (err) {
-            console.error('Error eliminando cuenta:', err);
-            K.showToast('Error al eliminar: ' + err.message, 'error');
-        }
+      try {
+        var r = await db.auth.updateUser({ password: newPass });
+        if (r.error) throw r.error;
+
+        K.showToast('¡Contraseña actualizada correctamente!', 'success');
+
+        /* Clear form */
+        var p1 = $('perfilNewPass');
+        var p2 = $('perfilConfirmPass');
+        if (p1) p1.value = '';
+        if (p2) p2.value = '';
+
+        /* Reset strength & match */
+        var strength = $('kxPrfPassStrength');
+        var match = $('kxPrfPassMatch');
+        if (strength) strength.style.display = 'none';
+        if (match) match.style.display = 'none';
+
+      } catch (err) {
+        console.error('Error cambiando contraseña:', err);
+        var msg = 'Error al cambiar contraseña';
+        if (err.message && err.message.indexOf('same') >= 0) msg = 'La nueva contraseña debe ser diferente a la actual';
+        else if (err.message && err.message.indexOf('weak') >= 0) msg = 'La contraseña es muy débil';
+        K.showToast(msg, 'error');
+      }
+      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
     });
+  }
+
+  /* ══════════════════════════════════════════
+     🗑️ ELIMINAR CUENTA (MODAL)
+     ══════════════════════════════════════════ */
+  function _openDeleteConfirm() {
+    var overlay = $('kxPrfConfirmOverlay');
+    var input = $('kxPrfDeleteConfirm');
+    var accept = $('kxPrfConfirmAccept');
+    if (overlay) overlay.classList.add('show');
+    if (input) { input.value = ''; input.focus(); }
+    if (accept) accept.disabled = true;
+  }
+
+  function _closeDeleteConfirm() {
+    var overlay = $('kxPrfConfirmOverlay');
+    if (overlay) overlay.classList.remove('show');
+  }
+
+  async function _executeDelete() {
+    try {
+      K.showToast('Eliminando cuenta...', 'error');
+
+      await db.from('favoritos').delete().eq('user_id', K.currentUser.id);
+      await db.from('compras').delete().eq('comprador_id', K.currentUser.id);
+      await db.from('solicitudes_compra').delete().eq('comprador_id', K.currentUser.id);
+      await db.from('profiles').delete().eq('id', K.currentUser.id);
+
+      await db.auth.signOut();
+
+      localStorage.removeItem('kxon_role');
+      localStorage.removeItem('kxon_name');
+
+      _closeDeleteConfirm();
+      K.showToast('Cuenta eliminada correctamente', 'success');
+
+      setTimeout(function () { window.location.href = 'index.html'; }, 1500);
+    } catch (err) {
+      console.error('Error eliminando cuenta:', err);
+      K.showToast('Error al eliminar: ' + esc(err.message), 'error');
+    }
+  }
+
+  /* ── ESC key to close modal ── */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var overlay = $('kxPrfConfirmOverlay');
+      if (overlay && overlay.classList.contains('show')) {
+        _closeDeleteConfirm();
+      }
+    }
+  });
 
 })();
