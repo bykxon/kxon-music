@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/dashboard-analytics.css">
     <link rel="stylesheet" href="css/dashboard-albumes.css">
     <link rel="stylesheet" href="css/dashboard-canciones.css">
+    <link rel="stylesheet" href="css/dashboard-playlists.css">
     <link rel="stylesheet" href="css/dashboard-radio.css">
     <link rel="stylesheet" href="css/dashboard-envivo.css">
     <link rel="stylesheet" href="css/dashboard-chat.css">
@@ -34,64 +35,7 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png">
 
     <style>
-    /* ============================================
-       🎶 PLAYLISTS - ESTILOS
-       ============================================ */
-    .pl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
-    .pl-card{background:var(--negro-card);border:1px solid rgba(255,255,255,.06);border-radius:var(--radio-md);overflow:hidden;transition:var(--trans-suave);animation:fadeInUp .5s ease both;cursor:pointer}
-    .pl-card:hover{border-color:rgba(192,192,192,.12);box-shadow:0 0 20px rgba(192,192,192,.06);transform:translateY(-4px)}
-    .pl-card-new{border:2px dashed rgba(255,255,255,.08);background:transparent;display:flex;align-items:center;justify-content:center;min-height:200px}
-    .pl-card-new:hover{border-color:rgba(192,192,192,.25);background:rgba(192,192,192,.03)}
-    .pl-card-new-inner{display:flex;flex-direction:column;align-items:center;gap:12px}
-    .pl-card-new-icon{font-size:2rem;color:var(--plata-oscura);width:50px;height:50px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:var(--trans-normal)}
-    .pl-card-new:hover .pl-card-new-icon{color:var(--plata-blanca);background:rgba(192,192,192,.1);border-color:rgba(192,192,192,.3)}
-    .pl-card-new-text{font-family:var(--font-titulo);font-size:.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--plata-oscura);transition:color .3s ease}
-    .pl-card-new:hover .pl-card-new-text{color:var(--plata-clara)}
-    .pl-card-cover{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
-    .pl-card-cover img{width:100%;height:100%;object-fit:cover;transition:var(--trans-lenta)}
-    .pl-card:hover .pl-card-cover img{transform:scale(1.05)}
-    .pl-card-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(5,5,5,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--trans-normal)}
-    .pl-card:hover .pl-card-overlay{opacity:1}
-    .pl-card-overlay-icon{width:46px;height:46px;background:rgba(5,5,5,.7);border:1px solid rgba(192,192,192,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--plata-blanca);backdrop-filter:blur(10px)}
-    .pl-card-del{position:absolute;top:10px;right:10px;width:28px;height:28px;background:rgba(255,71,87,.8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;z-index:5;transition:var(--trans-normal);backdrop-filter:blur(5px);cursor:pointer;border:none;opacity:0}
-    .pl-card:hover .pl-card-del{opacity:1}
-    .pl-card-del:hover{background:var(--acento-error);transform:scale(1.1)}
-    .pl-card-body{padding:16px}
-    .pl-card-title{font-family:var(--font-titulo);font-size:.95rem;font-weight:700;color:var(--plata-titulo);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .pl-card-meta{font-size:.72rem;color:var(--plata-oscura);font-weight:500}
-
-    /* ── Detalle Playlist ── */
-    .pl-detail{display:none;animation:fadeIn .4s ease}.pl-detail.show{display:block}
-    .pl-detail-header{display:flex;gap:24px;margin-bottom:24px;align-items:flex-start}
-    .pl-detail-cover{width:180px;height:180px;border-radius:var(--radio-md);overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.08)}
-    .pl-detail-cover img{width:100%;height:100%;object-fit:cover}
-    .pl-detail-info{flex:1}
-    .pl-detail-label{font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--plata-oscura);margin-bottom:8px;font-family:var(--font-titulo)}
-    .pl-detail-title{font-family:var(--font-titulo);font-size:1.6rem;font-weight:800;color:var(--plata-blanca);margin-bottom:6px}
-    .pl-detail-desc{font-size:.85rem;color:var(--plata-media);font-weight:300;margin-bottom:12px;line-height:1.5}
-    .pl-detail-meta{font-size:.72rem;color:var(--plata-oscura);font-weight:500;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
-    .pl-detail-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .pl-detail-btn{padding:10px 20px;border-radius:var(--radio-sm);font-family:var(--font-titulo);font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:var(--trans-suave);display:flex;align-items:center;gap:8px;border:none}
-    .pl-btn-play{background:linear-gradient(135deg,#2a2a2a,#1a1a1a);color:var(--plata-blanca);border:1px solid rgba(192,192,192,.2)}
-    .pl-btn-play:hover{background:linear-gradient(135deg,#c0c0c0,#888);color:var(--negro-base);border-color:var(--acento-principal);transform:translateY(-1px)}
-    .pl-btn-shuffle{background:rgba(255,255,255,.04);color:var(--plata-clara);border:1px solid rgba(255,255,255,.08)}
-    .pl-btn-shuffle:hover{background:rgba(255,255,255,.08);border-color:rgba(192,192,192,.2)}
-    .pl-btn-edit{background:rgba(255,255,255,.04);color:var(--plata-clara);border:1px solid rgba(255,255,255,.08)}
-    .pl-btn-edit:hover{background:rgba(255,255,255,.08);border-color:rgba(192,192,192,.2)}
-
-    /* ── Modal agregar a playlist ── */
-    .atp-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:var(--radio-sm);margin-bottom:6px;transition:var(--trans-normal);cursor:pointer}
-    .atp-item:hover{background:rgba(255,255,255,.05);border-color:rgba(192,192,192,.12)}
-    .atp-item.atp-added{opacity:.5;cursor:default}
-    .atp-item.atp-added:hover{background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.04)}
-    .atp-icon{font-size:1.1rem;flex-shrink:0}
-    .atp-name{flex:1;font-size:.88rem;font-weight:600;color:var(--plata-titulo)}
-    .atp-badge{font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:50px;background:rgba(46,213,115,.1);color:var(--acento-exito);border:1px solid rgba(46,213,115,.2);flex-shrink:0}
-
-    /* ── Responsive Playlists ── */
-    @media(max-width:768px){.pl-grid{grid-template-columns:repeat(2,1fr);gap:12px}.pl-detail-header{flex-direction:column;align-items:center;text-align:center}.pl-detail-cover{width:160px;height:160px}.pl-detail-actions{justify-content:center}}
-    @media(max-width:480px){.pl-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pl-card-body{padding:12px}.pl-card-title{font-size:.82rem}}
-
+   
     /* ============================================
        💬 COMENTARIOS - ESTILOS
        ============================================ */
@@ -1955,11 +1899,186 @@
 
 </div>
 
-                <!-- 🎶 PANEL: PLAYLISTS -->
-                <div class="panel" id="panel-playlists">
-                    <div id="plListView"><div class="panel-header"><h1 class="panel-title">Mis Playlists</h1><p class="panel-desc">Tus listas de reproducción personalizadas</p></div><div class="pl-grid" id="playlistsGrid"><div class="empty-state"><div class="empty-icon">🎶</div><div class="empty-title">Cargando playlists...</div></div></div></div>
-                    <div class="pl-detail" id="plDetailView"><button class="btn-back" onclick="window._backToPlaylists()">← Volver a Playlists</button><div class="pl-detail-header"><div class="pl-detail-cover"><img id="plDetailCover" src="" alt=""></div><div class="pl-detail-info"><div class="pl-detail-label">Playlist</div><h1 class="pl-detail-title" id="plDetailTitle"></h1><p class="pl-detail-desc" id="plDetailDesc"></p><span class="pl-detail-meta" id="plDetailMeta">0 canciones</span><div class="pl-detail-actions"><button class="pl-detail-btn pl-btn-play" onclick="window._playAllPlaylist()">▶ Reproducir</button><button class="pl-detail-btn pl-btn-shuffle" onclick="window._shufflePlaylist()">🔀 Aleatorio</button><button class="pl-detail-btn pl-btn-edit" onclick="window._openEditPlaylist()">✏️ Editar</button></div></div></div><div class="panel-section-title">🎵 Canciones</div><div class="track-list" id="plTrackList"><div class="empty-state"><div class="empty-icon">🎵</div><div class="empty-title">Playlist vacía</div></div></div></div>
-                </div>
+                <!-- 🎶 PANEL: PLAYLISTS — KXON 2026 REBUILD -->
+<div class="panel" id="panel-playlists">
+
+  <!-- ═══ VISTA: GRID ═══ -->
+  <div id="plListView">
+
+    <!-- HEADER -->
+    <header class="kx-pl-header">
+      <div class="kx-pl-header-top">
+        <div class="kx-pl-header-intro">
+          <span class="kx-pl-label">COLECCIÓN</span>
+          <h1 class="kx-pl-title">Playlists</h1>
+          <p class="kx-pl-subtitle">Tus listas de reproducción personalizadas.</p>
+        </div>
+        <div class="kx-pl-kpis">
+          <div class="kx-pl-kpi">
+            <span class="kx-pl-kpi-value" id="plStatTotal">0</span>
+            <span class="kx-pl-kpi-label">Playlists</span>
+          </div>
+          <div class="kx-pl-kpi-divider"></div>
+          <div class="kx-pl-kpi">
+            <span class="kx-pl-kpi-value" id="plStatTracks">0</span>
+            <span class="kx-pl-kpi-label">Canciones</span>
+          </div>
+          <div class="kx-pl-kpi-divider"></div>
+          <div class="kx-pl-kpi">
+            <span class="kx-pl-kpi-value" id="plStatPublic">0</span>
+            <span class="kx-pl-kpi-label">Públicas</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- TOOLBAR -->
+    <div class="kx-pl-toolbar">
+      <div class="kx-pl-toolbar-left">
+        <div class="kx-pl-search-wrap">
+          <svg class="kx-pl-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text"
+                 class="kx-pl-search"
+                 id="plSearchInput"
+                 placeholder="Buscar playlists..."
+                 autocomplete="off"
+                 aria-label="Buscar playlists">
+          <button class="kx-pl-search-clear" id="plSearchClear" aria-label="Limpiar búsqueda" style="display:none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="kx-pl-filters" role="tablist" aria-label="Filtrar playlists">
+          <button class="kx-pl-filter active" data-filter="todas" role="tab" aria-selected="true">Todas</button>
+          <button class="kx-pl-filter" data-filter="recientes" role="tab" aria-selected="false">Recientes</button>
+          <button class="kx-pl-filter" data-filter="publicas" role="tab" aria-selected="false">Públicas</button>
+          <button class="kx-pl-filter" data-filter="privadas" role="tab" aria-selected="false">Privadas</button>
+        </div>
+      </div>
+      <div class="kx-pl-toolbar-right">
+        <div class="kx-pl-sort-wrap">
+          <button class="kx-pl-sort-trigger" id="plSortBtn" aria-haspopup="listbox" aria-expanded="false">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+            <span id="plSortLabel">Reciente</span>
+          </button>
+          <div class="kx-pl-sort-dropdown" id="plSortDropdown" role="listbox">
+            <button class="kx-pl-sort-option active" data-sort="recent" role="option" aria-selected="true">Más reciente</button>
+            <button class="kx-pl-sort-option" data-sort="oldest" role="option">Más antiguo</button>
+            <button class="kx-pl-sort-option" data-sort="name-az" role="option">Nombre A→Z</button>
+            <button class="kx-pl-sort-option" data-sort="name-za" role="option">Nombre Z→A</button>
+            <button class="kx-pl-sort-option" data-sort="most-songs" role="option">Más canciones</button>
+          </div>
+        </div>
+        <button class="kx-pl-btn-new" id="plBtnCreate" aria-label="Crear nueva playlist">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          <span>Nueva Playlist</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="kx-pl-grid" id="playlistsGrid" role="list" aria-label="Lista de playlists"></div>
+
+  </div>
+
+  <!-- ═══ VISTA: DETALLE ═══ -->
+  <div class="kx-pl-detail" id="plDetailView">
+
+    <button class="kx-pl-back" id="plBtnBack" aria-label="Volver a playlists">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+      <span>Playlists</span>
+    </button>
+
+    <!-- HERO -->
+    <section class="kx-pl-hero" id="plDetailHero">
+      <div class="kx-pl-hero-bg" id="plDetailHeroBg"></div>
+      <div class="kx-pl-hero-overlay"></div>
+      <div class="kx-pl-hero-inner">
+        <div class="kx-pl-hero-cover-zone">
+          <div class="kx-pl-hero-cover">
+            <img id="plDetailCover" src="" alt="Portada de playlist" loading="lazy">
+            <div class="kx-pl-hero-cover-shine"></div>
+            <div class="kx-pl-hero-cover-fallback" id="plDetailCoverFallback">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="kx-pl-hero-info">
+          <div class="kx-pl-hero-badges">
+            <span class="kx-pl-hero-type">PLAYLIST</span>
+            <span class="kx-pl-hero-visibility" id="plDetailVisibility">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Privada
+            </span>
+          </div>
+          <h1 class="kx-pl-hero-title" id="plDetailTitle"></h1>
+          <p class="kx-pl-hero-desc" id="plDetailDesc"></p>
+          <div class="kx-pl-hero-chips">
+            <span class="kx-pl-chip" id="plDetailMeta">0 CANCIONES</span>
+            <span class="kx-pl-chip kx-pl-chip--dur" id="plDetailDuration">0 min</span>
+            <span class="kx-pl-chip" id="plDetailUpdated">—</span>
+          </div>
+          <div class="kx-pl-hero-controls">
+            <button class="kx-pl-btn-primary kx-pl-btn-primary--lg" id="plBtnPlayAll" aria-label="Reproducir playlist">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Reproducir</span>
+            </button>
+            <button class="kx-pl-btn-secondary" id="plBtnShuffle" aria-label="Reproducción aleatoria">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+              <span>Aleatorio</span>
+            </button>
+            <button class="kx-pl-btn-icon" id="plBtnEdit" title="Editar playlist" aria-label="Editar playlist">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="kx-pl-btn-icon kx-pl-btn-icon--danger" id="plBtnDeleteDetail" title="Eliminar playlist" aria-label="Eliminar playlist">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRACKLIST -->
+    <section class="kx-pl-tracklist" aria-label="Canciones de la playlist">
+      <div class="kx-pl-tracklist-head">
+        <div class="kx-pl-tracklist-head-left">
+          <div class="kx-pl-tracklist-eq-icon">
+            <span></span><span></span><span></span>
+          </div>
+          <div>
+            <h3 class="kx-pl-tracklist-title">Canciones</h3>
+            <p class="kx-pl-tracklist-sub" id="plTracksSub">Lista de reproducción</p>
+          </div>
+        </div>
+      </div>
+      <div class="kx-pl-columns" aria-hidden="true">
+        <span class="kx-pl-col-num">#</span>
+        <span class="kx-pl-col-cover"></span>
+        <span class="kx-pl-col-title">TÍTULO</span>
+        <span class="kx-pl-col-album">ÁLBUM</span>
+        <span class="kx-pl-col-dur">DURACIÓN</span>
+        <span class="kx-pl-col-actions"></span>
+      </div>
+      <ol class="kx-pl-tracks" id="plTrackList" role="list"></ol>
+    </section>
+
+  </div>
+
+  <!-- ═══ CONFIRM DIALOG ═══ -->
+  <div class="kx-pl-confirm-overlay" id="plConfirmOverlay" role="alertdialog" aria-modal="true" aria-label="Confirmar acción">
+    <div class="kx-pl-confirm-card">
+      <div class="kx-pl-confirm-icon" id="plConfirmIcon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </div>
+      <h3 class="kx-pl-confirm-title" id="plConfirmTitle">¿Estás seguro?</h3>
+      <p class="kx-pl-confirm-text" id="plConfirmText">Esta acción no se puede deshacer.</p>
+      <div class="kx-pl-confirm-actions">
+        <button class="kx-pl-confirm-cancel" id="plConfirmCancel">Cancelar</button>
+        <button class="kx-pl-confirm-accept" id="plConfirmAccept">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
 
                 <!-- 🎬 PANEL: VIDEOS — KXON 2026 REBUILD -->
 <div class="panel" id="panel-videos">
