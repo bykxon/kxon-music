@@ -365,21 +365,29 @@
     }
 
     /* ══════════════════════════════════════════
-       👀 MUTATION OBSERVER — Auto-inject
-       ══════════════════════════════════════════ */
-    var debounceTimer = null;
-    function debouncedInject() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(injectFavShare, 150);
-    }
+   👀 MUTATION OBSERVER — Auto-inject
+   FIX: Ignorar mutaciones del panel favoritos
+   ══════════════════════════════════════════ */
+var debounceTimer = null;
+function debouncedInject() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(injectFavShare, 150);
+}
 
-    var contentArea = document.querySelector('.content-area');
-    if (contentArea) {
-        var observer = new MutationObserver(function () {
-            debouncedInject();
-        });
-        observer.observe(contentArea, { childList: true, subtree: true });
-    }
+var contentArea = document.querySelector('.content-area');
+if (contentArea) {
+    var observer = new MutationObserver(function (mutations) {
+        // Ignorar mutaciones dentro del panel favoritos redesign
+        for (var i = 0; i < mutations.length; i++) {
+            var target = mutations[i].target;
+            if (target && target.closest && target.closest('#panel-favoritos')) {
+                return; // No inyectar en el panel de favoritos
+            }
+        }
+        debouncedInject();
+    });
+    observer.observe(contentArea, { childList: true, subtree: true });
+}
 
     /* ══════════════════════════════════════════
        🌐 GLOBAL TOGGLE
