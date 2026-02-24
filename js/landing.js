@@ -1,772 +1,893 @@
 /* ============================================
-   🏠 LANDING JS - KXON PÁGINA DE INICIO
-   ✨ REDISEÑO 2026 — 3D CAROUSEL + CINEMATIC NEWS
+   🏠 LANDING JS — KXON MUSIC PLATFORM
+   Rediseño Total 2026 — v3.0
+   Vanilla JS · Event Delegation · IntersectionObserver
    ============================================ */
 
-(function(){
-    var db = window.db;
+(function () {
+    'use strict';
 
-    var noticiasContainer = null;
-    var headerEl = null;
-    var scrollProgressEl = null;
-    var landingNoticias = [];
-    var landingAlbumes = [];
-    var currentNewsPage = 0;
-    var newsPerPage = 3;
-    var currentAlbumIndex = 0;
+    // ── Supabase reference ──
+    const db = window.db;
 
-    /* ══════════════════════════════════════════
-       🎵 PREVIEW PLAYER (30 SEGUNDOS)
-       ══════════════════════════════════════════ */
-    var previewAudio = new Audio();
-    var previewPlaying = false;
-    var previewTrackId = null;
-    var previewTimer = null;
-    var previewInterval = null;
-    var PREVIEW_DURATION = 30;
+    // ── State ──
+    let landingNoticias = [];
+    let landingAlbumes = [];
+    let currentNewsPage = 0;
+    let currentAlbumIndex = 0;
+    const NEWS_PER_PAGE = 3;
 
-    previewAudio.volume = 0.7;
+    // ── DOM Cache ──
+    const $ = (sel, ctx = document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx = document) => ctx.querySelectorAll(sel);
 
-    function playPreview(trackId, audioUrl, buttonEl) {
-        if (previewPlaying && previewTrackId === trackId) {
-            stopPreview();
-            return;
+    // ═══════════════════════════════════════
+    //  🎵 PREVIEW PLAYER (30s)
+    // ═══════════════════════════════════════
+    const preview = {
+        audio: new Audio(),
+        playing: false,
+        trackId: null,
+        timer: null,
+        interval: null,
+        DURATION: 30,
+
+        play(trackId, audioUrl) {
+            if (this.playing && this.trackId === trackId) {
+                this.stop();
+                return;
+            }
+            this.stop();
+            if (!audioUrl) return;
+
+            this.trackId = trackId;
+            this.audio.src = audioUrl;
+            this.audio.currentTime = 0;
+            this.audio.volume = 0.7;
+
+            this.audio.play().then(() => {
+                this.playing = true;
+                this.updateButtons();
+
+                this.timer = setTimeout(() => this.stop(), this.DURATION * 1000);
+                this.interval = setInterval(() => this.updateProgress(), 100);
+            }).catch(() => {
+                this.stop();
+            });
+        },
+
+        stop() {
+            this.audio.pause();
+            this.audio.currentTime = 0;
+            this.playing = false;
+            this.trackId = null;
+
+            if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+            if (this.interval) { clearInterval(this.interval); this.interval = null; }
+
+            this.updateButtons();
+        },
+
+        updateButtons() {
+            $$('.kx-landing-track__play').forEach(btn => {
+                const id = btn.dataset.trackId;
+                const icon = btn.querySelector('.kx-landing-track__icon');
+                const progress = btn.querySelector('.kx-landing-track__progress');
+                const time = btn.closest('.kx-landing-track')?.querySelector('.kx-landing-track__time');
+
+                if (this.playing && id === String(this.trackId)) {
+                    btn.classList.add('is-playing');
+                    if (icon) icon.textContent = '⏸';
+                    if (time) time.textContent = 'Reproduciendo...';
+                } else {
+                    btn.classList.remove('is-playing');
+                    if (icon) icon.textContent = '▶';
+                    if (progress) progress.style.width = '0%';
+                    if (time) time.textContent = '0:30 preview';
+                }
+            });
+        },
+
+        updateProgress() {
+            if (!this.playing) return;
+            const current = this.audio.currentTime;
+            const pct = Math.min((current / this.DURATION) * 100, 100);
+            const remaining = Math.max(0, this.DURATION - Math.floor(current));
+
+            $$('.kx-landing-track__play[data-track-id="' + this.trackId + '"]').forEach(btn => {
+                const progress = btn.querySelector('.kx-landing-track__progress');
+                const time = btn.closest('.kx-landing-track')?.querySelector('.kx-landing-track__time');
+                if (progress) progress.style.width = pct + '%';
+                if (time) time.textContent = '0:' + String(remaining).padStart(2, '0');
+            });
+        },
+
+        init() {
+            this.audio.addEventListener('ended', () => this.stop());
         }
-        stopPreview();
-        if (!audioUrl) {
-            alert('Esta canción no tiene audio disponible');
-            return;
-        }
-        previewTrackId = trackId;
-        previewAudio.src = audioUrl;
-        previewAudio.currentTime = 0;
-        previewAudio.play().then(function() {
-            previewPlaying = true;
-            updateAllPreviewButtons();
-            previewTimer = setTimeout(function() {
-                stopPreview();
-            }, PREVIEW_DURATION * 1000);
-            previewInterval = setInterval(function() {
-                updatePreviewProgress(buttonEl);
-            }, 100);
-        }).catch(function(err) {
-            console.error('Error reproduciendo preview:', err);
-            alert('No se pudo reproducir el preview');
+    };
+
+    // ═══════════════════════════════════════
+    //  📊 SCROLL PROGRESS
+    // ═══════════════════════════════════════
+    function updateScrollProgress() {
+        const el = $('#scrollProgress');
+        if (!el) return;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        el.style.width = docHeight > 0 ? (scrollTop / docHeight) * 100 + '%' : '0%';
+    }
+
+    // ═══════════════════════════════════════
+    //  📌 HEADER SCROLL
+    // ═══════════════════════════════════════
+    function handleHeaderScroll() {
+        const header = $('#landingHeader');
+        if (!header) return;
+        header.classList.toggle('is-scrolled', window.scrollY > 60);
+    }
+
+    // ═══════════════════════════════════════
+    //  🍔 MOBILE MENU
+    // ═══════════════════════════════════════
+    function initMobileMenu() {
+        const toggle = $('#mobileMenuToggle');
+        const menu = $('#mobileMenu');
+        if (!toggle || !menu) return;
+
+        toggle.addEventListener('click', () => {
+            const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!isOpen));
+            toggle.setAttribute('aria-label', isOpen ? 'Abrir menú' : 'Cerrar menú');
+
+            if (isOpen) {
+                menu.setAttribute('hidden', '');
+            } else {
+                menu.removeAttribute('hidden');
+            }
+        });
+
+        // Close on link click
+        menu.addEventListener('click', (e) => {
+            if (e.target.closest('.kx-landing-mobile__link')) {
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.setAttribute('aria-label', 'Abrir menú');
+                menu.setAttribute('hidden', '');
+            }
         });
     }
 
-    function stopPreview() {
-        previewAudio.pause();
-        previewAudio.currentTime = 0;
-        previewPlaying = false;
-        previewTrackId = null;
-        if (previewTimer) { clearTimeout(previewTimer); previewTimer = null; }
-        if (previewInterval) { clearInterval(previewInterval); previewInterval = null; }
-        updateAllPreviewButtons();
-    }
-
-    function updateAllPreviewButtons() {
-        var allBtns = document.querySelectorAll('.preview-play-btn');
-        for (var i = 0; i < allBtns.length; i++) {
-            var btn = allBtns[i];
-            var id = btn.getAttribute('data-track-id');
-            var progressBar = btn.querySelector('.preview-progress');
-            var icon = btn.querySelector('.preview-icon');
-            var timeLabel = btn.querySelector('.preview-time');
-            if (previewPlaying && id === String(previewTrackId)) {
-                btn.classList.add('playing');
-                if (icon) icon.textContent = '⏸';
-                if (timeLabel) timeLabel.textContent = 'Reproduciendo...';
-            } else {
-                btn.classList.remove('playing');
-                if (icon) icon.textContent = '▶';
-                if (progressBar) progressBar.style.width = '0%';
-                if (timeLabel) timeLabel.textContent = '0:30 preview';
-            }
-        }
-    }
-
-    function updatePreviewProgress(buttonEl) {
-        if (!previewPlaying) return;
-        var currentTime = previewAudio.currentTime;
-        var pct = Math.min((currentTime / PREVIEW_DURATION) * 100, 100);
-        var remaining = Math.max(0, PREVIEW_DURATION - Math.floor(currentTime));
-        var allBtns = document.querySelectorAll('.preview-play-btn[data-track-id="' + previewTrackId + '"]');
-        for (var i = 0; i < allBtns.length; i++) {
-            var progressBar = allBtns[i].querySelector('.preview-progress');
-            var timeLabel = allBtns[i].querySelector('.preview-time');
-            if (progressBar) progressBar.style.width = pct + '%';
-            if (timeLabel) timeLabel.textContent = '0:' + (remaining < 10 ? '0' : '') + remaining;
-        }
-    }
-
-    previewAudio.addEventListener('ended', function() { stopPreview(); });
-
-    window._playLandingPreview = function(trackId, audioUrl, el) {
-        playPreview(trackId, audioUrl, el);
-    };
-
-    /* ══════════════════════════════════════════
-       🔝 SCROLL PROGRESS BAR
-       ══════════════════════════════════════════ */
-    function updateScrollProgress() {
-        if (!scrollProgressEl) return;
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        scrollProgressEl.style.width = progress + '%';
-    }
-
-    /* ══════════════════════════════════════════
-       🔄 HEADER SCROLL EFFECT
-       ══════════════════════════════════════════ */
-    function handleHeaderScroll() {
-        if (!headerEl) return;
-        if (window.scrollY > 50) headerEl.classList.add('scrolled');
-        else headerEl.classList.remove('scrolled');
-    }
-
-    /* ══════════════════════════════════════════
-       ✨ SCROLL REVEAL ENGINE
-       ══════════════════════════════════════════ */
-    var revealObserver = null;
-    var revealedElements = new Set();
+    // ═══════════════════════════════════════
+    //  ✨ SCROLL REVEAL
+    // ═══════════════════════════════════════
+    let revealObserver = null;
 
     function initScrollReveal() {
-        var options = { root: null, rootMargin: '0px 0px -80px 0px', threshold: 0.12 };
-        revealObserver = new IntersectionObserver(function(entries) {
-            for (var i = 0; i < entries.length; i++) {
-                var entry = entries[i];
-                if (entry.isIntersecting && !revealedElements.has(entry.target)) {
-                    revealedElements.add(entry.target);
-                    var delay = parseInt(entry.target.getAttribute('data-delay')) || 0;
-                    revealElement(entry.target, delay);
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = parseInt(entry.target.dataset.delay) || 0;
+                    setTimeout(() => {
+                        entry.target.classList.add('is-visible');
+
+                        // Trigger counter animation if present
+                        entry.target.querySelectorAll('.kx-counter').forEach(animateCounter);
+                    }, delay);
+                    revealObserver.unobserve(entry.target);
                 }
-            }
-        }, options);
-        var elements = document.querySelectorAll('.scroll-reveal');
-        for (var i = 0; i < elements.length; i++) {
-            revealObserver.observe(elements[i]);
-        }
+            });
+        }, {
+            rootMargin: '0px 0px -60px 0px',
+            threshold: 0.1
+        });
+
+        $$('.kx-reveal').forEach(el => revealObserver.observe(el));
     }
 
-    function revealElement(el, delay) {
-        setTimeout(function() {
-            el.classList.add('is-visible');
-            var counters = el.querySelectorAll('.counter-animate');
-            for (var j = 0; j < counters.length; j++) {
-                animateCounter(counters[j]);
-            }
-        }, delay);
+    function observeNewElements(container) {
+        if (!revealObserver) return;
+        container.querySelectorAll('.kx-reveal:not(.is-visible)').forEach(el => {
+            revealObserver.observe(el);
+        });
     }
 
-    /* ══════════════════════════════════════════
-       🔢 COUNTER ANIMATION
-       ══════════════════════════════════════════ */
-    var counterObserver = null;
-    var animatedCounters = new Set();
-
-    function initCounterAnimation() {
-        var options = { root: null, rootMargin: '0px', threshold: 0.5 };
-        counterObserver = new IntersectionObserver(function(entries) {
-            for (var i = 0; i < entries.length; i++) {
-                var entry = entries[i];
-                if (entry.isIntersecting && !animatedCounters.has(entry.target)) {
-                    animatedCounters.add(entry.target);
-                    animateCounter(entry.target);
-                }
-            }
-        }, options);
-        var counters = document.querySelectorAll('.counter-animate');
-        for (var i = 0; i < counters.length; i++) {
-            counterObserver.observe(counters[i]);
-        }
-    }
+    // ═══════════════════════════════════════
+    //  🔢 COUNTER ANIMATION
+    // ═══════════════════════════════════════
+    const animatedCounters = new WeakSet();
 
     function animateCounter(el) {
-        var target = parseInt(el.getAttribute('data-target')) || 0;
-        var suffix = el.getAttribute('data-suffix') || '';
-        var duration = 2000;
-        var startTime = null;
-        function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+        if (animatedCounters.has(el)) return;
+        animatedCounters.add(el);
+
+        const target = parseInt(el.dataset.target) || 0;
+        const suffix = el.dataset.suffix || '';
+        const duration = 2000;
+        let startTime = null;
+
+        function easeOutExpo(t) {
+            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        }
+
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
-            var elapsed = timestamp - startTime;
-            var progress = Math.min(elapsed / duration, 1);
-            var easedProgress = easeOutExpo(progress);
-            var currentValue = Math.round(target * easedProgress);
-            el.textContent = currentValue + suffix;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            el.textContent = Math.round(target * easeOutExpo(progress)) + suffix;
             if (progress < 1) requestAnimationFrame(update);
         }
+
         requestAnimationFrame(update);
     }
 
-    /* ══════════════════════════════════════════
-       🧲 MAGNETIC BUTTON EFFECT
-       ══════════════════════════════════════════ */
-    function initMagneticButtons() {
-        var buttons = document.querySelectorAll('.magnetic-btn');
-        for (var i = 0; i < buttons.length; i++) {
-            (function(btn) {
-                btn.addEventListener('mousemove', function(e) {
-                    var rect = btn.getBoundingClientRect();
-                    var x = e.clientX - rect.left - rect.width / 2;
-                    var y = e.clientY - rect.top - rect.height / 2;
-                    btn.style.transform = 'translate(' + (x * 0.15) + 'px, ' + (y * 0.15) + 'px)';
-                });
-                btn.addEventListener('mouseleave', function() {
-                    btn.style.transform = '';
-                });
-            })(buttons[i]);
-        }
-    }
-
-    /* ══════════════════════════════════════════
-       ✨ HERO PARTICLES
-       ══════════════════════════════════════════ */
+    // ═══════════════════════════════════════
+    //  ✨ HERO PARTICLES
+    // ═══════════════════════════════════════
     function initHeroParticles() {
-        var container = document.getElementById('heroParticles');
+        const container = $('#heroParticles');
         if (!container) return;
-        var count = window.innerWidth < 768 ? 15 : 30;
-        for (var i = 0; i < count; i++) {
-            var p = document.createElement('div');
-            p.className = 'hero-particle';
-            var size = Math.random() * 3 + 1;
-            p.style.width = size + 'px';
-            p.style.height = size + 'px';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.animationDuration = (Math.random() * 15 + 10) + 's';
-            p.style.animationDelay = (Math.random() * 10) + 's';
-            p.style.opacity = Math.random() * 0.5 + 0.1;
-            container.appendChild(p);
+
+        const count = window.innerWidth < 768 ? 18 : 35;
+        const fragment = document.createDocumentFragment();
+
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'kx-landing-hero__particle';
+            const size = Math.random() * 2.5 + 1;
+            p.style.cssText = `
+                width:${size}px;height:${size}px;
+                left:${Math.random()*100}%;
+                animation-duration:${Math.random()*14+9}s;
+                animation-delay:${Math.random()*10}s;
+                opacity:${Math.random()*0.4+0.1};
+            `;
+            fragment.appendChild(p);
         }
+        container.appendChild(fragment);
     }
 
-    /* ══════════════════════════════════════════
-       🏠 HERO INTRO
-       ══════════════════════════════════════════ */
-    function initHeroIntro() {
-        var particlesContainer = document.getElementById('heroIntroParticles');
-        if (particlesContainer) {
-            var count = window.innerWidth < 768 ? 20 : 40;
-            for (var i = 0; i < count; i++) {
-                var p = document.createElement('div');
-                p.className = 'hero-intro-particle';
-                var size = Math.random() * 3 + 1;
-                p.style.width = size + 'px';
-                p.style.height = size + 'px';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.animationDuration = (Math.random() * 12 + 8) + 's';
-                p.style.animationDelay = (Math.random() * 8) + 's';
-                p.style.opacity = Math.random() * 0.4 + 0.1;
-                particlesContainer.appendChild(p);
+    // ═══════════════════════════════════════
+    //  🎯 HERO SCROLL BUTTON
+    // ═══════════════════════════════════════
+    function initHeroScroll() {
+        const btn = $('#heroScrollBtn');
+        if (!btn) return;
+
+        btn.addEventListener('click', () => {
+            const hero = btn.closest('.kx-landing-hero');
+            if (!hero) return;
+            const next = hero.nextElementSibling;
+            if (next) {
+                next.scrollIntoView({ behavior: 'smooth' });
             }
-        }
+        });
 
-        var scrollIndicator = document.getElementById('heroIntroScroll');
-        if (scrollIndicator) {
-            scrollIndicator.addEventListener('click', function() {
-                var heroSection = document.getElementById('kxonHeroIntro');
-                if (heroSection) {
-                    var nextSection = heroSection.nextElementSibling;
-                    if (nextSection) {
-                        var offsetTop = nextSection.getBoundingClientRect().top + window.pageYOffset;
-                        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
-                }
-            });
-        }
-
-        var heroIntro = document.getElementById('kxonHeroIntro');
-        if (heroIntro) {
-            window.addEventListener('scroll', function() {
-                var scrollY = window.pageYOffset;
-                var heroHeight = heroIntro.offsetHeight;
-                var scrollEl = document.getElementById('heroIntroScroll');
-                if (scrollEl) {
-                    if (scrollY > heroHeight * 0.3) {
-                        scrollEl.style.opacity = '0';
-                        scrollEl.style.pointerEvents = 'none';
-                    } else {
-                        scrollEl.style.opacity = '';
-                        scrollEl.style.pointerEvents = '';
-                    }
-                }
-            }, { passive: true });
+        // Fade on scroll
+        const hero = btn.closest('.kx-landing-hero');
+        if (hero) {
+            const observer = new IntersectionObserver(([entry]) => {
+                btn.style.opacity = entry.intersectionRatio > 0.7 ? '' : '0';
+                btn.style.pointerEvents = entry.intersectionRatio > 0.7 ? '' : 'none';
+            }, { threshold: [0, 0.3, 0.7, 1] });
+            observer.observe(hero);
         }
     }
 
-    /* ══════════════════════════════════════════
-       📰🔄 SCROLL REVEAL FOR DYNAMIC CONTENT
-       ══════════════════════════════════════════ */
-    function applyScrollRevealToChildren(containerSelector) {
-        var container = document.querySelector(containerSelector);
-        if (!container || !container.classList.contains('scroll-reveal-children')) return;
-        var animation = container.getAttribute('data-animation') || 'scale-up';
-        var stagger = parseInt(container.getAttribute('data-stagger')) || 100;
-        var children = container.children;
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            if (!child.classList.contains('scroll-reveal')) {
-                child.classList.add('scroll-reveal');
-                child.setAttribute('data-animation', animation);
-                child.setAttribute('data-delay', String(i * stagger));
-                if (revealObserver) revealObserver.observe(child);
+    // ═══════════════════════════════════════
+    //  🎬 VIDEO SOUND TOGGLE
+    // ═══════════════════════════════════════
+    function initVideoSound() {
+        const btn = $('#btnVideoSound');
+        const video = $('.kx-landing-video__media');
+        const text = $('#videoSoundText');
+        if (!btn || !video) return;
+
+        // Auto play when visible
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                video.play().catch(() => {});
+            } else {
+                video.pause();
             }
-        }
+        }, { threshold: 0.3 });
+        observer.observe(video);
+
+        btn.addEventListener('click', () => {
+            video.muted = !video.muted;
+            const isUnmuted = !video.muted;
+
+            btn.setAttribute('aria-pressed', String(isUnmuted));
+            btn.classList.toggle('is-unmuted', isUnmuted);
+            if (text) text.textContent = isUnmuted ? 'Silenciar' : 'Activar sonido';
+        });
     }
 
-    /* ══════════════════════════════════════════
-       🌊 PARALLAX EFFECT
-       ══════════════════════════════════════════ */
-    function handleParallax() {
-        var scrollY = window.pageYOffset;
-        var circle2 = document.querySelector('.hero-circle-2');
-        var circle3 = document.querySelector('.hero-circle-3');
-        if (circle2) circle2.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.1) + 'px))';
-        if (circle3) circle3.style.transform = 'translate(-50%, calc(-50% + ' + (scrollY * 0.05) + 'px))';
-
-        var videoMedia = document.querySelector('.video-hero-media');
-        if (videoMedia) {
-            var videoSection = document.getElementById('video-presentacion');
-            if (videoSection) {
-                var rect = videoSection.getBoundingClientRect();
-                if (rect.top < window.innerHeight && rect.bottom > 0) {
-                    var parallaxValue = (rect.top / window.innerHeight) * 30;
-                    videoMedia.style.transform = 'scale(1.05) translateY(' + parallaxValue + 'px)';
-                }
-            }
-        }
-    }
-
-    /* ══════════════════════════════════════════
-       🎯 SMOOTH SCROLL FOR ANCHOR LINKS
-       ══════════════════════════════════════════ */
+    // ═══════════════════════════════════════
+    //  🔗 SMOOTH SCROLL
+    // ═══════════════════════════════════════
     function initSmoothScroll() {
-        var links = document.querySelectorAll('a[href^="#"]');
-        for (var i = 0; i < links.length; i++) {
-            links[i].addEventListener('click', function(e) {
-                var href = this.getAttribute('href');
-                if (href === '#') return;
-                var target = document.querySelector(href);
-                if (target) {
-                    e.preventDefault();
-                    var offsetTop = target.getBoundingClientRect().top + window.pageYOffset - 80;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href^="#"]');
+            if (!link) return;
+            const href = link.getAttribute('href');
+            if (href === '#') return;
+
+            const target = $(href);
+            if (target) {
+                e.preventDefault();
+                const offset = target.getBoundingClientRect().top + window.scrollY - 80;
+                window.scrollTo({ top: offset, behavior: 'smooth' });
+
+                // Close mobile menu if open
+                const toggle = $('#mobileMenuToggle');
+                const menu = $('#mobileMenu');
+                if (toggle && menu && toggle.getAttribute('aria-expanded') === 'true') {
+                    toggle.setAttribute('aria-expanded', 'false');
+                    menu.setAttribute('hidden', '');
                 }
-            });
-        }
+            }
+        });
     }
 
-    /* ══════════════════════════════════════════
-       📜 MASTER SCROLL HANDLER
-       ══════════════════════════════════════════ */
-    var ticking = false;
+    // ═══════════════════════════════════════
+    //  📜 SCROLL HANDLER
+    // ═══════════════════════════════════════
+    let scrollTicking = false;
 
     function onScroll() {
-        if (!ticking) {
-            requestAnimationFrame(function() {
+        if (!scrollTicking) {
+            requestAnimationFrame(() => {
                 handleHeaderScroll();
                 updateScrollProgress();
-                handleParallax();
-                ticking = false;
+                scrollTicking = false;
             });
-            ticking = true;
+            scrollTicking = true;
         }
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    // ═══════════════════════════════════════
+    //  📰 NEWS
+    // ═══════════════════════════════════════
+    async function loadNews() {
+        const grid = $('#newsGrid');
+        if (!grid || !db) return;
 
-    /* ──────────────────────────────────
-       📰 CARGAR NOTICIAS
-       ────────────────────────────────── */
-    async function cargarNoticias(){
-        if (!noticiasContainer) return;
-        noticiasContainer.innerHTML = generarSkeletonNoticias(3);
+        grid.innerHTML = buildSkeletons(NEWS_PER_PAGE);
+
         try {
-            var r = await db.from('noticias').select('*').order('created_at', { ascending: false }).limit(9);
-            if (r.error) throw r.error;
-            if (!r.data || r.data.length === 0) {
-                noticiasContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">📰</div><h3 class="empty-state-title">Sin noticias aún</h3><p class="empty-state-text">Las últimas novedades aparecerán aquí</p></div>';
+            const { data, error } = await db
+                .from('noticias')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(9);
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                grid.innerHTML = buildEmpty('📰', 'Sin noticias aún', 'Las últimas novedades aparecerán aquí');
                 return;
             }
-            landingNoticias = r.data;
+
+            landingNoticias = data;
             currentNewsPage = 0;
             renderNewsPage();
             updateNewsPagination();
-            setTimeout(function() { applyScrollRevealToChildren('#noticias-grid'); }, 50);
-        } catch(err) {
-            console.error('Error noticias:', err);
-            if (noticiasContainer) {
-                noticiasContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">⚠️</div><h3 class="empty-state-title">Error al cargar noticias</h3></div>';
-            }
+        } catch (err) {
+            console.error('Error cargando noticias:', err);
+            grid.innerHTML = buildEmpty('⚠️', 'Error al cargar noticias');
         }
     }
 
     function renderNewsPage() {
-        if (!noticiasContainer) return;
-        var start = currentNewsPage * newsPerPage;
-        var end = Math.min(start + newsPerPage, landingNoticias.length);
-        var html = '';
-        for (var i = start; i < end; i++) {
-            html += crearCardNoticia(landingNoticias[i], i);
+        const grid = $('#newsGrid');
+        if (!grid) return;
+
+        const start = currentNewsPage * NEWS_PER_PAGE;
+        const end = Math.min(start + NEWS_PER_PAGE, landingNoticias.length);
+        let html = '';
+
+        for (let i = start; i < end; i++) {
+            html += buildNewsCard(landingNoticias[i], i);
         }
-        noticiasContainer.innerHTML = html;
-        var cards = noticiasContainer.querySelectorAll('.noticia-card');
-        for (var j = 0; j < cards.length; j++) {
-            cards[j].classList.add('scroll-reveal', 'is-visible');
-            cards[j].setAttribute('data-animation', 'scale-up');
-        }
+
+        grid.innerHTML = html;
+
+        // Animate cards in
+        grid.querySelectorAll('.kx-landing-news__card').forEach((card, idx) => {
+            card.classList.add('kx-reveal', 'is-visible');
+            card.style.animationDelay = idx * 100 + 'ms';
+        });
+    }
+
+    function buildNewsCard(n, idx) {
+        const fecha = new Date(n.created_at)
+            .toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            .toUpperCase();
+        const img = n.imagen_url || 'https://placehold.co/600x400/0e0e0e/333?text=KXON';
+        const desc = n.descripcion || '';
+
+        return `
+            <article class="kx-landing-news__card" data-news-idx="${idx}">
+                <div class="kx-landing-news__img">
+                    <img src="${img}" alt="${n.titulo || ''}" loading="lazy"
+                         onerror="this.src='https://placehold.co/600x400/0e0e0e/333?text=KXON'">
+                    <span class="kx-landing-news__date">${fecha}</span>
+                </div>
+                <div class="kx-landing-news__body">
+                    <h3 class="kx-landing-news__title">${n.titulo || ''}</h3>
+                    <p class="kx-landing-news__excerpt">${desc}</p>
+                    <span class="kx-landing-news__read-more">
+                        Leer más
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </span>
+                </div>
+            </article>`;
     }
 
     function updateNewsPagination() {
-        var totalPages = Math.ceil(landingNoticias.length / newsPerPage);
-        var dotsContainer = document.querySelector('.news-pagination-dots');
-        if (dotsContainer && totalPages > 0) {
-            var dotsHtml = '';
-            for (var i = 0; i < totalPages; i++) {
-                dotsHtml += '<span class="news-dot' + (i === currentNewsPage ? ' active' : '') + '" data-page="' + i + '"></span>';
-            }
-            dotsContainer.innerHTML = dotsHtml;
-            var dots = dotsContainer.querySelectorAll('.news-dot');
-            for (var d = 0; d < dots.length; d++) {
-                dots[d].addEventListener('click', function() {
-                    currentNewsPage = parseInt(this.getAttribute('data-page'));
-                    renderNewsPage();
-                    updateNewsPagination();
-                });
-            }
-        }
+        const dotsContainer = $('#newsPaginationDots');
+        if (!dotsContainer) return;
+
+        const totalPages = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
+        dotsContainer.innerHTML = Array.from({ length: totalPages }, (_, i) =>
+            `<span class="kx-landing-news__dot${i === currentNewsPage ? ' is-active' : ''}" data-page="${i}"></span>`
+        ).join('');
     }
 
     function initNewsPagination() {
-        var prevBtn = document.getElementById('newsPrev');
-        var nextBtn = document.getElementById('newsNext');
+        const prevBtn = $('#newsPrev');
+        const nextBtn = $('#newsNext');
+        const dotsContainer = $('#newsPaginationDots');
 
         if (prevBtn) {
-            prevBtn.addEventListener('click', function() {
-                var totalPages = Math.ceil(landingNoticias.length / newsPerPage);
-                if (totalPages === 0) return;
-                currentNewsPage = (currentNewsPage - 1 + totalPages) % totalPages;
+            prevBtn.addEventListener('click', () => {
+                const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
+                if (total === 0) return;
+                currentNewsPage = (currentNewsPage - 1 + total) % total;
                 renderNewsPage();
                 updateNewsPagination();
             });
         }
 
         if (nextBtn) {
-            nextBtn.addEventListener('click', function() {
-                var totalPages = Math.ceil(landingNoticias.length / newsPerPage);
-                if (totalPages === 0) return;
-                currentNewsPage = (currentNewsPage + 1) % totalPages;
+            nextBtn.addEventListener('click', () => {
+                const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
+                if (total === 0) return;
+                currentNewsPage = (currentNewsPage + 1) % total;
+                renderNewsPage();
+                updateNewsPagination();
+            });
+        }
+
+        if (dotsContainer) {
+            dotsContainer.addEventListener('click', (e) => {
+                const dot = e.target.closest('.kx-landing-news__dot');
+                if (!dot) return;
+                currentNewsPage = parseInt(dot.dataset.page);
                 renderNewsPage();
                 updateNewsPagination();
             });
         }
     }
 
-    /* ──────────────────────────────────
-       💿 CARGAR ÁLBUMES — 3D CAROUSEL
-       ────────────────────────────────── */
-    async function cargarAlbumesDestacados(){
+    // ═══════════════════════════════════════
+    //  💿 ALBUMS CAROUSEL
+    // ═══════════════════════════════════════
+    async function loadAlbums() {
+        if (!db) return;
+
         try {
-            var r = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(8);
-            if (r.error) throw r.error;
-            if (!r.data || r.data.length === 0) {
+            const { data, error } = await db
+                .from('albumes')
+                .select('*, canciones(id, titulo, duracion, archivo_url)')
+                .order('created_at', { ascending: false })
+                .limit(8);
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
                 hideCarousel();
                 return;
             }
-            landingAlbumes = r.data;
+
+            landingAlbumes = data;
             currentAlbumIndex = 0;
-            renderCarousel3D();
+            renderCarousel();
             updateCarouselDots();
             initCarouselControls();
-        } catch(err) {
-            console.error('Error álbumes:', err);
+        } catch (err) {
+            console.error('Error cargando álbumes:', err);
             hideCarousel();
         }
     }
 
     function hideCarousel() {
-        var stage = document.getElementById('carousel3dStage');
-        var hud = document.getElementById('carouselHud');
-        if (stage) stage.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💿</div><h3 class="empty-state-title">Sin álbumes aún</h3></div>';
+        const stage = $('#carouselStage');
+        const hud = $('#carouselHud');
+        const controls = $('.kx-landing-carousel__controls');
+
+        if (stage) stage.innerHTML = buildEmpty('💿', 'Sin álbumes aún');
         if (hud) hud.style.display = 'none';
-        var controls = document.querySelector('.carousel-3d-controls');
         if (controls) controls.style.display = 'none';
     }
 
-    function renderCarousel3D() {
+    function renderCarousel() {
         if (landingAlbumes.length === 0) return;
 
-        var mainEl = document.getElementById('carouselMain');
-        var prevEl = document.getElementById('carouselPrev');
-        var nextEl = document.getElementById('carouselNext');
-        var stage = document.getElementById('carousel3dStage');
-
+        const mainEl = $('#carouselMain');
+        const prevEl = $('#carouselPrev');
+        const nextEl = $('#carouselNext');
         if (!mainEl || !prevEl || !nextEl) return;
 
-        var current = landingAlbumes[currentAlbumIndex];
-        var prevIdx = (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
-        var nextIdx = (currentAlbumIndex + 1) % landingAlbumes.length;
-        var prevAlbum = landingAlbumes[prevIdx];
-        var nextAlbum = landingAlbumes[nextIdx];
+        const current = landingAlbumes[currentAlbumIndex];
+        const prevIdx = (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
+        const nextIdx = (currentAlbumIndex + 1) % landingAlbumes.length;
+        const placeholder = 'https://placehold.co/400x400/0e0e0e/333?text=♪';
 
-        var placeholder = 'https://placehold.co/400x400/111111/333333?text=♪';
+        const mainImg = mainEl.querySelector('img');
+        const prevImg = prevEl.querySelector('img');
+        const nextImg = nextEl.querySelector('img');
 
-        // Update images
-        var mainImg = mainEl.querySelector('img');
-        var prevImg = prevEl.querySelector('img');
-        var nextImg = nextEl.querySelector('img');
+        if (mainImg) { mainImg.src = current.imagen_url || placeholder; mainImg.alt = current.titulo || ''; }
+        if (prevImg) prevImg.src = landingAlbumes[prevIdx].imagen_url || placeholder;
+        if (nextImg) nextImg.src = landingAlbumes[nextIdx].imagen_url || placeholder;
 
-        if (mainImg) mainImg.src = current.imagen_url || placeholder;
-        if (prevImg) prevImg.src = prevAlbum.imagen_url || placeholder;
-        if (nextImg) nextImg.src = nextAlbum.imagen_url || placeholder;
-
-        // Update HUD
-        var titleEl = document.getElementById('carouselTitle');
-        var artistEl = document.getElementById('carouselArtist');
-        var tracksEl = document.getElementById('carouselTracks');
+        // HUD
+        const titleEl = $('#carouselTitle');
+        const artistEl = $('#carouselArtist');
+        const tracksEl = $('#carouselTracks');
 
         if (titleEl) titleEl.textContent = current.titulo || '';
         if (artistEl) {
-            var artistName = current.artista || 'KXON';
-            artistEl.textContent = artistName + ' • ' + new Date().getFullYear() + ' Edition';
+            artistEl.textContent = (current.artista || 'KXON') + ' · ' + new Date().getFullYear() + ' Edition';
         }
         if (tracksEl) {
-            var cnt = current.canciones ? current.canciones.length : 0;
-            var pos = currentAlbumIndex + 1;
-            tracksEl.textContent = (pos < 10 ? '0' : '') + pos + ' / ' + (cnt < 10 ? '0' : '') + cnt + ' TRACKS';
+            const cnt = current.canciones ? current.canciones.length : 0;
+            const pos = currentAlbumIndex + 1;
+            tracksEl.textContent = String(pos).padStart(2, '0') + ' / ' + String(cnt).padStart(2, '0') + ' TRACKS';
         }
 
-        // Show/hide prev/next if only 1 album
-        if (landingAlbumes.length <= 1) {
-            prevEl.style.display = 'none';
-            nextEl.style.display = 'none';
-        } else {
-            prevEl.style.display = '';
-            nextEl.style.display = '';
-        }
+        // Show/hide prev/next
+        const hide = landingAlbumes.length <= 1;
+        prevEl.style.display = hide ? 'none' : '';
+        nextEl.style.display = hide ? 'none' : '';
     }
 
     function navigateCarousel(direction) {
         if (landingAlbumes.length <= 1) return;
 
-        var stage = document.getElementById('carousel3dStage');
-        if (stage) stage.classList.add('transitioning');
+        const stage = $('#carouselStage');
+        if (stage) stage.classList.add('is-transitioning');
 
-        if (direction === 'next') {
-            currentAlbumIndex = (currentAlbumIndex + 1) % landingAlbumes.length;
-        } else {
-            currentAlbumIndex = (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
-        }
+        currentAlbumIndex = direction === 'next'
+            ? (currentAlbumIndex + 1) % landingAlbumes.length
+            : (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
 
-        renderCarousel3D();
+        renderCarousel();
         updateCarouselDots();
 
-        setTimeout(function() {
-            if (stage) stage.classList.remove('transitioning');
+        setTimeout(() => {
+            if (stage) stage.classList.remove('is-transitioning');
         }, 700);
     }
 
     function updateCarouselDots() {
-        var dotsContainer = document.getElementById('carouselDots');
-        if (!dotsContainer) return;
+        const container = $('#carouselDots');
+        if (!container) return;
 
-        var html = '';
-        for (var i = 0; i < landingAlbumes.length; i++) {
-            html += '<div class="carousel-3d-dot' + (i === currentAlbumIndex ? ' active' : '') + '" data-idx="' + i + '"></div>';
-        }
-        dotsContainer.innerHTML = html;
+        container.innerHTML = landingAlbumes.map((_, i) =>
+            `<div class="kx-landing-carousel__dot${i === currentAlbumIndex ? ' is-active' : ''}" data-idx="${i}"></div>`
+        ).join('');
+    }
 
-        // Click on dots
-        var dots = dotsContainer.querySelectorAll('.carousel-3d-dot');
-        for (var d = 0; d < dots.length; d++) {
-            dots[d].addEventListener('click', function() {
-                var idx = parseInt(this.getAttribute('data-idx'));
+    function initCarouselControls() {
+        const prevBtn = $('#carouselBtnPrev');
+        const nextBtn = $('#carouselBtnNext');
+        const dotsContainer = $('#carouselDots');
+        const mainEl = $('#carouselMain');
+
+        if (prevBtn) prevBtn.addEventListener('click', () => navigateCarousel('prev'));
+        if (nextBtn) nextBtn.addEventListener('click', () => navigateCarousel('next'));
+
+        if (dotsContainer) {
+            dotsContainer.addEventListener('click', (e) => {
+                const dot = e.target.closest('.kx-landing-carousel__dot');
+                if (!dot) return;
+                const idx = parseInt(dot.dataset.idx);
                 if (idx !== currentAlbumIndex) {
                     currentAlbumIndex = idx;
-                    renderCarousel3D();
+                    renderCarousel();
                     updateCarouselDots();
                 }
             });
         }
-    }
 
-    function initCarouselControls() {
-        var prevBtn = document.getElementById('carouselBtnPrev');
-        var nextBtn = document.getElementById('carouselBtnNext');
-
-        if (prevBtn) {
-            prevBtn.addEventListener('click', function() {
-                navigateCarousel('prev');
-            });
-        }
-
-        if (nextBtn) {
-            nextBtn.addEventListener('click', function() {
-                navigateCarousel('next');
-            });
+        if (mainEl) {
+            mainEl.addEventListener('click', () => openAlbumModal(currentAlbumIndex));
         }
     }
 
-    // Open album modal from carousel
-    window._landingAbrirAlbumCarousel = function() {
-        window._landingAbrirAlbum(currentAlbumIndex);
-    };
-
-    /* ──────────────────────────────────
-       🃏 CREAR CARD NOTICIA
-       ────────────────────────────────── */
-    function crearCardNoticia(n, idx){
-        var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-        var img = n.imagen_url || 'https://placehold.co/600x400/161616/333333?text=KXON+NEWS';
-        return '<article class="noticia-card" onclick="window._landingAbrirNoticia(' + idx + ')">' +
-            '<div class="noticia-imagen">' +
-            '<img src="' + img + '" alt="" loading="lazy" onerror="this.src=\'https://placehold.co/600x400/161616/333333?text=KXON\'">' +
-            '<span class="noticia-fecha">' + fecha + '</span></div>' +
-            '<div class="noticia-body">' +
-            '<h3 class="noticia-titulo">' + n.titulo + '</h3>' +
-            '<p class="noticia-descripcion">' + n.descripcion + '</p>' +
-            '<div class="noticia-read-more">Leer más <span class="material-symbols-outlined" style="font-size:0.85rem;">arrow_forward</span></div></div></article>';
-    }
-
-    /* ──────────────────────────────────
-       📰 ABRIR NOTICIA (MODAL)
-       ────────────────────────────────── */
-    window._landingAbrirNoticia = function(idx){
-        var n = landingNoticias[idx];
+    // ═══════════════════════════════════════
+    //  📰 NEWS MODAL
+    // ═══════════════════════════════════════
+    function openNewsModal(idx) {
+        const n = landingNoticias[idx];
         if (!n) return;
-        var tituloEl = document.getElementById('noticiaLandingTitulo');
-        var descEl = document.getElementById('noticiaLandingDesc');
-        var fechaEl = document.getElementById('noticiaLandingFecha');
-        var imgWrap = document.getElementById('noticiaLandingImgWrap');
-        var imgEl = document.getElementById('noticiaLandingImg');
-        var modalEl = document.getElementById('modalNoticiaLanding');
-        if (tituloEl) tituloEl.textContent = n.titulo;
-        if (descEl) descEl.textContent = n.descripcion;
-        var fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-        if (fechaEl) fechaEl.textContent = fecha;
-        if (imgWrap && imgEl) {
-            if (n.imagen_url) { imgEl.src = n.imagen_url; imgWrap.style.display = 'block'; }
-            else { imgWrap.style.display = 'none'; }
-        }
-        if (modalEl) modalEl.classList.add('show');
-    };
 
-    /* ──────────────────────────────────
-       💿 ABRIR ÁLBUM (MODAL CON PREVIEW)
-       ────────────────────────────────── */
-    window._landingAbrirAlbum = function(idx){
-        stopPreview();
-        var a = landingAlbumes[idx];
-        if (!a) return;
-        var tituloEl = document.getElementById('albumLandingTitulo');
-        var descEl = document.getElementById('albumLandingDesc');
-        var coverEl = document.getElementById('albumLandingCover');
-        var metaEl = document.getElementById('albumLandingMeta');
-        var tc = document.getElementById('albumLandingTracks');
-        var modalEl = document.getElementById('modalAlbumLanding');
-        if (tituloEl) tituloEl.textContent = a.titulo;
-        if (descEl) descEl.textContent = a.descripcion || 'Sin descripción';
-        if (coverEl) coverEl.src = a.imagen_url || 'https://placehold.co/300x300/111/333?text=♪';
-        var canciones = a.canciones || [];
-        if (metaEl) metaEl.textContent = canciones.length + ' CANCIONES';
-        if (tc) {
-            if (canciones.length === 0) {
-                tc.innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:.85rem;">Sin canciones en este álbum</div>';
+        const modal = $('#modalNoticia');
+        const titulo = $('#noticiaModalTitle');
+        const desc = $('#noticiaDesc');
+        const fecha = $('#noticiaFecha');
+        const imgWrap = $('#noticiaImgWrap');
+        const img = $('#noticiaImg');
+
+        if (titulo) titulo.textContent = n.titulo;
+        if (desc) desc.textContent = n.descripcion;
+        if (fecha) {
+            fecha.textContent = new Date(n.created_at)
+                .toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        if (imgWrap && img) {
+            if (n.imagen_url) {
+                img.src = n.imagen_url;
+                img.alt = n.titulo || '';
+                imgWrap.removeAttribute('hidden');
             } else {
-                var h = '';
-                for (var i = 0; i < canciones.length; i++) {
-                    var c = canciones[i];
-                    var audioUrl = c.archivo_url || '';
-                    var escapedUrl = audioUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    h += '<div class="album-landing-track preview-track" onclick="event.stopPropagation()">' +
-                        '<span class="album-landing-track-num">' + (i + 1) + '</span>' +
-                        '<button class="preview-play-btn" data-track-id="' + c.id + '" onclick="window._playLandingPreview(\'' + c.id + '\', \'' + escapedUrl + '\', this)">' +
-                            '<span class="preview-icon">▶</span>' +
-                            '<div class="preview-progress-bar"><div class="preview-progress"></div></div>' +
-                        '</button>' +
-                        '<div class="preview-track-info">' +
-                            '<span class="album-landing-track-title">' + c.titulo + '</span>' +
-                            '<span class="preview-time">0:30 preview</span>' +
-                        '</div>' +
-                        '<span class="album-landing-track-duration">' + (c.duracion || '--:--') + '</span>' +
-                    '</div>';
-                }
-                h += '<div class="album-landing-preview-notice">' +
-                    '<span class="preview-notice-icon">🎧</span>' +
-                    '<span>Preview de 30 segundos · <a href="register.html" class="preview-register-link">Regístrate</a> para escuchar completo</span>' +
-                '</div>';
-                tc.innerHTML = h;
+                imgWrap.setAttribute('hidden', '');
             }
         }
-        if (modalEl) modalEl.classList.add('show');
-    };
 
-    /* ──────────────────────────────────
-       ✕ CERRAR MODALES
-       ────────────────────────────────── */
-    function initModalClose() {
-        var modalNoticia = document.getElementById('modalNoticiaLanding');
-        var modalAlbum = document.getElementById('modalAlbumLanding');
-        if (modalNoticia) {
-            modalNoticia.addEventListener('click', function(e){
-                if (e.target === this) this.classList.remove('show');
-            });
-        }
-        if (modalAlbum) {
-            modalAlbum.addEventListener('click', function(e){
-                if (e.target === this) {
-                    stopPreview();
-                    this.classList.remove('show');
-                }
-            });
-            var closeBtn = modalAlbum.querySelector('.modal-landing-close');
-            if (closeBtn) {
-                closeBtn.removeAttribute('onclick');
-                closeBtn.addEventListener('click', function() {
-                    stopPreview();
-                    modalAlbum.classList.remove('show');
+        openModal(modal);
+    }
+
+    // ═══════════════════════════════════════
+    //  💿 ALBUM MODAL
+    // ═══════════════════════════════════════
+    function openAlbumModal(idx) {
+        preview.stop();
+        const a = landingAlbumes[idx];
+        if (!a) return;
+
+        const modal = $('#modalAlbum');
+        const titulo = $('#albumModalTitle');
+        const desc = $('#albumDesc');
+        const cover = $('#albumCover');
+        const meta = $('#albumMeta');
+        const tracks = $('#albumTracks');
+
+        if (titulo) titulo.textContent = a.titulo;
+        if (desc) desc.textContent = a.descripcion || 'Sin descripción';
+        if (cover) { cover.src = a.imagen_url || 'https://placehold.co/300x300/0e0e0e/333?text=♪'; cover.alt = a.titulo || ''; }
+
+        const canciones = a.canciones || [];
+        if (meta) meta.textContent = canciones.length + ' CANCIONES';
+
+        if (tracks) {
+            if (canciones.length === 0) {
+                tracks.innerHTML = '<div style="text-align:center;padding:24px;color:var(--kx-silver-700);font-size:var(--kx-text-sm)">Sin canciones en este álbum</div>';
+            } else {
+                let html = '';
+                canciones.forEach((c, i) => {
+                    const url = (c.archivo_url || '').replace(/'/g, "\\'");
+                    html += `
+                        <div class="kx-landing-track" data-track-id="${c.id}" data-audio-url="${url}">
+                            <span class="kx-landing-track__num">${i + 1}</span>
+                            <button class="kx-landing-track__play" data-track-id="${c.id}" type="button" aria-label="Reproducir ${c.titulo}">
+                                <span class="kx-landing-track__icon">▶</span>
+                                <div class="kx-landing-track__progress-bar"><div class="kx-landing-track__progress"></div></div>
+                            </button>
+                            <div class="kx-landing-track__info">
+                                <span class="kx-landing-track__title">${c.titulo}</span>
+                                <span class="kx-landing-track__time">0:30 preview</span>
+                            </div>
+                            <span class="kx-landing-track__duration">${c.duracion || '--:--'}</span>
+                        </div>`;
                 });
+
+                html += `
+                    <div class="kx-landing-track__notice">
+                        <span>🎧</span>
+                        <span>Preview de 30 segundos · <a href="register.html">Regístrate</a> para escuchar completo</span>
+                    </div>`;
+
+                tracks.innerHTML = html;
             }
         }
+
+        openModal(modal);
     }
 
-    /* ──────────────────────────────────
-       💀 SKELETONS
-       ────────────────────────────────── */
-    function generarSkeletonNoticias(n){
-        var h = '';
-        for (var i = 0; i < n; i++) {
-            h += '<article class="noticia-card"><div class="skeleton" style="width:100%;aspect-ratio:16/9;border-radius:8px;"></div><div class="noticia-body"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div></article>';
+    // ═══════════════════════════════════════
+    //  🎭 MODAL SYSTEM
+    // ═══════════════════════════════════════
+    function openModal(modal) {
+        if (!modal) return;
+        modal.removeAttribute('hidden');
+        document.body.style.overflow = 'hidden';
+
+        // Focus trap
+        requestAnimationFrame(() => {
+            const closeBtn = modal.querySelector('.kx-landing-modal__close');
+            if (closeBtn) closeBtn.focus();
+        });
+    }
+
+    function closeModal(modal) {
+        if (!modal) return;
+        modal.setAttribute('hidden', '');
+        document.body.style.overflow = '';
+        preview.stop();
+    }
+
+    function initModals() {
+        // Event delegation for all modal interactions
+        document.addEventListener('click', (e) => {
+            // Close button
+            const closeBtn = e.target.closest('.kx-landing-modal__close, [data-close-modal]');
+            if (closeBtn) {
+                const modal = closeBtn.closest('.kx-landing-modal');
+                closeModal(modal);
+                return;
+            }
+
+            // Backdrop click
+            const backdrop = e.target.closest('.kx-landing-modal__backdrop');
+            if (backdrop) {
+                const modal = backdrop.closest('.kx-landing-modal');
+                closeModal(modal);
+                return;
+            }
+
+            // News card click
+            const newsCard = e.target.closest('.kx-landing-news__card');
+            if (newsCard) {
+                const idx = parseInt(newsCard.dataset.newsIdx);
+                openNewsModal(idx);
+                return;
+            }
+
+            // Preview play button
+            const playBtn = e.target.closest('.kx-landing-track__play');
+            if (playBtn) {
+                const track = playBtn.closest('.kx-landing-track');
+                if (track) {
+                    preview.play(track.dataset.trackId, track.dataset.audioUrl);
+                }
+                return;
+            }
+        });
+
+        // ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const openModal = document.querySelector('.kx-landing-modal:not([hidden])');
+                if (openModal) closeModal(openModal);
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════
+    //  📲 iOS MODAL
+    // ═══════════════════════════════════════
+    function initIosModal() {
+        const btn = $('#btnIosInstall');
+        const modal = $('#iosModal');
+        if (!btn || !modal) return;
+
+        btn.addEventListener('click', () => openModal(modal));
+    }
+
+    // ═══════════════════════════════════════
+    //  🔗 FLOATING SOCIAL
+    // ═══════════════════════════════════════
+    function initFloating() {
+        const toggle = $('#floatingToggle');
+        const links = $('#floatingLinks');
+        const shareBtn = $('#btnShare');
+
+        if (toggle && links) {
+            toggle.addEventListener('click', () => {
+                const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', String(!isOpen));
+
+                if (isOpen) {
+                    links.setAttribute('hidden', '');
+                } else {
+                    links.removeAttribute('hidden');
+                }
+            });
         }
-        return h;
+
+        if (shareBtn) {
+            shareBtn.addEventListener('click', async () => {
+                const url = 'https://kxon-music.vercel.app';
+                try {
+                    if (navigator.share) {
+                        await navigator.share({ title: 'KXON Music', url });
+                    } else {
+                        await navigator.clipboard.writeText(url);
+                        showToast('Enlace copiado ✓', 'success');
+                    }
+                } catch {
+                    // User cancelled share
+                }
+            });
+        }
     }
 
-    /* ══════════════════════════════════════════
-       🚀 INICIALIZAR LANDING
-       ══════════════════════════════════════════ */
-    document.addEventListener('DOMContentLoaded', function(){
-        noticiasContainer = document.getElementById('noticias-grid');
-        headerEl = document.getElementById('header');
-        scrollProgressEl = document.getElementById('scrollProgress');
+    // ═══════════════════════════════════════
+    //  🔔 TOAST
+    // ═══════════════════════════════════════
+    function showToast(message, type = 'info') {
+        const container = $('#toastContainer');
+        if (!container) return;
 
+        const toast = document.createElement('div');
+        toast.className = 'kx-toast kx-toast--' + type;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(24px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ═══════════════════════════════════════
+    //  🧩 HELPERS
+    // ═══════════════════════════════════════
+    function buildSkeletons(count) {
+        return Array.from({ length: count }, () => `
+            <article class="kx-landing-news__card">
+                <div class="kx-landing-news__skeleton" style="width:100%;aspect-ratio:16/9"></div>
+                <div style="padding-top:var(--kx-space-5)">
+                    <div class="kx-landing-news__skeleton" style="height:18px;width:75%;margin-bottom:var(--kx-space-3)"></div>
+                    <div class="kx-landing-news__skeleton" style="height:14px;width:100%;margin-bottom:var(--kx-space-2)"></div>
+                    <div class="kx-landing-news__skeleton" style="height:14px;width:55%"></div>
+                </div>
+            </article>`
+        ).join('');
+    }
+
+    function buildEmpty(icon, title, text = '') {
+        return `
+            <div style="grid-column:1/-1;text-align:center;padding:var(--kx-space-16) var(--kx-space-6)">
+                <div style="font-size:2.5rem;margin-bottom:var(--kx-space-5);opacity:0.3">${icon}</div>
+                <h3 style="font-size:var(--kx-text-lg);color:var(--kx-silver-600);margin-bottom:var(--kx-space-2)">${title}</h3>
+                ${text ? `<p style="font-size:var(--kx-text-sm);color:var(--kx-silver-700)">${text}</p>` : ''}
+            </div>`;
+    }
+
+    // ═══════════════════════════════════════
+    //  🚀 INIT
+    // ═══════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', () => {
+        // Core
+        preview.init();
+        initMobileMenu();
         initScrollReveal();
-        initCounterAnimation();
-        initMagneticButtons();
         initHeroParticles();
-        initHeroIntro();
+        initHeroScroll();
+        initVideoSound();
         initSmoothScroll();
-        initModalClose();
+        initModals();
+        initIosModal();
         initNewsPagination();
+        initFloating();
 
-        if (noticiasContainer) cargarNoticias();
-        cargarAlbumesDestacados();
-
+        // Scroll
+        window.addEventListener('scroll', onScroll, { passive: true });
         handleHeaderScroll();
         updateScrollProgress();
 
-        console.log('🎵 KXON Landing v2026 — 3D Carousel + Cinematic News');
+        // Data
+        loadNews();
+        loadAlbums();
+
+        console.log('🎵 KXON Landing v3.0 — Rediseño Total 2026');
     });
 
 })();

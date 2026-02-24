@@ -5,883 +5,951 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KXON — Plataforma Musical Exclusiva | Música, Beats y Contenido Directo del Artista</title>
 
-    <meta name="description" content="KXON es la plataforma musical independiente donde el 100% va directo al artista. Álbumes, canciones, beats exclusivos, videos, documentales y transmisiones en vivo. Más barato que Spotify, más directo que cualquier otra plataforma.">
-    <meta name="keywords" content="KXON, música independiente, beats, artista digital, plataforma musical, álbumes, canciones, comprar beats, música Colombia, streaming independiente, beats trap, reggaeton, hip hop">
+    <!-- SEO -->
+    <meta name="description" content="KXON es la plataforma musical independiente donde el 100% va directo al artista. Álbumes, canciones, beats exclusivos, videos, documentales y transmisiones en vivo.">
+    <meta name="keywords" content="KXON, música independiente, beats, plataforma musical, álbumes, canciones, comprar beats, música Colombia, streaming independiente">
     <meta name="author" content="KXON">
     <meta name="theme-color" content="#0a0a0a">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="language" content="es">
     <meta name="geo.region" content="CO">
-    <meta name="geo.country" content="Colombia">
     <link rel="canonical" href="https://kxon-music.vercel.app/">
 
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="KXON — Plataforma Musical Exclusiva">
-    <meta property="og:description" content="El 100% va directo al artista. Música, beats, videos y contenido exclusivo. Más barato que Spotify. Apoya directo.">
+    <meta property="og:description" content="El 100% va directo al artista. Música, beats, videos y contenido exclusivo.">
     <meta property="og:image" content="https://kxon-music.vercel.app/icons/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="KXON Music Platform - Música exclusiva directo del artista">
+    <meta property="og:image:alt" content="KXON Music Platform — Música exclusiva directo del artista">
     <meta property="og:url" content="https://kxon-music.vercel.app/">
     <meta property="og:site_name" content="KXON">
     <meta property="og:locale" content="es_CO">
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="KXON — Plataforma Musical Exclusiva">
-    <meta name="twitter:description" content="El 100% va directo al artista. Música, beats, videos exclusivos. Desde $9.900 COP/mes.">
+    <meta name="twitter:description" content="El 100% va directo al artista. Música, beats, videos exclusivos.">
     <meta name="twitter:image" content="https://kxon-music.vercel.app/icons/og-image.png">
     <meta name="twitter:image:alt" content="KXON Music Platform">
 
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "MusicGroup",
-        "name": "KXON",
-        "description": "Plataforma musical independiente. Álbumes, canciones, beats exclusivos, videos y documentales directo del artista.",
-        "url": "https://kxon-music.vercel.app",
-        "logo": "https://kxon-music.vercel.app/icons/icon-512.png",
-        "image": "https://kxon-music.vercel.app/icons/og-image.png",
-        "genre": ["Trap", "Reggaeton", "Hip Hop", "R&B"],
-        "foundingLocation": {
-            "@type": "Place",
-            "name": "Colombia"
-        },
-        "sameAs": []
-    }
-    </script>
+    <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "KXON Music",
-        "description": "Plataforma de streaming musical independiente con suscripción directa al artista",
+        "description": "Plataforma de streaming musical independiente con suscripción directa al artista. Álbumes, beats, videos y documentales exclusivos.",
         "url": "https://kxon-music.vercel.app",
         "applicationCategory": "MusicApplication",
         "operatingSystem": "Web, Android, iOS",
+        "inLanguage": "es",
+        "provider": {
+            "@type": "Organization",
+            "name": "KXON",
+            "url": "https://kxon-music.vercel.app",
+            "logo": "https://kxon-music.vercel.app/icons/icon-512.png",
+            "foundingLocation": {
+                "@type": "Place",
+                "name": "Colombia"
+            }
+        },
         "offers": [
             {
                 "@type": "Offer",
                 "name": "Plan Básico",
-                "price": "9900",
+                "price": "8000",
                 "priceCurrency": "COP",
-                "description": "Acceso a canciones, radio, playlists, historial y favoritos"
+                "description": "Streaming ilimitado, radio, playlists, historial y favoritos"
             },
             {
                 "@type": "Offer",
                 "name": "Plan Pro",
-                "price": "19900",
+                "price": "15000",
                 "priceCurrency": "COP",
-                "description": "Acceso completo: música, videos, documentales, chat, en vivo, marketplace y más"
+                "description": "Acceso completo: música HQ, videos, documentales, chat, marketplace y más"
             }
         ]
     }
     </script>
 
+    <!-- Favicon & PWA -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/landing.css">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="KXON">
 
-    <style>
-    .floating-social {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        z-index: 90;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    .floating-social-btn {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        font-size: 1.4rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        border: 1px solid rgba(255,255,255,0.06);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    .floating-social-btn::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%;
-        width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-        transition: left 0.5s ease;
-    }
-    .floating-social-btn:hover::before { left: 100%; }
-    .floating-social-btn:hover {
-        transform: scale(1.12) translateY(-3px);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    }
-    .floating-btn-whatsapp {
-        background: linear-gradient(135deg, #25d366, #128c7e);
-        color: #fff;
-    }
-    .floating-btn-whatsapp:hover {
-        box-shadow: 0 8px 30px rgba(37,211,102,0.3);
-    }
-    .floating-btn-facebook {
-        background: linear-gradient(135deg, #1877f2, #0d5bc4);
-        color: #fff;
-    }
-    .floating-btn-facebook:hover {
-        box-shadow: 0 8px 30px rgba(24,119,242,0.3);
-    }
-    .floating-btn-share {
-        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-        color: var(--plata-clara, #b8b8b8);
-        border-color: rgba(192,192,192,0.15);
-    }
-    .floating-btn-share:hover {
-        background: linear-gradient(135deg, #c0c0c0, #888);
-        color: #0a0a0a;
-        box-shadow: 0 8px 30px rgba(192,192,192,0.2);
-    }
-    .floating-social-btn .floating-tooltip {
-        position: absolute;
-        right: 62px;
-        background: rgba(10,10,10,0.95);
-        color: var(--plata-clara, #b8b8b8);
-        padding: 6px 14px;
-        border-radius: 8px;
-        font-family: var(--font-titulo, 'Montserrat', sans-serif);
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.3s ease;
-        transform: translateX(10px);
-        border: 1px solid rgba(255,255,255,0.06);
-    }
-    .floating-social-btn:hover .floating-tooltip {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    .floating-social-toggle {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #c0c0c0, #888);
-        color: #0a0a0a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        cursor: pointer;
-        border: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 20px rgba(192,192,192,0.15);
-    }
-    .floating-social-toggle:hover {
-        transform: scale(1.1);
-        box-shadow: 0 8px 30px rgba(192,192,192,0.25);
-    }
-    .floating-social-toggle.active {
-        transform: rotate(45deg);
-        background: linear-gradient(135deg, #333, #222);
-        color: #f0f0f0;
-    }
-    .floating-social-links {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        opacity: 0;
-        transform: translateY(20px) scale(0.8);
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        pointer-events: none;
-    }
-    .floating-social-links.show {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        pointer-events: auto;
-    }
-    @media (max-width: 768px) {
-        .floating-social { bottom: 16px; right: 16px; }
-        .floating-social-btn { width: 46px; height: 46px; font-size: 1.2rem; }
-        .floating-social-toggle { width: 46px; height: 46px; font-size: 1.1rem; }
-        .floating-social-btn .floating-tooltip { display: none; }
-    }
-    .floating-social-btn svg {
-        position: relative;
-        z-index: 2;
-        flex-shrink: 0;
-        transition: transform 0.3s ease;
-    }
-    .floating-social-btn:hover svg {
-        transform: scale(1.1);
-    }
-    </style>
+    <!-- Fonts: 2 familias, pesos optimizados -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
 
-<div class="scroll-progress" id="scrollProgress"></div>
+    <!-- Skip Navigation -->
+    <a href="#main-content" class="kx-skip-link">Ir al contenido principal</a>
 
-<!-- ============================================
-     🔗 BOTONES FLOTANTES REDES SOCIALES
-     ============================================ -->
-<div class="floating-social" id="floatingSocial">
-    <div class="floating-social-links" id="floatingSocialLinks">
-        <a href="https://wa.me/?text=Descubre%20KXON%20%E2%80%94%20Plataforma%20musical%20exclusiva%20donde%20el%20100%25%20va%20directo%20al%20artista%20%F0%9F%8E%B5%20https%3A%2F%2Fkxon-music.vercel.app" target="_blank" rel="noopener" class="floating-social-btn floating-btn-whatsapp">
-            <span class="floating-tooltip">Compartir en WhatsApp</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        </a>
-        <a href="https://www.facebook.com/sharer/sharer.php?u=https://kxon-music.vercel.app" target="_blank" rel="noopener" class="floating-social-btn floating-btn-facebook">
-            <span class="floating-tooltip">Compartir en Facebook</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        </a>
-        <button class="floating-social-btn floating-btn-share" onclick="window._shareKXON()">
-            <span class="floating-tooltip">Copiar enlace</span>
-            🔗
-        </button>
-    </div>
-    <button class="floating-social-toggle" id="floatingSocialToggle" onclick="window._toggleFloatingSocial()">
-        ✦
-    </button>
-</div>
+    <!-- Scroll Progress -->
+    <div class="kx-landing-progress" id="scrollProgress" role="presentation" aria-hidden="true"></div>
 
-<!-- ============================================
-     1️⃣ HERO INTRO — MASTERCLASS STYLE
-     ============================================ -->
-<section class="kxon-hero-intro" id="kxonHeroIntro">
-    <div class="hero-intro-bg">
-        <div class="hero-intro-particles" id="heroIntroParticles"></div>
-        <div class="hero-intro-grid"></div>
-        <div class="hero-intro-radial"></div>
-    </div>
+    <!-- ════════════════════════════════════
+         HEADER / NAVEGACIÓN
+         ════════════════════════════════════ -->
+    <header class="kx-landing-header" id="landingHeader">
+        <div class="kx-container kx-landing-header__inner">
 
-    <!-- Nav superior -->
-    <header class="hero-intro-nav">
-        <div class="hero-intro-nav-logo">
-            <svg class="hero-intro-nav-icon" fill="none" height="32" viewBox="0 0 100 100" width="32" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 90L90 10M10 10L90 90" stroke="currentColor" stroke-width="1.5"></path>
-                <rect height="50" stroke="currentColor" stroke-dasharray="4 4" stroke-width="0.5" width="50" x="25" y="25"></rect>
-                <circle cx="50" cy="50" fill="currentColor" r="2"></circle>
-            </svg>
+            <!-- Logo -->
+            <a href="/" class="kx-landing-header__logo" aria-label="KXON — Inicio">
+                <span class="kx-landing-header__logo-text">KXON</span>
+                <span class="kx-landing-header__logo-dot" aria-hidden="true"></span>
+            </a>
+
+            <!-- Nav Desktop -->
+            <nav class="kx-landing-header__nav" aria-label="Navegación principal">
+                <a href="#albums" class="kx-landing-header__link">Música</a>
+                <a href="#news" class="kx-landing-header__link">Noticias</a>
+                <a href="#plans" class="kx-landing-header__link">Planes</a>
+                <a href="#faq" class="kx-landing-header__link">FAQ</a>
+            </nav>
+
+            <!-- Actions Desktop -->
+            <div class="kx-landing-header__actions">
+                <a href="login.html" class="kx-btn kx-btn--ghost kx-btn--sm">Acceder</a>
+                <a href="register.html" class="kx-btn kx-btn--solid kx-btn--sm">Registrarse</a>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button
+                class="kx-landing-header__toggle"
+                id="mobileMenuToggle"
+                type="button"
+                aria-label="Abrir menú"
+                aria-expanded="false"
+                aria-controls="mobileMenu"
+            >
+                <span class="kx-landing-header__hamburger" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
         </div>
-        <nav class="hero-intro-nav-links">
-            <a href="#albumes">Showcase</a>
-            <a href="#noticias">Noticias</a>
-            <a href="#planes">Planes</a>
-        </nav>
-        <div class="hero-intro-nav-actions">
-            <span class="hero-intro-nav-lang">EN // ES</span>
-            <a href="login.html" class="hero-intro-nav-btn">Acceder</a>
+
+        <!-- Mobile Menu -->
+        <div class="kx-landing-mobile" id="mobileMenu" role="dialog" aria-label="Menú de navegación" hidden>
+            <nav class="kx-landing-mobile__nav" aria-label="Navegación móvil">
+                <a href="#albums" class="kx-landing-mobile__link">Música</a>
+                <a href="#news" class="kx-landing-mobile__link">Noticias</a>
+                <a href="#plans" class="kx-landing-mobile__link">Planes</a>
+                <a href="#faq" class="kx-landing-mobile__link">FAQ</a>
+                <a href="#download" class="kx-landing-mobile__link">Descargar App</a>
+            </nav>
+            <div class="kx-landing-mobile__actions">
+                <a href="login.html" class="kx-btn kx-btn--ghost kx-btn--full">Acceder</a>
+                <a href="register.html" class="kx-btn kx-btn--solid kx-btn--full">Registrarse</a>
+            </div>
         </div>
     </header>
 
-    <div class="hero-intro-content">
-        <div class="kxon-logo-animated" id="kxonLogoAnimated">
-            <div class="hero-intro-logo-text">
-                <span class="hero-intro-letter">K</span>
-                <span class="hero-intro-letter">X</span>
-                <span class="hero-intro-letter">O</span>
-                <span class="hero-intro-letter">N</span>
+    <!-- ════════════════════════════════════
+         MAIN CONTENT
+         ════════════════════════════════════ -->
+    <main id="main-content">
+
+        <!-- ═══════════════════════════════
+             1. HERO
+             ═══════════════════════════════ -->
+        <section class="kx-landing-hero" id="hero" aria-label="Presentación principal de KXON">
+
+            <!-- BG Effects -->
+            <div class="kx-landing-hero__bg" aria-hidden="true">
+                <div class="kx-landing-hero__particles" id="heroParticles"></div>
+                <div class="kx-landing-hero__grid"></div>
+                <div class="kx-landing-hero__radial"></div>
             </div>
 
-            <!-- Visualizer wave -->
-            <div class="hero-intro-visualizer">
-                <div class="hero-intro-wave-bar" style="height:8%"></div>
-                <div class="hero-intro-wave-bar" style="height:16%"></div>
-                <div class="hero-intro-wave-bar" style="height:32%"></div>
-                <div class="hero-intro-wave-bar" style="height:20%"></div>
-                <div class="hero-intro-wave-bar" style="height:48%"></div>
-                <div class="hero-intro-wave-bar" style="height:24%"></div>
-                <div class="hero-intro-wave-bar" style="height:40%"></div>
-                <div class="hero-intro-wave-bar" style="height:12%"></div>
-                <div class="hero-intro-wave-bar" style="height:28%"></div>
-                <div class="hero-intro-wave-bar" style="height:8%"></div>
-            </div>
+            <!-- Content -->
+            <div class="kx-landing-hero__content">
 
-            <div class="logo-energy-line"></div>
+                <!-- Animated Logo -->
+                <h1 class="kx-landing-hero__title">
+                    <span class="kx-landing-hero__letter" aria-hidden="true">K</span>
+                    <span class="kx-landing-hero__letter" aria-hidden="true">X</span>
+                    <span class="kx-landing-hero__letter" aria-hidden="true">O</span>
+                    <span class="kx-landing-hero__letter" aria-hidden="true">N</span>
+                    <span class="kx-sr-only">KXON</span>
+                </h1>
 
-            <p class="hero-intro-subtitle">The Architecture of Modern Sound</p>
-        </div>
-
-        <div class="hero-intro-buttons" id="heroIntroButtons">
-            <a href="login.html" class="hero-intro-btn hero-intro-btn-login">
-                <span>Enter Platform</span>
-            </a>
-            <a href="register.html" class="hero-intro-btn hero-intro-btn-register">
-                <span>Request Access</span>
-            </a>
-        </div>
-
-        <div class="hero-intro-scroll" id="heroIntroScroll">
-            <span class="hero-intro-scroll-text">Sigue explorando</span>
-            <div class="hero-intro-scroll-arrows">
-                <svg class="hero-intro-arrow hero-intro-arrow-1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                <svg class="hero-intro-arrow hero-intro-arrow-2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-            <div class="hero-intro-scroll-line"></div>
-        </div>
-    </div>
-
-    <!-- Side scroll indicator -->
-    <div class="hero-intro-side-nav">
-        <span class="hero-intro-side-label">Navigation</span>
-        <div class="hero-intro-side-track">
-            <div class="hero-intro-side-thumb"></div>
-        </div>
-        <span class="hero-intro-side-counter">01 / 04</span>
-    </div>
-
-    <!-- Footer status -->
-    <div class="hero-intro-footer">
-        <div class="hero-intro-footer-left">
-            System Status: Optimal<br>© 2026 KXON Labs
-        </div>
-        <div class="hero-intro-footer-right">
-            <span class="hero-intro-footer-label">Current Masterclass</span>
-            <span class="hero-intro-footer-value">Acoustic Engineering v.4</span>
-        </div>
-    </div>
-</section>
-
-<!-- ============================================
-     2️⃣ VIDEO
-     ============================================ -->
-<section class="video-hero-section" id="video-presentacion" data-parallax="0.3">
-    <div class="video-hero-bg">
-        <video class="video-hero-media" autoplay muted loop playsinline preload="auto" poster="https://placehold.co/1920x1080/0a0a0a/111?text=">
-            <source src="https://zizbbypwwvugyswjfbxr.supabase.co/storage/v1/object/public/videos/mi-presentacion2.mp4?v=2" type="video/mp4">
-        </video>
-        <div class="video-hero-overlay"></div>
-        <div class="video-hero-grain"></div>
-    </div>
-    <div class="video-hero-content">
-        <div class="video-hero-badge scroll-reveal" data-animation="fade-down">Presentación Oficial</div>
-        <h2 class="video-hero-title scroll-reveal" data-animation="fade-up" data-delay="100">Bienvenido al <span class="gradient-text">Universo KXON</span></h2>
-        <p class="video-hero-desc scroll-reveal" data-animation="fade-up" data-delay="200">Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música, nuestros beats y nuestro arte.</p>
-        <div class="video-hero-actions scroll-reveal" data-animation="fade-up" data-delay="300">
-            <a href="register.html" class="btn-hero-primary magnetic-btn">Únete Ahora</a>
-            <button class="btn-video-sound magnetic-btn" id="btnVideoSound" onclick="window._toggleVideoSound()">
-                <span id="videoSoundIcon">🔇</span>
-                <span id="videoSoundText">Activar sonido</span>
-            </button>
-        </div>
-    </div>
-    <div class="video-hero-scroll"><div class="video-hero-scroll-line"></div></div>
-</section>
-<div class="section-divider"></div>
-
-<!-- ============================================
-     3️⃣ ÁLBUMES — 3D STAGE SHOWCASE (CARRUSEL)
-     ============================================ -->
-<section class="section section-showcase" id="albumes">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-label scroll-reveal" data-animation="fade-down">💿 Últimos Lanzamientos</div>
-            <h2 class="section-title scroll-reveal" data-animation="fade-up">Álbumes <span class="gradient-text">Destacados</span></h2>
-            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Los álbumes más recientes de nuestra colección exclusiva. Producción propia, sonido único, directo del artista a tus oídos.</p>
-        </div>
-
-        <!-- 3D Carousel Stage -->
-        <div class="showcase-carousel scroll-reveal" data-animation="fade-up" data-delay="150">
-            <div class="carousel-3d-stage" id="carousel3dStage">
-                <!-- Prev album (blurred, left) -->
-                <div class="carousel-3d-item carousel-3d-prev" id="carouselPrev">
-                    <img src="" alt="" loading="lazy">
+                <!-- Audio Visualizer -->
+                <div class="kx-landing-hero__visualizer" aria-hidden="true">
+                    <span class="kx-landing-hero__bar"></span>
+                    <span class="kx-landing-hero__bar"></span>
+                    <span class="kx-landing-hero__bar"></span>
+                    <span class="kx-landing-hero__bar"></span>
+                    <span class="kx-landing-hero__bar"></span>
+                    <span class="kx-landing-hero__bar"></span>
+                    <span class="kx-landing-hero__bar"></span>
+                    <span class="kx-landing-hero__bar"></span>
                 </div>
-                <!-- Main album (center, 3D rotated) -->
-                <div class="carousel-3d-item carousel-3d-main" id="carouselMain" onclick="window._landingAbrirAlbumCarousel()">
-                    <img src="" alt="" loading="lazy">
-                    <div class="carousel-3d-light-leak"></div>
-                </div>
-                <!-- Next album (blurred, right) -->
-                <div class="carousel-3d-item carousel-3d-next" id="carouselNext">
-                    <img src="" alt="" loading="lazy">
-                </div>
-                <!-- Depth shadow under main -->
-                <div class="carousel-3d-shadow"></div>
-            </div>
 
-            <!-- Metadata HUD -->
-            <div class="carousel-hud" id="carouselHud">
-                <div class="carousel-hud-meta">
-                    <span class="carousel-hud-tracks" id="carouselTracks">01 / 00 TRACKS</span>
-                    <div class="carousel-hud-divider"></div>
-                    <span class="carousel-hud-quality">HQ Audio</span>
-                </div>
-                <h3 class="carousel-hud-title" id="carouselTitle"></h3>
-                <p class="carousel-hud-artist" id="carouselArtist"></p>
-            </div>
+                <!-- Energy Line -->
+                <div class="kx-landing-hero__line" aria-hidden="true"></div>
 
-            <!-- 3D Navigation Controls -->
-            <div class="carousel-3d-controls">
-                <button class="carousel-3d-btn carousel-3d-btn-prev" id="carouselBtnPrev" title="Anterior">
-                    <span class="material-symbols-outlined">chevron_left</span>
-                </button>
-                <div class="carousel-3d-dots" id="carouselDots"></div>
-                <button class="carousel-3d-btn carousel-3d-btn-next" id="carouselBtnNext" title="Siguiente">
-                    <span class="material-symbols-outlined">chevron_right</span>
-                </button>
-            </div>
+                <!-- Text -->
+                <p class="kx-landing-hero__tagline">La arquitectura del sonido moderno</p>
+                <p class="kx-landing-hero__desc">Plataforma musical independiente donde el 100% va directo al artista. Álbumes, beats, videos y contenido exclusivo.</p>
 
-            <!-- Stats bar -->
-            <div class="showcase-stats-bar">
-                <div class="showcase-stat">
-                    <span class="showcase-stat-label">Bitrate</span>
-                    <span class="showcase-stat-value">320 KBPS</span>
-                </div>
-                <div class="showcase-stat">
-                    <span class="showcase-stat-label">Formato</span>
-                    <span class="showcase-stat-value">HQ STREAM</span>
-                </div>
-                <div class="showcase-stat-actions">
-                    <button class="showcase-action-btn" title="Compartir">
-                        <span class="material-symbols-outlined">share</span>
-                    </button>
-                    <button class="showcase-action-btn" title="Favorito">
-                        <span class="material-symbols-outlined">favorite</span>
-                    </button>
-                    <a href="register.html" class="showcase-play-btn">
-                        <span class="material-symbols-outlined">play_arrow</span>
-                        Escuchar
+                <!-- CTAs -->
+                <div class="kx-landing-hero__actions">
+                    <a href="register.html" class="kx-btn kx-btn--solid kx-btn--lg">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Comenzar ahora
+                    </a>
+                    <a href="login.html" class="kx-btn kx-btn--ghost kx-btn--lg">
+                        Iniciar sesión
                     </a>
                 </div>
-                <div class="showcase-stat showcase-stat-right">
-                    <span class="showcase-stat-label">Mastering</span>
-                    <span class="showcase-stat-value">ELITE AUDIO</span>
+
+                <!-- Stats -->
+                <div class="kx-landing-hero__stats" aria-label="Estadísticas de la plataforma">
+                    <div class="kx-landing-hero__stat">
+                        <span class="kx-landing-hero__stat-value">100%</span>
+                        <span class="kx-landing-hero__stat-label">Directo al artista</span>
+                    </div>
+                    <div class="kx-landing-hero__stat-sep" aria-hidden="true"></div>
+                    <div class="kx-landing-hero__stat">
+                        <span class="kx-landing-hero__stat-value">HQ</span>
+                        <span class="kx-landing-hero__stat-label">Audio 320kbps+</span>
+                    </div>
+                    <div class="kx-landing-hero__stat-sep" aria-hidden="true"></div>
+                    <div class="kx-landing-hero__stat">
+                        <span class="kx-landing-hero__stat-value">$8k</span>
+                        <span class="kx-landing-hero__stat-label">COP / mes</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-<div class="section-divider"></div>
 
-<!-- ============================================
-     4️⃣ NOTICIAS — CINEMATIC GRID
-     ============================================ -->
-<section class="section" id="noticias">
-    <div class="container">
-        <div class="section-header section-header-left">
-            <div class="news-pill scroll-reveal" data-animation="fade-down">
-                <span class="material-symbols-outlined news-pill-icon">newspaper</span>
-                <span>Últimas Publicaciones</span>
-            </div>
-            <h2 class="section-title section-title-left scroll-reveal" data-animation="fade-up">
-                Noticias <span class="gradient-text">KXON</span>
-            </h2>
-            <div class="news-title-line"></div>
-        </div>
-
-        <div class="noticias-grid scroll-reveal-children" data-animation="scale-up" data-stagger="100" id="noticias-grid"></div>
-
-        <!-- Pagination -->
-        <div class="news-pagination scroll-reveal" data-animation="fade-up" data-delay="200">
-            <button class="news-pagination-btn" id="newsPrev">
-                <span class="material-symbols-outlined">chevron_left</span>
+            <!-- Scroll Indicator -->
+            <button class="kx-landing-hero__scroll" id="heroScrollBtn" type="button" aria-label="Desplazarse al contenido">
+                <span class="kx-landing-hero__scroll-text">Explorar</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                <span class="kx-landing-hero__scroll-line" aria-hidden="true"></span>
             </button>
-            <div class="news-pagination-dots" id="newsPaginationDots">
-                <span class="news-dot active"></span>
-                <span class="news-dot"></span>
-                <span class="news-dot"></span>
+        </section>
+
+        <!-- ═══════════════════════════════
+             2. VIDEO / PRESENTACIÓN
+             ═══════════════════════════════ -->
+        <section class="kx-landing-video" id="video" aria-label="Video de presentación">
+            <div class="kx-landing-video__bg" aria-hidden="true">
+                <video
+                    class="kx-landing-video__media"
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster="https://placehold.co/1920x1080/0a0a0a/111?text="
+                >
+                    <source src="https://zizbbypwvugyswjfbxr.supabase.co/storage/v1/object/public/videos/mi-presentacion2.mp4?v=2" type="video/mp4">
+                </video>
+                <div class="kx-landing-video__overlay"></div>
             </div>
-            <button class="news-pagination-btn" id="newsNext">
-                <span class="material-symbols-outlined">chevron_right</span>
+
+            <div class="kx-landing-video__content">
+                <span class="kx-badge kx-reveal" data-animation="fade-down">Presentación Oficial</span>
+                <h2 class="kx-landing-video__title kx-reveal" data-animation="fade-up" data-delay="100">
+                    Bienvenido al universo <span class="kx-gradient-text">KXON</span>
+                </h2>
+                <p class="kx-landing-video__desc kx-reveal" data-animation="fade-up" data-delay="200">
+                    Una experiencia sonora y visual única. Descubre la esencia de KXON a través de nuestra música, nuestros beats y nuestro arte.
+                </p>
+                <div class="kx-landing-video__actions kx-reveal" data-animation="fade-up" data-delay="300">
+                    <a href="register.html" class="kx-btn kx-btn--solid">Únete ahora</a>
+                    <button class="kx-btn kx-btn--ghost" id="btnVideoSound" type="button" aria-label="Activar sonido del video" aria-pressed="false">
+                        <svg class="kx-landing-video__icon-muted" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+                        </svg>
+                        <svg class="kx-landing-video__icon-unmuted" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        </svg>
+                        <span id="videoSoundText">Activar sonido</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <hr class="kx-landing-divider" aria-hidden="true">
+
+        <!-- ═══════════════════════════════
+             3. ÁLBUMES — CARRUSEL 3D
+             ═══════════════════════════════ -->
+        <section class="kx-landing-section" id="albums" aria-label="Álbumes destacados">
+            <div class="kx-container">
+                <header class="kx-landing-section__header">
+                    <span class="kx-badge kx-reveal" data-animation="fade-down">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                        Últimos Lanzamientos
+                    </span>
+                    <h2 class="kx-landing-section__title kx-reveal" data-animation="fade-up">
+                        Álbumes <span class="kx-gradient-text">Destacados</span>
+                    </h2>
+                    <p class="kx-landing-section__desc kx-reveal" data-animation="fade-up" data-delay="100">
+                        Los álbumes más recientes de nuestra colección exclusiva. Producción propia, sonido único.
+                    </p>
+                </header>
+
+                <!-- Carousel -->
+                <div class="kx-landing-carousel kx-reveal" data-animation="fade-up" data-delay="150">
+                    <div class="kx-landing-carousel__stage" id="carouselStage">
+                        <div class="kx-landing-carousel__item kx-landing-carousel__item--prev" id="carouselPrev" aria-hidden="true">
+                            <img src="" alt="" loading="lazy">
+                        </div>
+                        <button class="kx-landing-carousel__item kx-landing-carousel__item--main" id="carouselMain" type="button" aria-label="Ver detalles del álbum">
+                            <img src="" alt="" loading="lazy">
+                            <div class="kx-landing-carousel__glow" aria-hidden="true"></div>
+                        </button>
+                        <div class="kx-landing-carousel__item kx-landing-carousel__item--next" id="carouselNext" aria-hidden="true">
+                            <img src="" alt="" loading="lazy">
+                        </div>
+                        <div class="kx-landing-carousel__shadow" aria-hidden="true"></div>
+                    </div>
+
+                    <!-- HUD -->
+                    <div class="kx-landing-carousel__hud" id="carouselHud" aria-live="polite">
+                        <div class="kx-landing-carousel__meta">
+                            <span class="kx-landing-carousel__tracks" id="carouselTracks">01 / 00 TRACKS</span>
+                            <span class="kx-landing-carousel__quality">HQ Audio</span>
+                        </div>
+                        <h3 class="kx-landing-carousel__title" id="carouselTitle"></h3>
+                        <p class="kx-landing-carousel__artist" id="carouselArtist"></p>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="kx-landing-carousel__controls">
+                        <button class="kx-landing-carousel__btn" id="carouselBtnPrev" type="button" aria-label="Álbum anterior">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <div class="kx-landing-carousel__dots" id="carouselDots" role="tablist" aria-label="Selector de álbum"></div>
+                        <button class="kx-landing-carousel__btn" id="carouselBtnNext" type="button" aria-label="Álbum siguiente">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="kx-landing-carousel__stats">
+                        <div class="kx-landing-carousel__stat">
+                            <span class="kx-landing-carousel__stat-label">Bitrate</span>
+                            <span class="kx-landing-carousel__stat-value">320 KBPS</span>
+                        </div>
+                        <a href="register.html" class="kx-btn kx-btn--solid kx-btn--sm">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            Escuchar
+                        </a>
+                        <div class="kx-landing-carousel__stat kx-landing-carousel__stat--end">
+                            <span class="kx-landing-carousel__stat-label">Calidad</span>
+                            <span class="kx-landing-carousel__stat-value">ELITE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="kx-landing-divider" aria-hidden="true">
+
+        <!-- ═══════════════════════════════
+             4. NOTICIAS
+             ═══════════════════════════════ -->
+        <section class="kx-landing-section" id="news" aria-label="Noticias recientes">
+            <div class="kx-container">
+                <header class="kx-landing-section__header kx-landing-section__header--start">
+                    <span class="kx-badge kx-reveal" data-animation="fade-down">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg>
+                        Últimas Publicaciones
+                    </span>
+                    <h2 class="kx-landing-section__title kx-reveal" data-animation="fade-up">
+                        Noticias <span class="kx-gradient-text">KXON</span>
+                    </h2>
+                </header>
+
+                <!-- News Grid (dynamic) -->
+                <div class="kx-landing-news" id="newsGrid" aria-label="Lista de noticias"></div>
+
+                <!-- Pagination -->
+                <nav class="kx-landing-news__pagination kx-reveal" data-animation="fade-up" data-delay="200" aria-label="Paginación de noticias">
+                    <button class="kx-landing-news__page-btn" id="newsPrev" type="button" aria-label="Página anterior">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <div class="kx-landing-news__dots" id="newsPaginationDots" role="tablist" aria-label="Páginas de noticias"></div>
+                    <button class="kx-landing-news__page-btn" id="newsNext" type="button" aria-label="Página siguiente">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </nav>
+            </div>
+        </section>
+
+        <hr class="kx-landing-divider" aria-hidden="true">
+
+        <!-- ═══════════════════════════════
+             5. ¿POR QUÉ KXON?
+             ═══════════════════════════════ -->
+        <section class="kx-landing-section kx-landing-section--why" id="why" aria-label="Ventajas de KXON">
+            <div class="kx-container">
+                <header class="kx-landing-section__header">
+                    <span class="kx-badge kx-reveal" data-animation="fade-down">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        Exclusivo
+                    </span>
+                    <h2 class="kx-landing-section__title kx-reveal" data-animation="fade-up">
+                        ¿Por qué <span class="kx-gradient-text">KXON</span>?
+                    </h2>
+                    <p class="kx-landing-section__desc kx-reveal" data-animation="fade-up" data-delay="100">
+                        La infraestructura definitiva para la música independiente. Transparencia absoluta y calidad sin compromiso.
+                    </p>
+                </header>
+
+                <div class="kx-landing-why">
+                    <article class="kx-landing-why__card kx-reveal" data-animation="scale-up" data-delay="0">
+                        <div class="kx-landing-why__icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        </div>
+                        <h3 class="kx-landing-why__title">100% Directo</h3>
+                        <p class="kx-landing-why__desc">Conexión directa artista-fan. Sin intermediarios, sin sellos. Tu suscripción va íntegra al creador.</p>
+                    </article>
+                    <article class="kx-landing-why__card kx-reveal" data-animation="scale-up" data-delay="80">
+                        <div class="kx-landing-why__icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <h3 class="kx-landing-why__title">Marketplace</h3>
+                        <p class="kx-landing-why__desc">Compra beats exclusivos, solicita producciones personalizadas y accede a contenido premium.</p>
+                    </article>
+                    <article class="kx-landing-why__card kx-reveal" data-animation="scale-up" data-delay="160">
+                        <div class="kx-landing-why__icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                        </div>
+                        <h3 class="kx-landing-why__title">Audio HQ</h3>
+                        <p class="kx-landing-why__desc">Streaming de alta fidelidad a 320kbps. Producción y mastering con los más altos estándares.</p>
+                    </article>
+                    <article class="kx-landing-why__card kx-reveal" data-animation="scale-up" data-delay="240">
+                        <div class="kx-landing-why__icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h3 class="kx-landing-why__title">Transparencia</h3>
+                        <p class="kx-landing-why__desc">Cada transacción y cada stream es transparente. Sabes exactamente a dónde va tu dinero.</p>
+                    </article>
+                    <article class="kx-landing-why__card kx-reveal" data-animation="scale-up" data-delay="320">
+                        <div class="kx-landing-why__icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </div>
+                        <h3 class="kx-landing-why__title">Acceso Global</h3>
+                        <p class="kx-landing-why__desc">Sin fronteras. Tu música disponible en cualquier dispositivo, en cualquier lugar del mundo.</p>
+                    </article>
+                    <article class="kx-landing-why__card kx-reveal" data-animation="scale-up" data-delay="400">
+                        <div class="kx-landing-why__icon" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <h3 class="kx-landing-why__title">Privacidad Total</h3>
+                        <p class="kx-landing-why__desc">Tus datos protegidos. Protocolos de seguridad avanzados para tu tranquilidad.</p>
+                    </article>
+                </div>
+
+                <!-- Stats HUD -->
+                <div class="kx-landing-why__hud kx-reveal" data-animation="fade-up" data-delay="100">
+                    <div class="kx-landing-why__hud-stat">
+                        <span class="kx-landing-why__hud-label">Pago Directo</span>
+                        <span class="kx-landing-why__hud-value kx-counter" data-target="100" data-suffix="%">0%</span>
+                    </div>
+                    <div class="kx-landing-why__hud-sep" aria-hidden="true"></div>
+                    <div class="kx-landing-why__hud-stat">
+                        <span class="kx-landing-why__hud-label">Intermediarios</span>
+                        <span class="kx-landing-why__hud-value">00</span>
+                    </div>
+                    <div class="kx-landing-why__hud-sep" aria-hidden="true"></div>
+                    <div class="kx-landing-why__hud-stat">
+                        <span class="kx-landing-why__hud-label">Audio</span>
+                        <span class="kx-landing-why__hud-value kx-landing-why__hud-value--accent">320 KBPS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kx-landing-glow kx-landing-glow--left" aria-hidden="true"></div>
+            <div class="kx-landing-glow kx-landing-glow--right" aria-hidden="true"></div>
+        </section>
+
+        <hr class="kx-landing-divider" aria-hidden="true">
+
+        <!-- ═══════════════════════════════
+             6. PLANES
+             ═══════════════════════════════ -->
+        <section class="kx-landing-section" id="plans" aria-label="Planes de suscripción">
+            <div class="kx-container">
+                <header class="kx-landing-section__header">
+                    <span class="kx-badge kx-reveal" data-animation="fade-down">Suscripciones</span>
+                    <h2 class="kx-landing-section__title kx-reveal" data-animation="fade-up">
+                        Elige tu <span class="kx-gradient-text">Plan</span>
+                    </h2>
+                    <p class="kx-landing-section__desc kx-reveal" data-animation="fade-up" data-delay="100">
+                        Acceso exclusivo a la vanguardia de la música digital. Selecciona tu experiencia.
+                    </p>
+                </header>
+
+                <div class="kx-landing-plans">
+                    <!-- Plan Básico -->
+                    <article class="kx-landing-plan kx-reveal" data-animation="fade-up" data-delay="0" aria-label="Plan Básico">
+                        <div class="kx-landing-plan__header">
+                            <h3 class="kx-landing-plan__name">Plan Básico</h3>
+                            <p class="kx-landing-plan__tagline">Esencial para oyentes puros</p>
+                        </div>
+                        <div class="kx-landing-plan__price">
+                            <span class="kx-landing-plan__amount">$8.000</span>
+                            <span class="kx-landing-plan__period">/mes</span>
+                        </div>
+                        <ul class="kx-landing-plan__features" role="list">
+                            <li class="kx-landing-plan__feature">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Streaming ilimitado
+                            </li>
+                            <li class="kx-landing-plan__feature">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Radio KXON 24/7
+                            </li>
+                            <li class="kx-landing-plan__feature">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Playlists personalizadas
+                            </li>
+                            <li class="kx-landing-plan__feature">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Historial y favoritos
+                            </li>
+                            <li class="kx-landing-plan__feature">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Calidad Estándar 320kbps
+                            </li>
+                        </ul>
+                        <a href="register.html" class="kx-btn kx-btn--ghost kx-btn--full">Seleccionar Básico</a>
+                    </article>
+
+                    <!-- Plan Pro -->
+                    <article class="kx-landing-plan kx-landing-plan--pro kx-reveal" data-animation="fade-up" data-delay="150" aria-label="Plan Pro — Recomendado">
+                        <span class="kx-landing-plan__badge">Recomendado</span>
+                        <div class="kx-landing-plan__header">
+                            <h3 class="kx-landing-plan__name">Plan Pro</h3>
+                            <p class="kx-landing-plan__tagline">Experiencia completa</p>
+                        </div>
+                        <div class="kx-landing-plan__price">
+                            <span class="kx-landing-plan__amount">$15.000</span>
+                            <span class="kx-landing-plan__period">/mes</span>
+                        </div>
+                        <ul class="kx-landing-plan__features" role="list">
+                            <li class="kx-landing-plan__feature kx-landing-plan__feature--pro">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Todo el Plan Básico
+                            </li>
+                            <li class="kx-landing-plan__feature kx-landing-plan__feature--pro">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Videos y documentales 4K
+                            </li>
+                            <li class="kx-landing-plan__feature kx-landing-plan__feature--pro">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Marketplace de beats
+                            </li>
+                            <li class="kx-landing-plan__feature kx-landing-plan__feature--pro">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Chat directo con el artista
+                            </li>
+                            <li class="kx-landing-plan__feature kx-landing-plan__feature--pro">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Transmisiones en vivo
+                            </li>
+                            <li class="kx-landing-plan__feature kx-landing-plan__feature--pro">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                Beats personalizados
+                            </li>
+                        </ul>
+                        <a href="register.html" class="kx-btn kx-btn--solid kx-btn--full">Suscribirse al Pro</a>
+                    </article>
+                </div>
+
+                <p class="kx-landing-plans__note kx-reveal" data-animation="fade-up" data-delay="200">
+                    Sin renovación automática · Cancela cuando quieras · Pago por Nequi
+                </p>
+            </div>
+        </section>
+
+        <hr class="kx-landing-divider" aria-hidden="true">
+
+        <!-- ═══════════════════════════════
+             7. FAQ
+             ═══════════════════════════════ -->
+        <section class="kx-landing-section" id="faq" aria-label="Preguntas frecuentes">
+            <div class="kx-container">
+                <header class="kx-landing-section__header">
+                    <span class="kx-badge kx-reveal" data-animation="fade-down">Dudas</span>
+                    <h2 class="kx-landing-section__title kx-reveal" data-animation="fade-up">Preguntas Frecuentes</h2>
+                    <p class="kx-landing-section__desc kx-reveal" data-animation="fade-up" data-delay="100">Todo lo que necesitas saber sobre KXON</p>
+                </header>
+
+                <div class="kx-landing-faq">
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="0">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Qué es KXON?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>KXON es una plataforma musical independiente donde puedes escuchar música exclusiva, ver videos, documentales, comprar beats y tener contacto directo con el artista. El 100% de tu suscripción va directo al artista, sin intermediarios.</p>
+                        </div>
+                    </details>
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="60">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Por qué es más barato que Spotify?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>Porque no tenemos los costos de las grandes plataformas. KXON es una plataforma independiente que conecta directamente al artista con sus fans. Sin intermediarios = precio más bajo para ti y más ingresos para el artista.</p>
+                        </div>
+                    </details>
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="120">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Cómo pago mi suscripción?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>El pago se realiza por transferencia Nequi al número 318 453 0020. Subes el comprobante de pago en la plataforma y el administrador verifica y activa tu suscripción. El proceso puede tomar hasta 24 horas.</p>
+                        </div>
+                    </details>
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="180">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Puedo instalar KXON como app?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>¡Sí! KXON es una PWA (Progressive Web App). En Android puedes descargar el APK directamente. En iPhone, abre la página en Safari, toca el botón de compartir y selecciona "Agregar a pantalla de inicio".</p>
+                        </div>
+                    </details>
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="240">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Qué incluye el Plan Pro?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>El Plan Pro incluye acceso a TODO: álbumes completos, todas las canciones, radio, videos exclusivos, documentales, transmisiones en vivo, chat directo con el artista, marketplace de beats y la posibilidad de solicitar beats personalizados.</p>
+                        </div>
+                    </details>
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="300">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Mi suscripción se renueva automáticamente?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>No. Las suscripciones en KXON no se renuevan automáticamente. Cuando tu plan venza, puedes renovar manualmente cuando quieras. Te enviaremos un recordatorio antes de que expire.</p>
+                        </div>
+                    </details>
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="360">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Puedo solicitar un beat personalizado?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>Sí, con el Plan Pro puedes acceder a la sección de Solicitar Beat donde describes el estilo, género, BPM y mood que necesitas. El productor revisará tu solicitud y te enviará una propuesta con precio y tiempo de entrega.</p>
+                        </div>
+                    </details>
+                    <details class="kx-landing-faq__item kx-reveal" data-animation="fade-up" data-delay="420">
+                        <summary class="kx-landing-faq__question">
+                            <span>¿Cómo contacto al artista?</span>
+                            <svg class="kx-landing-faq__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </summary>
+                        <div class="kx-landing-faq__answer">
+                            <p>Con el Plan Pro tienes acceso al Chat en tiempo real dentro de la plataforma. También puedes contactarnos por WhatsApp al +57 318 453 0020 para cualquier consulta.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <hr class="kx-landing-divider" aria-hidden="true">
+
+        <!-- ═══════════════════════════════
+             8. DESCARGA LA APP
+             ═══════════════════════════════ -->
+        <section class="kx-landing-section kx-landing-section--download" id="download" aria-label="Descargar la aplicación">
+            <div class="kx-container">
+                <header class="kx-landing-section__header">
+                    <span class="kx-badge kx-reveal" data-animation="fade-down">Disponible para móvil</span>
+                    <h2 class="kx-landing-section__title kx-reveal" data-animation="fade-up">
+                        Descarga <span class="kx-gradient-text">KXON</span>
+                    </h2>
+                    <p class="kx-landing-section__desc kx-reveal" data-animation="fade-up" data-delay="100">
+                        Lleva tu música a todas partes
+                    </p>
+                </header>
+
+                <div class="kx-landing-download">
+                    <!-- Content Side -->
+                    <div class="kx-landing-download__content">
+                        <ul class="kx-landing-download__features kx-reveal" data-animation="fade-up" role="list">
+                            <li class="kx-landing-download__feature">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                                Música sin límites
+                            </li>
+                            <li class="kx-landing-download__feature">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                                Radio KXON 24/7
+                            </li>
+                            <li class="kx-landing-download__feature">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                                Compra beats exclusivos
+                            </li>
+                            <li class="kx-landing-download__feature">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                Notificaciones en tiempo real
+                            </li>
+                            <li class="kx-landing-download__feature">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                                Crea tus playlists
+                            </li>
+                            <li class="kx-landing-download__feature">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                                Videos exclusivos
+                            </li>
+                        </ul>
+
+                        <!-- Platform buttons -->
+                        <div class="kx-landing-download__platforms">
+                            <a href="downloads/kxon-app.apk" download="KXON.apk" class="kx-landing-download__platform kx-reveal" data-animation="fade-up" data-delay="100">
+                                <div class="kx-landing-download__platform-icon" aria-hidden="true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 2.238a.844.844 0 0 0-.372.073l-7.07 3.394L5.3 3.248l-.09-.036a.844.844 0 0 0-1.032.406L3.07 5.9a.844.844 0 0 0 .363 1.107L5.6 8.244 3.433 12.61a.844.844 0 0 0 .363 1.107l2.267 1.237-1.108 2.282a.844.844 0 0 0 .363 1.107l2.594 1.413a.844.844 0 0 0 1.107-.363l1.108-2.282 4.82 2.595L18.024 12l-3.077-5.998 3.077-1.478a.844.844 0 0 0 .5-1.016l-.463-1.014a.844.844 0 0 0-.538-.256z"/></svg>
+                                </div>
+                                <div class="kx-landing-download__platform-info">
+                                    <span class="kx-landing-download__platform-label">Descargar para</span>
+                                    <span class="kx-landing-download__platform-name">Android</span>
+                                    <span class="kx-landing-download__platform-detail">APK · Android 8.0+</span>
+                                </div>
+                                <svg class="kx-landing-download__platform-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            </a>
+
+                            <button class="kx-landing-download__platform kx-landing-download__platform--ios kx-reveal" data-animation="fade-up" data-delay="200" id="btnIosInstall" type="button">
+                                <div class="kx-landing-download__platform-icon" aria-hidden="true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                                </div>
+                                <div class="kx-landing-download__platform-info">
+                                    <span class="kx-landing-download__platform-label">Instalar en</span>
+                                    <span class="kx-landing-download__platform-name">iPhone / iPad</span>
+                                    <span class="kx-landing-download__platform-detail">Agregar desde Safari</span>
+                                </div>
+                                <svg class="kx-landing-download__platform-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            </button>
+                        </div>
+
+                        <p class="kx-landing-download__hint kx-reveal" data-animation="fade-up" data-delay="300">
+                            Para Android, tu dispositivo puede pedir permiso para instalar desde fuentes externas. Es completamente seguro.
+                        </p>
+                    </div>
+
+                    <!-- Phone Mockup -->
+                    <div class="kx-landing-download__mockup kx-reveal" data-animation="fade-up" data-delay="200" aria-hidden="true">
+                        <div class="kx-landing-phone">
+                            <div class="kx-landing-phone__notch"></div>
+                            <div class="kx-landing-phone__screen">
+                                <img src="icons/screenshot-mobile.png" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                <div class="kx-landing-phone__fallback">
+                                    <span class="kx-landing-phone__logo kx-gradient-text">KXON</span>
+                                    <span class="kx-landing-phone__tagline">Tu música, tu mundo</span>
+                                    <div class="kx-landing-phone__ui">
+                                        <div class="kx-landing-phone__bar"></div>
+                                        <div class="kx-landing-phone__cards">
+                                            <div class="kx-landing-phone__card"></div>
+                                            <div class="kx-landing-phone__card"></div>
+                                        </div>
+                                        <div class="kx-landing-phone__player"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kx-landing-phone__glow"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="kx-landing-divider" aria-hidden="true">
+
+        <!-- ═══════════════════════════════
+             9. CTA FINAL
+             ═══════════════════════════════ -->
+        <section class="kx-landing-section kx-landing-section--cta" aria-label="Llamada a la acción final">
+            <div class="kx-container">
+                <div class="kx-landing-cta kx-reveal" data-animation="fade-up">
+                    <h2 class="kx-landing-cta__title">
+                        ¿Listo para la <span class="kx-gradient-text">experiencia</span>?
+                    </h2>
+                    <p class="kx-landing-cta__desc">
+                        Únete a KXON y descubre una nueva forma de conectar con la música. Directo del artista, para ti.
+                    </p>
+                    <div class="kx-landing-cta__actions">
+                        <a href="register.html" class="kx-btn kx-btn--solid kx-btn--lg">Crear cuenta gratis</a>
+                        <a href="#plans" class="kx-btn kx-btn--ghost kx-btn--lg">Ver planes</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ════════════════════════════════════
+         FOOTER
+         ════════════════════════════════════ -->
+    <footer class="kx-landing-footer">
+        <div class="kx-container">
+            <div class="kx-landing-footer__content">
+                <div class="kx-landing-footer__brand">
+                    <span class="kx-landing-footer__logo kx-gradient-text">KXON</span>
+                    <p class="kx-landing-footer__tagline">Tu plataforma musical exclusiva</p>
+                </div>
+                <nav class="kx-landing-footer__nav" aria-label="Navegación del footer">
+                    <a href="#plans" class="kx-landing-footer__link">Planes</a>
+                    <a href="#download" class="kx-landing-footer__link">Descargar App</a>
+                    <a href="#faq" class="kx-landing-footer__link">FAQ</a>
+                    <a href="terms.html" class="kx-landing-footer__link">Términos</a>
+                    <a href="login.html" class="kx-landing-footer__link">Iniciar Sesión</a>
+                    <a href="register.html" class="kx-landing-footer__link">Registrarse</a>
+                </nav>
+            </div>
+            <hr class="kx-landing-footer__divider" aria-hidden="true">
+            <p class="kx-landing-footer__copy">
+                © 2025 <strong>KXON</strong> — Todos los derechos reservados — Colombia 🇨🇴
+            </p>
+        </div>
+    </footer>
+
+    <!-- ════════════════════════════════════
+         MODALES
+         ════════════════════════════════════ -->
+
+    <!-- Modal: iOS Install -->
+    <div class="kx-landing-modal" id="iosModal" role="dialog" aria-modal="true" aria-labelledby="iosModalTitle" hidden>
+        <div class="kx-landing-modal__backdrop"></div>
+        <div class="kx-landing-modal__container">
+            <button class="kx-landing-modal__close" type="button" aria-label="Cerrar modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="kx-landing-modal__body">
+                <div class="kx-landing-modal__icon" aria-hidden="true">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                </div>
+                <h2 class="kx-landing-modal__title" id="iosModalTitle">Instalar KXON en iPhone</h2>
+                <p class="kx-landing-modal__desc">Sigue estos pasos para agregar KXON como app en tu iPhone o iPad</p>
+                <ol class="kx-landing-ios-steps">
+                    <li class="kx-landing-ios-step">
+                        <span class="kx-landing-ios-step__num" aria-hidden="true">1</span>
+                        <div class="kx-landing-ios-step__content">
+                            <strong>Abre Safari</strong>
+                            <span>Ve a <strong>kxon-music.vercel.app</strong> usando Safari (no Chrome)</span>
+                        </div>
+                    </li>
+                    <li class="kx-landing-ios-step">
+                        <span class="kx-landing-ios-step__num" aria-hidden="true">2</span>
+                        <div class="kx-landing-ios-step__content">
+                            <strong>Toca Compartir</strong>
+                            <span>Toca el ícono de compartir ⬆️ en la barra inferior</span>
+                        </div>
+                    </li>
+                    <li class="kx-landing-ios-step">
+                        <span class="kx-landing-ios-step__num" aria-hidden="true">3</span>
+                        <div class="kx-landing-ios-step__content">
+                            <strong>Agregar a inicio</strong>
+                            <span>Selecciona "Agregar a pantalla de inicio"</span>
+                        </div>
+                    </li>
+                    <li class="kx-landing-ios-step">
+                        <span class="kx-landing-ios-step__num" aria-hidden="true">4</span>
+                        <div class="kx-landing-ios-step__content">
+                            <strong>¡Listo!</strong>
+                            <span>Toca "Agregar" y KXON aparecerá como app</span>
+                        </div>
+                    </li>
+                </ol>
+                <button class="kx-btn kx-btn--solid" type="button" data-close-modal>Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Noticia -->
+    <div class="kx-landing-modal" id="modalNoticia" role="dialog" aria-modal="true" aria-labelledby="noticiaModalTitle" hidden>
+        <div class="kx-landing-modal__backdrop"></div>
+        <div class="kx-landing-modal__container">
+            <button class="kx-landing-modal__close" type="button" aria-label="Cerrar modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="kx-landing-modal__img" id="noticiaImgWrap" hidden>
+                <img id="noticiaImg" src="" alt="" loading="lazy">
+            </div>
+            <div class="kx-landing-modal__body">
+                <span class="kx-landing-modal__date" id="noticiaFecha"></span>
+                <h2 class="kx-landing-modal__title" id="noticiaModalTitle"></h2>
+                <p class="kx-landing-modal__text" id="noticiaDesc"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Álbum -->
+    <div class="kx-landing-modal" id="modalAlbum" role="dialog" aria-modal="true" aria-labelledby="albumModalTitle" hidden>
+        <div class="kx-landing-modal__backdrop"></div>
+        <div class="kx-landing-modal__container">
+            <button class="kx-landing-modal__close" type="button" aria-label="Cerrar modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="kx-landing-modal-album__header">
+                <div class="kx-landing-modal-album__cover">
+                    <img id="albumCover" src="" alt="" loading="lazy">
+                </div>
+                <div class="kx-landing-modal-album__info">
+                    <h2 class="kx-landing-modal__title" id="albumModalTitle"></h2>
+                    <p class="kx-landing-modal-album__desc" id="albumDesc"></p>
+                    <span class="kx-landing-modal-album__meta" id="albumMeta"></span>
+                </div>
+            </div>
+            <div class="kx-landing-modal-album__tracks">
+                <h4 class="kx-landing-modal-album__tracks-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                    Canciones
+                </h4>
+                <div class="kx-landing-modal-album__list" id="albumTracks"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Social -->
+    <div class="kx-landing-floating" id="floatingSocial" aria-label="Compartir en redes sociales">
+        <div class="kx-landing-floating__links" id="floatingLinks" hidden>
+            <a href="https://wa.me/?text=Descubre%20KXON%20%E2%80%94%20Plataforma%20musical%20donde%20el%20100%25%20va%20directo%20al%20artista%20%F0%9F%8E%B5%20https%3A%2F%2Fkxon-music.vercel.app" target="_blank" rel="noopener noreferrer" class="kx-landing-floating__btn kx-landing-floating__btn--whatsapp" aria-label="Compartir en WhatsApp">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://kxon-music.vercel.app" target="_blank" rel="noopener noreferrer" class="kx-landing-floating__btn kx-landing-floating__btn--facebook" aria-label="Compartir en Facebook">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <button class="kx-landing-floating__btn kx-landing-floating__btn--share" id="btnShare" type="button" aria-label="Copiar enlace de KXON">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
             </button>
         </div>
-    </div>
-</section>
-<div class="section-divider"></div>
-
-<!-- ============================================
-     5️⃣ ¿POR QUÉ KXON? — GLASS MONOLITH
-     ============================================ -->
-<section class="section section-why" id="por-que-kxon">
-    <div class="container">
-        <div class="section-header">
-            <div class="why-pill scroll-reveal" data-animation="fade-down">
-                <span class="material-symbols-outlined">diamond</span>
-                <span>Exclusivo</span>
-            </div>
-            <h2 class="section-title scroll-reveal" data-animation="fade-up">¿Por qué <span class="gradient-text">KXON</span>?</h2>
-            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">La infraestructura definitiva para la música de élite. Transparencia absoluta y calidad sin compromiso.</p>
-        </div>
-
-        <div class="why-grid">
-            <div class="why-card scroll-reveal" data-animation="scale-up" data-delay="0">
-                <div class="why-card-icon">
-                    <span class="material-symbols-outlined">hub</span>
-                </div>
-                <h3 class="why-card-title">100% Directo</h3>
-                <p class="why-card-desc">Eliminamos las barreras tradicionales. Conexión directa artista-fan cifrada de punto a punto.</p>
-            </div>
-            <div class="why-card scroll-reveal" data-animation="scale-up" data-delay="80">
-                <div class="why-card-icon">
-                    <span class="material-symbols-outlined">storefront</span>
-                </div>
-                <h3 class="why-card-title">Marketplace</h3>
-                <p class="why-card-desc">Acceso a un mercado de activos digitales musicales de alta fidelidad y valorización constante.</p>
-            </div>
-            <div class="why-card scroll-reveal" data-animation="scale-up" data-delay="160">
-                <div class="why-card-icon">
-                    <span class="material-symbols-outlined">graphic_eq</span>
-                </div>
-                <h3 class="why-card-title">Audio Mastery</h3>
-                <p class="why-card-desc">Streaming sin pérdida en formato Hi-Res certificado por los estándares más altos de la industria.</p>
-            </div>
-            <div class="why-card scroll-reveal" data-animation="scale-up" data-delay="240">
-                <div class="why-card-icon">
-                    <span class="material-symbols-outlined">verified_user</span>
-                </div>
-                <h3 class="why-card-title">Transparencia</h3>
-                <p class="why-card-desc">Cada transacción, cada stream y cada regalía es verificada en tiempo real sobre protocolos blockchain.</p>
-            </div>
-            <div class="why-card scroll-reveal" data-animation="scale-up" data-delay="320">
-                <div class="why-card-icon">
-                    <span class="material-symbols-outlined">public</span>
-                </div>
-                <h3 class="why-card-title">Acceso Global</h3>
-                <p class="why-card-desc">Sin fronteras geográficas ni restricciones de distribución. Tu música disponible en todo el planeta.</p>
-            </div>
-            <div class="why-card scroll-reveal" data-animation="scale-up" data-delay="400">
-                <div class="why-card-icon">
-                    <span class="material-symbols-outlined">privacy_tip</span>
-                </div>
-                <h3 class="why-card-title">Privacidad Total</h3>
-                <p class="why-card-desc">Protocolos de seguridad de grado militar para perfiles de alto nivel y transacciones confidenciales.</p>
-            </div>
-        </div>
-
-        <!-- HUD Stats Bar -->
-        <div class="why-hud-bar scroll-reveal" data-animation="fade-up" data-delay="100">
-            <div class="why-hud-stat">
-                <span class="why-hud-label">Pago Directo</span>
-                <span class="why-hud-value counter-animate" data-target="100" data-suffix="%">0%</span>
-            </div>
-            <div class="why-hud-pulse"></div>
-            <div class="why-hud-stat">
-                <span class="why-hud-label">Intermediarios</span>
-                <span class="why-hud-value">00</span>
-            </div>
-            <div class="why-hud-pulse"></div>
-            <div class="why-hud-stat">
-                <span class="why-hud-label">Sincronización</span>
-                <span class="why-hud-value why-hud-value-accent">2026 READY</span>
-            </div>
-            <div class="why-hud-pulse"></div>
-            <div class="why-hud-stat">
-                <span class="why-hud-label">Audio Fidelity</span>
-                <span class="why-hud-value">24-BIT HI-RES</span>
-            </div>
-        </div>
-
-        <!-- Decorative HUD Info -->
-        <div class="why-hud-footer">
-            <span>System Status: Optimal</span>
-            <span class="why-hud-footer-accent">KXON_OS v4.2.0-ELITE</span>
-            <span>Security Protocol: Active</span>
-        </div>
+        <button class="kx-landing-floating__toggle" id="floatingToggle" type="button" aria-label="Abrir opciones de compartir" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
     </div>
 
-    <!-- Floating gradients -->
-    <div class="why-glow why-glow-left"></div>
-    <div class="why-glow why-glow-right"></div>
-</section>
-<div class="section-divider"></div>
+    <!-- Toast Container -->
+    <div class="kx-toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
-<!-- ============================================
-     6️⃣ PLANES — GLASS CARDS
-     ============================================ -->
-<section class="section section-planes" id="planes">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-label scroll-reveal" data-animation="fade-down">Suscripciones</div>
-            <h2 class="section-title scroll-reveal" data-animation="fade-up">Elige tu <span class="gradient-text">Plan</span></h2>
-            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Acceso exclusivo a la vanguardia de la música digital. Selecciona tu nivel de experiencia en KXON.</p>
-        </div>
-
-        <div class="planes-landing-grid">
-            <!-- Plan Básico -->
-            <div class="plan-landing-card scroll-reveal" data-animation="slide-right" data-delay="0">
-                <div class="plan-landing-header">
-                    <h3 class="plan-landing-name">Plan Básico</h3>
-                    <p class="plan-landing-tagline">Esencial para oyentes puros.</p>
-                </div>
-                <div class="plan-landing-price-wrap">
-                    <span class="plan-landing-price">$8.000</span>
-                    <span class="plan-landing-period">/mes</span>
-                </div>
-                <div class="plan-landing-features">
-                    <div class="plan-landing-feature included">
-                        <span class="material-symbols-outlined plan-feature-check">check_circle</span>
-                        <span>Streaming ilimitado</span>
-                    </div>
-                    <div class="plan-landing-feature included">
-                        <span class="material-symbols-outlined plan-feature-check">check_circle</span>
-                        <span>Radio KXON 24/7</span>
-                    </div>
-                    <div class="plan-landing-feature included">
-                        <span class="material-symbols-outlined plan-feature-check">check_circle</span>
-                        <span>Playlists personalizadas</span>
-                    </div>
-                    <div class="plan-landing-feature included">
-                        <span class="material-symbols-outlined plan-feature-check">check_circle</span>
-                        <span>Historial y favoritos</span>
-                    </div>
-                    <div class="plan-landing-feature included">
-                        <span class="material-symbols-outlined plan-feature-check">check_circle</span>
-                        <span>Calidad Estándar 320kbps</span>
-                    </div>
-                </div>
-                <a href="register.html" class="plan-landing-btn magnetic-btn">Seleccionar Básico</a>
-            </div>
-
-            <!-- Plan Pro -->
-            <div class="plan-landing-card plan-landing-pro scroll-reveal" data-animation="slide-left" data-delay="150">
-                <div class="plan-landing-header">
-                    <h3 class="plan-landing-name">Plan Pro</h3>
-                    <div class="plan-pro-badge">
-                        <span>Experiencia Elite</span>
-                    </div>
-                </div>
-                <div class="plan-pro-icon">
-                    <span class="material-symbols-outlined">workspace_premium</span>
-                </div>
-                <div class="plan-landing-price-wrap">
-                    <span class="plan-landing-price">$15.000</span>
-                    <span class="plan-landing-period">/mes</span>
-                </div>
-                <div class="plan-landing-features">
-                    <div class="plan-landing-feature included pro">
-                        <span class="material-symbols-outlined plan-feature-check-pro">check_circle</span>
-                        <span>Acceso total a Álbumes HQ</span>
-                    </div>
-                    <div class="plan-landing-feature included pro">
-                        <span class="material-symbols-outlined plan-feature-check-pro">check_circle</span>
-                        <span>Contenido en Video 4K & Spatial</span>
-                    </div>
-                    <div class="plan-landing-feature included pro">
-                        <span class="material-symbols-outlined plan-feature-check-pro">check_circle</span>
-                        <span>Marketplace Exclusivo KXON</span>
-                    </div>
-                    <div class="plan-landing-feature included pro">
-                        <span class="material-symbols-outlined plan-feature-check-pro">check_circle</span>
-                        <span>Chat directo con el artista</span>
-                    </div>
-                    <div class="plan-landing-feature included pro">
-                        <span class="material-symbols-outlined plan-feature-check-pro">check_circle</span>
-                        <span>Sonido Hi-Fi Lossless Ultra</span>
-                    </div>
-                    <div class="plan-landing-feature included pro">
-                        <span class="material-symbols-outlined plan-feature-check-pro">check_circle</span>
-                        <span>En Vivo & Documentales</span>
-                    </div>
-                </div>
-                <a href="register.html" class="plan-landing-btn plan-landing-btn-pro magnetic-btn">
-                    🎫 Suscribirse al Pro
-                </a>
-            </div>
-        </div>
-
-        <p class="planes-disclaimer scroll-reveal" data-animation="fade-up" data-delay="200">
-            * KXON Elite Network — Estándares de Seguridad Biométrica Aplicados
-        </p>
-    </div>
-</section>
-<div class="section-divider"></div>
-
-<!-- ============================================
-     7️⃣ PREGUNTAS FRECUENTES
-     ============================================ -->
-<section class="section" id="faq">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-label scroll-reveal" data-animation="fade-down">Dudas</div>
-            <h2 class="section-title scroll-reveal" data-animation="fade-up">Preguntas Frecuentes</h2>
-            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Todo lo que necesitas saber sobre KXON</p>
-        </div>
-        <div class="faq-list">
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="0" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Qué es KXON?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">KXON es una plataforma musical independiente donde puedes escuchar música exclusiva, ver videos, documentales, comprar beats y tener contacto directo con el artista. El 100% de tu suscripción va directo al artista, sin intermediarios.</div></div>
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="60" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Por qué es más barato que Spotify?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">Porque no tenemos los costos de las grandes plataformas (servidores masivos, licencias con sellos, etc.). KXON es una plataforma independiente que conecta directamente al artista con sus fans. Sin intermediarios = precio más bajo para ti y más ingresos para el artista.</div></div>
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="120" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Cómo pago mi suscripción?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">El pago se realiza por transferencia Nequi al número 318 453 0020. Subes el comprobante de pago en la plataforma y el administrador verifica y activa tu suscripción. El proceso puede tomar hasta 24 horas.</div></div>
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="180" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Puedo instalar KXON como app?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">¡Sí! KXON es una PWA (Progressive Web App). En Android puedes descargar el APK directamente. En iPhone, abre la página en Safari, toca el botón de compartir y selecciona "Agregar a pantalla de inicio". También está disponible para Windows.</div></div>
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="240" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Qué incluye el Plan Pro?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">El Plan Pro incluye acceso a TODO el contenido: álbumes completos, todas las canciones, radio, videos exclusivos, documentales, transmisiones en vivo, chat directo con el artista, marketplace de beats y la posibilidad de solicitar beats personalizados.</div></div>
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="300" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Mi suscripción se renueva automáticamente?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">No. Las suscripciones en KXON no se renuevan automáticamente. Cuando tu plan venza, puedes renovar manualmente cuando quieras. Te enviaremos un recordatorio antes de que expire.</div></div>
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="360" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Puedo solicitar un beat personalizado?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">Sí, con el Plan Pro puedes acceder a la sección de Solicitar Beat donde describes el estilo, género, BPM y mood que necesitas. El productor revisará tu solicitud y te enviará una propuesta con precio y tiempo de entrega.</div></div>
-            <div class="faq-item scroll-reveal" data-animation="slide-right" data-delay="420" onclick="this.classList.toggle('open')"><div class="faq-question"><span>¿Cómo contacto al artista?</span><span class="faq-arrow">▸</span></div><div class="faq-answer">Con el Plan Pro tienes acceso al Chat en tiempo real dentro de la plataforma. También puedes contactarnos por WhatsApp al +57 318 453 0020 para cualquier consulta.</div></div>
-        </div>
-    </div>
-</section>
-<div class="section-divider"></div>
-
-<!-- ============================================
-     8️⃣ DESCARGA LA APP
-     ============================================ -->
-<section class="section app-download-section" id="descargar">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-label scroll-reveal" data-animation="fade-down">Disponible para móvil</div>
-            <h2 class="section-title scroll-reveal" data-animation="fade-up">Descarga <span class="gradient-text">KXON</span></h2>
-            <p class="section-desc scroll-reveal" data-animation="blur-in" data-delay="100">Lleva tu música a todas partes. Disponible para Android e iOS</p>
-        </div>
-        <div class="app-download-container">
-            <div class="app-download-content">
-                <div class="app-download-features scroll-reveal" data-animation="fade-up" data-delay="0">
-                    <div class="app-feature"><span class="app-feature-icon">🎵</span><span>Música sin límites</span></div>
-                    <div class="app-feature"><span class="app-feature-icon">📻</span><span>Radio KXON 24/7</span></div>
-                    <div class="app-feature"><span class="app-feature-icon">🛒</span><span>Compra beats exclusivos</span></div>
-                    <div class="app-feature"><span class="app-feature-icon">🔔</span><span>Notificaciones en tiempo real</span></div>
-                    <div class="app-feature"><span class="app-feature-icon">🎶</span><span>Crea tus playlists</span></div>
-                    <div class="app-feature"><span class="app-feature-icon">🎬</span><span>Videos exclusivos</span></div>
-                </div>
-                <div class="app-platforms">
-                    <a href="downloads/kxon-app.apk" download="KXON.apk" class="app-platform-btn scroll-reveal" data-animation="slide-right" data-delay="100">
-                        <div class="app-platform-icon">🤖</div>
-                        <div class="app-platform-info"><span class="app-platform-label">Descargar para</span><span class="app-platform-name">Android</span><span class="app-platform-detail">APK • Android 8.0+</span></div>
-                        <div class="app-platform-arrow">📥</div>
-                    </a>
-                    <div class="app-platform-btn app-platform-ios scroll-reveal" data-animation="slide-right" data-delay="200" onclick="document.getElementById('iosModal').classList.add('show')">
-                        <div class="app-platform-icon">🍎</div>
-                        <div class="app-platform-info"><span class="app-platform-label">Instalar en</span><span class="app-platform-name">iPhone / iPad</span><span class="app-platform-detail">Agregar desde Safari • Gratis</span></div>
-                        <div class="app-platform-arrow">ℹ️</div>
-                    </div>
-                </div>
-                <p class="app-download-hint scroll-reveal" data-animation="fade-up" data-delay="300">⚠️ Para Android, tu dispositivo puede pedir permiso para instalar desde fuentes externas. Es completamente seguro.</p>
-            </div>
-            <div class="app-download-mockup scroll-reveal" data-animation="float-up" data-delay="200">
-                <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-screen"><img src="icons/screenshot-mobile.png" alt="KXON App" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="phone-screen-fallback" style="display:none;"><span class="phone-logo gradient-text">KXON</span><span class="phone-tagline">Tu música, tu mundo</span><div class="phone-fake-ui"><div class="phone-fake-bar"></div><div class="phone-fake-cards"><div class="phone-fake-card"></div><div class="phone-fake-card"></div></div><div class="phone-fake-player"></div></div></div></div></div>
-                <div class="phone-glow"></div>
-            </div>
-        </div>
-    </div>
-</section>
-<div class="section-divider"></div>
-
-<!-- FOOTER -->
-<footer class="footer scroll-reveal" data-animation="fade-up">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <div class="footer-logo"><span class="gradient-text">KXON</span></div>
-                <p class="footer-tagline">Tu plataforma musical exclusiva</p>
-            </div>
-            <div class="footer-links">
-                <a href="#planes" class="footer-link">🎫 Planes</a>
-                <a href="#descargar" class="footer-link">📱 Descargar App</a>
-                <a href="#faq" class="footer-link">❓ FAQ</a>
-                <a href="terms.html" class="footer-link">📋 Términos</a>
-                <a href="login.html" class="footer-link">Iniciar Sesión</a>
-                <a href="register.html" class="footer-link">Registrarse</a>
-            </div>
-        </div>
-        <div class="footer-divider"></div>
-        <p class="footer-text">© 2025 <span>KXON</span> — Todos los derechos reservados — Colombia 🇨🇴</p>
-    </div>
-</footer>
-
-<!-- MODALES -->
-<div class="modal-overlay-landing" id="iosModal">
-    <div class="modal-landing" style="max-width:480px;">
-        <button class="modal-landing-close" onclick="document.getElementById('iosModal').classList.remove('show')">✕</button>
-        <div class="modal-landing-body">
-            <div style="text-align:center;margin-bottom:24px;"><span style="font-size:3rem;">🍎</span></div>
-            <h2 class="modal-landing-title" style="text-align:center;">Instalar KXON en iPhone</h2>
-            <p style="font-size:0.85rem;color:#888;text-align:center;margin-bottom:24px;font-weight:300;">Sigue estos pasos para agregar KXON como app en tu iPhone o iPad</p>
-            <div class="ios-steps">
-                <div class="ios-step"><div class="ios-step-num">1</div><div class="ios-step-content"><div class="ios-step-title">Abre Safari</div><div class="ios-step-desc">Ve a <strong>kxon-music.vercel.app</strong> usando el navegador Safari (no Chrome)</div></div></div>
-                <div class="ios-step"><div class="ios-step-num">2</div><div class="ios-step-content"><div class="ios-step-title">Toca el botón Compartir</div><div class="ios-step-desc">Toca el ícono de compartir <strong>⬆️</strong> en la barra inferior de Safari</div></div></div>
-                <div class="ios-step"><div class="ios-step-num">3</div><div class="ios-step-content"><div class="ios-step-title">Agregar a pantalla de inicio</div><div class="ios-step-desc">Desplázate hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></div></div></div>
-                <div class="ios-step"><div class="ios-step-num">4</div><div class="ios-step-content"><div class="ios-step-title">¡Listo!</div><div class="ios-step-desc">Toca <strong>"Agregar"</strong> y KXON aparecerá como app en tu inicio</div></div></div>
-            </div>
-            <div style="text-align:center;margin-top:24px;">
-                <button class="btn-hero-primary" onclick="document.getElementById('iosModal').classList.remove('show')" style="padding:12px 28px;font-size:0.78rem;">Entendido</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal-overlay-landing" id="modalNoticiaLanding">
-    <div class="modal-landing">
-        <button class="modal-landing-close" onclick="document.getElementById('modalNoticiaLanding').classList.remove('show')">✕</button>
-        <div class="modal-landing-img" id="noticiaLandingImgWrap" style="display:none;"><img id="noticiaLandingImg" src="" alt=""></div>
-        <div class="modal-landing-body">
-            <span class="modal-landing-fecha" id="noticiaLandingFecha"></span>
-            <h2 class="modal-landing-title" id="noticiaLandingTitulo"></h2>
-            <p class="modal-landing-desc" id="noticiaLandingDesc"></p>
-        </div>
-    </div>
-</div>
-
-<div class="modal-overlay-landing" id="modalAlbumLanding">
-    <div class="modal-landing">
-        <button class="modal-landing-close" onclick="document.getElementById('modalAlbumLanding').classList.remove('show')">✕</button>
-        <div class="modal-album-landing-header">
-            <div class="modal-album-landing-cover"><img id="albumLandingCover" src="" alt=""></div>
-            <div class="modal-album-landing-info">
-                <h2 class="modal-landing-title" id="albumLandingTitulo"></h2>
-                <p class="modal-album-landing-desc" id="albumLandingDesc"></p>
-                <span class="modal-album-landing-meta" id="albumLandingMeta"></span>
-            </div>
-        </div>
-        <div class="modal-album-landing-tracks">
-            <h4 class="modal-album-landing-tracks-title">🎵 Canciones</h4>
-            <div class="modal-album-landing-list" id="albumLandingTracks"></div>
-        </div>
-    </div>
-</div>
-
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/landing.js"></script>
-<script>
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
-document.getElementById('iosModal').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
-
-window._toggleVideoSound = function() {
-    var v = document.querySelector('.video-hero-media'), i = document.getElementById('videoSoundIcon'), t = document.getElementById('videoSoundText');
-    if (!v) return;
-    if (v.muted) { v.muted = false; v.volume = 0.5; i.textContent = '🔊'; t.textContent = 'Silenciar'; document.getElementById('btnVideoSound').classList.add('active'); }
-    else { v.muted = true; i.textContent = '🔇'; t.textContent = 'Activar sonido'; document.getElementById('btnVideoSound').classList.remove('active'); }
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-    var v = document.querySelector('.video-hero-media');
-    if (v) v.play().catch(function() { document.addEventListener('click', function p() { v.play().catch(function(){}); document.removeEventListener('click', p); }, { once: true }); });
-});
-
-window._toggleFloatingSocial = function() {
-    var links = document.getElementById('floatingSocialLinks');
-    var toggle = document.getElementById('floatingSocialToggle');
-    links.classList.toggle('show');
-    toggle.classList.toggle('active');
-};
-
-window._shareKXON = function() {
-    var url = 'https://kxon-music.vercel.app';
-    var text = 'Descubre KXON — Plataforma musical exclusiva donde el 100% va directo al artista 🎵';
-    if (navigator.share) {
-        navigator.share({ title: 'KXON Music', text: text, url: url }).catch(function(){});
-    } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(function() {
-            var btn = document.querySelector('.floating-btn-share .floating-tooltip');
-            if (btn) { btn.textContent = '✅ ¡Copiado!'; setTimeout(function() { btn.textContent = 'Copiar enlace'; }, 2000); }
-        }).catch(function(){});
-    } else {
-        window.open(url, '_blank');
-    }
-};
-</script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="js/supabase-config.js" defer></script>
+    <script src="js/landing.js" defer></script>
 </body>
 </html>
