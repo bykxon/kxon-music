@@ -1645,4 +1645,4 @@
 }
 @media (min-width: 1400px) {
   .archivo-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-}
+} 

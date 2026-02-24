@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/dashboard-radio.css">
     <link rel="stylesheet" href="css/dashboard-envivo.css">
     <link rel="stylesheet" href="css/dashboard-chat.css">
+    <link rel="stylesheet" href="css/dashboard-archivo.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -2461,14 +2462,137 @@
   </section>
 
 </div>
-                <!-- 📁 PANEL: ARCHIVO -->
-                <div class="panel" id="panel-archivo">
-                    <div class="panel-header"><h1 class="panel-title">Mi Archivo</h1><p class="panel-desc">Tus beats y canciones compradas</p></div>
-                    <div class="archivo-stats"><div class="archivo-stat-card"><div class="archivo-stat-icon">🎵</div><div class="archivo-stat-value" id="archivoStatTotal">0</div><div class="archivo-stat-label">Total comprados</div></div><div class="archivo-stat-card"><div class="archivo-stat-icon">🎹</div><div class="archivo-stat-value" id="archivoStatBeats">0</div><div class="archivo-stat-label">Beats</div></div><div class="archivo-stat-card"><div class="archivo-stat-icon">🎤</div><div class="archivo-stat-value" id="archivoStatCanciones">0</div><div class="archivo-stat-label">Canciones</div></div><div class="archivo-stat-card"><div class="archivo-stat-icon">💰</div><div class="archivo-stat-value" id="archivoStatInvertido">$0</div><div class="archivo-stat-label">Invertido</div></div></div>
-                    <div class="archivo-tabs"><div class="archivo-tab active" data-archivo-tab="todos" onclick="window._archivoTab('todos')">📦 Todos</div><div class="archivo-tab" data-archivo-tab="beat" onclick="window._archivoTab('beat')">🎹 Beats</div><div class="archivo-tab" data-archivo-tab="cancion" onclick="window._archivoTab('cancion')">🎤 Canciones</div></div>
-                    <div class="archivo-grid" id="archivoGrid"><div class="empty-state"><div class="empty-icon">📁</div><div class="empty-title">Cargando archivo...</div></div></div>
-                    <div class="archivo-pending-section" id="archivoPendingSection" style="display:none;"><div class="panel-section-title">⏳ Solicitudes Pendientes</div><p class="panel-desc" style="margin-bottom:16px;">Compras esperando confirmación</p><div id="archivoPendingList"></div></div>
-                </div>
+                <!-- 📁 PANEL: ARCHIVO — KXON 2026 REBUILD -->
+<div class="panel" id="panel-archivo">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-arc-header">
+    <div class="kx-arc-header-top">
+      <div class="kx-arc-header-intro">
+        <span class="kx-arc-label">MI COLECCIÓN</span>
+        <h1 class="kx-arc-title">Archivo</h1>
+        <p class="kx-arc-subtitle">Tus beats y canciones compradas, listos para descargar.</p>
+      </div>
+      <div class="kx-arc-kpis">
+        <div class="kx-arc-kpi">
+          <span class="kx-arc-kpi-value" id="archivoStatTotal">0</span>
+          <span class="kx-arc-kpi-label">Comprados</span>
+        </div>
+        <div class="kx-arc-kpi-divider"></div>
+        <div class="kx-arc-kpi">
+          <span class="kx-arc-kpi-value" id="archivoStatBeats">0</span>
+          <span class="kx-arc-kpi-label">Beats</span>
+        </div>
+        <div class="kx-arc-kpi-divider"></div>
+        <div class="kx-arc-kpi">
+          <span class="kx-arc-kpi-value" id="archivoStatCanciones">0</span>
+          <span class="kx-arc-kpi-label">Canciones</span>
+        </div>
+        <div class="kx-arc-kpi-divider"></div>
+        <div class="kx-arc-kpi">
+          <span class="kx-arc-kpi-value" id="archivoStatInvertido">$0</span>
+          <span class="kx-arc-kpi-label">Invertido</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ TOOLBAR ═══ -->
+  <div class="kx-arc-toolbar">
+    <div class="kx-arc-toolbar-left">
+      <!-- Search -->
+      <div class="kx-arc-search-wrap">
+        <svg class="kx-arc-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text"
+               class="kx-arc-search"
+               id="arcSearchInput"
+               placeholder="Buscar en tu archivo..."
+               autocomplete="off"
+               aria-label="Buscar en archivo">
+        <button class="kx-arc-search-clear" id="arcSearchClear" aria-label="Limpiar búsqueda" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <!-- Filters -->
+      <div class="kx-arc-filters" role="tablist" aria-label="Filtrar archivo">
+        <button class="kx-arc-filter active" data-filter="todos" role="tab" aria-selected="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <span>Todos</span>
+        </button>
+        <button class="kx-arc-filter" data-filter="beat" role="tab" aria-selected="false">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 11h10"/><path d="M7 7h10"/><path d="M7 15h4"/></svg>
+          <span>Beats</span>
+        </button>
+        <button class="kx-arc-filter" data-filter="cancion" role="tab" aria-selected="false">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span>Canciones</span>
+        </button>
+      </div>
+    </div>
+    <div class="kx-arc-toolbar-right">
+      <!-- Sort -->
+      <div class="kx-arc-sort-wrap">
+        <button class="kx-arc-sort-trigger" id="arcSortBtn" aria-haspopup="listbox" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+          <span id="arcSortLabel">Reciente</span>
+        </button>
+        <div class="kx-arc-sort-dropdown" id="arcSortDropdown" role="listbox">
+          <button class="kx-arc-sort-option active" data-sort="recent" role="option" aria-selected="true">Más reciente</button>
+          <button class="kx-arc-sort-option" data-sort="oldest" role="option">Más antiguo</button>
+          <button class="kx-arc-sort-option" data-sort="name-az" role="option">Nombre A→Z</button>
+          <button class="kx-arc-sort-option" data-sort="name-za" role="option">Nombre Z→A</button>
+          <button class="kx-arc-sort-option" data-sort="price-high" role="option">Mayor precio</button>
+        </div>
+      </div>
+      <!-- View toggle -->
+      <div class="kx-arc-view-toggle" role="radiogroup" aria-label="Cambiar vista">
+        <button class="kx-arc-view-btn active" data-view="grid" role="radio" aria-checked="true" aria-label="Vista cuadrícula">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </button>
+        <button class="kx-arc-view-btn" data-view="list" role="radio" aria-checked="false" aria-label="Vista lista">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><circle cx="3.5" cy="6" r="1.5" fill="currentColor"/><circle cx="3.5" cy="12" r="1.5" fill="currentColor"/><circle cx="3.5" cy="18" r="1.5" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ACTIVE FILTERS ═══ -->
+  <div class="kx-arc-active-filters" id="arcActiveFilters" style="display:none;">
+    <span class="kx-arc-active-filter-text" id="arcActiveFilterText"></span>
+    <button class="kx-arc-active-filter-clear" id="arcClearFilters" aria-label="Limpiar filtros">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      <span>Limpiar</span>
+    </button>
+  </div>
+
+  <!-- ═══ GRID VIEW ═══ -->
+  <div class="kx-arc-grid" id="archivoGrid" role="list" aria-label="Archivo de compras"></div>
+
+  <!-- ═══ LIST VIEW ═══ -->
+  <div class="kx-arc-list" id="archivoListView" style="display:none;" role="list" aria-label="Archivo de compras"></div>
+
+  <!-- ═══ RESULTS INFO ═══ -->
+  <div class="kx-arc-results-info" id="arcResultsInfo" style="display:none;">
+    <span id="arcResultsText"></span>
+  </div>
+
+  <!-- ═══ PENDING SECTION ═══ -->
+  <section class="kx-arc-pending" id="archivoPendingSection" style="display:none;" aria-label="Solicitudes pendientes">
+    <div class="kx-arc-pending-header">
+      <div class="kx-arc-pending-header-left">
+        <div class="kx-arc-pending-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div>
+          <h3 class="kx-arc-pending-title">Solicitudes Pendientes</h3>
+          <span class="kx-arc-pending-count" id="arcPendingCount">0 pendientes</span>
+        </div>
+      </div>
+    </div>
+    <div class="kx-arc-pending-list" id="archivoPendingList" role="list"></div>
+  </section>
+
+</div>
 
                 <!-- 🎫 PANEL: PLANES -->
                 <div class="panel" id="panel-planes">
