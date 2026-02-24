@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="css/dashboard-archivo.css">
     <link rel="stylesheet" href="css/dashboard-inicio.css">
     <link rel="stylesheet" href="css/dashboard-planes.css">
+    <link rel="stylesheet" href="css/dashboard-solicitudes-beats.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -382,130 +383,7 @@
     .credit-value { font-size: .85rem; font-weight: 600; color: var(--plata-titulo); }
     .credits-empty { text-align: center; padding: 30px; font-size: .78rem; color: var(--plata-oscura); }
 
-    /* ============================================
-       📋 SOLICITUDES DE BEATS
-       ============================================ */
-    .sol-beat-actions-top { margin-bottom: 24px; }
-    .sol-beat-new-btn {
-        padding: 12px 24px;
-        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-        border: 1px solid rgba(192,192,192,0.15);
-        border-radius: 12px;
-        color: var(--plata-blanca);
-        font-family: var(--font-titulo);
-        font-size: .75rem; font-weight: 700;
-        letter-spacing: 1.5px; text-transform: uppercase;
-        cursor: pointer; transition: all 0.3s ease;
-        display: inline-flex; align-items: center; gap: 10px;
-    }
-    .sol-beat-new-btn:hover {
-        background: linear-gradient(135deg, #c0c0c0, #888);
-        color: var(--negro-base);
-        border-color: var(--acento-principal);
-        transform: translateY(-2px);
-    }
-    .sol-beat-card {
-        background: var(--negro-card);
-        border: 1px solid rgba(255,255,255,0.04);
-        border-radius: 14px; overflow: hidden;
-        margin-bottom: 12px;
-        animation: fadeInUp 0.4s ease both;
-        transition: all 0.3s ease;
-    }
-    .sol-beat-card:hover { border-color: rgba(192,192,192,0.06); }
-    .sol-beat-card.status-pendiente { border-left: 3px solid #ffa500; }
-    .sol-beat-card.status-aceptada { border-left: 3px solid var(--acento-exito); }
-    .sol-beat-card.status-rechazada { border-left: 3px solid var(--acento-error); }
-    .sol-beat-card.status-completada { border-left: 3px solid var(--acento-principal); }
-    .sol-beat-header {
-        display: flex; justify-content: space-between;
-        align-items: center; padding: 16px 20px 0;
-    }
-    .sol-beat-status { display: flex; align-items: center; gap: 6px; }
-    .sol-beat-status-icon { font-size: .85rem; }
-    .sol-beat-status-text {
-        font-family: var(--font-titulo);
-        font-size: .65rem; font-weight: 700;
-        letter-spacing: 1.5px; text-transform: uppercase;
-        color: var(--plata-media);
-    }
-    .sol-beat-date { font-size: .62rem; color: var(--plata-oscura); }
-    .sol-beat-body { padding: 14px 20px 20px; }
-    .sol-beat-user {
-        font-size: .75rem; color: var(--plata-media);
-        margin-bottom: 12px; padding-bottom: 10px;
-        border-bottom: 1px solid rgba(255,255,255,0.03);
-    }
-    .sol-beat-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 8px; margin-bottom: 12px;
-    }
-    .sol-beat-field {
-        padding: 10px 12px;
-        background: rgba(255,255,255,0.02);
-        border: 1px solid rgba(255,255,255,0.03);
-        border-radius: 8px;
-    }
-    .sol-beat-label {
-        font-family: var(--font-titulo);
-        font-size: .5rem; font-weight: 700;
-        letter-spacing: 1.5px; text-transform: uppercase;
-        color: rgba(192,192,192,0.3);
-        display: block; margin-bottom: 3px;
-    }
-    .sol-beat-value { font-size: .78rem; font-weight: 600; color: var(--plata-titulo); }
-    .sol-beat-desc {
-        font-size: .82rem; color: var(--plata-clara);
-        font-weight: 300; line-height: 1.7; margin-bottom: 10px;
-    }
-    .sol-beat-ref { font-size: .72rem; color: var(--plata-oscura); margin-bottom: 10px; word-break: break-all; }
-    .sol-beat-response {
-        margin-top: 14px; padding: 14px 16px;
-        background: rgba(46,213,115,0.03);
-        border: 1px solid rgba(46,213,115,0.08);
-        border-radius: 10px;
-    }
-    .sol-beat-response-label {
-        font-family: var(--font-titulo);
-        font-size: .6rem; font-weight: 700;
-        letter-spacing: 1px;
-        color: var(--acento-exito); margin-bottom: 6px;
-    }
-    .sol-beat-response-text {
-        font-size: .82rem; color: var(--plata-clara);
-        font-weight: 300; line-height: 1.6;
-    }
-    .sol-beat-price-final {
-        margin-top: 8px;
-        font-family: var(--font-titulo);
-        font-size: .85rem; font-weight: 800;
-        color: var(--acento-dorado);
-    }
-    .sol-beat-admin-actions { display: flex; gap: 10px; margin-top: 14px; }
-    .sol-beat-btn-accept {
-        flex: 1; padding: 10px;
-        background: rgba(46,213,115,0.06);
-        border: 1px solid rgba(46,213,115,0.15);
-        border-radius: 8px;
-        color: var(--acento-exito);
-        font-family: var(--font-titulo);
-        font-size: .68rem; font-weight: 700;
-        cursor: pointer; transition: all 0.2s ease;
-    }
-    .sol-beat-btn-accept:hover { background: rgba(46,213,115,0.12); transform: translateY(-1px); }
-    .sol-beat-btn-reject {
-        padding: 10px 18px;
-        background: rgba(255,71,87,0.06);
-        border: 1px solid rgba(255,71,87,0.15);
-        border-radius: 8px;
-        color: var(--acento-error);
-        font-family: var(--font-titulo);
-        font-size: .68rem; font-weight: 700;
-        cursor: pointer; transition: all 0.2s ease;
-    }
-    .sol-beat-btn-reject:hover { background: rgba(255,71,87,0.12); }
-
+  
 </style>
 </head>
 <body class="dashboard-body">
@@ -2880,13 +2758,168 @@
   </div>
 </div>
 
-                <!-- 📋 PANEL: SOLICITAR BEAT -->
-                <div class="panel" id="panel-solicitar-beat">
-                    <div class="panel-header"><h1 class="panel-title">📋 Solicitar Beat Personalizado</h1><p class="panel-desc">Describe el beat que necesitas y te lo producimos</p></div>
-                    <div class="sol-beat-actions-top"><button class="sol-beat-new-btn" onclick="window._openSolicitudBeat()"><span>🎵</span> Nueva Solicitud</button></div>
-                    <div class="panel-section-title">📦 Mis Solicitudes</div>
-                    <div id="solicitudesBeatsGrid"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Cargando solicitudes...</div></div></div>
-                </div>
+                <!-- 📋 PANEL: SOLICITAR BEAT — KXON 2026 REBUILD -->
+<div class="panel" id="panel-solicitar-beat" role="main" aria-label="Panel de solicitud de beats">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-req-header">
+    <div class="kx-req-header-top">
+      <div class="kx-req-header-intro">
+        <span class="kx-req-label">PRODUCCIÓN PERSONALIZADA</span>
+        <h1 class="kx-req-title">Solicitar Beat</h1>
+        <p class="kx-req-subtitle">Describe el beat que necesitas y te lo producimos a medida.</p>
+      </div>
+      <div class="kx-req-kpis">
+        <div class="kx-req-kpi">
+          <span class="kx-req-kpi-value" id="reqStatTotal">0</span>
+          <span class="kx-req-kpi-label">Solicitudes</span>
+        </div>
+        <div class="kx-req-kpi-divider"></div>
+        <div class="kx-req-kpi">
+          <span class="kx-req-kpi-value" id="reqStatPending">0</span>
+          <span class="kx-req-kpi-label">Pendientes</span>
+        </div>
+        <div class="kx-req-kpi-divider"></div>
+        <div class="kx-req-kpi">
+          <span class="kx-req-kpi-value" id="reqStatCompleted">0</span>
+          <span class="kx-req-kpi-label">Completadas</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ TOOLBAR ═══ -->
+  <div class="kx-req-toolbar">
+    <div class="kx-req-toolbar-left">
+      <div class="kx-req-search-wrap">
+        <svg class="kx-req-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text"
+               class="kx-req-search"
+               id="reqSearchInput"
+               placeholder="Buscar solicitudes..."
+               autocomplete="off"
+               aria-label="Buscar solicitudes">
+        <button class="kx-req-search-clear" id="reqSearchClear" aria-label="Limpiar búsqueda" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="kx-req-filters" role="tablist" aria-label="Filtrar solicitudes">
+        <button class="kx-req-filter active" data-filter="todas" role="tab" aria-selected="true">Todas</button>
+        <button class="kx-req-filter" data-filter="pendiente" role="tab" aria-selected="false">Pendientes</button>
+        <button class="kx-req-filter" data-filter="aceptada" role="tab" aria-selected="false">Aceptadas</button>
+        <button class="kx-req-filter" data-filter="completada" role="tab" aria-selected="false">Completadas</button>
+        <button class="kx-req-filter" data-filter="rechazada" role="tab" aria-selected="false">Rechazadas</button>
+      </div>
+    </div>
+    <div class="kx-req-toolbar-right">
+      <div class="kx-req-sort-wrap">
+        <button class="kx-req-sort-trigger" id="reqSortBtn" aria-haspopup="listbox" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+          <span id="reqSortLabel">Reciente</span>
+        </button>
+        <div class="kx-req-sort-dropdown" id="reqSortDropdown" role="listbox">
+          <button class="kx-req-sort-option active" data-sort="recent" role="option" aria-selected="true">Más reciente</button>
+          <button class="kx-req-sort-option" data-sort="oldest" role="option">Más antiguo</button>
+        </div>
+      </div>
+      <button class="kx-req-btn-new" id="reqBtnNew" aria-label="Nueva solicitud de beat">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        <span>Nueva Solicitud</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ ACTIVE FILTERS ═══ -->
+  <div class="kx-req-active-filters" id="reqActiveFilters" style="display:none;">
+    <span class="kx-req-active-filter-text" id="reqActiveFilterText"></span>
+    <button class="kx-req-active-filter-clear" id="reqClearFilters" aria-label="Limpiar filtros">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      <span>Limpiar</span>
+    </button>
+  </div>
+
+  <!-- ═══ SECTION HEAD ═══ -->
+  <div class="kx-req-section-head">
+    <div class="kx-req-section-head-left">
+      <div class="kx-req-section-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>
+      </div>
+      <div>
+        <h3 class="kx-req-section-title">Mis Solicitudes</h3>
+        <span class="kx-req-section-count" id="reqSectionCount">Cargando...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REQUESTS GRID ═══ -->
+  <div class="kx-req-grid" id="solicitudesBeatsGrid" role="list" aria-label="Lista de solicitudes de beats">
+    <!-- Skeleton loaders -->
+    <div class="kx-req-skeleton" aria-hidden="true">
+      <div class="kx-req-skeleton-row"><div class="kx-req-skeleton-badge"></div><div class="kx-req-skeleton-date"></div></div>
+      <div class="kx-req-skeleton-fields"><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div></div>
+      <div class="kx-req-skeleton-text"></div><div class="kx-req-skeleton-text kx-req-skeleton-text--short"></div>
+    </div>
+    <div class="kx-req-skeleton" aria-hidden="true">
+      <div class="kx-req-skeleton-row"><div class="kx-req-skeleton-badge"></div><div class="kx-req-skeleton-date"></div></div>
+      <div class="kx-req-skeleton-fields"><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div></div>
+      <div class="kx-req-skeleton-text"></div><div class="kx-req-skeleton-text kx-req-skeleton-text--short"></div>
+    </div>
+    <div class="kx-req-skeleton" aria-hidden="true">
+      <div class="kx-req-skeleton-row"><div class="kx-req-skeleton-badge"></div><div class="kx-req-skeleton-date"></div></div>
+      <div class="kx-req-skeleton-fields"><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div></div>
+      <div class="kx-req-skeleton-text"></div><div class="kx-req-skeleton-text kx-req-skeleton-text--short"></div>
+    </div>
+  </div>
+
+  <!-- ═══ RESULTS INFO ═══ -->
+  <div class="kx-req-results-info" id="reqResultsInfo" style="display:none;">
+    <span id="reqResultsText"></span>
+  </div>
+
+  <!-- ═══ RESPOND MODAL (Admin) ═══ -->
+  <div class="kx-req-respond-overlay" id="reqRespondOverlay" role="dialog" aria-modal="true" aria-label="Responder solicitud">
+    <div class="kx-req-respond-modal">
+      <div class="kx-req-respond-header">
+        <h3 class="kx-req-respond-title">💬 Responder Solicitud</h3>
+        <button class="kx-req-respond-close" id="reqRespondClose" aria-label="Cerrar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="kx-req-respond-body">
+        <input type="hidden" id="reqRespondId" value="">
+        <div class="form-group">
+          <label class="form-label">Respuesta al artista *</label>
+          <textarea class="form-textarea" id="reqRespondText" placeholder="Describe tu propuesta, tiempos de entrega, etc." rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Precio del beat (COP $)</label>
+          <input type="number" class="form-input" id="reqRespondPrice" placeholder="0 si no aplica" min="0" step="1000" value="0">
+        </div>
+        <div class="kx-req-respond-actions">
+          <button class="kx-req-respond-cancel" id="reqRespondCancel">Cancelar</button>
+          <button class="kx-req-respond-submit" id="reqRespondSubmit">✅ Enviar Respuesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONFIRM DIALOG ═══ -->
+  <div class="kx-req-confirm-overlay" id="reqConfirmOverlay" role="alertdialog" aria-modal="true" aria-label="Confirmar rechazo">
+    <div class="kx-req-confirm-card">
+      <div class="kx-req-confirm-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </div>
+      <h3 class="kx-req-confirm-title">¿Rechazar esta solicitud?</h3>
+      <p class="kx-req-confirm-text">El artista será notificado del rechazo. Esta acción no se puede deshacer.</p>
+      <input type="hidden" id="reqConfirmId" value="">
+      <div class="kx-req-confirm-actions">
+        <button class="kx-req-confirm-cancel" id="reqConfirmCancel">Cancelar</button>
+        <button class="kx-req-confirm-accept" id="reqConfirmAccept">Rechazar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
 
                 <!-- 👤 PANEL: PERFIL — KXON 2026 REBUILD -->
 <div class="panel" id="panel-perfil" role="main" aria-label="Panel de perfil">
