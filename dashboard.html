@@ -2838,6 +2838,11 @@
     </button>
   </div>
 
+  <!-- ═══ RESULTS INFO ═══ -->
+  <div class="kx-req-results-info" id="reqResultsInfo" style="display:none;">
+    <span id="reqResultsText"></span>
+  </div>
+
   <!-- ═══ SECTION HEAD ═══ -->
   <div class="kx-req-section-head">
     <div class="kx-req-section-head-left">
@@ -2853,30 +2858,58 @@
 
   <!-- ═══ REQUESTS GRID ═══ -->
   <div class="kx-req-grid" id="solicitudesBeatsGrid" role="list" aria-label="Lista de solicitudes de beats">
-    <!-- Skeleton loaders -->
-    <div class="kx-req-skeleton" aria-hidden="true">
-      <div class="kx-req-skeleton-row"><div class="kx-req-skeleton-badge"></div><div class="kx-req-skeleton-date"></div></div>
-      <div class="kx-req-skeleton-fields"><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div></div>
-      <div class="kx-req-skeleton-text"></div><div class="kx-req-skeleton-text kx-req-skeleton-text--short"></div>
-    </div>
-    <div class="kx-req-skeleton" aria-hidden="true">
-      <div class="kx-req-skeleton-row"><div class="kx-req-skeleton-badge"></div><div class="kx-req-skeleton-date"></div></div>
-      <div class="kx-req-skeleton-fields"><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div></div>
-      <div class="kx-req-skeleton-text"></div><div class="kx-req-skeleton-text kx-req-skeleton-text--short"></div>
-    </div>
-    <div class="kx-req-skeleton" aria-hidden="true">
-      <div class="kx-req-skeleton-row"><div class="kx-req-skeleton-badge"></div><div class="kx-req-skeleton-date"></div></div>
-      <div class="kx-req-skeleton-fields"><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div><div class="kx-req-skeleton-field"></div></div>
-      <div class="kx-req-skeleton-text"></div><div class="kx-req-skeleton-text kx-req-skeleton-text--short"></div>
+    <!-- JS renderiza aquí -->
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       MODAL: NUEVA SOLICITUD
+       ═══════════════════════════════════════════════ -->
+  <div class="kx-req-respond-overlay" id="modalSolicitudBeat" role="dialog" aria-modal="true" aria-label="Nueva solicitud de beat">
+    <div class="kx-req-respond-modal" style="max-width:520px">
+      <div class="kx-req-respond-header">
+        <h3 class="kx-req-respond-title">🎵 Solicitar Beat Personalizado</h3>
+        <button class="kx-req-respond-close" id="reqNewClose" aria-label="Cerrar modal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <form class="kx-req-respond-body" id="formSolicitudBeat">
+        <div class="kx-req-form-group">
+          <label class="kx-req-form-label" for="solBeatGenero">Género musical *</label>
+          <input type="text" id="solBeatGenero" class="kx-req-form-input" placeholder="Ej: Reggaetón, Trap, Pop..." required>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="kx-req-form-group">
+            <label class="kx-req-form-label" for="solBeatBpm">BPM</label>
+            <input type="text" id="solBeatBpm" class="kx-req-form-input" placeholder="Ej: 90-100">
+          </div>
+          <div class="kx-req-form-group">
+            <label class="kx-req-form-label" for="solBeatMood">Mood / Vibra</label>
+            <input type="text" id="solBeatMood" class="kx-req-form-input" placeholder="Ej: Agresivo, Chill...">
+          </div>
+        </div>
+        <div class="kx-req-form-group">
+          <label class="kx-req-form-label" for="solBeatReferencia">Referencia (opcional)</label>
+          <input type="text" id="solBeatReferencia" class="kx-req-form-input" placeholder="Link a YouTube, Spotify, etc.">
+        </div>
+        <div class="kx-req-form-group">
+          <label class="kx-req-form-label" for="solBeatPresupuesto">Presupuesto</label>
+          <input type="text" id="solBeatPresupuesto" class="kx-req-form-input" placeholder="Ej: $50,000 COP">
+        </div>
+        <div class="kx-req-form-group">
+          <label class="kx-req-form-label" for="solBeatDescripcion">Descripción detallada *</label>
+          <textarea id="solBeatDescripcion" class="kx-req-form-textarea" rows="4" placeholder="Describe el tipo de beat que necesitas, artistas de referencia, uso que le darás..." required></textarea>
+        </div>
+        <div class="kx-req-respond-actions">
+          <button type="button" class="kx-req-respond-cancel" id="reqNewCancel">Cancelar</button>
+          <button type="submit" class="kx-req-respond-submit" id="btnSubmitSolBeat">🎵 Enviar Solicitud</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- ═══ RESULTS INFO ═══ -->
-  <div class="kx-req-results-info" id="reqResultsInfo" style="display:none;">
-    <span id="reqResultsText"></span>
-  </div>
-
-  <!-- ═══ RESPOND MODAL (Admin) ═══ -->
+  <!-- ═══════════════════════════════════════════════
+       MODAL: RESPONDER SOLICITUD (Admin)
+       ═══════════════════════════════════════════════ -->
   <div class="kx-req-respond-overlay" id="reqRespondOverlay" role="dialog" aria-modal="true" aria-label="Responder solicitud">
     <div class="kx-req-respond-modal">
       <div class="kx-req-respond-header">
@@ -2887,13 +2920,13 @@
       </div>
       <div class="kx-req-respond-body">
         <input type="hidden" id="reqRespondId" value="">
-        <div class="form-group">
-          <label class="form-label">Respuesta al artista *</label>
-          <textarea class="form-textarea" id="reqRespondText" placeholder="Describe tu propuesta, tiempos de entrega, etc." rows="4" required></textarea>
+        <div class="kx-req-form-group">
+          <label class="kx-req-form-label" for="reqRespondText">Respuesta al artista *</label>
+          <textarea class="kx-req-form-textarea" id="reqRespondText" placeholder="Describe tu propuesta, tiempos de entrega, etc." rows="4"></textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label">Precio del beat (COP $)</label>
-          <input type="number" class="form-input" id="reqRespondPrice" placeholder="0 si no aplica" min="0" step="1000" value="0">
+        <div class="kx-req-form-group">
+          <label class="kx-req-form-label" for="reqRespondPrice">Precio del beat (COP $)</label>
+          <input type="number" class="kx-req-form-input" id="reqRespondPrice" placeholder="0 si no aplica" min="0" step="1000" value="0">
         </div>
         <div class="kx-req-respond-actions">
           <button class="kx-req-respond-cancel" id="reqRespondCancel">Cancelar</button>
@@ -2903,7 +2936,9 @@
     </div>
   </div>
 
-  <!-- ═══ CONFIRM DIALOG ═══ -->
+  <!-- ═══════════════════════════════════════════════
+       MODAL: CONFIRMAR RECHAZO
+       ═══════════════════════════════════════════════ -->
   <div class="kx-req-confirm-overlay" id="reqConfirmOverlay" role="alertdialog" aria-modal="true" aria-label="Confirmar rechazo">
     <div class="kx-req-confirm-card">
       <div class="kx-req-confirm-icon">

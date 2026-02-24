@@ -1,7 +1,6 @@
 /* ============================================
    📋 DASHBOARD SOLICITUDES BEATS — KXON 2026
    Namespace: kx-req-*
-   Panel de solicitudes de beats personalizados
    ============================================ */
 
 /* ──────────────────────────────────
@@ -14,24 +13,24 @@
   --kx-req-surface-hover: rgba(255, 255, 255, 0.035);
   --kx-req-border: rgba(255, 255, 255, 0.04);
   --kx-req-border-hover: rgba(192, 192, 192, 0.1);
-  --kx-req-text-1: var(--plata-blanca);
-  --kx-req-text-2: var(--plata-titulo);
+  --kx-req-text-1: var(--plata-blanca, #f0f0f0);
+  --kx-req-text-2: var(--plata-titulo, #d0d0d0);
   --kx-req-text-3: rgba(192, 192, 192, 0.55);
   --kx-req-text-4: rgba(192, 192, 192, 0.3);
   --kx-req-text-5: rgba(192, 192, 192, 0.15);
   --kx-req-pending: #ffa500;
   --kx-req-pending-bg: rgba(255, 165, 0, 0.06);
   --kx-req-pending-border: rgba(255, 165, 0, 0.15);
-  --kx-req-accepted: var(--acento-exito);
+  --kx-req-accepted: var(--acento-exito, #2ed573);
   --kx-req-accepted-bg: rgba(46, 213, 115, 0.06);
   --kx-req-accepted-border: rgba(46, 213, 115, 0.15);
-  --kx-req-rejected: var(--acento-error);
+  --kx-req-rejected: var(--acento-error, #ff4757);
   --kx-req-rejected-bg: rgba(255, 71, 87, 0.06);
   --kx-req-rejected-border: rgba(255, 71, 87, 0.15);
-  --kx-req-completed: var(--acento-principal);
+  --kx-req-completed: var(--acento-principal, #c0c0c0);
   --kx-req-completed-bg: rgba(192, 192, 192, 0.06);
   --kx-req-completed-border: rgba(192, 192, 192, 0.15);
-  --kx-req-gold: var(--acento-dorado);
+  --kx-req-gold: var(--acento-dorado, #d4af37);
   --kx-req-radius: 14px;
   --kx-req-radius-sm: 10px;
   --kx-req-radius-xs: 8px;
@@ -60,7 +59,7 @@
 
 .kx-req-label {
   display: inline-block;
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.52rem;
   font-weight: 800;
   letter-spacing: 3.5px;
@@ -70,7 +69,7 @@
 }
 
 .kx-req-title {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 1.6rem;
   font-weight: 900;
   color: var(--kx-req-text-1);
@@ -107,7 +106,7 @@
 }
 
 .kx-req-kpi-value {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 1.25rem;
   font-weight: 800;
   color: var(--kx-req-text-1);
@@ -115,7 +114,7 @@
 }
 
 .kx-req-kpi-label {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.5rem;
   font-weight: 700;
   letter-spacing: 2px;
@@ -181,10 +180,11 @@
   border: 1px solid var(--kx-req-border);
   border-radius: 50px;
   color: var(--kx-req-text-1);
-  font-family: var(--font-cuerpo);
+  font-family: var(--font-cuerpo, sans-serif);
   font-size: 0.78rem;
   outline: none;
   transition: var(--kx-req-trans);
+  box-sizing: border-box;
 }
 
 .kx-req-search:focus {
@@ -232,7 +232,7 @@
   border: 1px solid transparent;
   border-radius: 50px;
   color: var(--kx-req-text-4);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -262,7 +262,7 @@
   border: 1px solid rgba(192, 192, 192, 0.15);
   border-radius: var(--kx-req-radius-sm);
   color: var(--kx-req-text-1);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -274,7 +274,7 @@
 
 .kx-req-btn-new:hover {
   background: linear-gradient(135deg, #c0c0c0, #888);
-  color: var(--negro-base);
+  color: var(--negro-base, #0a0a0a);
   border-color: var(--kx-req-accent);
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(192, 192, 192, 0.1);
@@ -298,7 +298,7 @@
   border: 1px solid var(--kx-req-border);
   border-radius: 50px;
   color: var(--kx-req-text-4);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.68rem;
   font-weight: 600;
   cursor: pointer;
@@ -328,7 +328,7 @@
 
 .kx-req-sort-dropdown.show {
   display: block;
-  animation: fadeIn 0.2s ease;
+  animation: kxReqFadeIn 0.2s ease;
 }
 
 .kx-req-sort-option {
@@ -339,7 +339,7 @@
   border: none;
   border-radius: 6px;
   color: var(--kx-req-text-3);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.7rem;
   font-weight: 500;
   text-align: left;
@@ -385,7 +385,7 @@
   border: 1px solid rgba(255, 71, 87, 0.12);
   border-radius: 50px;
   color: var(--kx-req-rejected);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.58rem;
   font-weight: 700;
   cursor: pointer;
@@ -426,7 +426,7 @@
 }
 
 .kx-req-section-title {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--kx-req-text-3);
@@ -434,7 +434,7 @@
 }
 
 .kx-req-section-count {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.55rem;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -459,7 +459,7 @@
   border-radius: var(--kx-req-radius);
   overflow: hidden;
   transition: var(--kx-req-trans);
-  animation: fadeInUp 0.4s ease both;
+  animation: kxReqFadeInUp 0.4s ease both;
   position: relative;
 }
 
@@ -479,7 +479,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* ── Status border left ── */
 .kx-req-card[data-status="pendiente"] {
   border-left: 3px solid var(--kx-req-pending);
 }
@@ -507,7 +506,7 @@
   gap: 6px;
   padding: 4px 12px;
   border-radius: 50px;
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -543,7 +542,7 @@
 }
 
 .kx-req-card-date {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.6rem;
   font-weight: 500;
   color: var(--kx-req-text-5);
@@ -574,7 +573,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.65rem;
   font-weight: 700;
   color: var(--kx-req-text-4);
@@ -618,7 +617,7 @@
 }
 
 .kx-req-field-label {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.48rem;
   font-weight: 700;
   letter-spacing: 2px;
@@ -640,7 +639,7 @@
   color: var(--kx-req-text-3);
   font-weight: 300;
   line-height: 1.7;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 }
 
 /* ── Reference ── */
@@ -667,7 +666,7 @@
   min-width: 0;
 }
 
-/* ── Response (Producer) ── */
+/* ── Response ── */
 .kx-req-response {
   margin-top: 14px;
   padding: 16px;
@@ -681,10 +680,11 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
+  color: var(--kx-req-accepted);
 }
 
 .kx-req-response-label {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -697,6 +697,7 @@
   color: var(--kx-req-text-3);
   font-weight: 300;
   line-height: 1.7;
+  margin: 0;
 }
 
 .kx-req-price-final {
@@ -708,7 +709,7 @@
   background: rgba(212, 175, 55, 0.06);
   border: 1px solid rgba(212, 175, 55, 0.12);
   border-radius: 50px;
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.82rem;
   font-weight: 800;
   color: var(--kx-req-gold);
@@ -734,7 +735,7 @@
   border: 1px solid var(--kx-req-accepted-border);
   border-radius: var(--kx-req-radius-xs);
   color: var(--kx-req-accepted);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -757,7 +758,7 @@
   border: 1px solid var(--kx-req-rejected-border);
   border-radius: var(--kx-req-radius-xs);
   color: var(--kx-req-rejected);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -780,7 +781,7 @@
   border: 1px solid var(--kx-req-completed-border);
   border-radius: var(--kx-req-radius-xs);
   color: var(--kx-req-completed);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.68rem;
   font-weight: 700;
   cursor: pointer;
@@ -857,8 +858,18 @@
   50% { opacity: 0.8; }
 }
 
+@keyframes kxReqFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes kxReqFadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ──────────────────────────────────
-   🫙 EMPTY STATE
+   🫙 EMPTY / NO RESULTS
    ────────────────────────────────── */
 .kx-req-empty {
   display: flex;
@@ -883,7 +894,7 @@
 }
 
 .kx-req-empty-title {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--kx-req-text-3);
@@ -908,7 +919,7 @@
   border: 1px solid rgba(192, 192, 192, 0.15);
   border-radius: var(--kx-req-radius-sm);
   color: var(--kx-req-text-1);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -919,14 +930,11 @@
 
 .kx-req-empty-btn:hover {
   background: linear-gradient(135deg, #c0c0c0, #888);
-  color: var(--negro-base);
+  color: var(--negro-base, #0a0a0a);
   border-color: var(--kx-req-accent);
   transform: translateY(-2px);
 }
 
-/* ──────────────────────────────────
-   🔔 NO RESULTS
-   ────────────────────────────────── */
 .kx-req-no-results {
   display: flex;
   flex-direction: column;
@@ -942,7 +950,7 @@
 }
 
 .kx-req-no-results-title {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--kx-req-text-4);
@@ -955,7 +963,6 @@
   margin: 0;
 }
 
-/* ── Results info ── */
 .kx-req-results-info {
   padding: 12px 0;
   text-align: center;
@@ -965,7 +972,77 @@
 }
 
 /* ──────────────────────────────────
-   🔲 RESPOND MODAL (Admin)
+   📝 FORM ELEMENTS
+   ────────────────────────────────── */
+.kx-req-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kx-req-form-label {
+  font-family: var(--font-titulo, sans-serif);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--kx-req-text-4);
+}
+
+.kx-req-form-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--kx-req-surface);
+  border: 1px solid var(--kx-req-border);
+  border-radius: var(--kx-req-radius-xs);
+  color: var(--kx-req-text-1);
+  font-family: var(--font-cuerpo, sans-serif);
+  font-size: 0.82rem;
+  outline: none;
+  transition: var(--kx-req-trans);
+  box-sizing: border-box;
+}
+
+.kx-req-form-input:focus {
+  border-color: var(--kx-req-border-hover);
+  background: var(--kx-req-surface-hover);
+  box-shadow: 0 0 0 3px rgba(192, 192, 192, 0.04);
+}
+
+.kx-req-form-input::placeholder {
+  color: var(--kx-req-text-5);
+  font-weight: 300;
+}
+
+.kx-req-form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--kx-req-surface);
+  border: 1px solid var(--kx-req-border);
+  border-radius: var(--kx-req-radius-xs);
+  color: var(--kx-req-text-1);
+  font-family: var(--font-cuerpo, sans-serif);
+  font-size: 0.82rem;
+  outline: none;
+  transition: var(--kx-req-trans);
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.kx-req-form-textarea:focus {
+  border-color: var(--kx-req-border-hover);
+  background: var(--kx-req-surface-hover);
+  box-shadow: 0 0 0 3px rgba(192, 192, 192, 0.04);
+}
+
+.kx-req-form-textarea::placeholder {
+  color: var(--kx-req-text-5);
+  font-weight: 300;
+}
+
+/* ──────────────────────────────────
+   🔲 RESPOND MODAL
    ────────────────────────────────── */
 .kx-req-respond-overlay {
   display: none;
@@ -992,7 +1069,7 @@
   width: 100%;
   max-width: 480px;
   margin: 20px;
-  animation: fadeIn 0.3s ease;
+  animation: kxReqFadeIn 0.3s ease;
   position: relative;
   backdrop-filter: blur(30px);
   overflow: hidden;
@@ -1016,10 +1093,11 @@
 }
 
 .kx-req-respond-title {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 1rem;
   font-weight: 700;
   color: var(--kx-req-text-2);
+  margin: 0;
 }
 
 .kx-req-respond-close {
@@ -1061,7 +1139,7 @@
   border: 1px solid var(--kx-req-border);
   border-radius: var(--kx-req-radius-xs);
   color: var(--kx-req-text-4);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
@@ -1080,7 +1158,7 @@
   border: 1px solid rgba(192, 192, 192, 0.15);
   border-radius: var(--kx-req-radius-xs);
   color: var(--kx-req-text-1);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -1091,7 +1169,7 @@
 
 .kx-req-respond-submit:hover {
   background: linear-gradient(135deg, #c0c0c0, #888);
-  color: var(--negro-base);
+  color: var(--negro-base, #0a0a0a);
   border-color: var(--kx-req-accent);
 }
 
@@ -1125,7 +1203,7 @@
   margin: 20px;
   padding: 32px 28px;
   text-align: center;
-  animation: fadeIn 0.3s ease;
+  animation: kxReqFadeIn 0.3s ease;
 }
 
 .kx-req-confirm-icon {
@@ -1142,7 +1220,7 @@
 }
 
 .kx-req-confirm-title {
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 1rem;
   font-weight: 700;
   color: var(--kx-req-text-1);
@@ -1169,7 +1247,7 @@
   border: 1px solid var(--kx-req-border);
   border-radius: var(--kx-req-radius-xs);
   color: var(--kx-req-text-3);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
@@ -1188,7 +1266,7 @@
   border: 1px solid var(--kx-req-rejected-border);
   border-radius: var(--kx-req-radius-xs);
   color: var(--kx-req-rejected);
-  font-family: var(--font-titulo);
+  font-family: var(--font-titulo, sans-serif);
   font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
