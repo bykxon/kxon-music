@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/dashboard-chat.css">
     <link rel="stylesheet" href="css/dashboard-archivo.css">
     <link rel="stylesheet" href="css/dashboard-inicio.css">
+    <link rel="stylesheet" href="css/dashboard-planes.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -2700,12 +2701,110 @@
 
 </div>
 
-                <!-- 🎫 PANEL: PLANES -->
-                <div class="panel" id="panel-planes">
-                    <div class="panel-header"><h1 class="panel-title">Planes de Suscripción</h1><p class="panel-desc">Accede a todo el contenido exclusivo de KXON</p></div>
-                    <div class="planes-grid" id="planesGrid"><div class="empty-state"><div class="empty-icon">🎫</div><div class="empty-title">Cargando planes...</div></div></div>
-                    <div class="solicitudes-section" id="subSolicitudesSection" style="display:none;"><div class="panel-section-title">📋 Solicitudes de Suscripción</div><div id="subSolicitudesList"></div></div>
-                </div>
+                <!-- 🎫 PANEL: PLANES — KXON 2026 REBUILD -->
+<div class="panel" id="panel-planes" role="main" aria-label="Panel de planes de suscripción">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-plan-header">
+    <div class="kx-plan-header-top">
+      <div class="kx-plan-header-intro">
+        <span class="kx-plan-label">SUSCRIPCIONES</span>
+        <h1 class="kx-plan-title">Planes</h1>
+        <p class="kx-plan-subtitle">Accede a todo el contenido exclusivo de KXON.</p>
+      </div>
+      <div class="kx-plan-kpis">
+        <div class="kx-plan-kpi">
+          <span class="kx-plan-kpi-value" id="planStatTotal">0</span>
+          <span class="kx-plan-kpi-label">Planes</span>
+        </div>
+        <div class="kx-plan-kpi-divider"></div>
+        <div class="kx-plan-kpi">
+          <span class="kx-plan-kpi-value" id="planStatActive">—</span>
+          <span class="kx-plan-kpi-label">Tu Plan</span>
+        </div>
+        <div class="kx-plan-kpi-divider"></div>
+        <div class="kx-plan-kpi">
+          <span class="kx-plan-kpi-value" id="planStatDays">—</span>
+          <span class="kx-plan-kpi-label">Días Restantes</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ USER STATUS BANNER ═══ -->
+  <div class="kx-plan-status-banner" id="planStatusBanner" style="display:none;" role="status" aria-live="polite">
+    <div class="kx-plan-status-icon" id="planStatusIcon">✅</div>
+    <div class="kx-plan-status-info">
+      <div class="kx-plan-status-title" id="planStatusTitle">Plan Activo</div>
+      <div class="kx-plan-status-text" id="planStatusText"></div>
+    </div>
+    <div class="kx-plan-status-badge" id="planStatusBadge"></div>
+  </div>
+
+  <!-- ═══ PLANS GRID ═══ -->
+  <div class="kx-plan-grid" id="planesGrid" role="list" aria-label="Lista de planes disponibles">
+    <!-- Skeletons -->
+    <div class="kx-plan-skeleton" aria-hidden="true">
+      <div class="kx-plan-skeleton-badge"></div>
+      <div class="kx-plan-skeleton-name"></div>
+      <div class="kx-plan-skeleton-price"></div>
+      <div class="kx-plan-skeleton-features">
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+      </div>
+      <div class="kx-plan-skeleton-btn"></div>
+    </div>
+    <div class="kx-plan-skeleton" aria-hidden="true">
+      <div class="kx-plan-skeleton-badge"></div>
+      <div class="kx-plan-skeleton-name"></div>
+      <div class="kx-plan-skeleton-price"></div>
+      <div class="kx-plan-skeleton-features">
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+      </div>
+      <div class="kx-plan-skeleton-btn"></div>
+    </div>
+    <div class="kx-plan-skeleton" aria-hidden="true">
+      <div class="kx-plan-skeleton-badge"></div>
+      <div class="kx-plan-skeleton-name"></div>
+      <div class="kx-plan-skeleton-price"></div>
+      <div class="kx-plan-skeleton-features">
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+        <div class="kx-plan-skeleton-feat"></div>
+      </div>
+      <div class="kx-plan-skeleton-btn"></div>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN: SOLICITUDES ═══ -->
+  <section class="kx-plan-solicitudes" id="subSolicitudesSection" style="display:none;" aria-label="Solicitudes de suscripción">
+    <div class="kx-plan-solicitudes-header">
+      <div class="kx-plan-solicitudes-header-left">
+        <div class="kx-plan-solicitudes-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>
+        </div>
+        <div>
+          <h3 class="kx-plan-solicitudes-title">Solicitudes de Suscripción</h3>
+          <span class="kx-plan-solicitudes-count" id="planSolCount">0 pendientes</span>
+        </div>
+      </div>
+    </div>
+    <div class="kx-plan-solicitudes-list" id="subSolicitudesList" role="list"></div>
+  </section>
+
+</div>
 
                 <!-- 📊 PANEL: HISTORIAL -->
                 <div class="panel" id="panel-historial">
