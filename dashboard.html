@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/dashboard-responsive.css">
     <link rel="stylesheet" href="css/dashboard-favs-share.css">
     <link rel="stylesheet" href="css/dashboard-analytics.css">
+    <link rel="stylesheet" href="css/dashboard-historial-analytics.css">
     <link rel="stylesheet" href="css/dashboard-albumes.css">
     <link rel="stylesheet" href="css/dashboard-canciones.css">
     <link rel="stylesheet" href="css/dashboard-playlists.css">
@@ -70,192 +71,7 @@
     .cmt-text{font-size:.85rem;color:var(--plata-clara);font-weight:300;line-height:1.6;word-break:break-word}
     @media(max-width:480px){.cmt-input-wrap{flex-direction:column}.cmt-input-avatar{display:none}.cmt-avatar{width:28px;height:28px}}
 
-    /* ============================================
-       📊 PANEL HISTORIAL - ESTILOS
-       ============================================ */
-    .historial-header-actions {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 24px;
-    }
-    .historial-clear-btn {
-        padding: 8px 18px;
-        background: rgba(255,71,87,0.08);
-        border: 1px solid rgba(255,71,87,0.2);
-        border-radius: var(--radio-sm);
-        color: var(--acento-error);
-        font-family: var(--font-titulo);
-        font-weight: 600;
-        font-size: 0.7rem;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: var(--trans-suave);
-    }
-    .historial-clear-btn:hover {
-        background: rgba(255,71,87,0.15);
-        border-color: rgba(255,71,87,0.35);
-        transform: translateY(-1px);
-    }
-    .historial-date-group {
-        margin-bottom: 24px;
-    }
-    .historial-date-label {
-        font-family: var(--font-titulo);
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: var(--plata-oscura);
-        margin-bottom: 10px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .historial-date-label::before {
-        content: '📅';
-        font-size: 0.85rem;
-    }
-    .historial-track-item {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 16px;
-        background: var(--negro-card);
-        border: 1px solid rgba(255,255,255,0.04);
-        border-radius: var(--radio-sm);
-        transition: var(--trans-suave);
-        cursor: pointer;
-        margin-bottom: 3px;
-    }
-    .historial-track-item:hover {
-        background: rgba(255,255,255,0.03);
-        border-color: rgba(192,192,192,0.1);
-    }
-    .historial-track-cover {
-        width: 42px;
-        height: 42px;
-        border-radius: 6px;
-        overflow: hidden;
-        flex-shrink: 0;
-        border: 1px solid rgba(255,255,255,0.06);
-    }
-    .historial-track-cover img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    .historial-track-info {
-        flex: 1;
-        min-width: 0;
-    }
-    .historial-track-title {
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: var(--plata-titulo);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .historial-track-meta {
-        font-size: 0.7rem;
-        color: var(--plata-oscura);
-        margin-top: 2px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .historial-track-time {
-        font-size: 0.68rem;
-        color: var(--plata-oscura);
-        font-weight: 500;
-        flex-shrink: 0;
-        font-family: var(--font-titulo);
-        letter-spacing: 0.5px;
-    }
-
-    /* ── CONTADOR REPRODUCCIONES VISIBLE ── */
-    .track-plays {
-        font-size: 0.65rem;
-        color: var(--plata-oscura);
-        font-weight: 600;
-        font-family: var(--font-titulo);
-        letter-spacing: 0.5px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        flex-shrink: 0;
-        min-width: 55px;
-        justify-content: flex-end;
-    }
-    .track-plays .plays-fire {
-        font-size: 0.7rem;
-    }
-    .track-plays.popular {
-        color: var(--acento-dorado);
-    }
-    .radio-queue-plays {
-        font-size: 0.62rem;
-        color: var(--plata-oscura);
-        font-weight: 500;
-        margin-top: 2px;
-        display: flex;
-        align-items: center;
-        gap: 3px;
-    }
-
-    /* ── HISTORIAL STATS ── */
-    .historial-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 12px;
-        margin-bottom: 28px;
-    }
-    .historial-stat {
-        background: var(--negro-card);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: var(--radio-md);
-        padding: 18px;
-        text-align: center;
-        transition: var(--trans-suave);
-    }
-    .historial-stat:hover {
-        border-color: rgba(192,192,192,0.1);
-    }
-    .historial-stat-value {
-        font-family: var(--font-titulo);
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: var(--plata-blanca);
-        margin-bottom: 4px;
-    }
-    .historial-stat-label {
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: var(--plata-oscura);
-    }
-
-    /* ── RESPONSIVE HISTORIAL ── */
-    @media (max-width: 768px) {
-        .historial-stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-        .historial-header-actions {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-    }
-    @media (max-width: 480px) {
-        .historial-stats {
-            grid-template-columns: 1fr;
-        }
-    }
-
+    
     /* ============================================
        🔒 SISTEMA DE LANZAMIENTO PROGRAMADO
        ============================================ */
@@ -2806,13 +2622,108 @@
 
 </div>
 
-                <!-- 📊 PANEL: HISTORIAL -->
-                <div class="panel" id="panel-historial">
-                    <div class="panel-header"><h1 class="panel-title">Historial de Reproducciones</h1><p class="panel-desc">Tu actividad musical reciente</p></div>
-                    <div class="historial-stats"><div class="historial-stat"><div class="historial-stat-value" id="histStatTotal">0</div><div class="historial-stat-label">Total reproducidas</div></div><div class="historial-stat"><div class="historial-stat-value" id="histStatHoy">0</div><div class="historial-stat-label">Hoy</div></div><div class="historial-stat"><div class="historial-stat-value" id="histStatSemana">0</div><div class="historial-stat-label">Esta semana</div></div><div class="historial-stat"><div class="historial-stat-value" id="histStatUnicas">0</div><div class="historial-stat-label">Canciones únicas</div></div></div>
-                    <div class="historial-header-actions"><button class="historial-clear-btn" id="btnClearHistorial" onclick="window._clearHistorial()">🗑 Borrar historial</button></div>
-                    <div id="historialList"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">Cargando historial...</div></div></div>
-                </div>
+                <!-- 📊 PANEL: HISTORIAL — KXON 2026 REBUILD -->
+<div class="panel" id="panel-historial" role="main" aria-label="Panel de historial de reproducciones">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-hist-header">
+    <div class="kx-hist-header-top">
+      <div class="kx-hist-header-intro">
+        <span class="kx-hist-label">ACTIVIDAD MUSICAL</span>
+        <h1 class="kx-hist-title">Historial</h1>
+        <p class="kx-hist-subtitle">Tu registro de reproducciones y actividad reciente.</p>
+      </div>
+      <div class="kx-hist-kpis">
+        <div class="kx-hist-kpi">
+          <span class="kx-hist-kpi-value" id="histStatTotal">0</span>
+          <span class="kx-hist-kpi-label">Total</span>
+        </div>
+        <div class="kx-hist-kpi-divider"></div>
+        <div class="kx-hist-kpi">
+          <span class="kx-hist-kpi-value" id="histStatHoy">0</span>
+          <span class="kx-hist-kpi-label">Hoy</span>
+        </div>
+        <div class="kx-hist-kpi-divider"></div>
+        <div class="kx-hist-kpi">
+          <span class="kx-hist-kpi-value" id="histStatSemana">0</span>
+          <span class="kx-hist-kpi-label">Esta semana</span>
+        </div>
+        <div class="kx-hist-kpi-divider"></div>
+        <div class="kx-hist-kpi">
+          <span class="kx-hist-kpi-value" id="histStatUnicas">0</span>
+          <span class="kx-hist-kpi-label">Únicas</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ TOOLBAR ═══ -->
+  <div class="kx-hist-toolbar">
+    <div class="kx-hist-toolbar-left">
+      <div class="kx-hist-search-wrap">
+        <svg class="kx-hist-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text"
+               class="kx-hist-search"
+               id="histSearchInput"
+               placeholder="Buscar en historial..."
+               autocomplete="off"
+               aria-label="Buscar en historial">
+        <button class="kx-hist-search-clear" id="histSearchClear" aria-label="Limpiar búsqueda" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="kx-hist-filters" role="tablist" aria-label="Filtrar historial">
+        <button class="kx-hist-filter active" data-filter="todo" role="tab" aria-selected="true">Todo</button>
+        <button class="kx-hist-filter" data-filter="hoy" role="tab" aria-selected="false">Hoy</button>
+        <button class="kx-hist-filter" data-filter="semana" role="tab" aria-selected="false">Semana</button>
+        <button class="kx-hist-filter" data-filter="mes" role="tab" aria-selected="false">Mes</button>
+      </div>
+    </div>
+    <div class="kx-hist-toolbar-right">
+      <button class="kx-hist-btn-clear" id="histClearBtn" aria-label="Borrar historial">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        <span>Borrar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ TRACK LIST ═══ -->
+  <div id="historialList" role="list" aria-label="Lista de historial">
+    <!-- Skeleton loaders -->
+    <div class="kx-hist-skeleton-group" aria-hidden="true">
+      <div class="kx-hist-skeleton-date"></div>
+      <div class="kx-hist-skeleton-track"><div class="kx-hist-skeleton-time"></div><div class="kx-hist-skeleton-cover"></div><div class="kx-hist-skeleton-info"><div class="kx-hist-skeleton-line kx-hist-skeleton-line--title"></div><div class="kx-hist-skeleton-line kx-hist-skeleton-line--short"></div></div><div class="kx-hist-skeleton-dur"></div></div>
+      <div class="kx-hist-skeleton-track"><div class="kx-hist-skeleton-time"></div><div class="kx-hist-skeleton-cover"></div><div class="kx-hist-skeleton-info"><div class="kx-hist-skeleton-line kx-hist-skeleton-line--title"></div><div class="kx-hist-skeleton-line kx-hist-skeleton-line--short"></div></div><div class="kx-hist-skeleton-dur"></div></div>
+      <div class="kx-hist-skeleton-track"><div class="kx-hist-skeleton-time"></div><div class="kx-hist-skeleton-cover"></div><div class="kx-hist-skeleton-info"><div class="kx-hist-skeleton-line kx-hist-skeleton-line--title"></div><div class="kx-hist-skeleton-line kx-hist-skeleton-line--short"></div></div><div class="kx-hist-skeleton-dur"></div></div>
+    </div>
+    <div class="kx-hist-skeleton-group" aria-hidden="true">
+      <div class="kx-hist-skeleton-date"></div>
+      <div class="kx-hist-skeleton-track"><div class="kx-hist-skeleton-time"></div><div class="kx-hist-skeleton-cover"></div><div class="kx-hist-skeleton-info"><div class="kx-hist-skeleton-line kx-hist-skeleton-line--title"></div><div class="kx-hist-skeleton-line kx-hist-skeleton-line--short"></div></div><div class="kx-hist-skeleton-dur"></div></div>
+      <div class="kx-hist-skeleton-track"><div class="kx-hist-skeleton-time"></div><div class="kx-hist-skeleton-cover"></div><div class="kx-hist-skeleton-info"><div class="kx-hist-skeleton-line kx-hist-skeleton-line--title"></div><div class="kx-hist-skeleton-line kx-hist-skeleton-line--short"></div></div><div class="kx-hist-skeleton-dur"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══ RESULTS INFO ═══ -->
+  <div class="kx-hist-results-info" id="histResultsInfo" style="display:none;">
+    <span id="histResultsText"></span>
+  </div>
+
+  <!-- ═══ CONFIRM DIALOG ═══ -->
+  <div class="kx-hist-confirm-overlay" id="histConfirmOverlay" role="alertdialog" aria-modal="true" aria-label="Confirmar borrado">
+    <div class="kx-hist-confirm-card">
+      <div class="kx-hist-confirm-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </div>
+      <h3 class="kx-hist-confirm-title">¿Borrar todo el historial?</h3>
+      <p class="kx-hist-confirm-text">Esta acción eliminará todas tus reproducciones registradas. No se puede deshacer.</p>
+      <div class="kx-hist-confirm-actions">
+        <button class="kx-hist-confirm-cancel" id="histConfirmCancel">Cancelar</button>
+        <button class="kx-hist-confirm-accept" id="histConfirmAccept">Borrar todo</button>
+      </div>
+    </div>
+  </div>
+
+</div>
 
                 <!-- ❤️ PANEL: FAVORITOS -->
                 <div class="panel" id="panel-favoritos">
@@ -2822,8 +2733,63 @@
                     <div id="favsContent" class="content-grid content-grid-albums"></div>
                 </div>
 
-                <!-- 📊 PANEL: ANALYTICS (Admin) -->
-                <div class="panel" id="panel-analytics"></div>
+                <!-- 📊 PANEL: ANALYTICS — KXON 2026 REBUILD -->
+<div class="panel" id="panel-analytics" role="main" aria-label="Panel de analytics">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-ana-header">
+    <div class="kx-ana-header-top">
+      <div class="kx-ana-header-intro">
+        <span class="kx-ana-label">ADMINISTRACIÓN</span>
+        <h1 class="kx-ana-title">Analytics</h1>
+        <p class="kx-ana-subtitle">Métricas y estadísticas de la plataforma KXON.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ TOOLBAR ═══ -->
+  <div class="kx-ana-toolbar">
+    <div class="kx-ana-toolbar-left">
+      <div class="kx-ana-periods" role="tablist" aria-label="Seleccionar período">
+        <button class="kx-ana-period" data-period="7d" role="tab" aria-selected="false">7 días</button>
+        <button class="kx-ana-period active" data-period="30d" role="tab" aria-selected="true">30 días</button>
+        <button class="kx-ana-period" data-period="90d" role="tab" aria-selected="false">90 días</button>
+        <button class="kx-ana-period" data-period="all" role="tab" aria-selected="false">Todo</button>
+      </div>
+    </div>
+    <div class="kx-ana-toolbar-right">
+      <button class="kx-ana-btn-refresh" id="anaRefreshBtn" aria-label="Actualizar datos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+        <span>Actualizar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ KPI STATS ═══ -->
+  <div class="kx-ana-stats" id="anaStats">
+    <!-- Skeleton loaders -->
+    <div class="kx-ana-skeleton-stat" aria-hidden="true"></div>
+    <div class="kx-ana-skeleton-stat" aria-hidden="true"></div>
+    <div class="kx-ana-skeleton-stat" aria-hidden="true"></div>
+    <div class="kx-ana-skeleton-stat" aria-hidden="true"></div>
+    <div class="kx-ana-skeleton-stat" aria-hidden="true"></div>
+    <div class="kx-ana-skeleton-stat" aria-hidden="true"></div>
+  </div>
+
+  <!-- ═══ ACTIVITY CHART ═══ -->
+  <div id="anaChart">
+    <div class="kx-ana-skeleton-chart" aria-hidden="true"></div>
+  </div>
+
+  <!-- ═══ TOP CONTENT GRID ═══ -->
+  <div id="anaTopGrid">
+    <div class="kx-ana-grid-2col">
+      <div class="kx-ana-skeleton-table" aria-hidden="true"></div>
+      <div class="kx-ana-skeleton-table" aria-hidden="true"></div>
+    </div>
+  </div>
+
+</div>
 
                 <!-- 💬 PANEL: CHAT — KXON 2026 REBUILD -->
 <div class="panel" id="panel-chat">
