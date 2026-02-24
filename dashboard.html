@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/dashboard-envivo.css">
     <link rel="stylesheet" href="css/dashboard-chat.css">
     <link rel="stylesheet" href="css/dashboard-archivo.css">
+    <link rel="stylesheet" href="css/dashboard-inicio.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -481,130 +482,22 @@
     }
 
     /* ============================================
-       🧹 SISTEMA LIMPIAR/MARCAR COMO VISTO
-       ============================================ */
-    .inicio-section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 14px;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    .inicio-section-title-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .inicio-new-badge {
-        font-family: var(--font-titulo);
-        font-size: .58rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: var(--acento-exito);
-        background: rgba(46,213,115,.08);
-        border: 1px solid rgba(46,213,115,.15);
-        padding: 3px 10px;
-        border-radius: 50px;
-        animation: newPulse 2s ease-in-out infinite;
-    }
-    .inicio-clear-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 14px;
-        background: rgba(255,255,255,.03);
-        border: 1px solid rgba(255,255,255,.06);
-        border-radius: 8px;
-        color: var(--plata-oscura);
-        font-family: var(--font-titulo);
-        font-size: .62rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all .25s ease;
-    }
-    .inicio-clear-btn:hover {
-        background: rgba(192,192,192,.06);
-        border-color: rgba(192,192,192,.12);
-        color: var(--plata-blanca);
-        transform: translateY(-1px);
-    }
-    .inicio-all-seen {
-        font-family: var(--font-titulo);
-        font-size: .6rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: rgba(192,192,192,.25);
-        padding: 6px 14px;
-        background: rgba(255,255,255,.015);
-        border: 1px solid rgba(255,255,255,.03);
-        border-radius: 8px;
-    }
-    .inicio-clear-all-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 22px;
-        background: linear-gradient(135deg, rgba(30,30,30,.9), rgba(18,18,18,.9));
-        border: 1px solid rgba(192,192,192,.12);
-        border-radius: 10px;
-        color: var(--plata-blanca);
-        font-family: var(--font-titulo);
-        font-size: .7rem;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all .3s ease;
-        width: 100%;
-        justify-content: center;
-    }
-    .inicio-clear-all-btn:hover {
-        background: linear-gradient(135deg, rgba(192,192,192,.15), rgba(192,192,192,.05));
-        border-color: rgba(192,192,192,.2);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(0,0,0,.2);
-    }
-    .inicio-all-clear {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 16px 24px;
-        background: rgba(46,213,115,.03);
-        border: 1px solid rgba(46,213,115,.08);
-        border-radius: 12px;
-        text-align: center;
-    }
-    .inicio-all-clear-icon {
-        font-size: 1.2rem;
-    }
-    .inicio-all-clear-text {
-        font-family: var(--font-titulo);
-        font-size: .72rem;
-        font-weight: 600;
-        letter-spacing: .5px;
-        color: rgba(46,213,115,.6);
-    }
-    .empty-state-sm {
-        padding: 30px 16px;
-    }
-    .empty-state-sm .empty-icon {
-        font-size: 1.5rem;
-        margin-bottom: 8px;
-    }
-    .empty-state-sm .empty-title {
-        font-size: .82rem;
-    }
-    .empty-state-sm .empty-text {
-        font-size: .72rem;
-        margin-top: 4px;
-    }
-
+   📭 EMPTY STATE PEQUEÑO
+   ============================================ */
+.empty-state-sm {
+    padding: 30px 16px;
+}
+.empty-state-sm .empty-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+.empty-state-sm .empty-title {
+    font-size: .82rem;
+}
+.empty-state-sm .empty-text {
+    font-size: .72rem;
+    margin-top: 4px;
+}
     /* ============================================
        🎵 LETRAS Y CRÉDITOS
        ============================================ */
@@ -1417,23 +1310,117 @@
 
             <!-- ── CONTENT AREA ── -->
             <div class="content-area">
-                                <!-- 🏠 PANEL: INICIO -->
-                <div class="panel active" id="panel-inicio">
-                    <div class="panel-header">
-                        <h1 class="panel-title">Bienvenido a KXON</h1>
-                        <p class="panel-desc">Tu resumen de la plataforma</p>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-icon">💿</div><div class="stat-value" id="statAlbumes">0</div><div class="stat-label">Álbumes</div></div>
-                        <div class="stat-card"><div class="stat-icon">🎵</div><div class="stat-value" id="statCanciones">0</div><div class="stat-label">Canciones</div></div>
-                        <div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-value" id="statBeats">0</div><div class="stat-label">Beats</div></div>
-                        <div class="stat-card"><div class="stat-icon">📰</div><div class="stat-value" id="statNoticias">0</div><div class="stat-label">Noticias</div></div>
-                    </div>
-                    <div id="inicioClearAllWrap" style="display:none;margin-bottom:24px;"></div>
-                    <div class="panel-section" id="inicioNoticiasWrap"><div class="inicio-section-header"></div><div class="content-grid" id="inicioNoticias"></div></div>
-                    <div class="panel-section" id="inicioCancionesWrap"><div class="inicio-section-header"></div><div class="track-list" id="inicioCanciones"></div></div>
-                    <div class="panel-section" id="inicioAlbumesWrap"><div class="inicio-section-header"></div><div class="content-grid content-grid-albums" id="inicioAlbumes"></div></div>
-                </div>
+     <!-- 🏠 PANEL: INICIO — KXON 2026 REDESIGN -->
+<div class="panel active" id="panel-inicio" role="main" aria-label="Panel de inicio">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="kx-home-hero" id="kxHomeHero">
+    <div class="kx-home-hero-ambient"></div>
+    <div class="kx-home-hero-inner">
+      <div class="kx-home-hero-content">
+        <div class="kx-home-hero-greeting-label" id="kxHomeGreetingLabel">
+          <span>☀️</span> <span id="kxHomeGreetingTime">BUENOS DÍAS</span>
+        </div>
+        <h2 class="kx-home-hero-title" id="kxHomeGreetingTitle">Bienvenido a KXON</h2>
+        <p class="kx-home-hero-subtitle" id="kxHomeGreetingSub">Tu plataforma musical exclusiva. Explora lo último en álbumes, canciones y noticias.</p>
+        <div class="kx-home-hero-date" id="kxHomeDate"></div>
+      </div>
+      <div class="kx-home-hero-stats" id="kxHomeHeroStats">
+        <div class="kx-home-hero-stat">
+          <span class="kx-home-hero-stat-icon">💿</span>
+          <span class="kx-home-hero-stat-value" id="kxHomeStatAlbumes">—</span>
+          <span class="kx-home-hero-stat-label">ÁLBUMES</span>
+        </div>
+        <div class="kx-home-hero-stat">
+          <span class="kx-home-hero-stat-icon">🎵</span>
+          <span class="kx-home-hero-stat-value" id="kxHomeStatCanciones">—</span>
+          <span class="kx-home-hero-stat-label">CANCIONES</span>
+        </div>
+        <div class="kx-home-hero-stat">
+          <span class="kx-home-hero-stat-icon">🛒</span>
+          <span class="kx-home-hero-stat-value" id="kxHomeStatBeats">—</span>
+          <span class="kx-home-hero-stat-label">BEATS</span>
+        </div>
+        <div class="kx-home-hero-stat">
+          <span class="kx-home-hero-stat-icon">📰</span>
+          <span class="kx-home-hero-stat-value" id="kxHomeStatNoticias">—</span>
+          <span class="kx-home-hero-stat-label">NOTICIAS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ QUICK ACTIONS ═══ -->
+  <nav class="kx-home-actions" id="kxHomeActions" role="navigation" aria-label="Accesos rápidos">
+    <div class="kx-home-action" data-action="albumes" role="button" tabindex="0">
+      <span class="kx-home-action-icon">💿</span>
+      <span class="kx-home-action-text">Álbumes</span>
+    </div>
+    <div class="kx-home-action" data-action="canciones" role="button" tabindex="0">
+      <span class="kx-home-action-icon">🎵</span>
+      <span class="kx-home-action-text">Canciones</span>
+    </div>
+    <div class="kx-home-action" data-action="radio" role="button" tabindex="0">
+      <span class="kx-home-action-icon">📻</span>
+      <span class="kx-home-action-text">Radio KXON</span>
+    </div>
+    <div class="kx-home-action" data-action="videos" role="button" tabindex="0">
+      <span class="kx-home-action-icon">🎬</span>
+      <span class="kx-home-action-text">Videos</span>
+    </div>
+    <div class="kx-home-action" data-action="marketplace" role="button" tabindex="0">
+      <span class="kx-home-action-icon">🛒</span>
+      <span class="kx-home-action-text">Marketplace</span>
+    </div>
+    <div class="kx-home-action" data-action="playlists" role="button" tabindex="0">
+      <span class="kx-home-action-icon">🎶</span>
+      <span class="kx-home-action-text">Playlists</span>
+    </div>
+  </nav>
+
+  <!-- ═══ STATUS / CLEAR ALL ═══ -->
+  <div class="kx-home-status" id="kxHomeStatus"></div>
+
+  <!-- ═══ SECTION: NOTICIAS ═══ -->
+  <section class="kx-home-section" id="kxHomeSecNoticias" aria-label="Últimas noticias">
+    <div class="kx-home-section-head">
+      <div class="kx-home-section-head-left">
+        <div class="kx-home-section-icon">📰</div>
+        <h3 class="kx-home-section-title">Últimas Noticias</h3>
+        <span class="kx-home-section-new" id="kxHomeNewsBadge" style="display:none"></span>
+      </div>
+      <div class="kx-home-section-head-right" id="kxHomeNewsActions"></div>
+    </div>
+    <div class="kx-home-news-grid" id="kxHomeNewsGrid" role="list"></div>
+  </section>
+
+  <!-- ═══ SECTION: CANCIONES RECIENTES ═══ -->
+  <section class="kx-home-section" id="kxHomeSecCanciones" aria-label="Canciones recientes">
+    <div class="kx-home-section-head">
+      <div class="kx-home-section-head-left">
+        <div class="kx-home-section-icon">🎵</div>
+        <h3 class="kx-home-section-title">Canciones Recientes</h3>
+        <span class="kx-home-section-new" id="kxHomeSongsBadge" style="display:none"></span>
+      </div>
+      <div class="kx-home-section-head-right" id="kxHomeSongsActions"></div>
+    </div>
+    <div id="kxHomeSongsList" role="list"></div>
+  </section>
+
+  <!-- ═══ SECTION: ÁLBUMES ═══ -->
+  <section class="kx-home-section" id="kxHomeSecAlbumes" aria-label="Últimos álbumes">
+    <div class="kx-home-section-head">
+      <div class="kx-home-section-head-left">
+        <div class="kx-home-section-icon">💿</div>
+        <h3 class="kx-home-section-title">Últimos Álbumes</h3>
+        <span class="kx-home-section-new" id="kxHomeAlbBadge" style="display:none"></span>
+      </div>
+      <div class="kx-home-section-head-right" id="kxHomeAlbActions"></div>
+    </div>
+    <div class="kx-home-albums-grid" id="kxHomeAlbGrid" role="list"></div>
+  </section>
+
+</div>
 
               <!-- 💿 PANEL: ÁLBUMES — KXON 2026 REBUILD -->
 <div class="panel" id="panel-albumes">
@@ -2804,6 +2791,7 @@
     <script src="js/dashboard-noticias.js"></script>
     <script src="js/dashboard-sidebar.js"></script>
     <script src="js/dashboard-init.js"></script>
+    <script src="js/dashboard-inicio.js"></script>
     <script src="js/dashboard-albumes.js"></script>
     <script src="js/dashboard-canciones.js"></script>
     <script src="js/dashboard-historial.js"></script>
