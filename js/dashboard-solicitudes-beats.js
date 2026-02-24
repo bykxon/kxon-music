@@ -1,7 +1,7 @@
 /* ============================================
    📋 DASHBOARD-SOLICITUDES-BEATS.JS — KXON 2026
    Namespace: kx-req-*
-   v2.2 — Fixed DOM reference caching bug
+   v2.3 — Added delete functionality
    ============================================ */
 (function () {
     'use strict';
@@ -274,16 +274,34 @@
                     h += '</div>';
                 }
 
+                // ── Admin actions: pendiente ──
                 if (K.isAdmin && estado === 'pendiente') {
                     h += '<div class="kx-req-admin-actions">';
                     h += '<button class="kx-req-btn-respond" data-action="respond" data-id="' + escapeHtml(s.id) + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg> Responder</button>';
                     h += '<button class="kx-req-btn-reject" data-action="reject" data-id="' + escapeHtml(s.id) + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> Rechazar</button>';
+                    h += '<button class="kx-req-btn-delete" data-action="delete" data-id="' + escapeHtml(s.id) + '" title="Eliminar solicitud"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>';
                     h += '</div>';
                 }
 
+                // ── Admin actions: aceptada ──
                 if (K.isAdmin && estado === 'aceptada') {
                     h += '<div class="kx-req-admin-actions">';
                     h += '<button class="kx-req-btn-complete" data-action="complete" data-id="' + escapeHtml(s.id) + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Marcar Completada</button>';
+                    h += '<button class="kx-req-btn-delete" data-action="delete" data-id="' + escapeHtml(s.id) + '" title="Eliminar solicitud"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>';
+                    h += '</div>';
+                }
+
+                // ── Admin: delete for completed/rejected ──
+                if (K.isAdmin && (estado === 'completada' || estado === 'rechazada')) {
+                    h += '<div class="kx-req-admin-actions">';
+                    h += '<button class="kx-req-btn-delete" data-action="delete" data-id="' + escapeHtml(s.id) + '" title="Eliminar solicitud"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>';
+                    h += '</div>';
+                }
+
+                // ── User: delete own pending requests ──
+                if (!K.isAdmin && estado === 'pendiente' && s.usuario_id === K.currentUser.id) {
+                    h += '<div class="kx-req-admin-actions">';
+                    h += '<button class="kx-req-btn-delete" data-action="delete" data-id="' + escapeHtml(s.id) + '" title="Eliminar mi solicitud"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> Eliminar</button>';
                     h += '</div>';
                 }
 
@@ -506,6 +524,50 @@
         }
 
         /* ══════════════════════════════════════════
+           🗑️ DELETE
+           Admin: puede eliminar cualquier solicitud
+           Usuario: solo las suyas en estado pendiente
+           ══════════════════════════════════════════ */
+        var deletingId = null;
+
+        function openDeleteConfirm(id) {
+            deletingId = id;
+            var el = $('reqDeleteId');
+            var overlay = $('reqDeleteOverlay');
+            if (el) el.value = id;
+            if (overlay) overlay.classList.add('show');
+        }
+
+        function closeDeleteConfirm() {
+            deletingId = null;
+            var overlay = $('reqDeleteOverlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
+        async function confirmDelete() {
+            var id = $('reqDeleteId') ? $('reqDeleteId').value : '';
+            if (!id) return;
+
+            var btn = $('reqDeleteAccept');
+            if (btn) { btn.disabled = true; btn.textContent = 'Eliminando...'; }
+
+            try {
+                var r = await db.from('solicitudes_beats')
+                    .delete()
+                    .eq('id', id);
+
+                if (r.error) throw r.error;
+                K.showToast('🗑️ Solicitud eliminada', 'success');
+                closeDeleteConfirm();
+                K.loadSolicitudesBeats();
+            } catch (err) {
+                K.showToast('Error: ' + err.message, 'error');
+            }
+
+            if (btn) { btn.disabled = false; btn.textContent = 'Sí, Eliminar'; }
+        }
+
+        /* ══════════════════════════════════════════
            🎯 EVENT DELEGATION — RE-ATTACHABLE
            Uses a flag + fresh DOM refs each time.
            We attach to document-level for the panel
@@ -633,6 +695,28 @@
                     return;
                 }
 
+                // ── Delete ──
+                var deleteBtn = target.closest('[data-action="delete"]');
+                if (deleteBtn) {
+                    e.preventDefault();
+                    openDeleteConfirm(deleteBtn.getAttribute('data-id'));
+                    return;
+                }
+
+                // ── Delete confirm: cancel ──
+                if (target.closest('#reqDeleteCancel')) {
+                    e.preventDefault();
+                    closeDeleteConfirm();
+                    return;
+                }
+
+                // ── Delete confirm: accept ──
+                if (target.closest('#reqDeleteAccept')) {
+                    e.preventDefault();
+                    confirmDelete();
+                    return;
+                }
+
                 // ── Respond modal: close ──
                 if (target.closest('#reqRespondClose') || target.closest('#reqRespondCancel')) {
                     e.preventDefault();
@@ -672,6 +756,9 @@
                 }
                 if (e.target.id === 'reqConfirmOverlay' && e.target.classList.contains('show')) {
                     closeRejectConfirm();
+                }
+                if (e.target.id === 'reqDeleteOverlay' && e.target.classList.contains('show')) {
+                    closeDeleteConfirm();
                 }
             });
 
@@ -726,6 +813,11 @@
                     closeRejectConfirm();
                     return;
                 }
+                var deleteOv = $('reqDeleteOverlay');
+                if (deleteOv && deleteOv.classList.contains('show')) {
+                    closeDeleteConfirm();
+                    return;
+                }
                 var dd = getSortDropdown();
                 if (dd && dd.classList.contains('show')) {
                     dd.classList.remove('show');
@@ -735,7 +827,7 @@
             console.log('🔌 Solicitudes beats events attached (document-level delegation)');
         }
 
-        console.log('✅ dashboard-solicitudes-beats.js v2.2 initialized');
+        console.log('✅ dashboard-solicitudes-beats.js v2.3 initialized');
     }
 
 })();

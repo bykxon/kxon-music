@@ -1357,3 +1357,49 @@
     margin: 10px;
   }
 }
+/* ──────────────────────────────────
+   🗑️ DELETE BUTTON
+   ────────────────────────────────── */
+.kx-req-btn-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(255, 71, 87, 0.04);
+  border: 1px solid rgba(255, 71, 87, 0.08);
+  border-radius: var(--kx-req-radius-xs);
+  color: rgba(255, 71, 87, 0.4);
+  font-family: var(--font-titulo, sans-serif);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: var(--kx-req-trans);
+  flex-shrink: 0;
+}
+
+.kx-req-btn-delete:hover {
+  background: rgba(255, 71, 87, 0.12);
+  border-color: rgba(255, 71, 87, 0.25);
+  color: var(--kx-req-rejected);
+  transform: translateY(-1px);
+}
+
+/* ── Delete confirm icon variant ── */
+.kx-req-confirm-icon--delete {
+  background: rgba(255, 71, 87, 0.08);
+  border-color: rgba(255, 71, 87, 0.18);
+  color: var(--kx-req-rejected);
+}
+
+/* ── Delete confirm button variant ── */
+.kx-req-confirm-accept--delete {
+  background: rgba(255, 71, 87, 0.08);
+  border: 1px solid rgba(255, 71, 87, 0.18);
+  color: var(--kx-req-rejected);
+}
+
+.kx-req-confirm-accept--delete:hover {
+  background: rgba(255, 71, 87, 0.18);
+}

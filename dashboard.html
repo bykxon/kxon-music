@@ -2956,6 +2956,30 @@
 
 </div>
 
+  <!-- ═══════════════════════════════════════════════
+       MODAL: CONFIRMAR ELIMINACIÓN
+       ═══════════════════════════════════════════════ -->
+  <div class="kx-req-confirm-overlay" id="reqDeleteOverlay" role="alertdialog" aria-modal="true" aria-label="Confirmar eliminación">
+    <div class="kx-req-confirm-card">
+      <div class="kx-req-confirm-icon kx-req-confirm-icon--delete">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 6h18"/>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+          <line x1="10" y1="11" x2="10" y2="17"/>
+          <line x1="14" y1="11" x2="14" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="kx-req-confirm-title">¿Eliminar esta solicitud?</h3>
+      <p class="kx-req-confirm-text">La solicitud será eliminada permanentemente. Esta acción no se puede deshacer.</p>
+      <input type="hidden" id="reqDeleteId" value="">
+      <div class="kx-req-confirm-actions">
+        <button class="kx-req-confirm-cancel" id="reqDeleteCancel">Cancelar</button>
+        <button class="kx-req-confirm-accept kx-req-confirm-accept--delete" id="reqDeleteAccept">Sí, Eliminar</button>
+      </div>
+    </div>
+  </div>
+
                 <!-- 👤 PANEL: PERFIL — KXON 2026 REBUILD -->
 <div class="panel" id="panel-perfil" role="main" aria-label="Panel de perfil">
 
