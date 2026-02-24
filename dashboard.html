@@ -3267,67 +3267,222 @@
             </div><!-- /content-area -->
         </main><!-- /main-content -->
     </div><!-- /app-layout -->
-        <!-- 🎶 PLAYER BAR (Minimizado) -->
-    <div class="player-bar" id="playerBar">
-        <div class="player-cover" id="playerBarClickZone"><img id="playerCover" src="" alt=""></div>
-        <div class="player-info" id="playerInfoClickZone"><div class="player-title" id="playerTitle">—</div><div class="player-artist">KXON</div></div>
-        <div class="player-expand-hint" id="playerExpandHint"><span class="player-expand-arrow">▲</span><span>Expandir</span></div>
-        <div class="player-controls"><button class="player-btn" id="playerPrev">⏮</button><button class="player-btn play-pause" id="playerPlayPause">▶</button><button class="player-btn" id="playerNext">⏭</button></div>
-        <div class="player-progress"><span class="player-time" id="playerCurrentTime">0:00</span><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div><span class="player-time" id="playerDuration">0:00</span></div>
-        <div class="player-volume"><span style="font-size:.8rem;cursor:pointer" id="playerVolIcon">🔊</span><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
-        <div class="player-fav-share">
-            <button class="btn-fav" id="playerFavBtn" onclick="window._togglePlayerFav()" title="Favorito"><span>🤍</span><span class="fav-burst"></span></button>
-            <button class="btn-share" id="playerShareBtn" onclick="window._shareFromPlayer(event)" title="Compartir">↗</button>
+        <!-- ══════════════════════════════════════════════
+     🎶 KXON PLAYER — REDESIGNED 2026
+     Mini Bar + Expanded Overlay
+     ══════════════════════════════════════════════ -->
+
+<!-- 🎵 MINI PLAYER BAR -->
+<div class="kx-ply-bar" id="playerBar" role="region" aria-label="Reproductor de música">
+
+  <!-- Cover -->
+  <div class="kx-ply-cover" id="playerBarClickZone" role="button" tabindex="0" aria-label="Expandir reproductor">
+    <img id="playerCover" src="" alt="Portada de la canción actual" loading="lazy">
+    <div class="kx-ply-cover-eq" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- Track Info -->
+  <div class="kx-ply-info" id="playerInfoClickZone" role="button" tabindex="0" aria-label="Expandir reproductor">
+    <div class="kx-ply-title" id="playerTitle" aria-live="polite">—</div>
+    <div class="kx-ply-artist">KXON</div>
+  </div>
+
+  <!-- Expand Hint -->
+  <div class="kx-ply-expand-hint" id="playerExpandHint" aria-hidden="true">
+    <span class="kx-ply-expand-arrow">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m18 15-6-6-6 6"/></svg>
+    </span>
+    <span>Expandir</span>
+  </div>
+
+  <!-- Controls -->
+  <div class="kx-ply-controls" role="toolbar" aria-label="Controles de reproducción">
+    <button class="kx-ply-ctrl" id="playerPrev" aria-label="Canción anterior" title="Anterior">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+    </button>
+    <button class="kx-ply-ctrl kx-ply-ctrl--play" id="playerPlayPause" aria-label="Reproducir" title="Play/Pause">
+      <svg class="kx-ply-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="kx-ply-icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <button class="kx-ply-ctrl" id="playerNext" aria-label="Siguiente canción" title="Siguiente">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+    </button>
+  </div>
+
+  <!-- Progress -->
+  <div class="kx-ply-progress" role="group" aria-label="Progreso de reproducción">
+    <span class="kx-ply-time" id="playerCurrentTime">0:00</span>
+    <div class="kx-ply-progress-bar" id="progressBar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+      <div class="kx-ply-progress-fill" id="progressFill"></div>
+    </div>
+    <span class="kx-ply-time kx-ply-time--end" id="playerDuration">0:00</span>
+  </div>
+
+  <!-- Volume -->
+  <div class="kx-ply-volume" role="group" aria-label="Volumen">
+    <button class="kx-ply-vol-btn" id="playerVolIcon" aria-label="Silenciar" title="Volumen">
+      <svg class="kx-ply-icon-vol-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <svg class="kx-ply-icon-vol-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </button>
+    <div class="kx-ply-vol-bar" id="volumeBar" role="slider" aria-label="Control de volumen" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" tabindex="0">
+      <div class="kx-ply-vol-fill" id="volumeFill"></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="kx-ply-actions">
+    <button class="kx-ply-action" id="playerFavBtn" aria-label="Agregar a favoritos" title="Favorito">
+      <svg class="kx-ply-icon-heart-empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <svg class="kx-ply-icon-heart-full" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+    <button class="kx-ply-action" id="playerShareBtn" aria-label="Compartir" title="Compartir">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+    </button>
+  </div>
+
+  <!-- Close -->
+  <button class="kx-ply-close" id="playerCloseBtn" aria-label="Cerrar reproductor" title="Cerrar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+  </button>
+</div>
+
+<!-- 🎵 EXPANDED PLAYER -->
+<div class="kx-ply-expanded" id="playerExpanded" role="dialog" aria-modal="true" aria-label="Reproductor expandido">
+
+  <!-- Dynamic Background -->
+  <div class="kx-ply-exp-bg" id="playerExpBg" aria-hidden="true"></div>
+  <div class="kx-ply-exp-bg-overlay" aria-hidden="true"></div>
+
+  <!-- Swipe Indicator -->
+  <div class="kx-ply-exp-swipe" aria-hidden="true"><div class="kx-ply-exp-swipe-bar"></div></div>
+
+  <!-- Header -->
+  <div class="kx-ply-exp-header">
+    <button class="kx-ply-exp-header-btn" id="playerExpMinimize" aria-label="Minimizar reproductor" title="Minimizar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <span class="kx-ply-exp-source" id="playerExpSource">REPRODUCIENDO</span>
+    <button class="kx-ply-exp-header-btn" id="playerExpMenuBtn" aria-label="Opciones" title="Opciones">
+      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="kx-ply-exp-body" id="playerExpContent">
+
+    <!-- Cover Art -->
+    <div class="kx-ply-exp-cover-wrap">
+      <div class="kx-ply-exp-cover" id="playerExpCoverBox">
+        <img id="playerExpCoverImg" src="" alt="Portada del álbum" loading="lazy">
+        <!-- Visualizer bars on cover -->
+        <div class="kx-ply-exp-visualizer" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
         </div>
-        <button class="player-close-btn" id="playerCloseBtn" title="Cerrar reproductor">✕</button>
+      </div>
     </div>
 
-    <!-- 🎵 PLAYER EXPANDIDO -->
-    <div class="player-expanded-overlay" id="playerExpanded">
-        <div class="player-expanded-bg" id="playerExpBg"></div>
-        <div class="player-expanded-bg-overlay"></div>
-        <div class="player-exp-swipe"><div class="player-exp-swipe-bar"></div></div>
-        <div class="player-exp-header">
-            <button class="player-exp-minimize" id="playerExpMinimize" title="Minimizar">▼</button>
-            <span class="player-exp-source" id="playerExpSource">REPRODUCIENDO</span>
-            <button class="player-exp-menu" id="playerExpMenuBtn" title="Opciones">⋯</button>
-        </div>
-        <div class="player-exp-content" id="playerExpContent">
-            <div class="player-exp-cover-wrapper">
-                <div class="player-exp-cover" id="playerExpCoverBox"><img id="playerExpCoverImg" src="" alt=""></div>
-                <div class="player-exp-vinyl" id="playerExpVinyl"><div class="player-exp-vinyl-label"><div class="player-exp-vinyl-hole"></div><span class="player-exp-vinyl-label-text">KXON</span></div></div>
-            </div>
-            <div class="player-exp-track-info">
-                <div class="player-exp-title" id="playerExpTitle">—</div>
-                <div class="player-exp-artist" id="playerExpArtist">KXON</div>
-                <div class="player-exp-eq" id="playerExpEq"><div class="player-exp-eq-bar"></div><div class="player-exp-eq-bar"></div><div class="player-exp-eq-bar"></div><div class="player-exp-eq-bar"></div><div class="player-exp-eq-bar"></div></div>
-            </div>
-            <div class="player-exp-progress">
-                <div class="player-exp-progress-bar" id="playerExpProgressBar"><div class="player-exp-progress-fill" id="playerExpProgressFill"><div class="player-exp-progress-thumb"></div></div></div>
-                <div class="player-exp-times"><span class="player-exp-time" id="playerExpCurrentTime">0:00</span><span class="player-exp-time" id="playerExpDuration">0:00</span></div>
-            </div>
-            <div class="player-exp-controls">
-                <button class="player-exp-btn player-exp-btn-sm" id="playerExpShuffle" title="Aleatorio">🔀</button>
-                <button class="player-exp-btn player-exp-btn-md" id="playerExpPrev" title="Anterior">⏮</button>
-                <button class="player-exp-btn player-exp-btn-play" id="playerExpPlayPause" title="Play/Pause">▶</button>
-                <button class="player-exp-btn player-exp-btn-md" id="playerExpNext" title="Siguiente">⏭</button>
-                <button class="player-exp-btn player-exp-btn-sm" id="playerExpRepeat" title="Repetir">🔁</button>
-            </div>
-            <div class="player-exp-volume">
-                <button class="player-exp-vol-icon" id="playerExpVolIcon">🔊</button>
-                <div class="player-exp-vol-bar" id="playerExpVolBar"><div class="player-exp-vol-fill" id="playerExpVolFill" style="width:70%"></div></div>
-                <span class="player-exp-vol-pct" id="playerExpVolPct">70%</span>
-            </div>
-            <div class="player-exp-actions">
-                <button class="player-exp-action" id="playerExpFav" onclick="window._togglePlayerFav()" title="Favorito">🤍</button>
-                <button class="player-exp-action" id="playerExpAddPl" onclick="window._addCurrentToPlaylist()" title="Agregar a playlist">➕</button>
-                <button class="player-exp-action" id="playerExpLyrics" title="Ver letra">📝</button>
-                <button class="player-exp-action" id="playerExpShare" onclick="window._shareFromPlayer(event)" title="Compartir">↗️</button>
-            </div>
-        </div>
+    <!-- Track Info -->
+    <div class="kx-ply-exp-info">
+      <div class="kx-ply-exp-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>
+        <span>LOSSLESS</span>
+      </div>
+      <h2 class="kx-ply-exp-title" id="playerExpTitle" aria-live="polite">—</h2>
+      <p class="kx-ply-exp-artist" id="playerExpArtist">KXON</p>
     </div>
 
-    <audio id="audioPlayer"></audio>
+    <!-- Audio Stats -->
+    <div class="kx-ply-exp-stats" id="playerExpEq" aria-label="Información de audio">
+      <div class="kx-ply-exp-stat">
+        <span class="kx-ply-exp-stat-label">BITRATE</span>
+        <span class="kx-ply-exp-stat-value">320 KBPS</span>
+      </div>
+      <div class="kx-ply-exp-stat">
+        <span class="kx-ply-exp-stat-label">RANGE</span>
+        <span class="kx-ply-exp-stat-value">+14 dB</span>
+      </div>
+      <div class="kx-ply-exp-stat">
+        <span class="kx-ply-exp-stat-label">SAMPLE</span>
+        <span class="kx-ply-exp-stat-value">44.1 KHz</span>
+      </div>
+      <div class="kx-ply-exp-stat">
+        <span class="kx-ply-exp-stat-label">FORMAT</span>
+        <span class="kx-ply-exp-stat-value">MP3</span>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="kx-ply-exp-progress">
+      <div class="kx-ply-exp-progress-label" aria-hidden="true">STREAM OUTPUT</div>
+      <div class="kx-ply-exp-progress-bar" id="playerExpProgressBar" role="slider" aria-label="Progreso de reproducción" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+        <div class="kx-ply-exp-progress-fill" id="playerExpProgressFill">
+          <div class="kx-ply-exp-progress-thumb"></div>
+        </div>
+      </div>
+      <div class="kx-ply-exp-times">
+        <span class="kx-ply-exp-time" id="playerExpCurrentTime">0:00</span>
+        <span class="kx-ply-exp-time" id="playerExpDuration">0:00</span>
+      </div>
+    </div>
+
+    <!-- Transport Controls -->
+    <div class="kx-ply-exp-transport" role="toolbar" aria-label="Controles de reproducción">
+      <button class="kx-ply-exp-btn kx-ply-exp-btn--sm" id="playerExpShuffle" aria-label="Aleatorio" aria-pressed="false" title="Aleatorio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+      </button>
+      <button class="kx-ply-exp-btn kx-ply-exp-btn--md" id="playerExpPrev" aria-label="Anterior" title="Anterior">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button class="kx-ply-exp-btn kx-ply-exp-btn--play" id="playerExpPlayPause" aria-label="Reproducir" title="Play/Pause">
+        <svg class="kx-ply-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="kx-ply-icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <button class="kx-ply-exp-btn kx-ply-exp-btn--md" id="playerExpNext" aria-label="Siguiente" title="Siguiente">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+      <button class="kx-ply-exp-btn kx-ply-exp-btn--sm" id="playerExpRepeat" aria-label="Repetir" aria-pressed="false" title="Repetir">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </button>
+    </div>
+
+    <!-- Bottom Row: Volume + Actions -->
+    <div class="kx-ply-exp-bottom">
+      <!-- Volume -->
+      <div class="kx-ply-exp-vol" role="group" aria-label="Volumen">
+        <button class="kx-ply-exp-vol-btn" id="playerExpVolIcon" aria-label="Silenciar" title="Volumen">
+          <svg class="kx-ply-icon-vol-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <svg class="kx-ply-icon-vol-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        </button>
+        <div class="kx-ply-exp-vol-bar" id="playerExpVolBar" role="slider" aria-label="Volumen" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" tabindex="0">
+          <div class="kx-ply-exp-vol-fill" id="playerExpVolFill" style="width:70%"></div>
+        </div>
+        <span class="kx-ply-exp-vol-pct" id="playerExpVolPct">70%</span>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="kx-ply-exp-actions">
+        <button class="kx-ply-exp-action" id="playerExpFav" aria-label="Favorito" title="Favorito">
+          <svg class="kx-ply-icon-heart-empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <svg class="kx-ply-icon-heart-full" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <button class="kx-ply-exp-action" id="playerExpAddPl" aria-label="Agregar a playlist" title="Playlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        </button>
+        <button class="kx-ply-exp-action" id="playerExpLyrics" aria-label="Ver letra" title="Letra">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        </button>
+        <button class="kx-ply-exp-action" id="playerExpShare" aria-label="Compartir" title="Compartir">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+</div><!-- /expanded -->
+
+<audio id="audioPlayer" preload="none"></audio>
 
     <!-- 📦 SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

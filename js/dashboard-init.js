@@ -1,6 +1,7 @@
 /**
- * 🚀 KXON — Dashboard Init v4.0
+ * 🚀 KXON — Dashboard Init v4.1
  * Session · Navigation · Player · Access Control
+ * UPDATED: Compatible with kx-ply-* player redesign (SVG icons)
  */
 (function () {
     'use strict';
@@ -16,6 +17,19 @@
         var el = $(id);
         if (el) el.addEventListener(event, fn);
         return el;
+    }
+
+    /**
+     * 🎵 Toggle play/pause SVG icons on any button
+     * Works with the new kx-ply-* player that uses SVG icons
+     * instead of emoji text content (▶/⏸)
+     */
+    function _setPlayIcon(el, isPlaying) {
+        if (!el) return;
+        var playIcon = el.querySelector('.kx-ply-icon-play');
+        var pauseIcon = el.querySelector('.kx-ply-icon-pause');
+        if (playIcon) playIcon.style.display = isPlaying ? 'none' : 'block';
+        if (pauseIcon) pauseIcon.style.display = isPlaying ? 'block' : 'none';
     }
 
     /* ══════════════════════════════════════
@@ -261,7 +275,6 @@
         var fills = modal.querySelectorAll('.upload-bar-fill');
         fills.forEach(function (f) { f.style.width = '0%'; });
 
-        // Clear stored file refs
         K._selectedCoverFile = null;
         K._selectedAudioFile = null;
         K._selectedNoticiaFile = null;
@@ -323,22 +336,18 @@
     K.showPanel = function (id) {
         K.currentPanel = id;
 
-        // Toggle panels
         var panels = document.querySelectorAll('.panel');
         panels.forEach(function (p) { p.classList.remove('active'); });
         var target = $('panel-' + id);
         if (target) target.classList.add('active');
 
-        // Toggle nav active
         navItems.forEach(function (n) {
             n.classList.toggle('active', n.getAttribute('data-panel') === id);
         });
 
-        // Header title
         var ht = $('headerTitle');
         if (ht) ht.textContent = PANEL_TITLES[id] || 'KXON';
 
-        // Admin add button
         var addText = PANEL_ADD_TEXT[id];
         var btn = $('btnAdminAdd');
         var btnText = $('btnAdminText');
@@ -351,19 +360,16 @@
             }
         }
 
-        // Close mobile sidebar
         var sb = $('sidebar');
         if (sb) sb.classList.remove('open');
         var so = $('sidebarOverlay');
         if (so) so.classList.remove('show');
 
-        // Access control check
         if (LOCKABLE_PANELS.indexOf(id) >= 0) {
             if (!K.checkAccess(id)) {
                 renderLockedPanel(id);
                 return;
             }
-            // Restore if was locked
             if (panelOriginalHTML[id]) {
                 var panelEl = $('panel-' + id);
                 if (panelEl && panelEl.innerHTML.indexOf('panel-locked') >= 0) {
@@ -372,7 +378,6 @@
             }
         }
 
-        // Load panel data
         loadPanelData(id);
     };
 
@@ -409,21 +414,21 @@
     }
 
     /* ══════════════════════════════════════
-       PLAYER BAR
+       PLAYER BAR — UPDATED FOR SVG ICONS
        ══════════════════════════════════════ */
     var audioEl = K.audioEl;
 
     $on('playerPlayPause', 'click', function (e) {
         e.stopPropagation();
-        var self = this;
+        var pp = this;
 
         if (K.isPlaying) {
             pauseCurrentSource();
-            self.textContent = '▶';
+            _setPlayIcon(pp, false);
             K.isPlaying = false;
         } else {
             playCurrentSource();
-            self.textContent = '⏸';
+            _setPlayIcon(pp, true);
             K.isPlaying = true;
         }
     });
@@ -504,7 +509,7 @@
             } else {
                 K.isPlaying = false;
                 var pp = $('playerPlayPause');
-                if (pp) pp.textContent = '▶';
+                _setPlayIcon(pp, false);
             }
         });
     }
@@ -537,7 +542,7 @@
     });
 
     /* ══════════════════════════════════════
-       PLAY TRACK
+       PLAY TRACK — UPDATED FOR SVG ICONS
        ══════════════════════════════════════ */
     K.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
@@ -554,10 +559,19 @@
         K.isPlaying = true;
         K.currentTrackIndex = idx;
 
-        var pb = $('playerBar'); if (pb) pb.classList.add('show');
-        var pt = $('playerTitle'); if (pt) pt.textContent = track.titulo;
-        var pc = $('playerCover'); if (pc) pc.src = track.imagen_url || K.currentAlbumCover || '';
-        var pp = $('playerPlayPause'); if (pp) pp.textContent = '⏸';
+        // Update mini player bar
+        var pb = $('playerBar');
+        if (pb) pb.classList.add('show');
+
+        var pt = $('playerTitle');
+        if (pt) pt.textContent = track.titulo;
+
+        var pc = $('playerCover');
+        if (pc) pc.src = track.imagen_url || K.currentAlbumCover || '';
+
+        // ✅ Use SVG icon helper instead of textContent
+        var pp = $('playerPlayPause');
+        _setPlayIcon(pp, true);
 
         // Update track list UI
         var items = document.querySelectorAll('.track-item');
@@ -611,13 +625,21 @@
         K.isPlaying = true;
         K.currentTrackIndex = idx;
 
-        var pb = $('playerBar'); if (pb) pb.classList.add('show');
-        var pt = $('playerTitle'); if (pt) pt.textContent = track.titulo;
-        var pc = $('playerCover'); if (pc) pc.src = track.imagen_url || '';
-        var pp = $('playerPlayPause'); if (pp) pp.textContent = '⏸';
+        var pb = $('playerBar');
+        if (pb) pb.classList.add('show');
+
+        var pt = $('playerTitle');
+        if (pt) pt.textContent = track.titulo;
+
+        var pc = $('playerCover');
+        if (pc) pc.src = track.imagen_url || '';
+
+        // ✅ Use SVG icon helper instead of textContent
+        var pp = $('playerPlayPause');
+        _setPlayIcon(pp, true);
     };
 
-    // Close player
+    // Close player — UPDATED FOR SVG ICONS
     $on('playerCloseBtn', 'click', function (e) {
         e.stopPropagation();
         if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; }
@@ -630,9 +652,15 @@
         K.isPlaying = false;
         K.activeSource = 'none';
 
-        var pb = $('playerBar'); if (pb) pb.classList.remove('show');
-        var pp = $('playerPlayPause'); if (pp) pp.textContent = '▶';
-        var pf = $('progressFill'); if (pf) pf.style.width = '0%';
+        var pb = $('playerBar');
+        if (pb) pb.classList.remove('show');
+
+        // ✅ Reset SVG icons to play state
+        var pp = $('playerPlayPause');
+        _setPlayIcon(pp, false);
+
+        var pf = $('progressFill');
+        if (pf) pf.style.width = '0%';
 
         document.querySelectorAll('.track-item').forEach(function (item) {
             item.classList.remove('playing');
@@ -644,26 +672,22 @@
     /* ══════════════════════════════════════
        EVENT BINDINGS
        ══════════════════════════════════════ */
-    // Nav items
     navItems.forEach(function (item) {
         item.addEventListener('click', function () {
             K.showPanel(this.getAttribute('data-panel'));
         });
     });
 
-    // Hamburger
     $on('btnHamburger', 'click', function () {
         var sb = $('sidebar'); if (sb) sb.classList.toggle('open');
         var so = $('sidebarOverlay'); if (so) so.classList.toggle('show');
     });
 
-    // Sidebar overlay
     $on('sidebarOverlay', 'click', function () {
         var sb = $('sidebar'); if (sb) sb.classList.remove('open');
         this.classList.remove('show');
     });
 
-    // Logout
     $on('btnLogout', 'click', async function () {
         await db.auth.signOut();
         localStorage.removeItem('kxon_role');
@@ -671,7 +695,6 @@
         window.location.href = 'login.html';
     });
 
-    // Admin add button
     $on('btnAdminAdd', 'click', function () {
         var modalMap = {
             'albumes': 'modalAlbum',
@@ -685,7 +708,6 @@
         else K.showToast('Función próximamente', 'success');
     });
 
-    // Modal close buttons
     var modalCloseMap = [
         ['modalAlbumClose', 'modalAlbum'], ['modalAlbumCancel', 'modalAlbum'],
         ['modalCancionClose', 'modalCancion'], ['modalCancionCancel', 'modalCancion'],
@@ -699,7 +721,6 @@
         $on(pair[0], 'click', function () { K.closeModal(pair[1]); });
     });
 
-    // Overlay click to close
     var overlayCloseIds = [
         'modalAlbum', 'modalCancion', 'modalNoticia', 'modalVideo',
         'modalDocumental', 'modalEpisodio', 'modalSolicitudBeat',
@@ -729,7 +750,6 @@
         }
     });
 
-    // Market/Purchase overlay close
     var specialOverlays = [
         ['modalMarketAdd', function () { if (typeof window._closeMarketModal === 'function') window._closeMarketModal(); }],
         ['marketDetailOverlay', function () { $(this.id)?.classList.remove('show'); K.marketPreviewAudio.pause(); }],
@@ -745,7 +765,6 @@
         }
     });
 
-    // Misc button bindings
     $on('btnAddTrack', 'click', function () { K.openModal('modalCancion'); });
     $on('btnBackAlbums', 'click', function () {
         var alv = $('albumesListView'); if (alv) alv.style.display = 'block';
@@ -805,12 +824,10 @@
 
             K.loadStats();
 
-            // Load notifications with delay
             setTimeout(function () {
                 if (typeof K.loadNotifications === 'function') K.loadNotifications();
             }, 100);
 
-            // Load initial data
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
             if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
             if (typeof K.loadNoticias === 'function') K.loadNoticias();
@@ -819,7 +836,6 @@
             if (typeof K.loadMarketplace === 'function') K.loadMarketplace();
             if (typeof K.loadArchivo === 'function') K.loadArchivo();
 
-            // Render inicio with delay for dependencies
             setTimeout(function () {
                 if (typeof K.renderInicio === 'function') K.renderInicio();
                 else setTimeout(function () { if (typeof K.renderInicio === 'function') K.renderInicio(); }, 500);
@@ -827,7 +843,6 @@
 
             K.showPanel('inicio');
 
-            // Hide loading
             setTimeout(function () {
                 var ls = $('loadingScreen');
                 if (ls) ls.classList.add('hide');
