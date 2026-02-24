@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="css/dashboard-inicio.css">
     <link rel="stylesheet" href="css/dashboard-planes.css">
     <link rel="stylesheet" href="css/dashboard-solicitudes-beats.css">
+    <link rel="stylesheet" href="css/dashboard-favoritos.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="manifest" href="manifest.json">
@@ -2603,13 +2604,115 @@
 
 </div>
 
-                <!-- ❤️ PANEL: FAVORITOS -->
-                <div class="panel" id="panel-favoritos">
-                    <div class="panel-header"><h1 class="panel-title">Mis Favoritos</h1><p class="panel-desc">Tu colección personal de contenido favorito</p></div>
-                    <div class="favs-tabs"><div class="favs-tab active" data-favs-tab="todos" onclick="window._favsTab('todos')">❤️ Todos</div><div class="favs-tab" data-favs-tab="cancion" onclick="window._favsTab('cancion')">🎵 Canciones</div><div class="favs-tab" data-favs-tab="album" onclick="window._favsTab('album')">💿 Álbumes</div><div class="favs-tab" data-favs-tab="beat" onclick="window._favsTab('beat')">🎹 Beats</div><div class="favs-tab" data-favs-tab="video" onclick="window._favsTab('video')">🎬 Videos</div></div>
-                    <div class="favs-stat" id="favsStat"></div>
-                    <div id="favsContent" class="content-grid content-grid-albums"></div>
-                </div>
+                <!-- ❤️ PANEL: FAVORITOS — REDESIGN 2026 -->
+<div class="panel" id="panel-favoritos">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="kx-fav-header">
+    <div class="kx-fav-header-top">
+      <div class="kx-fav-header-info">
+        <span class="kx-fav-label">COLECCIÓN PERSONAL</span>
+        <h1 class="kx-fav-title">Mis Favoritos</h1>
+        <p class="kx-fav-subtitle">Todo el contenido que has marcado con ❤️</p>
+      </div>
+      <div class="kx-fav-kpis" id="kxFavKpis">
+        <div class="kx-fav-kpi">
+          <span class="kx-fav-kpi-value" id="kxFavKpiTotal">—</span>
+          <span class="kx-fav-kpi-label">TOTAL</span>
+        </div>
+        <div class="kx-fav-kpi-divider"></div>
+        <div class="kx-fav-kpi">
+          <span class="kx-fav-kpi-value" id="kxFavKpiSongs">—</span>
+          <span class="kx-fav-kpi-label">CANCIONES</span>
+        </div>
+        <div class="kx-fav-kpi-divider"></div>
+        <div class="kx-fav-kpi">
+          <span class="kx-fav-kpi-value" id="kxFavKpiAlbums">—</span>
+          <span class="kx-fav-kpi-label">ÁLBUMES</span>
+        </div>
+        <div class="kx-fav-kpi-divider"></div>
+        <div class="kx-fav-kpi">
+          <span class="kx-fav-kpi-value" id="kxFavKpiOther">—</span>
+          <span class="kx-fav-kpi-label">OTROS</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ TOOLBAR ═══ -->
+  <div class="kx-fav-toolbar">
+    <div class="kx-fav-toolbar-left">
+      <!-- Tabs / Filters -->
+      <div class="kx-fav-filters" role="tablist" aria-label="Filtrar favoritos" id="kxFavFilters">
+        <button class="kx-fav-filter active" role="tab" aria-selected="true" data-fav-tab="todos">Todos</button>
+        <button class="kx-fav-filter" role="tab" aria-selected="false" data-fav-tab="cancion">🎵 Canciones</button>
+        <button class="kx-fav-filter" role="tab" aria-selected="false" data-fav-tab="album">💿 Álbumes</button>
+        <button class="kx-fav-filter" role="tab" aria-selected="false" data-fav-tab="beat">🎹 Beats</button>
+        <button class="kx-fav-filter" role="tab" aria-selected="false" data-fav-tab="video">🎬 Videos</button>
+      </div>
+    </div>
+    <div class="kx-fav-toolbar-right">
+      <!-- Search -->
+      <div class="kx-fav-search-wrap" id="kxFavSearchWrap">
+        <svg class="kx-fav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input type="text" class="kx-fav-search-input" id="kxFavSearch"
+               placeholder="Buscar en favoritos..." aria-label="Buscar en favoritos" autocomplete="off">
+        <button class="kx-fav-search-clear" id="kxFavSearchClear" aria-label="Limpiar búsqueda" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Sort -->
+      <div class="kx-fav-sort-wrap" id="kxFavSortWrap">
+        <button class="kx-fav-sort-trigger" id="kxFavSortTrigger" aria-haspopup="listbox" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <path d="M3 6h18M3 12h12M3 18h6"/>
+          </svg>
+          <span id="kxFavSortLabel">Recientes</span>
+        </button>
+        <div class="kx-fav-sort-dropdown" id="kxFavSortDropdown" role="listbox">
+          <button class="kx-fav-sort-option active" role="option" aria-selected="true" data-sort="recent">Más recientes</button>
+          <button class="kx-fav-sort-option" role="option" aria-selected="false" data-sort="oldest">Más antiguos</button>
+          <button class="kx-fav-sort-option" role="option" aria-selected="false" data-sort="az">A → Z</button>
+          <button class="kx-fav-sort-option" role="option" aria-selected="false" data-sort="za">Z → A</button>
+        </div>
+      </div>
+
+      <!-- View Toggle -->
+      <div class="kx-fav-view-toggle" id="kxFavViewToggle">
+        <button class="kx-fav-view-btn active" data-view="grid" aria-label="Vista grid" title="Vista grid">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </button>
+        <button class="kx-fav-view-btn" data-view="list" aria-label="Vista lista" title="Vista lista">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ACTIVE FILTERS BAR ═══ -->
+  <div class="kx-fav-active-bar" id="kxFavActiveBar" style="display:none">
+    <span class="kx-fav-active-text" id="kxFavActiveText"></span>
+    <button class="kx-fav-active-clear" id="kxFavActiveClear">Limpiar filtros</button>
+  </div>
+
+  <!-- ═══ CONTENT: GRID VIEW ═══ -->
+  <div class="kx-fav-grid" id="kxFavGrid" role="tabpanel"></div>
+
+  <!-- ═══ CONTENT: LIST VIEW ═══ -->
+  <div class="kx-fav-list" id="kxFavList" role="tabpanel" style="display:none"></div>
+
+  <!-- ═══ RESULT COUNT ═══ -->
+  <div class="kx-fav-result-count" id="kxFavResultCount" style="display:none"></div>
+
+</div>
 
                 <!-- 📊 PANEL: ANALYTICS — KXON 2026 REBUILD -->
 <div class="panel" id="panel-analytics" role="main" aria-label="Panel de analytics">
