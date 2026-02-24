@@ -1,7 +1,7 @@
 /**
- * 🎵 KXON — Elite Sidebar Controller v3.0
- * Collapse, Search, Ripple, Mouse-tracking,
- * Keyboard Nav, Responsive, Scroll Masks
+ * 🎵 KXON — Sidebar Controller v4.0
+ * Collapse · Search · Ripple · Mouse-tracking
+ * Keyboard Nav · Responsive · Scroll Masks
  */
 (function () {
     'use strict';
@@ -15,6 +15,7 @@
 
     var COLLAPSED_KEY = 'kxon-sidebar-collapsed';
     var navItems = sidebar.querySelectorAll('.nav-item[data-panel]');
+    var resizeTimer = null;
 
     /* ══════════════════════════════════════
        COLLAPSE / EXPAND
@@ -23,13 +24,15 @@
         sidebar.classList.toggle('collapsed');
         var isCollapsed = sidebar.classList.contains('collapsed');
         localStorage.setItem(COLLAPSED_KEY, isCollapsed ? '1' : '0');
+        updateCollapseIcon(isCollapsed);
+    }
 
-        if (collapseBtn) {
-            var svg = collapseBtn.querySelector('svg');
-            if (svg) {
-                svg.style.transform = isCollapsed ? 'rotate(180deg)' : '';
-                svg.style.transition = 'transform 0.3s ease';
-            }
+    function updateCollapseIcon(isCollapsed) {
+        if (!collapseBtn) return;
+        var svg = collapseBtn.querySelector('svg');
+        if (svg) {
+            svg.style.transform = isCollapsed ? 'rotate(180deg)' : '';
+            svg.style.transition = 'transform 0.3s ease';
         }
     }
 
@@ -40,12 +43,11 @@
         });
     }
 
-    // Restore state
+    // Restore state on desktop
     if (window.innerWidth > 1024) {
         if (localStorage.getItem(COLLAPSED_KEY) === '1') {
             sidebar.classList.add('collapsed');
-            var svg = collapseBtn ? collapseBtn.querySelector('svg') : null;
-            if (svg) svg.style.transform = 'rotate(180deg)';
+            updateCollapseIcon(true);
         }
     }
 
@@ -60,8 +62,8 @@
             navItems.forEach(function (item) {
                 var text = item.querySelector('.nav-text');
                 if (!text) return;
-                var match = text.textContent.toLowerCase().indexOf(query) >= 0;
-                item.style.display = (query === '' || match) ? '' : 'none';
+                var match = !query || text.textContent.toLowerCase().indexOf(query) >= 0;
+                item.style.display = match ? '' : 'none';
             });
 
             sections.forEach(function (sec) {
@@ -73,7 +75,7 @@
                     }
                     next = next.nextElementSibling;
                 }
-                sec.style.display = (query === '' || hasVisible) ? '' : 'none';
+                sec.style.display = (!query || hasVisible) ? '' : 'none';
             });
         });
 
@@ -84,8 +86,7 @@
                 if (sidebar.classList.contains('collapsed')) {
                     sidebar.classList.remove('collapsed');
                     localStorage.setItem(COLLAPSED_KEY, '0');
-                    var svg = collapseBtn ? collapseBtn.querySelector('svg') : null;
-                    if (svg) svg.style.transform = '';
+                    updateCollapseIcon(false);
                 }
                 searchField.focus();
             }
@@ -125,10 +126,8 @@
     navItems.forEach(function (item) {
         item.addEventListener('mousemove', function (e) {
             var rect = item.getBoundingClientRect();
-            var x = ((e.clientX - rect.left) / rect.width * 100);
-            var y = ((e.clientY - rect.top) / rect.height * 100);
-            item.style.setProperty('--mouse-x', x + '%');
-            item.style.setProperty('--mouse-y', y + '%');
+            item.style.setProperty('--mouse-x', ((e.clientX - rect.left) / rect.width * 100) + '%');
+            item.style.setProperty('--mouse-y', ((e.clientY - rect.top) / rect.height * 100) + '%');
         });
     });
 
@@ -136,13 +135,16 @@
        KEYBOARD NAVIGATION
        ══════════════════════════════════════ */
     if (sidebarNav) {
+        navItems.forEach(function (item) {
+            item.setAttribute('tabindex', '0');
+        });
+
         sidebarNav.addEventListener('keydown', function (e) {
             var visible = [];
             navItems.forEach(function (it) {
                 if (it.style.display !== 'none') visible.push(it);
             });
-            var current = document.activeElement;
-            var idx = visible.indexOf(current);
+            var idx = visible.indexOf(document.activeElement);
 
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
@@ -152,13 +154,9 @@
                 e.preventDefault();
                 var prev = visible[idx - 1] || visible[visible.length - 1];
                 if (prev) prev.focus();
-            } else if (e.key === 'Enter' && current && current.classList.contains('nav-item')) {
-                current.click();
+            } else if (e.key === 'Enter' && document.activeElement.classList.contains('nav-item')) {
+                document.activeElement.click();
             }
-        });
-
-        navItems.forEach(function (item) {
-            item.setAttribute('tabindex', '0');
         });
     }
 
@@ -169,12 +167,9 @@
     var lastClickTime = 0;
     if (logoArea) {
         logoArea.addEventListener('click', function (e) {
-            if (e.target.closest('.sidebar-collapse-btn')) return;
-            if (e.target.closest('a')) return;
+            if (e.target.closest('.sidebar-collapse-btn') || e.target.closest('a')) return;
             var now = Date.now();
-            if (now - lastClickTime < 350) {
-                toggleCollapse();
-            }
+            if (now - lastClickTime < 350) toggleCollapse();
             lastClickTime = now;
         });
     }
@@ -184,13 +179,13 @@
        ══════════════════════════════════════ */
     if (sidebarNav) {
         function updateScrollMask() {
-            var scrollTop = sidebarNav.scrollTop;
-            var scrollHeight = sidebarNav.scrollHeight;
-            var clientHeight = sidebarNav.clientHeight;
-            var atTop = scrollTop < 5;
-            var atBottom = scrollTop + clientHeight >= scrollHeight - 5;
-
+            var st = sidebarNav.scrollTop;
+            var sh = sidebarNav.scrollHeight;
+            var ch = sidebarNav.clientHeight;
+            var atTop = st < 5;
+            var atBottom = st + ch >= sh - 5;
             var mask;
+
             if (atTop && atBottom) {
                 mask = 'none';
             } else if (atTop) {
@@ -206,46 +201,51 @@
         }
 
         sidebarNav.addEventListener('scroll', updateScrollMask, { passive: true });
-        setTimeout(updateScrollMask, 100);
-
-        // Update on resize
         window.addEventListener('resize', updateScrollMask);
+        setTimeout(updateScrollMask, 100);
     }
 
     /* ══════════════════════════════════════
-       RESPONSIVE
+       RESPONSIVE HANDLING (debounced)
        ══════════════════════════════════════ */
     var lastW = window.innerWidth;
-    window.addEventListener('resize', function () {
+
+    function handleResize() {
         var w = window.innerWidth;
 
+        // Mobile → Desktop: close mobile sidebar
         if (w > 1024 && lastW <= 1024) {
             sidebar.classList.remove('open');
             var overlay = document.getElementById('sidebarOverlay');
             if (overlay) overlay.classList.remove('show');
         }
 
+        // Enter compact range
         if (w <= 1280 && w > 1024 && lastW > 1280) {
             sidebar.classList.add('collapsed');
-            var svg2 = collapseBtn ? collapseBtn.querySelector('svg') : null;
-            if (svg2) svg2.style.transform = 'rotate(180deg)';
+            updateCollapseIcon(true);
         }
 
+        // Exit compact range
         if (w > 1280 && lastW <= 1280) {
             if (localStorage.getItem(COLLAPSED_KEY) !== '1') {
                 sidebar.classList.remove('collapsed');
-                var svg3 = collapseBtn ? collapseBtn.querySelector('svg') : null;
-                if (svg3) svg3.style.transform = '';
+                updateCollapseIcon(false);
             }
         }
 
         lastW = w;
+    }
+
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(handleResize, 100);
     });
 
+    // Initial compact check
     if (window.innerWidth <= 1280 && window.innerWidth > 1024) {
         sidebar.classList.add('collapsed');
-        var svg4 = collapseBtn ? collapseBtn.querySelector('svg') : null;
-        if (svg4) svg4.style.transform = 'rotate(180deg)';
+        updateCollapseIcon(true);
     }
 
     /* ══════════════════════════════════════
@@ -257,7 +257,5 @@
             activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
     }, 300);
-
-    console.log('%c🎵 KXON Sidebar Elite v3.0', 'color:#c0c0c0;font-weight:bold;font-size:12px;background:#08080c;padding:4px 12px;border-radius:4px;');
 
 })();

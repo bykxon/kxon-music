@@ -1,17 +1,26 @@
-/* ============================================
-   🚀 DASHBOARD-INIT.JS — KXON
-   Inicialización, sesión, sidebar, navegación,
-   player bar, helpers, variables compartidas
-   CON BLOQUEO COMPLETO DE TODOS LOS PANELES
-   ✅ FIX: Protección null en todos los getElementById
-   ============================================ */
+/**
+ * 🚀 KXON — Dashboard Init v4.0
+ * Session · Navigation · Player · Access Control
+ */
 (function () {
+    'use strict';
 
     var db = window.db;
 
-    /* ══════════════════════════════════════════
-       📌 NAMESPACE GLOBAL COMPARTIDO
-       ══════════════════════════════════════════ */
+    /* ══════════════════════════════════════
+       HELPERS
+       ══════════════════════════════════════ */
+    function $(id) { return document.getElementById(id); }
+
+    function $on(id, event, fn) {
+        var el = $(id);
+        if (el) el.addEventListener(event, fn);
+        return el;
+    }
+
+    /* ══════════════════════════════════════
+       NAMESPACE GLOBAL
+       ══════════════════════════════════════ */
     window.KXON = {
         currentUser: null,
         currentProfile: null,
@@ -49,136 +58,98 @@
 
     var K = window.KXON;
 
-    /* ══════════════════════════════════════════
-       🛡️ HELPER: Safe getElementById
-       ══════════════════════════════════════════ */
-    function $(id) {
-        return document.getElementById(id);
-    }
+    /* ══════════════════════════════════════
+       AUDIO ELEMENTS
+       ══════════════════════════════════════ */
+    K.audioEl = $('audioPlayer');
+    K.marketPreviewAudio = new Audio();
+    K.archivoPreviewAudio = new Audio();
+    K.radioAudio = new Audio();
 
-    function $on(id, event, fn) {
-        var el = document.getElementById(id);
-        if (el) el.addEventListener(event, fn);
-        return el;
-    }
-
-    /* ══════════════════════════════════════════
-       🔊 ELEMENTOS DE AUDIO GLOBALES
-       ══════════════════════════════════════════ */
-    window.KXON.audioEl = $('audioPlayer');
-    window.KXON.marketPreviewAudio = new Audio();
-    window.KXON.archivoPreviewAudio = new Audio();
-    window.KXON.radioAudio = new Audio();
-
-    /* ══════════════════════════════════════════
-       🔔 HELPERS: TOAST, FORMAT
-       ══════════════════════════════════════════ */
-    window.KXON.showToast = function (m, t) {
+    /* ══════════════════════════════════════
+       TOAST · FORMAT HELPERS
+       ══════════════════════════════════════ */
+    K.showToast = function (msg, type) {
         var c = $('toastContainer');
         if (!c) return;
         var d = document.createElement('div');
-        d.className = 'toast toast-' + t;
-        d.textContent = m;
+        d.className = 'toast toast-' + type;
+        d.textContent = msg;
         c.appendChild(d);
         setTimeout(function () { d.remove(); }, 3500);
     };
 
-    window.KXON.formatTime = function (s) {
+    K.formatTime = function (s) {
         var m = Math.floor(s / 60);
         var sec = Math.floor(s % 60);
         return m + ':' + (sec < 10 ? '0' : '') + sec;
     };
 
-    window.KXON.formatPrice = function (p) {
+    K.formatPrice = function (p) {
         return '$' + Number(p).toLocaleString('es-CO');
     };
 
-    /* ══════════════════════════════════════════
-       🛑 HELPER: DETENER TODAS LAS FUENTES DE AUDIO
-       ══════════════════════════════════════════ */
-    window.KXON.stopAllAudio = function (except) {
-    if (except !== 'player' && K.audioEl) {
-        K.audioEl.pause();
-    }
-    if (except !== 'radio') {
-        K.radioAudio.pause();
-        if (K.radioIsPlaying) {
-            K.radioIsPlaying = false;
-            var d = $('kxRadDisc'); if (d) d.classList.remove('is-spinning');
-            var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
-            var pi = $('kxRadPlayBtn');
-            if (pi) {
-                var playIcon = pi.querySelector('.kx-rad-icon-play');
-                var pauseIcon = pi.querySelector('.kx-rad-icon-pause');
-                if (playIcon) playIcon.style.display = 'block';
-                if (pauseIcon) pauseIcon.style.display = 'none';
+    /* ══════════════════════════════════════
+       STOP ALL AUDIO
+       ══════════════════════════════════════ */
+    K.stopAllAudio = function (except) {
+        if (except !== 'player' && K.audioEl) K.audioEl.pause();
+        if (except !== 'market') K.marketPreviewAudio.pause();
+        if (except !== 'archivo') K.archivoPreviewAudio.pause();
+
+        if (except !== 'radio') {
+            K.radioAudio.pause();
+            if (K.radioIsPlaying) {
+                K.radioIsPlaying = false;
+                var disc = $('kxRadDisc');
+                if (disc) disc.classList.remove('is-spinning');
+                var btn = $('kxRadPlayBtn');
+                if (btn) {
+                    btn.classList.remove('is-playing');
+                    var playIcon = btn.querySelector('.kx-rad-icon-play');
+                    var pauseIcon = btn.querySelector('.kx-rad-icon-pause');
+                    if (playIcon) playIcon.style.display = 'block';
+                    if (pauseIcon) pauseIcon.style.display = 'none';
+                }
             }
         }
-    }
-    if (except !== 'market') {
-        K.marketPreviewAudio.pause();
-    }
-    if (except !== 'archivo') {
-        K.archivoPreviewAudio.pause();
-    }
-};
+    };
 
-    /* ══════════════════════════════════════════
-       🔒 VERIFICACIÓN DE SUSCRIPCIÓN
-       TODOS LOS PANELES BLOQUEABLES
-       ══════════════════════════════════════════ */
-    var panelesBloqueados = [
+    /* ══════════════════════════════════════
+       ACCESS CONTROL / SUBSCRIPTION
+       ══════════════════════════════════════ */
+    var LOCKABLE_PANELS = [
         'albumes', 'canciones', 'radio', 'videos', 'documentales',
         'playlists', 'envivo', 'chat', 'solicitar-beat',
         'historial', 'favoritos', 'marketplace'
     ];
 
-    var panelNombres = {
-        'albumes': 'Álbumes',
-        'canciones': 'Canciones',
-        'radio': 'Radio KXON',
-        'videos': 'Videos',
-        'documentales': 'Documentales',
-        'playlists': 'Playlists',
-        'envivo': 'En Vivo',
-        'chat': 'Chat',
-        'solicitar-beat': 'Solicitar Beat',
-        'historial': 'Historial',
-        'favoritos': 'Favoritos',
-        'marketplace': 'Marketplace'
+    var PANEL_NAMES = {
+        'albumes': 'Álbumes', 'canciones': 'Canciones', 'radio': 'Radio KXON',
+        'videos': 'Videos', 'documentales': 'Documentales', 'playlists': 'Playlists',
+        'envivo': 'En Vivo', 'chat': 'Chat', 'solicitar-beat': 'Solicitar Beat',
+        'historial': 'Historial', 'favoritos': 'Favoritos', 'marketplace': 'Marketplace'
     };
 
-    var panelIconos = {
-        'albumes': '💿',
-        'canciones': '🎵',
-        'radio': '📻',
-        'videos': '🎬',
-        'documentales': '🎞️',
-        'playlists': '🎶',
-        'envivo': '🔴',
-        'chat': '💬',
-        'solicitar-beat': '📋',
-        'historial': '📊',
-        'favoritos': '❤️',
-        'marketplace': '🛒'
+    var PANEL_ICONS = {
+        'albumes': '💿', 'canciones': '🎵', 'radio': '📻', 'videos': '🎬',
+        'documentales': '🎞️', 'playlists': '🎶', 'envivo': '🔴', 'chat': '💬',
+        'solicitar-beat': '📋', 'historial': '📊', 'favoritos': '❤️', 'marketplace': '🛒'
     };
 
-    window.KXON.checkAccess = function (panelId) {
+    var panelOriginalHTML = {};
+
+    K.checkAccess = function (panelId) {
         if (K.isAdmin) return true;
-        if (panelesBloqueados.indexOf(panelId) === -1) return true;
+        if (LOCKABLE_PANELS.indexOf(panelId) === -1) return true;
         if (!K.userSubscription) return false;
-        if (K.userAccesos.indexOf(panelId) >= 0) return true;
-        return false;
+        return K.userAccesos.indexOf(panelId) >= 0;
     };
 
-    window.KXON.loadUserSubscription = async function () {
+    K.loadUserSubscription = async function () {
         if (K.isAdmin) {
             K.userSubscription = { estado: 'admin' };
-            K.userAccesos = [
-                'albumes', 'canciones', 'radio', 'videos', 'documentales',
-                'playlists', 'envivo', 'chat', 'solicitar-beat',
-                'historial', 'favoritos', 'marketplace'
-            ];
+            K.userAccesos = LOCKABLE_PANELS.slice();
             return;
         }
 
@@ -194,16 +165,13 @@
 
             if (r.data && r.data.length > 0) {
                 var sub = r.data[0];
-                var now = new Date();
                 var fin = new Date(sub.fecha_fin);
-
-                if (fin > now) {
+                if (fin > new Date()) {
                     K.userSubscription = sub;
                     K.userAccesos = sub.planes ? sub.planes.accesos : [];
                     return;
-                } else {
-                    await db.from('suscripciones').update({ estado: 'vencida' }).eq('id', sub.id);
                 }
+                await db.from('suscripciones').update({ estado: 'vencida' }).eq('id', sub.id);
             }
 
             K.userSubscription = null;
@@ -218,228 +186,160 @@
     function renderLockedPanel(panelId) {
         var panel = $('panel-' + panelId);
         if (!panel) return;
-
-        var nombre = panelNombres[panelId] || panelId;
-        var icono = panelIconos[panelId] || '🔒';
+        var nombre = PANEL_NAMES[panelId] || panelId;
+        var icono = PANEL_ICONS[panelId] || '🔒';
 
         panel.innerHTML =
             '<div class="panel-locked">' +
-            '<div class="locked-icon">🔒</div>' +
-            '<h2 class="locked-title">Contenido Bloqueado</h2>' +
-            '<p class="locked-desc">Necesitas una suscripción activa para acceder a <strong>' + icono + ' ' + nombre + '</strong></p>' +
-            '<div class="locked-feature-preview">' +
-            '<div class="locked-feature-item">' + icono + ' ' + nombre + '</div>' +
-            '</div>' +
-            '<button class="locked-btn" onclick="window.KXON.showPanel(\'planes\')">🎫 Ver Planes y Suscribirse</button>' +
-            '<p class="locked-plan-hint">Elige un plan para desbloquear este y más contenido</p>' +
+                '<div class="locked-icon">🔒</div>' +
+                '<h2 class="locked-title">Contenido Bloqueado</h2>' +
+                '<p class="locked-desc">Necesitas una suscripción activa para acceder a <strong>' + icono + ' ' + nombre + '</strong></p>' +
+                '<div class="locked-feature-preview"><div class="locked-feature-item">' + icono + ' ' + nombre + '</div></div>' +
+                '<button class="locked-btn" onclick="window.KXON.showPanel(\'planes\')">🎫 Ver Planes y Suscribirse</button>' +
+                '<p class="locked-plan-hint">Elige un plan para desbloquear este y más contenido</p>' +
             '</div>';
     }
 
-    var panelOriginalHTML = {};
-
-    function savePanelHTML(panelId) {
-        var el = $('panel-' + panelId);
-        if (el && !panelOriginalHTML[panelId]) {
-            panelOriginalHTML[panelId] = el.innerHTML;
-        }
-    }
-
-    function restorePanelHTML(panelId) {
-        var el = $('panel-' + panelId);
-        if (el && panelOriginalHTML[panelId]) {
-            el.innerHTML = panelOriginalHTML[panelId];
-        }
-    }
-
     function saveAllPanelHTML() {
-        for (var i = 0; i < panelesBloqueados.length; i++) {
-            savePanelHTML(panelesBloqueados[i]);
-        }
+        LOCKABLE_PANELS.forEach(function (pid) {
+            var el = $('panel-' + pid);
+            if (el && !panelOriginalHTML[pid]) {
+                panelOriginalHTML[pid] = el.innerHTML;
+            }
+        });
     }
 
-    window.KXON.applyAccessControl = function () {
-        for (var i = 0; i < panelesBloqueados.length; i++) {
-            var pid = panelesBloqueados[i];
-            if (K.checkAccess(pid)) {
-                restorePanelHTML(pid);
-            } else {
-                renderLockedPanel(pid);
-            }
-        }
+    function restorePanelHTML(pid) {
+        var el = $('panel-' + pid);
+        if (el && panelOriginalHTML[pid]) el.innerHTML = panelOriginalHTML[pid];
+    }
+
+    K.applyAccessControl = function () {
+        LOCKABLE_PANELS.forEach(function (pid) {
+            if (K.checkAccess(pid)) restorePanelHTML(pid);
+            else renderLockedPanel(pid);
+        });
     };
 
-    /* ══════════════════════════════════════════
-       🔲 MODALES — ABRIR / CERRAR
-       ══════════════════════════════════════════ */
-    window.KXON.openModal = function (id) {
+    /* ══════════════════════════════════════
+       MODALS
+       ══════════════════════════════════════ */
+    K.openModal = function (id) {
         var el = $(id);
         if (el) el.classList.add('show');
     };
 
-    window.KXON.closeModal = function (id) {
+    K.closeModal = function (id) {
         var el = $(id);
         if (el) el.classList.remove('show');
-
-        if (id === 'modalAlbum') {
-            var at = $('albumTitulo'); if (at) at.value = '';
-            var ad = $('albumDesc'); if (ad) ad.value = '';
-            var fechaAlbum = $('albumFechaLanzamiento');
-            if (fechaAlbum) fechaAlbum.value = '';
-            K._selectedCoverFile = null;
-            var area = $('albumCoverArea');
-            if (area) { area.classList.remove('has-file'); var ft = area.querySelector('.file-upload-text'); if (ft) ft.textContent = 'Click para subir imagen'; }
-            var acp = $('albumCoverPreview'); if (acp) acp.classList.remove('show');
-            var acf = $('albumCoverFile'); if (acf) acf.value = '';
-        }
-        if (id === 'modalCancion') {
-            var ct = $('cancionTitulo'); if (ct) ct.value = '';
-            var fechaCancion = $('cancionFechaLanzamiento');
-            if (fechaCancion) fechaCancion.value = '';
-            K._selectedAudioFile = null;
-            var area2 = $('cancionAudioArea');
-            if (area2) { area2.classList.remove('has-file'); var ft2 = area2.querySelector('.file-upload-text'); if (ft2) ft2.textContent = 'Click para subir audio'; }
-            var caf = $('cancionAudioFile'); if (caf) caf.value = '';
-            var up = $('uploadProgress'); if (up) up.classList.remove('show');
-            var ubf = $('uploadBarFill'); if (ubf) ubf.style.width = '0%';
-        }
-        if (id === 'modalNoticia') {
-            var nt = $('noticiaTitulo'); if (nt) nt.value = '';
-            var nd = $('noticiaDesc'); if (nd) nd.value = '';
-            K._selectedNoticiaFile = null;
-            var area3 = $('noticiaCoverArea');
-            if (area3) { area3.classList.remove('has-file'); var ft3 = area3.querySelector('.file-upload-text'); if (ft3) ft3.textContent = 'Click para subir imagen'; }
-            var ncp = $('noticiaCoverPreview'); if (ncp) ncp.classList.remove('show');
-            var ncf = $('noticiaCoverFile'); if (ncf) ncf.value = '';
-        }
-        if (id === 'modalVideo') {
-            var vt = $('videoTitulo'); if (vt) vt.value = '';
-            var vd = $('videoDesc'); if (vd) vd.value = '';
-            K._videoThumbFileSelected = null;
-            K._videoFileSelected = null;
-            var a4 = $('videoThumbArea');
-            if (a4) { a4.classList.remove('has-file'); var ft4 = a4.querySelector('.file-upload-text'); if (ft4) ft4.textContent = 'Click para subir imagen'; }
-            var vtp = $('videoThumbPreview'); if (vtp) vtp.classList.remove('show');
-            var vtf = $('videoThumbFile'); if (vtf) vtf.value = '';
-            var a5 = $('videoFileArea');
-            if (a5) { a5.classList.remove('has-file'); var ft5 = a5.querySelector('.file-upload-text'); if (ft5) ft5.textContent = 'Click para subir video'; }
-            var vfi = $('videoFileInput'); if (vfi) vfi.value = '';
-            var vup = $('videoUploadProgress'); if (vup) vup.classList.remove('show');
-            var vuf = $('videoUploadFill'); if (vuf) vuf.style.width = '0%';
-        }
-        if (id === 'modalDocumental') {
-            var dtt = $('docuTitulo'); if (dtt) dtt.value = '';
-            var ddd = $('docuDesc'); if (ddd) ddd.value = '';
-            K._docuCoverFileSelected = null;
-            var a6 = $('docuCoverArea');
-            if (a6) { a6.classList.remove('has-file'); var ft6 = a6.querySelector('.file-upload-text'); if (ft6) ft6.textContent = 'Click para subir imagen'; }
-            var dcp = $('docuCoverPreview'); if (dcp) dcp.classList.remove('show');
-            var dcf = $('docuCoverFile'); if (dcf) dcf.value = '';
-        }
-        if (id === 'modalEpisodio') {
-            var ett = $('episodioTitulo'); if (ett) ett.value = '';
-            var edd = $('episodioDesc'); if (edd) edd.value = '';
-            var en = $('episodioNumero'); if (en) en.value = '1';
-            K._episodioThumbFileSelected = null;
-            K._episodioVideoFileSelected = null;
-            var a7 = $('episodioThumbArea');
-            if (a7) { a7.classList.remove('has-file'); var ft7 = a7.querySelector('.file-upload-text'); if (ft7) ft7.textContent = 'Click para subir imagen'; }
-            var etp = $('episodioThumbPreview'); if (etp) etp.classList.remove('show');
-            var etf = $('episodioThumbFile'); if (etf) etf.value = '';
-            var a8 = $('episodioVideoArea');
-            if (a8) { a8.classList.remove('has-file'); var ft8 = a8.querySelector('.file-upload-text'); if (ft8) ft8.textContent = 'Click para subir video'; }
-            var evf = $('episodioVideoFile'); if (evf) evf.value = '';
-            var eup = $('episodioUploadProgress'); if (eup) eup.classList.remove('show');
-            var euf = $('episodioUploadFill'); if (euf) euf.style.width = '0%';
-        }
+        resetModalForm(id);
     };
 
-    /* ══════════════════════════════════════════
-       👤 RENDER SIDEBAR
-       ══════════════════════════════════════════ */
+    function resetModalForm(id) {
+        var modal = $(id);
+        if (!modal) return;
+
+        var inputs = modal.querySelectorAll('input[type="text"], input[type="number"], input[type="datetime-local"], textarea');
+        inputs.forEach(function (inp) { inp.value = ''; });
+
+        var fileInputs = modal.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(function (fi) { fi.value = ''; });
+
+        var previews = modal.querySelectorAll('.img-preview');
+        previews.forEach(function (p) { p.classList.remove('show'); });
+
+        var areas = modal.querySelectorAll('.file-upload-area');
+        areas.forEach(function (a) {
+            a.classList.remove('has-file');
+            var ft = a.querySelector('.file-upload-text');
+            if (ft) ft.textContent = ft.getAttribute('data-default') || 'Click para subir';
+        });
+
+        var progress = modal.querySelectorAll('.upload-progress');
+        progress.forEach(function (p) { p.classList.remove('show'); });
+
+        var fills = modal.querySelectorAll('.upload-bar-fill');
+        fills.forEach(function (f) { f.style.width = '0%'; });
+
+        // Clear stored file refs
+        K._selectedCoverFile = null;
+        K._selectedAudioFile = null;
+        K._selectedNoticiaFile = null;
+        K._videoThumbFileSelected = null;
+        K._videoFileSelected = null;
+        K._docuCoverFileSelected = null;
+        K._episodioThumbFileSelected = null;
+        K._episodioVideoFileSelected = null;
+    }
+
+    /* ══════════════════════════════════════
+       SIDEBAR RENDER
+       ══════════════════════════════════════ */
     function renderSidebar() {
         var name = K.currentProfile.full_name || K.currentUser.email.split('@')[0];
         var role = K.currentProfile.role || 'fan';
-        var av = K.currentProfile.avatar_url || K.currentUser.user_metadata?.avatar_url || K.currentUser.user_metadata?.picture || '';
+        var av = K.currentProfile.avatar_url ||
+                 K.currentUser.user_metadata?.avatar_url ||
+                 K.currentUser.user_metadata?.picture || '';
 
         var sn = $('sidebarName');
         if (sn) sn.textContent = name;
 
-        var re = $('sidebarRole');
-        if (re) {
-            re.textContent = role;
-            re.className = 'sidebar-user-role role-' + role;
+        var sr = $('sidebarRole');
+        if (sr) {
+            sr.textContent = role;
+            sr.className = 'sidebar-user-role role-' + role;
         }
 
-        var ae = $('sidebarAvatar');
-        if (ae) {
-            if (av) ae.innerHTML = '<img src="' + av + '" alt="">';
-            else ae.textContent = name.charAt(0).toUpperCase();
+        var sa = $('sidebarAvatar');
+        if (sa) {
+            if (av) sa.innerHTML = '<img src="' + av + '" alt="">';
+            else sa.textContent = name.charAt(0).toUpperCase();
         }
 
         var adminNavs = document.querySelectorAll('.nav-admin-only');
-        for (var an = 0; an < adminNavs.length; an++) {
-            adminNavs[an].style.display = K.isAdmin ? 'flex' : 'none';
-        }
+        adminNavs.forEach(function (n) { n.style.display = K.isAdmin ? 'flex' : 'none'; });
     }
 
-    /* ══════════════════════════════════════════
-       📊 STATS
-       ══════════════════════════════════════════ */
-    window.KXON.loadStats = async function () {
-        try {
-            var a = await db.from('albumes').select('id', { count: 'exact', head: true });
-            var s = await db.from('canciones').select('id', { count: 'exact', head: true });
-            var b = await db.from('beats').select('id', { count: 'exact', head: true });
-            var n = await db.from('noticias').select('id', { count: 'exact', head: true });
-            var ea = $('statAlbumes'); if (ea) ea.textContent = a.count || 0;
-            var es = $('statCanciones'); if (es) es.textContent = s.count || 0;
-            var eb = $('statBeats'); if (eb) eb.textContent = b.count || 0;
-            var en2 = $('statNoticias'); if (en2) en2.textContent = n.count || 0;
-        } catch (e) { console.error(e); }
-    };
-
-    /* ══════════════════════════════════════════
-       🔀 PANEL NAVIGATION
-       ══════════════════════════════════════════ */
-    var panelTitles = {
+    /* ══════════════════════════════════════
+       PANEL NAVIGATION
+       ══════════════════════════════════════ */
+    var PANEL_TITLES = {
         'inicio': 'Inicio', 'albumes': 'Álbumes', 'canciones': 'Canciones',
         'radio': 'Radio KXON', 'playlists': 'Mis Playlists', 'videos': 'Videos',
-        'envivo': 'En Vivo',
-        'documentales': 'Documentales', 'marketplace': 'Marketplace', 'archivo': 'Archivo',
-        'planes': 'Planes', 'historial': 'Historial', 'perfil': 'Mi Perfil',
-        'favoritos': 'Mis Favoritos', 'analytics': 'Analytics',
-        'chat': 'Chat KXON',
-        'solicitar-beat': 'Solicitar Beat'
+        'envivo': 'En Vivo', 'documentales': 'Documentales', 'marketplace': 'Marketplace',
+        'archivo': 'Archivo', 'planes': 'Planes', 'historial': 'Historial',
+        'perfil': 'Mi Perfil', 'favoritos': 'Mis Favoritos', 'analytics': 'Analytics',
+        'chat': 'Chat KXON', 'solicitar-beat': 'Solicitar Beat'
     };
-    var panelAddText = {
-        'inicio': 'Nueva Noticia', 'albumes': 'Nuevo Álbum', 'canciones': '',
-        'radio': '', 'playlists': '', 'videos': 'Nuevo Video', 'envivo': '',
-        'documentales': 'Nuevo Documental', 'marketplace': 'Nuevo Producto',
-        'archivo': '', 'planes': '', 'historial': '', 'perfil': '',
-        'favoritos': '', 'analytics': '',
-        'chat': '',
-        'solicitar-beat': ''
+
+    var PANEL_ADD_TEXT = {
+        'inicio': 'Nueva Noticia', 'albumes': 'Nuevo Álbum', 'videos': 'Nuevo Video',
+        'documentales': 'Nuevo Documental', 'marketplace': 'Nuevo Producto'
     };
 
     var navItems = document.querySelectorAll('.nav-item');
 
-    window.KXON.showPanel = function (id) {
+    K.showPanel = function (id) {
         K.currentPanel = id;
 
+        // Toggle panels
         var panels = document.querySelectorAll('.panel');
-        for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
-        var t = $('panel-' + id);
-        if (t) t.classList.add('active');
+        panels.forEach(function (p) { p.classList.remove('active'); });
+        var target = $('panel-' + id);
+        if (target) target.classList.add('active');
 
-        for (var j = 0; j < navItems.length; j++) {
-            navItems[j].classList.remove('active');
-            if (navItems[j].getAttribute('data-panel') === id) navItems[j].classList.add('active');
-        }
+        // Toggle nav active
+        navItems.forEach(function (n) {
+            n.classList.toggle('active', n.getAttribute('data-panel') === id);
+        });
 
+        // Header title
         var ht = $('headerTitle');
-        if (ht) ht.textContent = panelTitles[id] || 'KXON';
+        if (ht) ht.textContent = PANEL_TITLES[id] || 'KXON';
 
-        var addText = panelAddText[id];
+        // Admin add button
+        var addText = PANEL_ADD_TEXT[id];
         var btn = $('btnAdminAdd');
         var btnText = $('btnAdminText');
         if (btn) {
@@ -451,70 +351,66 @@
             }
         }
 
+        // Close mobile sidebar
         var sb = $('sidebar');
         if (sb) sb.classList.remove('open');
         var so = $('sidebarOverlay');
         if (so) so.classList.remove('show');
 
-        if (panelesBloqueados.indexOf(id) >= 0 && !K.checkAccess(id)) {
-            renderLockedPanel(id);
-            return;
-        }
-
-        if (panelesBloqueados.indexOf(id) >= 0 && panelOriginalHTML[id]) {
-            var panelEl = $('panel-' + id);
-            if (panelEl) {
-                var currentHTML = panelEl.innerHTML;
-                if (currentHTML.indexOf('panel-locked') >= 0) {
+        // Access control check
+        if (LOCKABLE_PANELS.indexOf(id) >= 0) {
+            if (!K.checkAccess(id)) {
+                renderLockedPanel(id);
+                return;
+            }
+            // Restore if was locked
+            if (panelOriginalHTML[id]) {
+                var panelEl = $('panel-' + id);
+                if (panelEl && panelEl.innerHTML.indexOf('panel-locked') >= 0) {
                     restorePanelHTML(id);
                 }
             }
         }
 
-        if (id === 'inicio') {
-            if (typeof K.renderInicio === 'function') K.renderInicio();
-        }
-        if (id === 'albumes') {
-            var alv = $('albumesListView'); if (alv) alv.style.display = 'block';
-            var adv = $('albumDetailView'); if (adv) adv.classList.remove('show');
-            if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
-        }
-        if (id === 'canciones' && typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
-        if (id === 'radio' && typeof K.initRadio === 'function') K.initRadio();
-        if (id === 'videos' && typeof K.loadVideos === 'function') K.loadVideos();
-        if (id === 'envivo' && typeof K.loadLiveStatus === 'function') K.loadLiveStatus();
-        if (id === 'documentales') {
-            var dlv = $('docuListView'); if (dlv) dlv.style.display = 'block';
-            var ddv = $('docuDetailView'); if (ddv) ddv.classList.remove('show');
-            if (typeof K.loadDocumentales === 'function') K.loadDocumentales();
-        }
-        if (id === 'perfil' && typeof K.loadPerfilData === 'function') K.loadPerfilData();
-        if (id === 'marketplace' && typeof K.loadMarketplace === 'function') K.loadMarketplace();
-        if (id === 'archivo' && typeof K.loadArchivo === 'function') K.loadArchivo();
-        if (id === 'planes' && typeof K.loadPlanes === 'function') K.loadPlanes();
-        if (id === 'favoritos' && typeof K.loadFavsPanel === 'function') K.loadFavsPanel();
-        if (id === 'analytics' && typeof K.loadAnalytics === 'function') K.loadAnalytics();
-
-        if (id === 'playlists' && typeof window._loadPlaylists === 'function') {
-            window._loadPlaylists();
-        }
-
-        if (id === 'historial' && typeof K.loadHistorial === 'function') {
-            K.loadHistorial();
-        }
-
-        if (id === 'chat' && typeof K.loadChat === 'function') {
-            K.loadChat();
-        }
-
-        if (id === 'solicitar-beat' && typeof K.loadSolicitudesBeats === 'function') {
-            K.loadSolicitudesBeats();
-        }
+        // Load panel data
+        loadPanelData(id);
     };
 
-    /* ══════════════════════════════════════════
-       🎶 PLAYER BAR — controles
-       ══════════════════════════════════════════ */
+    function loadPanelData(id) {
+        var loaders = {
+            'inicio':         function () { if (typeof K.renderInicio === 'function') K.renderInicio(); },
+            'albumes':        function () {
+                var alv = $('albumesListView'); if (alv) alv.style.display = 'block';
+                var adv = $('albumDetailView'); if (adv) adv.classList.remove('show');
+                if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
+            },
+            'canciones':      function () { if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones(); },
+            'radio':          function () { if (typeof K.initRadio === 'function') K.initRadio(); },
+            'videos':         function () { if (typeof K.loadVideos === 'function') K.loadVideos(); },
+            'envivo':         function () { if (typeof K.loadLiveStatus === 'function') K.loadLiveStatus(); },
+            'documentales':   function () {
+                var dl = $('docuListSection'); if (dl) dl.style.display = 'block';
+                var dd = $('docuDetailView'); if (dd) dd.classList.remove('show');
+                if (typeof K.loadDocumentales === 'function') K.loadDocumentales();
+            },
+            'perfil':         function () { if (typeof K.loadPerfilData === 'function') K.loadPerfilData(); },
+            'marketplace':    function () { if (typeof K.loadMarketplace === 'function') K.loadMarketplace(); },
+            'archivo':        function () { if (typeof K.loadArchivo === 'function') K.loadArchivo(); },
+            'planes':         function () { if (typeof K.loadPlanes === 'function') K.loadPlanes(); },
+            'favoritos':      function () { if (typeof K.loadFavsPanel === 'function') K.loadFavsPanel(); },
+            'analytics':      function () { if (typeof K.loadAnalytics === 'function') K.loadAnalytics(); },
+            'playlists':      function () { if (typeof window._loadPlaylists === 'function') window._loadPlaylists(); },
+            'historial':      function () { if (typeof K.loadHistorial === 'function') K.loadHistorial(); },
+            'chat':           function () { if (typeof K.loadChat === 'function') K.loadChat(); },
+            'solicitar-beat': function () { if (typeof K.loadSolicitudesBeats === 'function') K.loadSolicitudesBeats(); }
+        };
+
+        if (loaders[id]) loaders[id]();
+    }
+
+    /* ══════════════════════════════════════
+       PLAYER BAR
+       ══════════════════════════════════════ */
     var audioEl = K.audioEl;
 
     $on('playerPlayPause', 'click', function (e) {
@@ -522,56 +418,57 @@
         var self = this;
 
         if (K.isPlaying) {
-            if (K.activeSource === 'radio') {
-                K.radioAudio.pause();
-                K.radioIsPlaying = false;
-                var d = $('kxRadDisc'); if (d) d.classList.remove('is-spinning');
-var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
-                var pi = $('radioPlayIcon'); if (pi) pi.textContent = '▶';
-            } else if (K.activeSource === 'archivo') {
-                K.archivoPreviewAudio.pause();
-            } else if (K.activeSource === 'market') {
-                K.marketPreviewAudio.pause();
-            } else {
-                if (audioEl) audioEl.pause();
-            }
+            pauseCurrentSource();
             self.textContent = '▶';
             K.isPlaying = false;
         } else {
-            if (K.activeSource === 'radio') {
-                if (K.radioIndex === -1) {
-                    if (typeof window._rjump === 'function') window._rjump(0);
-                } else {
-                    K.radioAudio.play();
-                    K.radioIsPlaying = true;
-                    var d2 = $('radioDisc'); if (d2) d2.classList.add('spinning');
-                    var pb2 = $('radioPlayBtn'); if (pb2) pb2.classList.add('playing');
-                    var pi2 = $('radioPlayIcon'); if (pi2) pi2.textContent = '⏸';
-                }
-            } else if (K.activeSource === 'archivo' && K.archivoPreviewAudio.src) {
-                K.archivoPreviewAudio.play();
-            } else if (K.activeSource === 'market' && K.marketPreviewAudio.src) {
-                K.marketPreviewAudio.play();
-            } else {
-                if (audioEl) audioEl.play();
-            }
+            playCurrentSource();
             self.textContent = '⏸';
             K.isPlaying = true;
         }
     });
+
+    function pauseCurrentSource() {
+        if (K.activeSource === 'radio') {
+            K.radioAudio.pause();
+            K.radioIsPlaying = false;
+        } else if (K.activeSource === 'archivo') {
+            K.archivoPreviewAudio.pause();
+        } else if (K.activeSource === 'market') {
+            K.marketPreviewAudio.pause();
+        } else {
+            if (audioEl) audioEl.pause();
+        }
+    }
+
+    function playCurrentSource() {
+        if (K.activeSource === 'radio') {
+            if (K.radioIndex === -1) {
+                if (typeof window._rjump === 'function') window._rjump(0);
+            } else {
+                K.radioAudio.play();
+                K.radioIsPlaying = true;
+            }
+        } else if (K.activeSource === 'archivo' && K.archivoPreviewAudio.src) {
+            K.archivoPreviewAudio.play();
+        } else if (K.activeSource === 'market' && K.marketPreviewAudio.src) {
+            K.marketPreviewAudio.play();
+        } else {
+            if (audioEl) audioEl.play();
+        }
+    }
 
     $on('playerNext', 'click', function (e) {
         e.stopPropagation();
         if (K.activeSource === 'radio') {
             var list = K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
             if (list.length === 0) return;
-            var n = K.radioIndex + 1;
-            if (n >= list.length) n = 0;
+            var n = (K.radioIndex + 1) % list.length;
             if (typeof window._rjump === 'function') window._rjump(n);
             return;
         }
         if (K.currentTrackIndex < K.currentPlaylist.length - 1) {
-            window.KXON.playTrack(K.currentTrackIndex + 1);
+            K.playTrack(K.currentTrackIndex + 1);
         }
     });
 
@@ -586,45 +483,45 @@ var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
             if (typeof window._rjump === 'function') window._rjump(p);
             return;
         }
-        if (K.currentTrackIndex > 0) {
-            window.KXON.playTrack(K.currentTrackIndex - 1);
-        }
+        if (K.currentTrackIndex > 0) K.playTrack(K.currentTrackIndex - 1);
     });
 
+    // Audio timeupdate
     if (audioEl) {
         audioEl.addEventListener('timeupdate', function () {
-            if (K.activeSource !== 'player') return;
-            if (audioEl.duration) {
-                var pf = $('progressFill'); if (pf) pf.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
-                var pct = $('playerCurrentTime'); if (pct) pct.textContent = K.formatTime(audioEl.currentTime);
-                var pd = $('playerDuration'); if (pd) pd.textContent = K.formatTime(audioEl.duration);
-            }
+            if (K.activeSource !== 'player' || !audioEl.duration) return;
+            var pf = $('progressFill');
+            if (pf) pf.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+            var pct = $('playerCurrentTime');
+            if (pct) pct.textContent = K.formatTime(audioEl.currentTime);
+            var pd = $('playerDuration');
+            if (pd) pd.textContent = K.formatTime(audioEl.duration);
         });
 
         audioEl.addEventListener('ended', function () {
-            if (K.currentTrackIndex < K.currentPlaylist.length - 1) window.KXON.playTrack(K.currentTrackIndex + 1);
-            else {
+            if (K.currentTrackIndex < K.currentPlaylist.length - 1) {
+                K.playTrack(K.currentTrackIndex + 1);
+            } else {
                 K.isPlaying = false;
-                var pp = $('playerPlayPause'); if (pp) pp.textContent = '▶';
+                var pp = $('playerPlayPause');
+                if (pp) pp.textContent = '▶';
             }
         });
     }
 
+    // Progress bar click
     $on('progressBar', 'click', function (e) {
         e.stopPropagation();
-        if (K.activeSource === 'radio') {
-            if (K.radioAudio.duration) {
-                var r = this.getBoundingClientRect();
-                K.radioAudio.currentTime = (e.clientX - r.left) / r.width * K.radioAudio.duration;
-            }
-            return;
-        }
-        if (audioEl && audioEl.duration) {
-            var r2 = this.getBoundingClientRect();
-            audioEl.currentTime = (e.clientX - r2.left) / r2.width * audioEl.duration;
+        var r = this.getBoundingClientRect();
+        var pct = (e.clientX - r.left) / r.width;
+        if (K.activeSource === 'radio' && K.radioAudio.duration) {
+            K.radioAudio.currentTime = pct * K.radioAudio.duration;
+        } else if (audioEl && audioEl.duration) {
+            audioEl.currentTime = pct * audioEl.duration;
         }
     });
 
+    // Volume bar click
     $on('volumeBar', 'click', function (e) {
         e.stopPropagation();
         var r = this.getBoundingClientRect();
@@ -632,13 +529,17 @@ var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
         if (K.activeSource === 'radio') {
             K.radioVolume = p;
             K.radioAudio.volume = p;
-        } else {
-            if (audioEl) audioEl.volume = p;
+        } else if (audioEl) {
+            audioEl.volume = p;
         }
-        var vf = $('volumeFill'); if (vf) vf.style.width = (p * 100) + '%';
+        var vf = $('volumeFill');
+        if (vf) vf.style.width = (p * 100) + '%';
     });
 
-    window.KXON.playTrack = function (idx) {
+    /* ══════════════════════════════════════
+       PLAY TRACK
+       ══════════════════════════════════════ */
+    K.playTrack = function (idx) {
         if (!K.currentPlaylist || !K.currentPlaylist[idx]) return;
         var track = K.currentPlaylist[idx];
 
@@ -649,27 +550,24 @@ var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
             audioEl.src = track.archivo_url;
             audioEl.play();
         }
+
         K.isPlaying = true;
         K.currentTrackIndex = idx;
 
-        var playerBar = $('playerBar'); if (playerBar) playerBar.classList.add('show');
-        var playerTitle = $('playerTitle'); if (playerTitle) playerTitle.textContent = track.titulo;
-        var playerCover = $('playerCover'); if (playerCover) playerCover.src = track.imagen_url || K.currentAlbumCover || '';
-        var playerPP = $('playerPlayPause'); if (playerPP) playerPP.textContent = '⏸';
+        var pb = $('playerBar'); if (pb) pb.classList.add('show');
+        var pt = $('playerTitle'); if (pt) pt.textContent = track.titulo;
+        var pc = $('playerCover'); if (pc) pc.src = track.imagen_url || K.currentAlbumCover || '';
+        var pp = $('playerPlayPause'); if (pp) pp.textContent = '⏸';
 
+        // Update track list UI
         var items = document.querySelectorAll('.track-item');
-        for (var i = 0; i < items.length; i++) {
-            items[i].classList.remove('playing');
-            var btn2 = items[i].querySelector('.track-play-btn');
-            if (btn2) btn2.textContent = '▶';
-        }
-        if (items[idx]) {
-            items[idx].classList.add('playing');
-            var btn3 = items[idx].querySelector('.track-play-btn');
-            if (btn3) btn3.textContent = '⏸';
-        }
+        items.forEach(function (item, i) {
+            item.classList.toggle('playing', i === idx);
+            var btn = item.querySelector('.track-play-btn');
+            if (btn) btn.textContent = i === idx ? '⏸' : '▶';
+        });
 
-        /* ── REGISTRAR EN HISTORIAL ── */
+        // Register in history
         if (typeof K.addToHistorial === 'function') {
             K.addToHistorial({
                 id: track.id,
@@ -680,102 +578,92 @@ var pb = $('kxRadPlayBtn'); if (pb) pb.classList.remove('is-playing');
             });
         }
 
-        db.rpc('increment_reproducciones', { song_id: track.id }).then(function (r) {
-            if (r.error) console.warn('Error updating plays:', r.error.message);
-            else console.log('✅ Play registrado:', track.titulo);
-        });
+        // Increment plays
+        db.rpc('increment_reproducciones', { song_id: track.id });
     };
 
-    window._playTrack = function (idx) { window.KXON.playTrack(idx); };
+    window._playTrack = function (idx) { K.playTrack(idx); };
 
-    window.KXON.playTrackList = function (tracks, startIndex) {
+    K.playTrackList = function (tracks, startIndex) {
         if (!tracks || !tracks.length) return;
 
         K.stopAllAudio('player');
         K.activeSource = 'player';
 
-        K.currentPlaylist = [];
-        for (var i = 0; i < tracks.length; i++) {
-            K.currentPlaylist.push({
-                id: tracks[i].id,
-                titulo: tracks[i].titulo,
-                archivo_url: tracks[i].audio_url,
-                imagen_url: tracks[i].cover || '',
+        K.currentPlaylist = tracks.map(function (t) {
+            return {
+                id: t.id,
+                titulo: t.titulo,
+                archivo_url: t.audio_url,
+                imagen_url: t.cover || '',
                 reproducciones: 0
-            });
-        }
+            };
+        });
 
-        var idx = startIndex || 0;
-        if (idx >= K.currentPlaylist.length) idx = 0;
-
+        var idx = Math.min(startIndex || 0, K.currentPlaylist.length - 1);
         var track = K.currentPlaylist[idx];
+
         if (audioEl) {
             audioEl.src = track.archivo_url;
             audioEl.play();
         }
+
         K.isPlaying = true;
         K.currentTrackIndex = idx;
 
-        var playerBar = $('playerBar'); if (playerBar) playerBar.classList.add('show');
-        var playerTitle = $('playerTitle'); if (playerTitle) playerTitle.textContent = track.titulo;
-        var playerCover = $('playerCover'); if (playerCover) playerCover.src = track.imagen_url || '';
-        var playerPP = $('playerPlayPause'); if (playerPP) playerPP.textContent = '⏸';
+        var pb = $('playerBar'); if (pb) pb.classList.add('show');
+        var pt = $('playerTitle'); if (pt) pt.textContent = track.titulo;
+        var pc = $('playerCover'); if (pc) pc.src = track.imagen_url || '';
+        var pp = $('playerPlayPause'); if (pp) pp.textContent = '⏸';
     };
 
+    // Close player
     $on('playerCloseBtn', 'click', function (e) {
         e.stopPropagation();
         if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; }
         K.marketPreviewAudio.pause(); K.marketPreviewAudio.currentTime = 0;
         K.archivoPreviewAudio.pause(); K.archivoPreviewAudio.currentTime = 0;
         K.archivoCurrentPlayingUrl = '';
-
         K.radioAudio.pause(); K.radioAudio.currentTime = 0;
         K.radioIsPlaying = false;
-        var rd = $('kxRadDisc'); if (rd) rd.classList.remove('is-spinning');
-var rpb = $('kxRadPlayBtn'); if (rpb) rpb.classList.remove('is-playing');
-        var rpi = $('radioPlayIcon'); if (rpi) rpi.textContent = '▶';
-        var rgl = $('kxRadProgressThumb'); // era radioProgressGlow
-
-        var archItems = document.querySelectorAll('.archivo-audio-item');
-        for (var ai = 0; ai < archItems.length; ai++) {
-            archItems[ai].classList.remove('playing');
-            var ab = archItems[ai].querySelector('.archivo-audio-play');
-            if (ab) ab.textContent = '▶';
-        }
 
         K.isPlaying = false;
         K.activeSource = 'none';
-        var playerBar = $('playerBar'); if (playerBar) playerBar.classList.remove('show');
-        var playerPP = $('playerPlayPause'); if (playerPP) playerPP.textContent = '▶';
+
+        var pb = $('playerBar'); if (pb) pb.classList.remove('show');
+        var pp = $('playerPlayPause'); if (pp) pp.textContent = '▶';
         var pf = $('progressFill'); if (pf) pf.style.width = '0%';
 
-        var items = document.querySelectorAll('.track-item');
-        for (var i = 0; i < items.length; i++) {
-            items[i].classList.remove('playing');
-            var btn4 = items[i].querySelector('.track-play-btn');
-            if (btn4) btn4.textContent = '▶';
-        }
+        document.querySelectorAll('.track-item').forEach(function (item) {
+            item.classList.remove('playing');
+            var btn = item.querySelector('.track-play-btn');
+            if (btn) btn.textContent = '▶';
+        });
     });
 
-    /* ══════════════════════════════════════════
-       🖱️ EVENTOS GENERALES
-       ══════════════════════════════════════════ */
-    for (var i = 0; i < navItems.length; i++) {
-        navItems[i].addEventListener('click', function () {
-            window.KXON.showPanel(this.getAttribute('data-panel'));
+    /* ══════════════════════════════════════
+       EVENT BINDINGS
+       ══════════════════════════════════════ */
+    // Nav items
+    navItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+            K.showPanel(this.getAttribute('data-panel'));
         });
-    }
+    });
 
+    // Hamburger
     $on('btnHamburger', 'click', function () {
         var sb = $('sidebar'); if (sb) sb.classList.toggle('open');
         var so = $('sidebarOverlay'); if (so) so.classList.toggle('show');
     });
 
+    // Sidebar overlay
     $on('sidebarOverlay', 'click', function () {
         var sb = $('sidebar'); if (sb) sb.classList.remove('open');
         this.classList.remove('show');
     });
 
+    // Logout
     $on('btnLogout', 'click', async function () {
         await db.auth.signOut();
         localStorage.removeItem('kxon_role');
@@ -783,22 +671,21 @@ var rpb = $('kxRadPlayBtn'); if (rpb) rpb.classList.remove('is-playing');
         window.location.href = 'login.html';
     });
 
+    // Admin add button
     $on('btnAdminAdd', 'click', function () {
-        if (K.currentPanel === 'albumes') K.openModal('modalAlbum');
-        else if (K.currentPanel === 'inicio') K.openModal('modalNoticia');
-        else if (K.currentPanel === 'videos') K.openModal('modalVideo');
-        else if (K.currentPanel === 'documentales') K.openModal('modalDocumental');
-        else if (K.currentPanel === 'marketplace') K.openModal('modalMarketAdd');
+        var modalMap = {
+            'albumes': 'modalAlbum',
+            'inicio': 'modalNoticia',
+            'videos': 'modalVideo',
+            'documentales': 'modalDocumental',
+            'marketplace': 'modalMarketAdd'
+        };
+        var mid = modalMap[K.currentPanel];
+        if (mid) K.openModal(mid);
         else K.showToast('Función próximamente', 'success');
     });
 
-    /* ✅ FIX: Protección null — estos elementos pueden no existir al inicio */
-    $on('btnAddTrack', 'click', function () { K.openModal('modalCancion'); });
-    $on('btnBackAlbums', 'click', function () {
-        var alv = $('albumesListView'); if (alv) alv.style.display = 'block';
-        var adv = $('albumDetailView'); if (adv) adv.classList.remove('show');
-    });
-
+    // Modal close buttons
     var modalCloseMap = [
         ['modalAlbumClose', 'modalAlbum'], ['modalAlbumCancel', 'modalAlbum'],
         ['modalCancionClose', 'modalCancion'], ['modalCancionCancel', 'modalCancion'],
@@ -807,51 +694,87 @@ var rpb = $('kxRadPlayBtn'); if (rpb) rpb.classList.remove('is-playing');
         ['modalDocumentalClose', 'modalDocumental'], ['modalDocumentalCancel', 'modalDocumental'],
         ['modalEpisodioClose', 'modalEpisodio'], ['modalEpisodioCancel', 'modalEpisodio']
     ];
-    for (var mc = 0; mc < modalCloseMap.length; mc++) {
-        (function (btnId, modalId) {
-            $on(btnId, 'click', function () { K.closeModal(modalId); });
-        })(modalCloseMap[mc][0], modalCloseMap[mc][1]);
-    }
 
-    var overlayCloseIds = ['modalAlbum', 'modalCancion', 'modalNoticia', 'modalVideo', 'modalDocumental', 'modalEpisodio', 'modalSolicitudBeat'];
-    for (var oc = 0; oc < overlayCloseIds.length; oc++) {
-        (function (mid) {
-            var el = $(mid);
-            if (el) el.addEventListener('click', function (e) { if (e.target === this) K.closeModal(mid); });
-        })(overlayCloseIds[oc]);
-    }
-
-    var mnd = $('modalNoticiaDetalle');
-    if (mnd) mnd.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
-
-    var mma = $('modalMarketAdd');
-    if (mma) mma.addEventListener('click', function (e) { if (e.target === this && typeof window._closeMarketModal === 'function') window._closeMarketModal(); });
-
-    var mdo = $('marketDetailOverlay');
-    if (mdo) mdo.addEventListener('click', function (e) { if (e.target === this) { this.classList.remove('show'); K.marketPreviewAudio.pause(); } });
-
-    var po = $('purchaseOverlay');
-    if (po) po.addEventListener('click', function (e) { if (e.target === this && typeof window._closePurchase === 'function') window._closePurchase(); });
-
-    var mpl = $('modalPlaylist');
-    if (mpl) mpl.addEventListener('click', function (e) { if (e.target === this && typeof window._closePlaylistModal === 'function') window._closePlaylistModal(); });
-
-    var matp = $('modalAddToPlaylist');
-    if (matp) matp.addEventListener('click', function (e) { if (e.target === this && typeof window._closeAddToPlaylist === 'function') window._closeAddToPlaylist(); });
-
-    var lyricsOv = $('lyricsOverlay');
-    if (lyricsOv) lyricsOv.addEventListener('click', function (e) {
-        if (e.target === this && typeof window._closeLyrics === 'function') window._closeLyrics();
+    modalCloseMap.forEach(function (pair) {
+        $on(pair[0], 'click', function () { K.closeModal(pair[1]); });
     });
 
-    var lyricsEditOv = $('lyricsEditOverlay');
-    if (lyricsEditOv) lyricsEditOv.addEventListener('click', function (e) {
-        if (e.target === this && typeof window._closeLyricsEdit === 'function') window._closeLyricsEdit();
+    // Overlay click to close
+    var overlayCloseIds = [
+        'modalAlbum', 'modalCancion', 'modalNoticia', 'modalVideo',
+        'modalDocumental', 'modalEpisodio', 'modalSolicitudBeat',
+        'modalNoticiaDetalle', 'modalPlaylist', 'modalAddToPlaylist',
+        'lyricsOverlay', 'lyricsEditOverlay'
+    ];
+
+    overlayCloseIds.forEach(function (mid) {
+        var el = $(mid);
+        if (el) {
+            el.addEventListener('click', function (e) {
+                if (e.target !== this) return;
+                if (mid === 'modalNoticiaDetalle') {
+                    this.classList.remove('show');
+                } else if (mid === 'modalPlaylist' && typeof window._closePlaylistModal === 'function') {
+                    window._closePlaylistModal();
+                } else if (mid === 'modalAddToPlaylist' && typeof window._closeAddToPlaylist === 'function') {
+                    window._closeAddToPlaylist();
+                } else if (mid === 'lyricsOverlay' && typeof window._closeLyrics === 'function') {
+                    window._closeLyrics();
+                } else if (mid === 'lyricsEditOverlay' && typeof window._closeLyricsEdit === 'function') {
+                    window._closeLyricsEdit();
+                } else {
+                    K.closeModal(mid);
+                }
+            });
+        }
     });
 
-    /* ══════════════════════════════════════════
-       🔐 INIT — sesión y carga inicial
-       ══════════════════════════════════════════ */
+    // Market/Purchase overlay close
+    var specialOverlays = [
+        ['modalMarketAdd', function () { if (typeof window._closeMarketModal === 'function') window._closeMarketModal(); }],
+        ['marketDetailOverlay', function () { $(this.id)?.classList.remove('show'); K.marketPreviewAudio.pause(); }],
+        ['purchaseOverlay', function () { if (typeof window._closePurchase === 'function') window._closePurchase(); }]
+    ];
+
+    specialOverlays.forEach(function (pair) {
+        var el = $(pair[0]);
+        if (el) {
+            el.addEventListener('click', function (e) {
+                if (e.target === this) pair[1].call(this);
+            });
+        }
+    });
+
+    // Misc button bindings
+    $on('btnAddTrack', 'click', function () { K.openModal('modalCancion'); });
+    $on('btnBackAlbums', 'click', function () {
+        var alv = $('albumesListView'); if (alv) alv.style.display = 'block';
+        var adv = $('albumDetailView'); if (adv) adv.classList.remove('show');
+    });
+
+    /* ══════════════════════════════════════
+       STATS
+       ══════════════════════════════════════ */
+    K.loadStats = async function () {
+        try {
+            var queries = [
+                db.from('albumes').select('id', { count: 'exact', head: true }),
+                db.from('canciones').select('id', { count: 'exact', head: true }),
+                db.from('beats').select('id', { count: 'exact', head: true }),
+                db.from('noticias').select('id', { count: 'exact', head: true })
+            ];
+            var results = await Promise.all(queries);
+            var ids = ['statAlbumes', 'statCanciones', 'statBeats', 'statNoticias'];
+            results.forEach(function (r, i) {
+                var el = $(ids[i]);
+                if (el) el.textContent = r.count || 0;
+            });
+        } catch (e) { console.error(e); }
+    };
+
+    /* ══════════════════════════════════════
+       INIT
+       ══════════════════════════════════════ */
     async function init() {
         try {
             var r = await db.auth.getSession();
@@ -877,45 +800,41 @@ var rpb = $('kxRadPlayBtn'); if (rpb) rpb.classList.remove('is-playing');
             await K.loadUserSubscription();
             saveAllPanelHTML();
             K.applyAccessControl();
+
             if (typeof K.loadUserFavorites === 'function') await K.loadUserFavorites();
+
             K.loadStats();
 
+            // Load notifications with delay
             setTimeout(function () {
-                if (typeof K.loadNotifications === 'function') {
-                    K.loadNotifications();
-                } else {
-                    console.warn('⚠️ loadNotifications no disponible aún');
-                }
+                if (typeof K.loadNotifications === 'function') K.loadNotifications();
             }, 100);
 
+            // Load initial data
             if (typeof K.loadAlbumes === 'function') K.loadAlbumes();
             if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones();
-
-            setTimeout(function () {
-                if (typeof K.renderInicio === 'function') {
-                    K.renderInicio();
-                } else {
-                    console.warn('⚠️ renderInicio no disponible aún, reintentando...');
-                    setTimeout(function () {
-                        if (typeof K.renderInicio === 'function') K.renderInicio();
-                    }, 500);
-                }
-            }, 200);
-
             if (typeof K.loadNoticias === 'function') K.loadNoticias();
             if (typeof K.loadVideos === 'function') K.loadVideos();
             if (typeof K.loadDocumentales === 'function') K.loadDocumentales();
             if (typeof K.loadMarketplace === 'function') K.loadMarketplace();
             if (typeof K.loadArchivo === 'function') K.loadArchivo();
 
+            // Render inicio with delay for dependencies
+            setTimeout(function () {
+                if (typeof K.renderInicio === 'function') K.renderInicio();
+                else setTimeout(function () { if (typeof K.renderInicio === 'function') K.renderInicio(); }, 500);
+            }, 200);
+
             K.showPanel('inicio');
 
+            // Hide loading
             setTimeout(function () {
                 var ls = $('loadingScreen');
                 if (ls) ls.classList.add('hide');
             }, 500);
+
         } catch (e) {
-            console.error('❌ Error en init:', e);
+            console.error('Error en init:', e);
             window.location.href = 'login.html';
         }
     }
