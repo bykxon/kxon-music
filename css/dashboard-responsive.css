@@ -75,12 +75,17 @@
 
     .sidebar.collapsed .nav-section-label {
         justify-content: flex-start;
-        padding: 20px 12px 6px;
+        padding: 14px 12px 6px;
         font-size: 0.5rem;
     }
 
-    .sidebar.collapsed .nav-section-label::before { display: none; }
-    .sidebar.collapsed .nav-section-label::after { display: block; }
+    .sidebar.collapsed .nav-section-label::before {
+        display: none;
+    }
+
+    .sidebar.collapsed .nav-section-label::after {
+        display: block;
+    }
 
     .sidebar.collapsed .nav-item {
         justify-content: flex-start;
@@ -90,7 +95,7 @@
 
     .sidebar.collapsed .sidebar-header {
         justify-content: flex-start;
-        padding: 22px 18px 18px;
+        padding: 0 18px;
     }
 
     .sidebar.collapsed .sidebar-user {
@@ -103,7 +108,7 @@
     }
 
     .sidebar.collapsed .sidebar-quick-search {
-        padding: 2px 12px 10px;
+        padding: 10px 12px 8px;
     }
 
     /* Search responsive */
