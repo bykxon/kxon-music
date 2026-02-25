@@ -1,7 +1,7 @@
 /* ============================================
    🔐 AUTH JS — KXON MUSIC PLATFORM
    Unified auth controller for Login, Register, Forgot Password
-   Versión: 3.0 — Rediseño Total 2026
+   Versión: 4.0 — Con soporte de Embajadores/Referidos
    Requires: supabase-config.js (window.db)
    ============================================ */
 
@@ -13,11 +13,11 @@
        ────────────────────────────────── */
     const db = window.db;
     if (!db) {
-        console.error('❌ KXON Auth: window.db not found. Ensure supabase-config.js loads first.');
+        console.error('❌ KXON Auth: window.db not found.');
         return;
     }
 
-    const page = document.body.dataset.page; // 'login' | 'register' | 'forgot'
+    const page = document.body.dataset.page;
     if (!page) return;
 
     /* ──────────────────────────────────
@@ -28,7 +28,6 @@
 
     const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    /** Show global auth message */
     function showMessage(text, type = 'error') {
         const el = $('#authMessage');
         if (!el) return;
@@ -36,7 +35,6 @@
         el.className = `kx-auth-message is-visible is-${type}`;
     }
 
-    /** Clear global auth message */
     function clearMessage() {
         const el = $('#authMessage');
         if (!el) return;
@@ -44,14 +42,12 @@
         el.textContent = '';
     }
 
-    /** Set field validation state */
     function setFieldState(fieldEl, state) {
         if (!fieldEl) return;
         fieldEl.classList.remove('is-valid', 'is-error');
         if (state) fieldEl.classList.add(state);
     }
 
-    /** Set field error message */
     function setFieldError(fieldEl, message = '') {
         if (!fieldEl) return;
         const errorEl = fieldEl.querySelector('.kx-auth-error');
@@ -59,14 +55,12 @@
         setFieldState(fieldEl, message ? 'is-error' : null);
     }
 
-    /** Clear all field errors */
     function clearFieldErrors() {
         $$('.kx-auth-field').forEach(field => {
             setFieldError(field, '');
         });
     }
 
-    /** Set loading state on a button */
     function setLoading(btn, loading) {
         if (!btn) return;
         if (loading) {
@@ -78,7 +72,6 @@
         }
     }
 
-    /** Debounce */
     function debounce(fn, ms = 300) {
         let timer;
         return function (...args) {
@@ -88,8 +81,155 @@
     }
 
     /* ──────────────────────────────────
+       🏆 REFERRAL CODE DETECTION
+       Detecta ?ref=CODIGO en la URL
+       ────────────────────────────────── */
+    let detectedRefCode = '';
+
+    function detectReferralCode() {
+        if (page !== 'register') return;
+
+        const params = new URLSearchParams(window.location.search);
+        const refCode = (params.get('ref') || '').trim().toUpperCase();
+
+        if (!refCode) return;
+
+        detectedRefCode = refCode;
+
+        // Pre-fill the referral input
+        const refInput = $('#referralCode');
+        if (refInput) {
+            refInput.value = refCode;
+            refInput.readOnly = true;
+            refInput.style.opacity = '0.8';
+        }
+
+        // Show the referral banner
+        const banner = $('#referralBanner');
+        const codeDisplay = $('#referralCodeDisplay');
+
+        if (banner) banner.style.display = 'flex';
+        if (codeDisplay) codeDisplay.textContent = refCode;
+
+        // Validate the code exists
+        validateReferralCode(refCode);
+    }
+
+    async function validateReferralCode(code) {
+        if (!code) return;
+
+        try {
+            const { data, error } = await db
+                .from('embajadores')
+                .select('usuario_nombre, codigo, estado')
+                .eq('codigo', code)
+                .eq('estado', 'activo')
+                .single();
+
+            const banner = $('#referralBanner');
+            const codeDisplay = $('#referralCodeDisplay');
+            const refField = $(`.kx-auth-field[data-field="referralCode"]`);
+
+            if (error || !data) {
+                // Invalid code
+                if (banner) {
+                    banner.style.display = 'flex';
+                    banner.classList.add('kx-auth-referral-banner--invalid');
+                    banner.querySelector('.kx-auth-referral-label').textContent = 'Código de referido no válido';
+                    banner.querySelector('.kx-auth-referral-check').textContent = '✗';
+                }
+                if (codeDisplay) codeDisplay.textContent = code;
+                if (refField) setFieldError(refField, 'Este código no existe o está inactivo');
+                return false;
+            }
+
+            // Valid code — show ambassador name
+            if (banner) {
+                banner.style.display = 'flex';
+                banner.classList.remove('kx-auth-referral-banner--invalid');
+                banner.querySelector('.kx-auth-referral-label').textContent =
+                    'Te invitó: ' + data.usuario_nombre;
+            }
+            if (codeDisplay) codeDisplay.textContent = code;
+            if (refField) {
+                setFieldError(refField, '');
+                setFieldState(refField, 'is-valid');
+            }
+
+            return true;
+
+        } catch (e) {
+            console.warn('Error validating ref code:', e);
+            return false;
+        }
+    }
+
+    /* ──────────────────────────────────
+       🏆 CREATE REFERRAL RECORD
+       Se llama después de un registro exitoso
+       ────────────────────────────────── */
+    async function createReferralRecord(userId, userEmail, userName, refCode) {
+        if (!refCode) return;
+
+        try {
+            // Find the ambassador
+            const { data: embajador, error: embError } = await db
+                .from('embajadores')
+                .select('id, codigo')
+                .eq('codigo', refCode)
+                .eq('estado', 'activo')
+                .single();
+
+            if (embError || !embajador) {
+                console.warn('Ambassador not found for code:', refCode);
+                return;
+            }
+
+            // Create referral record
+            const { error: refError } = await db.from('referidos').insert({
+                embajador_id: embajador.id,
+                embajador_codigo: embajador.codigo,
+                referido_user_id: userId,
+                referido_email: userEmail,
+                referido_nombre: userName,
+                estado: 'registrado',
+                fecha_registro: new Date().toISOString()
+            });
+
+            if (refError) {
+                console.error('Error creating referral:', refError);
+                return;
+            }
+
+            // Increment ambassador's registered count
+            const { error: updError } = await db
+                .from('embajadores')
+                .update({
+                    total_registrados: embajador.total_registrados
+                        ? embajador.total_registrados + 1
+                        : 1,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', embajador.id);
+
+            // Better: use RPC to safely increment
+            await db.rpc('increment_field', {
+                table_name: 'embajadores',
+                field_name: 'total_registrados',
+                row_id: embajador.id
+            }).catch(() => {
+                // If RPC doesn't exist, manual update already ran above
+            });
+
+            console.log('✅ Referral record created for', refCode);
+
+        } catch (e) {
+            console.error('Error in createReferralRecord:', e);
+        }
+    }
+
+    /* ──────────────────────────────────
        🔐 SESSION CHECK
-       Redirect if already logged in
        ────────────────────────────────── */
     async function checkSession() {
         try {
@@ -97,13 +237,16 @@
             if (data.session) {
                 window.location.href = 'dashboard.html';
             }
-        } catch (e) {
-            // Silent fail — user just needs to login
-        }
+        } catch (e) { }
     }
 
     if (page === 'login' || page === 'register') {
         checkSession();
+    }
+
+    // Detect referral code on register page
+    if (page === 'register') {
+        detectReferralCode();
     }
 
     /* ──────────────────────────────────
@@ -123,7 +266,7 @@
     }
 
     /* ──────────────────────────────────
-       💪 PASSWORD STRENGTH (register)
+       💪 PASSWORD STRENGTH
        ────────────────────────────────── */
     function getPasswordStrength(password) {
         if (!password) return { level: null, label: '', score: 0 };
@@ -150,15 +293,12 @@
         if (strengthWrap && strengthBar && strengthLabel) {
             passInput.addEventListener('input', debounce(() => {
                 const val = passInput.value;
-
                 if (!val) {
                     strengthWrap.classList.remove('is-visible');
                     return;
                 }
-
                 strengthWrap.classList.add('is-visible');
                 const { level, label } = getPasswordStrength(val);
-
                 strengthBar.setAttribute('data-level', level || '');
                 strengthLabel.setAttribute('data-level', level || '');
                 strengthLabel.textContent = label;
@@ -188,6 +328,9 @@
                 if (!value) error = 'Ingresa tu contraseña';
                 else if (page === 'register' && value.length < 6) error = 'Mínimo 6 caracteres';
                 break;
+            case 'referralCode':
+                // Optional field — no error if empty
+                break;
         }
 
         if (error) {
@@ -200,18 +343,15 @@
         return true;
     }
 
-    // Attach real-time validation to all inputs
     $$('.kx-auth-input').forEach(input => {
         const fieldEl = input.closest('.kx-auth-field');
         const fieldName = fieldEl?.dataset.field;
         if (!fieldName) return;
 
-        // Validate on blur
         input.addEventListener('blur', () => {
             if (input.value) validateField(fieldName, input.value);
         });
 
-        // Clear error on input (with debounce for re-validation)
         input.addEventListener('input', debounce(() => {
             if (fieldEl.classList.contains('is-error')) {
                 validateField(fieldName, input.value);
@@ -220,6 +360,17 @@
             }
         }, 400));
     });
+
+    // Validate referral code on blur
+    const refCodeInput = $('#referralCode');
+    if (refCodeInput) {
+        refCodeInput.addEventListener('blur', debounce(async () => {
+            const val = refCodeInput.value.trim().toUpperCase();
+            if (!val) return;
+            refCodeInput.value = val;
+            await validateReferralCode(val);
+        }, 500));
+    }
 
     /* ──────────────────────────────────
        🌐 GOOGLE AUTH
@@ -232,6 +383,12 @@
             clearMessage();
 
             try {
+                // Store referral code before redirect
+                const refCode = ($('#referralCode')?.value || '').trim().toUpperCase();
+                if (refCode) {
+                    localStorage.setItem('kxon_ref_code', refCode);
+                }
+
                 const { data, error } = await db.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
@@ -264,7 +421,6 @@
                 const email = ($('#email')?.value || '').trim();
                 const password = $('#password')?.value || '';
 
-                // Validate
                 const validEmail = validateField('email', email);
                 const validPass = validateField('password', password);
 
@@ -280,7 +436,6 @@
 
                     if (error) throw error;
 
-                    // Fetch profile
                     try {
                         const { data: profile } = await db
                             .from('profiles')
@@ -293,7 +448,6 @@
                             localStorage.setItem('kxon_name', profile.full_name || '');
                         }
                     } catch (profileErr) {
-                        // Non-critical: continue login
                         console.warn('Profile fetch failed:', profileErr.message);
                     }
 
@@ -322,7 +476,7 @@
     }
 
     /* ──────────────────────────────────
-       📝 REGISTER
+       📝 REGISTER — CON REFERIDOS
        ────────────────────────────────── */
     if (page === 'register') {
         const form = $('#registerForm');
@@ -339,6 +493,7 @@
                 const password = $('#password')?.value || '';
                 const roleEl = $('input[name="role"]:checked');
                 const role = roleEl?.value || 'fan';
+                const referralCode = ($('#referralCode')?.value || '').trim().toUpperCase();
 
                 // Validate all fields
                 const validName = validateField('fullName', fullName);
@@ -346,6 +501,15 @@
                 const validPass = validateField('password', password);
 
                 if (!validName || !validEmail || !validPass) return;
+
+                // Validate referral code if provided
+                if (referralCode) {
+                    const isValidRef = await validateReferralCode(referralCode);
+                    if (!isValidRef) {
+                        showMessage('El código de referido no es válido', 'error');
+                        return;
+                    }
+                }
 
                 setLoading(btnSubmit, true);
 
@@ -356,7 +520,8 @@
                         options: {
                             data: {
                                 full_name: fullName,
-                                role: role
+                                role: role,
+                                referido_por: referralCode || null
                             }
                         }
                     });
@@ -364,17 +529,39 @@
                     if (error) throw error;
 
                     if (data.user && data.session) {
-                        // Auto-confirmed: redirect
+                        // Auto-confirmed
                         localStorage.setItem('kxon_role', role);
                         localStorage.setItem('kxon_name', fullName);
+
+                        // Save referral code to profile
+                        if (referralCode) {
+                            await db.from('profiles').update({
+                                referido_por: referralCode
+                            }).eq('id', data.user.id);
+
+                            // Create referral record
+                            await createReferralRecord(
+                                data.user.id,
+                                email,
+                                fullName,
+                                referralCode
+                            );
+                        }
 
                         showMessage('¡Cuenta creada! Redirigiendo...', 'success');
 
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
                         }, 1200);
+
                     } else if (data.user && !data.session) {
                         // Needs email confirmation
+                        // Store referral code to process later
+                        if (referralCode) {
+                            localStorage.setItem('kxon_pending_ref', referralCode);
+                            localStorage.setItem('kxon_pending_ref_name', fullName);
+                        }
+
                         showMessage(
                             'Cuenta creada. Revisa tu email para confirmar tu cuenta.',
                             'info'
@@ -429,7 +616,6 @@
 
                     if (error) throw error;
 
-                    // Show success view
                     const formView = $('#forgotFormView');
                     const successView = $('#forgotSuccessView');
 
@@ -438,11 +624,9 @@
 
                 } catch (err) {
                     let msg = 'Error al enviar email';
-
                     if (err.message?.includes('rate')) {
                         msg = 'Demasiados intentos. Espera un momento.';
                     }
-
                     showMessage(msg, 'error');
                     setLoading(btnSubmit, false);
                 }
@@ -452,19 +636,9 @@
 
     /* ──────────────────────────────────
        ✨ ENTRANCE ANIMATIONS
-       Stagger form fields on load
        ────────────────────────────────── */
     function animateEntrance() {
-        const elements = [
-            '.kx-auth-google',
-            '.kx-auth-note',
-            '.kx-auth-divider',
-            ...Array.from($$('.kx-auth-field')).map((_, i) => `.kx-auth-field:nth-child(${i + 1})`),
-            '.kx-auth-submit',
-            '.kx-auth-footer'
-        ];
-
-        const allEls = $$('.kx-auth-google, .kx-auth-note, .kx-auth-divider, .kx-auth-field, .kx-auth-submit, .kx-auth-footer, .kx-auth-back');
+        const allEls = $$('.kx-auth-referral-banner, .kx-auth-google, .kx-auth-note, .kx-auth-divider, .kx-auth-field, .kx-auth-submit, .kx-auth-footer, .kx-auth-back');
 
         allEls.forEach((el, i) => {
             el.style.opacity = '0';
@@ -479,7 +653,6 @@
             });
         });
 
-        // Clean inline styles after animation
         setTimeout(() => {
             allEls.forEach(el => {
                 el.style.removeProperty('opacity');
@@ -489,7 +662,6 @@
         }, 1500);
     }
 
-    // Respect prefers-reduced-motion
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', animateEntrance);

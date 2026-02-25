@@ -1,6 +1,6 @@
 /**
- * 🚀 KXON — Dashboard Init v4.1
- * Session · Navigation · Player · Access Control
+ * 🚀 KXON — Dashboard Init v4.2
+ * Session · Navigation · Player · Access Control · Referrals
  * UPDATED: Compatible with kx-ply-* player redesign (SVG icons)
  */
 (function () {
@@ -19,11 +19,6 @@
         return el;
     }
 
-    /**
-     * 🎵 Toggle play/pause SVG icons on any button
-     * Works with the new kx-ply-* player that uses SVG icons
-     * instead of emoji text content (▶/⏸)
-     */
     function _setPlayIcon(el, isPlaying) {
         if (!el) return;
         var playIcon = el.querySelector('.kx-ply-icon-play');
@@ -323,7 +318,8 @@
         'envivo': 'En Vivo', 'documentales': 'Documentales', 'marketplace': 'Marketplace',
         'archivo': 'Archivo', 'planes': 'Planes', 'historial': 'Historial',
         'perfil': 'Mi Perfil', 'favoritos': 'Mis Favoritos', 'analytics': 'Analytics',
-        'chat': 'Chat KXON', 'solicitar-beat': 'Solicitar Beat'
+        'chat': 'Chat KXON', 'solicitar-beat': 'Solicitar Beat',
+        'embajadores': 'Embajadores'
     };
 
     var PANEL_ADD_TEXT = {
@@ -407,7 +403,8 @@
             'playlists':      function () { if (typeof window._loadPlaylists === 'function') window._loadPlaylists(); },
             'historial':      function () { if (typeof K.loadHistorial === 'function') K.loadHistorial(); },
             'chat':           function () { if (typeof K.loadChat === 'function') K.loadChat(); },
-            'solicitar-beat': function () { if (typeof K.loadSolicitudesBeats === 'function') K.loadSolicitudesBeats(); }
+            'solicitar-beat': function () { if (typeof K.loadSolicitudesBeats === 'function') K.loadSolicitudesBeats(); },
+            'embajadores':    function () { if (typeof K.loadEmbajadores === 'function') K.loadEmbajadores(); }
         };
 
         if (loaders[id]) loaders[id]();
@@ -491,7 +488,6 @@
         if (K.currentTrackIndex > 0) K.playTrack(K.currentTrackIndex - 1);
     });
 
-    // Audio timeupdate
     if (audioEl) {
         audioEl.addEventListener('timeupdate', function () {
             if (K.activeSource !== 'player' || !audioEl.duration) return;
@@ -514,7 +510,6 @@
         });
     }
 
-    // Progress bar click
     $on('progressBar', 'click', function (e) {
         e.stopPropagation();
         var r = this.getBoundingClientRect();
@@ -526,7 +521,6 @@
         }
     });
 
-    // Volume bar click
     $on('volumeBar', 'click', function (e) {
         e.stopPropagation();
         var r = this.getBoundingClientRect();
@@ -559,7 +553,6 @@
         K.isPlaying = true;
         K.currentTrackIndex = idx;
 
-        // Update mini player bar
         var pb = $('playerBar');
         if (pb) pb.classList.add('show');
 
@@ -569,11 +562,9 @@
         var pc = $('playerCover');
         if (pc) pc.src = track.imagen_url || K.currentAlbumCover || '';
 
-        // ✅ Use SVG icon helper instead of textContent
         var pp = $('playerPlayPause');
         _setPlayIcon(pp, true);
 
-        // Update track list UI
         var items = document.querySelectorAll('.track-item');
         items.forEach(function (item, i) {
             item.classList.toggle('playing', i === idx);
@@ -581,7 +572,6 @@
             if (btn) btn.textContent = i === idx ? '⏸' : '▶';
         });
 
-        // Register in history
         if (typeof K.addToHistorial === 'function') {
             K.addToHistorial({
                 id: track.id,
@@ -592,7 +582,6 @@
             });
         }
 
-        // Increment plays
         db.rpc('increment_reproducciones', { song_id: track.id });
     };
 
@@ -634,12 +623,10 @@
         var pc = $('playerCover');
         if (pc) pc.src = track.imagen_url || '';
 
-        // ✅ Use SVG icon helper instead of textContent
         var pp = $('playerPlayPause');
         _setPlayIcon(pp, true);
     };
 
-    // Close player — UPDATED FOR SVG ICONS
     $on('playerCloseBtn', 'click', function (e) {
         e.stopPropagation();
         if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; }
@@ -655,7 +642,6 @@
         var pb = $('playerBar');
         if (pb) pb.classList.remove('show');
 
-        // ✅ Reset SVG icons to play state
         var pp = $('playerPlayPause');
         _setPlayIcon(pp, false);
 
@@ -792,6 +778,89 @@
     };
 
     /* ══════════════════════════════════════
+       PROCESS PENDING REFERRAL
+       ══════════════════════════════════════ */
+    async function processPendingReferral() {
+        // ═══ Flow 1: Google Auth referral (kxon_ref_code) ═══
+        var pendingRef = localStorage.getItem('kxon_ref_code');
+        if (pendingRef && K.currentProfile) {
+            if (!K.currentProfile.referido_por) {
+                try {
+                    await db.from('profiles').update({
+                        referido_por: pendingRef
+                    }).eq('id', K.currentUser.id);
+
+                    var embResult = await db.from('embajadores')
+                        .select('id, codigo, total_registrados')
+                        .eq('codigo', pendingRef)
+                        .eq('estado', 'activo')
+                        .single();
+
+                    if (embResult.data) {
+                        await db.from('referidos').insert({
+                            embajador_id: embResult.data.id,
+                            embajador_codigo: embResult.data.codigo,
+                            referido_user_id: K.currentUser.id,
+                            referido_email: K.currentUser.email,
+                            referido_nombre: K.currentProfile.full_name || '',
+                            estado: 'registrado',
+                            fecha_registro: new Date().toISOString()
+                        });
+
+                        await db.from('embajadores').update({
+                            total_registrados: (embResult.data.total_registrados || 0) + 1,
+                            updated_at: new Date().toISOString()
+                        }).eq('id', embResult.data.id);
+                    }
+                } catch (refErr) {
+                    console.warn('Error processing pending referral (ref_code):', refErr);
+                }
+            }
+            localStorage.removeItem('kxon_ref_code');
+        }
+
+        // ═══ Flow 2: Email confirmation referral (kxon_pending_ref) ═══
+        var pendingRefName = localStorage.getItem('kxon_pending_ref');
+        if (pendingRefName && K.currentProfile) {
+            if (!K.currentProfile.referido_por) {
+                try {
+                    await db.from('profiles').update({
+                        referido_por: pendingRefName
+                    }).eq('id', K.currentUser.id);
+
+                    var embResult2 = await db.from('embajadores')
+                        .select('id, codigo, total_registrados')
+                        .eq('codigo', pendingRefName)
+                        .eq('estado', 'activo')
+                        .single();
+
+                    if (embResult2.data) {
+                        var refName = localStorage.getItem('kxon_pending_ref_name') || '';
+                        await db.from('referidos').insert({
+                            embajador_id: embResult2.data.id,
+                            embajador_codigo: embResult2.data.codigo,
+                            referido_user_id: K.currentUser.id,
+                            referido_email: K.currentUser.email,
+                            referido_nombre: refName || K.currentProfile.full_name || '',
+                            estado: 'registrado',
+                            fecha_registro: new Date().toISOString()
+                        });
+
+                        await db.from('embajadores').update({
+                            total_registrados: (embResult2.data.total_registrados || 0) + 1,
+                            updated_at: new Date().toISOString()
+                        }).eq('id', embResult2.data.id);
+                    }
+                } catch (refErr2) {
+                    console.warn('Error processing pending referral (pending_ref):', refErr2);
+                }
+            }
+            localStorage.removeItem('kxon_pending_ref');
+            localStorage.removeItem('kxon_pending_ref_name');
+        }
+    }
+
+    /* ══════════════════════════════════════
        INIT
        ══════════════════════════════════════ */
     async function init() {
@@ -813,6 +882,9 @@
                 };
                 K.isAdmin = false;
             }
+
+            // ═══ PROCESS PENDING REFERRAL (after profile is loaded) ═══
+            await processPendingReferral();
 
             renderSidebar();
 

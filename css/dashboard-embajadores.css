@@ -1,0 +1,1161 @@
+/* ============================================
+   🏆 DASHBOARD-EMBAJADORES.CSS — KXON 2026
+   Panel de embajadores, ranking, referidos
+   Namespace: kx-emb-*
+   ============================================ */
+
+/* ═══ HEADER ═══ */
+.kx-emb-header {
+    margin-bottom: 24px;
+}
+
+.kx-emb-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.kx-emb-label {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.08);
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.kx-emb-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+}
+
+.kx-emb-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* ═══ KPIs ═══ */
+.kx-emb-kpis {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 16px 20px;
+    flex-shrink: 0;
+}
+
+.kx-emb-kpi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 60px;
+}
+
+.kx-emb-kpi-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.kx-emb-kpi-label {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.kx-emb-kpi-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ═══ ACTIVATE VIEW (Promo) ═══ */
+.kx-emb-promo {
+    text-align: center;
+    padding: 40px 24px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.04), rgba(255, 165, 0, 0.02));
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    border-radius: 16px;
+    margin-bottom: 28px;
+}
+
+.kx-emb-promo-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.kx-emb-promo-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 8px;
+}
+
+.kx-emb-promo-text {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* ═══ LEVELS ═══ */
+.kx-emb-levels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.kx-emb-level {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.kx-emb-level:hover {
+    transform: translateY(-2px);
+}
+
+.kx-emb-level--bronce:hover {
+    border-color: rgba(205, 127, 50, 0.3);
+}
+
+.kx-emb-level--plata:hover {
+    border-color: rgba(192, 192, 192, 0.3);
+}
+
+.kx-emb-level--oro:hover {
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.kx-emb-level-badge {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.kx-emb-level-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px;
+}
+
+.kx-emb-level-range {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.kx-emb-level-perks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.kx-emb-level-perks li {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 4px 0;
+    line-height: 1.4;
+}
+
+/* ═══ ACTIVATE CTA ═══ */
+.kx-emb-activate-cta {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.kx-emb-activate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.kx-emb-activate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+}
+
+.kx-emb-activate-btn:active {
+    transform: translateY(0);
+}
+
+.kx-emb-activate-btn.loading .kx-emb-activate-btn-text,
+.kx-emb-activate-btn.loading .kx-emb-activate-btn-icon {
+    opacity: 0;
+}
+
+.kx-emb-activate-btn.loading .kx-emb-spinner {
+    display: block;
+}
+
+.kx-emb-spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: embSpin 0.6s linear infinite;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes embSpin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.kx-emb-activate-note {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 10px;
+}
+
+/* ═══ SHARE SECTION ═══ */
+.kx-emb-share-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.kx-emb-share-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.kx-emb-share-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.kx-emb-share-code-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kx-emb-share-code {
+    font-family: 'Montserrat', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffd700;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kx-emb-share-code--link {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.kx-emb-share-copy {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.kx-emb-share-copy:hover {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    border-color: rgba(255, 215, 0, 0.2);
+}
+
+/* ═══ SHARE BUTTONS ═══ */
+.kx-emb-share-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.kx-emb-share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: 1px solid transparent;
+    flex: 1;
+    justify-content: center;
+    min-width: 180px;
+}
+
+.kx-emb-share-btn--whatsapp {
+    background: rgba(37, 211, 102, 0.1);
+    color: #25d366;
+    border-color: rgba(37, 211, 102, 0.2);
+}
+
+.kx-emb-share-btn--whatsapp:hover {
+    background: rgba(37, 211, 102, 0.2);
+}
+
+.kx-emb-share-btn--copy {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.kx-emb-share-btn--copy:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+/* ═══ NIVEL SECTION ═══ */
+.kx-emb-nivel-section {
+    margin-bottom: 24px;
+}
+
+.kx-emb-nivel-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 20px;
+    transition: border-color 0.3s ease;
+}
+
+.kx-emb-nivel-card--activador {
+    border-color: rgba(205, 127, 50, 0.15);
+}
+
+.kx-emb-nivel-card--constructor {
+    border-color: rgba(192, 192, 192, 0.15);
+}
+
+.kx-emb-nivel-card--lider {
+    border-color: rgba(255, 215, 0, 0.2);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.03), rgba(255, 165, 0, 0.02));
+}
+
+.kx-emb-nivel-badge {
+    font-size: 36px;
+    flex-shrink: 0;
+}
+
+.kx-emb-nivel-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.kx-emb-nivel-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.kx-emb-nivel-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 2px;
+}
+
+.kx-emb-nivel-progress {
+    flex-shrink: 0;
+    width: 200px;
+}
+
+.kx-emb-nivel-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.kx-emb-nivel-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #ff8c00);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.kx-emb-nivel-progress-text {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: right;
+}
+
+/* ═══ REFERIDOS LIST ═══ */
+.kx-emb-referidos-section {
+    margin-bottom: 28px;
+}
+
+.kx-emb-referidos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.kx-emb-referidos-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kx-emb-referidos-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 215, 0, 0.08);
+    border-radius: 10px;
+    color: #ffd700;
+}
+
+.kx-emb-referidos-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.kx-emb-referidos-count {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.kx-emb-referidos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ═══ REFERIDO ITEM ═══ */
+.kx-emb-ref-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: background 0.2s ease;
+}
+
+.kx-emb-ref-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.kx-emb-ref-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ffd700;
+    flex-shrink: 0;
+}
+
+.kx-emb-ref-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.kx-emb-ref-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kx-emb-ref-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+}
+
+.kx-emb-ref-email {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.kx-emb-ref-plan {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.kx-emb-ref-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.kx-emb-ref-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.kx-emb-ref-status--suscrito {
+    color: #34c759;
+    background: rgba(52, 199, 89, 0.1);
+}
+
+.kx-emb-ref-status--registrado {
+    color: #ff9f0a;
+    background: rgba(255, 159, 10, 0.1);
+}
+
+.kx-emb-ref-comision {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #34c759;
+}
+
+.kx-emb-ref-date {
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+/* ═══ REFERIDOS EMPTY ═══ */
+.kx-emb-referidos-empty {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.kx-emb-referidos-empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+
+.kx-emb-referidos-empty-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+.kx-emb-referidos-empty-text {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ═══ RANKING SECTION ═══ */
+.kx-emb-ranking-section {
+    margin-bottom: 28px;
+}
+
+.kx-emb-ranking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.kx-emb-ranking-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kx-emb-ranking-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 215, 0, 0.08);
+    border-radius: 10px;
+    color: #ffd700;
+}
+
+.kx-emb-ranking-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.kx-emb-ranking-subtitle {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.kx-emb-ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ═══ RANKING ITEM ═══ */
+.kx-emb-rank-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.kx-emb-rank-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.kx-emb-rank-item--me {
+    background: rgba(255, 215, 0, 0.04);
+    border-color: rgba(255, 215, 0, 0.15);
+}
+
+.kx-emb-rank-item--top {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.kx-emb-rank-position {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.6);
+    min-width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.kx-emb-rank-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.kx-emb-rank-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.kx-emb-rank-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.kx-emb-rank-me-badge {
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.15);
+    padding: 1px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.kx-emb-rank-meta {
+    margin-top: 2px;
+}
+
+.kx-emb-rank-nivel-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.kx-emb-rank-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 50px;
+}
+
+.kx-emb-rank-suscritos {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ffd700;
+}
+
+.kx-emb-rank-stats-label {
+    font-size: 0.58rem;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* ═══ RANKING EMPTY ═══ */
+.kx-emb-ranking-empty {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.kx-emb-ranking-empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+
+.kx-emb-ranking-empty-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+.kx-emb-ranking-empty-text {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ═══ ADMIN SECTION ═══ */
+.kx-emb-admin-section {
+    margin-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 28px;
+}
+
+.kx-emb-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.kx-emb-admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kx-emb-admin-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 59, 48, 0.08);
+    border-radius: 10px;
+    color: #ff3b30;
+}
+
+.kx-emb-admin-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.kx-emb-admin-count {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ═══ ADMIN STATS ═══ */
+.kx-emb-admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.kx-emb-admin-stat {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+}
+
+.kx-emb-admin-stat-value {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.kx-emb-admin-stat-label {
+    display: block;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+/* ═══ ADMIN LIST ═══ */
+.kx-emb-admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kx-emb-admin-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    flex-wrap: wrap;
+}
+
+.kx-emb-admin-item-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.kx-emb-admin-item-info {
+    flex: 1;
+    min-width: 120px;
+}
+
+.kx-emb-admin-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.kx-emb-admin-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+}
+
+.kx-emb-admin-item-email {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.kx-emb-admin-item-code {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.kx-emb-admin-item-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.kx-emb-admin-item-nivel {
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.kx-emb-admin-item-count {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.kx-emb-admin-item-comision {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #34c759;
+}
+
+.kx-emb-admin-item-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.kx-emb-admin-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.kx-emb-admin-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.kx-emb-admin-btn--pause:hover {
+    background: rgba(255, 159, 10, 0.15);
+    border-color: rgba(255, 159, 10, 0.3);
+    color: #ff9f0a;
+}
+
+.kx-emb-admin-btn--activate:hover {
+    background: rgba(52, 199, 89, 0.15);
+    border-color: rgba(52, 199, 89, 0.3);
+    color: #34c759;
+}
+
+.kx-emb-admin-btn--pay:hover {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: rgba(255, 215, 0, 0.3);
+    color: #ffd700;
+}
+
+.kx-emb-admin-item-date {
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
+}
+
+.kx-emb-admin-item-estado {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.kx-emb-admin-estado--activo {
+    color: #34c759;
+    background: rgba(52, 199, 89, 0.1);
+}
+
+.kx-emb-admin-estado--pausado {
+    color: #ff9f0a;
+    background: rgba(255, 159, 10, 0.1);
+}
+
+.kx-emb-admin-estado--suspendido {
+    color: #ff3b30;
+    background: rgba(255, 59, 48, 0.1);
+}
+
+/* ═══ ADMIN EMPTY ═══ */
+.kx-emb-admin-empty {
+    text-align: center;
+    padding: 32px 20px;
+}
+
+.kx-emb-admin-empty-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+    opacity: 0.4;
+}
+
+.kx-emb-admin-empty-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ═══════════════════════════════════
+   📱 RESPONSIVE
+   ═══════════════════════════════════ */
+@media (max-width: 768px) {
+    .kx-emb-header-top {
+        flex-direction: column;
+    }
+
+    .kx-emb-kpis {
+        width: 100%;
+        justify-content: space-around;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .kx-emb-kpi-value {
+        font-size: 1rem;
+    }
+
+    .kx-emb-levels {
+        grid-template-columns: 1fr;
+    }
+
+    .kx-emb-share-section {
+        grid-template-columns: 1fr;
+    }
+
+    .kx-emb-share-buttons {
+        flex-direction: column;
+    }
+
+    .kx-emb-share-btn {
+        min-width: auto;
+    }
+
+    .kx-emb-nivel-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .kx-emb-nivel-progress {
+        width: 100%;
+    }
+
+    .kx-emb-nivel-progress-text {
+        text-align: center;
+    }
+
+    .kx-emb-ref-item {
+        flex-wrap: wrap;
+    }
+
+    .kx-emb-ref-right {
+        width: 100%;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 8px;
+        padding-left: 48px;
+        margin-top: 4px;
+    }
+
+    .kx-emb-admin-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .kx-emb-admin-item-stats {
+        align-items: flex-start;
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .kx-emb-admin-item-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .kx-emb-admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .kx-emb-kpis {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .kx-emb-kpi {
+        min-width: 50px;
+    }
+
+    .kx-emb-kpi-divider {
+        display: none;
+    }
+
+    .kx-emb-promo {
+        padding: 28px 16px;
+    }
+
+    .kx-emb-rank-item {
+        gap: 8px;
+        padding: 10px 12px;
+    }
+}
