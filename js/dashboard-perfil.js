@@ -2,11 +2,21 @@
    👤 DASHBOARD-PERFIL.JS — KXON 2026 REBUILD
    Namespace: kx-prf-*
    Event delegation · escapeHtml · A11y
+   CON EMAIL DE CUENTA ELIMINADA
    ============================================ */
 (function () {
 
   var db = window.db;
   var K = window.KXON;
+
+  /* ═══ EMAILJS CONFIG ═══ */
+  var EMAILJS_PUBLIC_KEY = 'BJECVrT1UmA4CHVrK';
+  var EMAILJS_SERVICE_ID = 'service_uv1v71r';
+  var EMAILJS_TEMPLATE_DELETE = 'template_yfn2m2v';
+
+  if (window.emailjs) {
+    window.emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
 
   /* ══════════════════════════════════════════
      🛡️ UTILIDADES
@@ -27,6 +37,26 @@
   }
 
   /* ══════════════════════════════════════════
+     📧 EMAIL: CUENTA ELIMINADA
+     ══════════════════════════════════════════ */
+  function sendDeleteEmail(email, nombre) {
+    if (!window.emailjs) {
+      console.warn('EmailJS no disponible');
+      return;
+    }
+
+    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_DELETE, {
+      to_email: email,
+      nombre: nombre,
+      register_link: window.location.origin + '/register.html'
+    }).then(function () {
+      console.log('✅ Email de cuenta eliminada enviado a', email);
+    }).catch(function (err) {
+      console.warn('⚠️ Error enviando email de eliminación:', err);
+    });
+  }
+
+  /* ══════════════════════════════════════════
      👤 CARGAR DATOS PERFIL
      ══════════════════════════════════════════ */
   K.loadPerfilData = function () {
@@ -41,21 +71,17 @@
     var avatar = profile.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || '';
     var provider = user.app_metadata?.provider || 'email';
 
-    /* ── Hero Display ── */
     setText('perfilNombreDisplay', name);
     setText('perfilEmailDisplay', email);
 
-    /* ── Role Badge ── */
     var roleBadge = $('perfilRoleBadge');
     if (roleBadge) {
       roleBadge.textContent = role.toUpperCase();
       roleBadge.className = 'kx-prf-badge role-' + role;
     }
 
-    /* ── Provider Badge ── */
     setText('perfilProviderText', provider.charAt(0).toUpperCase() + provider.slice(1));
 
-    /* ── Avatar ── */
     var avatarImg = $('perfilAvatarImg');
     var avatarLetter = $('perfilAvatarLetter');
     if (avatar && avatarImg) {
@@ -70,7 +96,6 @@
       }
     }
 
-    /* ── Form fields ── */
     var inputNombre = $('perfilNombre');
     var inputEmail = $('perfilEmail');
     var inputBio = $('perfilBio');
@@ -79,7 +104,6 @@
     if (inputBio) inputBio.value = bio;
     setText('perfilBioCount', String(bio.length));
 
-    /* ── Account info ── */
     setText('perfilCuentaRol', role.charAt(0).toUpperCase() + role.slice(1));
     setText('perfilCuentaId', user.id);
 
@@ -90,7 +114,6 @@
       });
       setText('perfilCuentaFecha', fecha);
 
-      /* KPI: member since */
       var shortDate = new Date(createdAt).toLocaleDateString('es-ES', {
         month: 'short', year: 'numeric'
       });
@@ -99,28 +122,23 @@
 
     setText('perfilCuentaProvider', provider.charAt(0).toUpperCase() + provider.slice(1));
 
-    /* ── OAuth notice ── */
     var oauthNotice = $('kxPrfOauthNotice');
     if (provider !== 'email' && oauthNotice) {
       oauthNotice.style.display = 'flex';
       setText('kxPrfOauthProvider', provider.charAt(0).toUpperCase() + provider.slice(1));
     }
 
-    /* ── KPIs ── */
     _loadProfileKPIs();
   };
 
-  /* ── Load KPIs async ── */
   async function _loadProfileKPIs() {
     try {
-      /* Plan actual */
       var planText = 'Free';
       if (K.currentProfile && K.currentProfile.plan_activo) {
         planText = K.currentProfile.plan_activo;
       }
       setText('prfKpiPlan', planText);
 
-      /* Favoritos count */
       if (K.currentUser) {
         var fav = await db.from('favoritos')
           .select('id', { count: 'exact', head: true })
@@ -140,14 +158,12 @@
 
   panelPerfil.addEventListener('click', function (e) {
 
-    /* ── Tab switching ── */
     var tab = e.target.closest('.kx-prf-tab');
     if (tab) {
       e.preventDefault();
       var target = tab.getAttribute('data-prf-tab');
       if (!target) return;
 
-      /* Update tabs */
       var allTabs = panelPerfil.querySelectorAll('.kx-prf-tab');
       for (var i = 0; i < allTabs.length; i++) {
         allTabs[i].classList.remove('active');
@@ -156,7 +172,6 @@
       tab.classList.add('active');
       tab.setAttribute('aria-selected', 'true');
 
-      /* Update sections */
       var allSections = panelPerfil.querySelectorAll('.kx-prf-section');
       for (var j = 0; j < allSections.length; j++) {
         allSections[j].classList.remove('active');
@@ -171,7 +186,6 @@
       return;
     }
 
-    /* ── Avatar click ── */
     var avatarWrap = e.target.closest('.kx-prf-avatar-wrap');
     if (avatarWrap) {
       e.preventDefault();
@@ -180,7 +194,6 @@
       return;
     }
 
-    /* ── Password toggle ── */
     var passToggle = e.target.closest('.kx-prf-pass-toggle');
     if (passToggle) {
       e.preventDefault();
@@ -201,7 +214,6 @@
       return;
     }
 
-    /* ── Copy ID ── */
     var copyBtn = e.target.closest('#kxPrfCopyId');
     if (copyBtn) {
       e.preventDefault();
@@ -214,7 +226,6 @@
       return;
     }
 
-    /* ── Delete account button ── */
     var deleteBtn = e.target.closest('#btnEliminarCuenta');
     if (deleteBtn) {
       e.preventDefault();
@@ -222,7 +233,6 @@
       return;
     }
 
-    /* ── Confirm cancel ── */
     var confirmCancel = e.target.closest('#kxPrfConfirmCancel');
     if (confirmCancel) {
       e.preventDefault();
@@ -230,7 +240,6 @@
       return;
     }
 
-    /* ── Confirm accept ── */
     var confirmAccept = e.target.closest('#kxPrfConfirmAccept');
     if (confirmAccept && !confirmAccept.disabled) {
       e.preventDefault();
@@ -238,7 +247,6 @@
       return;
     }
 
-    /* ── Close overlay on backdrop click ── */
     var overlay = e.target.closest('.kx-prf-confirm-overlay');
     if (overlay && e.target === overlay) {
       _closeDeleteConfirm();
@@ -246,7 +254,6 @@
     }
   });
 
-  /* ── Avatar keyboard ── */
   panelPerfil.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' || e.key === ' ') {
       var avatarWrap = e.target.closest('.kx-prf-avatar-wrap');
@@ -259,10 +266,9 @@
   });
 
   /* ══════════════════════════════════════════
-     📝 BIO COUNTER
+     📝 BIO COUNTER + PASSWORD
      ══════════════════════════════════════════ */
   panelPerfil.addEventListener('input', function (e) {
-    /* Bio counter */
     if (e.target.id === 'perfilBio') {
       var count = e.target.value.length;
       if (count > 500) {
@@ -273,20 +279,17 @@
       return;
     }
 
-    /* Password strength */
     if (e.target.id === 'perfilNewPass') {
       _updatePasswordStrength(e.target.value);
       _checkPasswordMatch();
       return;
     }
 
-    /* Password match */
     if (e.target.id === 'perfilConfirmPass') {
       _checkPasswordMatch();
       return;
     }
 
-    /* Delete confirm input */
     if (e.target.id === 'kxPrfDeleteConfirm') {
       var acceptBtn = $('kxPrfConfirmAccept');
       if (acceptBtn) {
@@ -392,13 +395,11 @@
 
         K.currentProfile.avatar_url = avatarUrl;
 
-        /* Update panel avatar */
         var img = $('perfilAvatarImg');
         var letter = $('perfilAvatarLetter');
         if (img) { img.src = avatarUrl; img.style.display = 'block'; }
         if (letter) letter.style.display = 'none';
 
-        /* Update sidebar avatar safely (NO innerHTML) */
         var sidebarAv = $('sidebarAvatar');
         if (sidebarAv) {
           sidebarAv.textContent = '';
@@ -414,7 +415,6 @@
         K.showToast('Error al subir foto: ' + esc(err.message), 'error');
       }
 
-      /* Reset file input */
       avatarFile.value = '';
     });
   }
@@ -451,13 +451,9 @@
         K.currentProfile.bio = bio;
         localStorage.setItem('kxon_name', nombre);
 
-        /* Update sidebar name */
         setText('sidebarName', nombre);
-
-        /* Update hero display */
         setText('perfilNombreDisplay', nombre);
 
-        /* Update avatar letter if no photo */
         if (!K.currentProfile.avatar_url) {
           var letter = $('perfilAvatarLetter');
           if (letter) letter.textContent = nombre.charAt(0).toUpperCase();
@@ -510,13 +506,11 @@
 
         K.showToast('¡Contraseña actualizada correctamente!', 'success');
 
-        /* Clear form */
         var p1 = $('perfilNewPass');
         var p2 = $('perfilConfirmPass');
         if (p1) p1.value = '';
         if (p2) p2.value = '';
 
-        /* Reset strength & match */
         var strength = $('kxPrfPassStrength');
         var match = $('kxPrfPassMatch');
         if (strength) strength.style.display = 'none';
@@ -534,7 +528,7 @@
   }
 
   /* ══════════════════════════════════════════
-     🗑️ ELIMINAR CUENTA (MODAL)
+     🗑️ ELIMINAR CUENTA — CON EMAIL
      ══════════════════════════════════════════ */
   function _openDeleteConfirm() {
     var overlay = $('kxPrfConfirmOverlay');
@@ -552,12 +546,19 @@
 
   async function _executeDelete() {
     try {
+      // Guardar datos antes de eliminar para el email
+      var userEmail = K.currentUser.email;
+      var userName = K.currentProfile.full_name || K.currentUser.email.split('@')[0];
+
       K.showToast('Eliminando cuenta...', 'error');
 
       await db.from('favoritos').delete().eq('user_id', K.currentUser.id);
       await db.from('compras').delete().eq('comprador_id', K.currentUser.id);
       await db.from('solicitudes_compra').delete().eq('comprador_id', K.currentUser.id);
       await db.from('profiles').delete().eq('id', K.currentUser.id);
+
+      // Enviar email de despedida ANTES de cerrar sesión
+      sendDeleteEmail(userEmail, userName);
 
       await db.auth.signOut();
 
@@ -567,14 +568,13 @@
       _closeDeleteConfirm();
       K.showToast('Cuenta eliminada correctamente', 'success');
 
-      setTimeout(function () { window.location.href = 'index.html'; }, 1500);
+      setTimeout(function () { window.location.href = 'index.html'; }, 2000);
     } catch (err) {
       console.error('Error eliminando cuenta:', err);
       K.showToast('Error al eliminar: ' + esc(err.message), 'error');
     }
   }
 
-  /* ── ESC key to close modal ── */
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       var overlay = $('kxPrfConfirmOverlay');

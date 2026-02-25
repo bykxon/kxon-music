@@ -1,20 +1,23 @@
 /* ═══════════════════════════════════════════════════
    🛒 KXON MARKETPLACE — PREMIUM REDESIGN 2026
-   Namespace: kx-mkt-*
-   Arquitectura: IIFE, event delegation, escapeHtml
-   VERSIÓN CORREGIDA
+   CON EMAIL DE COMPRA CONFIRMADA
    ═══════════════════════════════════════════════════ */
 (function () {
 
   var db = window.db;
   var K = window.KXON;
 
-  /* ── Ensure default tab ── */
+  /* ═══ EMAILJS CONFIG ═══ */
+  var EMAILJS_PUBLIC_KEY = 'BJECVrT1UmA4CHVrK';
+  var EMAILJS_SERVICE_ID = 'service_uv1v71r';
+  var EMAILJS_TEMPLATE_COMPRA = 'template_7srz4ms';
+
+  if (window.emailjs) {
+    window.emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
   if (!K.currentMarketTab) K.currentMarketTab = 'beat';
 
-  /* ══════════════════════════════════════════
-     🛡️ HELPERS
-     ══════════════════════════════════════════ */
   function esc(s) {
     if (!s) return '';
     var d = document.createElement('div');
@@ -36,6 +39,37 @@
   var allSolicitudesData = [];
 
   /* ══════════════════════════════════════════
+     📧 EMAIL: COMPRA CONFIRMADA
+     ══════════════════════════════════════════ */
+  function sendPurchaseEmail(email, nombre, productoNombre, productoTipo, productoPrecio) {
+    if (!window.emailjs) {
+      console.warn('EmailJS no disponible');
+      return;
+    }
+
+    var fecha = new Date().toLocaleDateString('es-ES', {
+      day: 'numeric', month: 'long', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+
+    var tipoLabel = productoTipo === 'cancion' ? 'Canción' : 'Beat';
+
+    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_COMPRA, {
+      to_email: email,
+      nombre: nombre,
+      producto_nombre: productoNombre,
+      producto_tipo: tipoLabel,
+      producto_precio: productoPrecio,
+      fecha: fecha,
+      dashboard_link: window.location.origin + '/dashboard.html'
+    }).then(function () {
+      console.log('✅ Email de compra enviado a', email);
+    }).catch(function (err) {
+      console.warn('⚠️ Error enviando email de compra:', err);
+    });
+  }
+
+  /* ══════════════════════════════════════════
      📊 KPIs
      ══════════════════════════════════════════ */
   function updateKPIs() {
@@ -49,9 +83,6 @@
     var el3 = $('mktKpiSongs'); if (el3) el3.textContent = songs;
   }
 
-  /* ══════════════════════════════════════════
-     🛒 LOAD
-     ══════════════════════════════════════════ */
   K.loadMarketplace = async function () {
     try {
       var r = await db.from('beats').select('*').eq('activo', true).eq('vendido', false)
@@ -80,9 +111,6 @@
     }
   };
 
-  /* ══════════════════════════════════════════
-     🎨 RENDER
-     ══════════════════════════════════════════ */
   function getFilteredData() {
     var data = (K.allMarketData || []).filter(function (item) {
       return item.tipo === K.currentMarketTab;
@@ -226,10 +254,7 @@
   function showErrorState() {
     var c = $('marketGrid');
     if (c) {
-      c.innerHTML = '<div class="kx-mkt-empty">' +
-        '<div class="kx-mkt-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></div>' +
-        '<div class="kx-mkt-empty-title">Error al cargar</div>' +
-        '<div class="kx-mkt-empty-text">Intenta recargar la página</div></div>';
+      c.innerHTML = '<div class="kx-mkt-empty"><div class="kx-mkt-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></div><div class="kx-mkt-empty-title">Error al cargar</div><div class="kx-mkt-empty-text">Intenta recargar la página</div></div>';
     }
   }
 
@@ -257,9 +282,6 @@
     } else { el.style.display = 'none'; }
   }
 
-  /* ══════════════════════════════════════════
-     🔊 PREVIEW
-     ══════════════════════════════════════════ */
   function previewItem(id) {
     var item = null;
     for (var i = 0; i < K.allMarketData.length; i++) {
@@ -290,9 +312,6 @@
     K.currentTrackIndex = -1;
   }
 
-  /* ══════════════════════════════════════════
-     🛒 DETAIL
-     ══════════════════════════════════════════ */
   function openDetail(id) {
     var item = null;
     for (var i = 0; i < K.allMarketData.length; i++) {
@@ -338,9 +357,6 @@
       '<span class="market-audio-tag">' + esc(tag) + '</span></div>';
   }
 
-  /* ══════════════════════════════════════════
-     🗑️ DELETE
-     ══════════════════════════════════════════ */
   async function deleteItem(id) {
     if (!K.isAdmin) return;
     if (!confirm('¿Eliminar este producto del marketplace?')) return;
@@ -353,9 +369,6 @@
     } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
   }
 
-  /* ══════════════════════════════════════════
-     📋 SOLICITUDES
-     ══════════════════════════════════════════ */
   async function loadSolicitudes() {
     if (!K.isAdmin) return;
     var section = $('solicitudesSection'); if (section) section.style.display = 'block';
@@ -407,46 +420,35 @@
     panel.addEventListener('click', function (e) {
       var t = e.target;
 
-      // Tabs
       var tab = t.closest('[data-mkt-tab]');
       if (tab) {
         e.preventDefault();
         K.currentMarketTab = tab.dataset.mktTab;
         var allTabs = panel.querySelectorAll('[data-mkt-tab]');
-        for (var i = 0; i < allTabs.length; i++) {
-          allTabs[i].classList.remove('active');
-          allTabs[i].setAttribute('aria-selected', 'false');
-        }
-        tab.classList.add('active');
-        tab.setAttribute('aria-selected', 'true');
+        for (var i = 0; i < allTabs.length; i++) { allTabs[i].classList.remove('active'); allTabs[i].setAttribute('aria-selected', 'false'); }
+        tab.classList.add('active'); tab.setAttribute('aria-selected', 'true');
         renderMarket();
         return;
       }
 
-      // Preview
       var preview = t.closest('[data-preview-id]');
       if (preview) { e.preventDefault(); e.stopPropagation(); previewItem(preview.dataset.previewId); return; }
 
-      // Detail
       var detail = t.closest('[data-detail-id]');
       if (detail) { e.preventDefault(); e.stopPropagation(); openDetail(detail.dataset.detailId); return; }
 
-      // Delete
       var del = t.closest('[data-delete-mkt]');
       if (del) { e.preventDefault(); e.stopPropagation(); deleteItem(del.dataset.deleteMkt); return; }
 
-      // View solicitud
       var viewSol = t.closest('[data-view-sol]');
       if (viewSol) { e.preventDefault(); e.stopPropagation(); window._openSolicitudDetail(parseInt(viewSol.dataset.viewSol)); return; }
 
-      // Sort trigger
       if (t.closest('#mktSortBtn')) {
         e.preventDefault();
         var dd = $('mktSortDropdown'); if (dd) dd.classList.toggle('show');
         return;
       }
 
-      // Sort option
       var sortOpt = t.closest('.kx-mkt-sort-option');
       if (sortOpt) {
         e.preventDefault();
@@ -460,7 +462,6 @@
         return;
       }
 
-      // View toggle
       var viewBtn = t.closest('.kx-mkt-view-btn');
       if (viewBtn) {
         e.preventDefault();
@@ -472,7 +473,6 @@
         return;
       }
 
-      // Clear filters
       if (t.closest('#mktClearFilters')) {
         e.preventDefault();
         currentSearch = ''; currentSort = 'recent';
@@ -485,7 +485,6 @@
         return;
       }
 
-      // Play audio in detail modal (delegated globally)
       var playAudio = t.closest('[data-play-audio]');
       if (playAudio) {
         e.preventDefault(); e.stopPropagation();
@@ -496,13 +495,11 @@
       }
     });
 
-    // Image error
     panel.addEventListener('error', function (e) {
       if (e.target.tagName === 'IMG') e.target.src = PLACEHOLDER_IMG;
     }, true);
   }
 
-  // Also handle audio play in detail modal (outside panel)
   document.addEventListener('click', function (e) {
     var playAudio = e.target.closest('.market-audio-item[data-play-audio]');
     if (playAudio) {
@@ -513,9 +510,6 @@
     }
   });
 
-  /* ══════════════════════════════════════════
-     🔍 SEARCH
-     ══════════════════════════════════════════ */
   var searchInput = $('mktSearchInput');
   var searchClear = $('mktSearchClear');
   var searchTimer = null;
@@ -537,9 +531,6 @@
     });
   }
 
-  /* ══════════════════════════════════════════
-     📡 AUDIO EVENTS
-     ══════════════════════════════════════════ */
   K.marketPreviewAudio.addEventListener('timeupdate', function () {
     if (K.activeSource !== 'market') return;
     if (!K.marketPreviewAudio.duration) return;
@@ -555,7 +546,6 @@
     K.isPlaying = false;
   });
 
-  /* Close sort dropdown */
   document.addEventListener('click', function (e) {
     if (!e.target.closest('.kx-mkt-sort-wrap')) {
       var dd = $('mktSortDropdown'); if (dd) dd.classList.remove('show');
@@ -563,7 +553,7 @@
   });
 
   /* ══════════════════════════════════════════
-     💳 PURCHASE (compatible)
+     💳 PURCHASE
      ══════════════════════════════════════════ */
   window._initPurchase = function () {
     if (!K.currentMarketItem) return;
@@ -622,7 +612,7 @@
   window._closePurchase = function () { var po = $('purchaseOverlay'); if (po) po.classList.remove('show'); K.marketPreviewAudio.pause(); };
 
   /* ══════════════════════════════════════════
-     ✅❌ CONFIRM / REJECT
+     ✅❌ CONFIRM / REJECT — CON EMAIL
      ══════════════════════════════════════════ */
   window._openSolicitudDetail = function (idx) {
     var s = allSolicitudesData[idx]; if (!s) return;
@@ -642,18 +632,33 @@
     el = $('solDetEstado'); if (el) el.textContent = '⏳ Pendiente';
     var compWrap = $('solDetCompWrap');
     if (compWrap) { if (s.comprobante_url) { var ci = $('solDetCompImg'); if (ci) ci.src = s.comprobante_url; compWrap.style.display = 'block'; } else { compWrap.style.display = 'none'; } }
-    var bc = $('solDetBtnConfirm'); if (bc) bc.onclick = function () { window._confirmPurchase(s.id, s.beat_id, s.comprador_id, s.precio); var ov = $('solicitudDetailOverlay'); if (ov) ov.classList.remove('show'); };
+    var bc = $('solDetBtnConfirm'); if (bc) bc.onclick = function () { window._confirmPurchase(s.id, s.beat_id, s.comprador_id, s.comprador_email, s.comprador_nombre, s.precio, s.beats); var ov = $('solicitudDetailOverlay'); if (ov) ov.classList.remove('show'); };
     var br = $('solDetBtnReject'); if (br) br.onclick = function () { window._rejectPurchase(s.id, s.beat_id); var ov = $('solicitudDetailOverlay'); if (ov) ov.classList.remove('show'); };
     var overlay = $('solicitudDetailOverlay'); if (overlay) overlay.classList.add('show');
   };
 
-  window._confirmPurchase = async function (solId, beatId, compradorId, precio) {
+  window._confirmPurchase = async function (solId, beatId, compradorId, compradorEmail, compradorNombre, precio, beatData) {
     if (!confirm('¿Confirmar esta compra?')) return;
     try {
       await db.from('solicitudes_compra').update({ estado: 'confirmada' }).eq('id', solId);
       await db.from('beats').update({ vendido: true, activo: false }).eq('id', beatId);
       await db.from('compras').insert({ beat_id: beatId, comprador_id: compradorId, precio_pagado: precio });
+
       if (typeof K.sendNotification === 'function') K.sendNotification(compradorId, 'compra_confirmada', '¡Compra confirmada!', 'Ya puedes descargar desde Mi Archivo.', { beat_id: beatId });
+
+      // ═══ ENVIAR EMAIL DE COMPRA CONFIRMADA ═══
+      var productoNombre = beatData ? beatData.titulo : 'Producto';
+      var productoTipo = beatData ? beatData.tipo : 'beat';
+      var productoPrecio = K.formatPrice(precio);
+
+      sendPurchaseEmail(
+        compradorEmail,
+        compradorNombre,
+        productoNombre,
+        productoTipo,
+        productoPrecio
+      );
+
       K.showToast('¡Compra confirmada!', 'success');
       loadSolicitudes(); K.loadMarketplace();
       if (typeof K.loadArchivo === 'function') K.loadArchivo();
@@ -801,7 +806,6 @@
     window._setAddType('beat');
   };
 
-  /* Legacy support */
   window._marketTab = function (tab) {
     K.currentMarketTab = tab;
     var allTabs = document.querySelectorAll('[data-mkt-tab]');
@@ -820,6 +824,6 @@
     else { K.marketPreviewAudio.src = url; K.marketPreviewAudio.volume = 0.7; K.marketPreviewAudio.play(); }
   };
 
-  console.log('✅ dashboard-marketplace.js (v3 — Premium) cargado');
+  console.log('✅ dashboard-marketplace.js (v4 — con emails) cargado');
 
 })();
