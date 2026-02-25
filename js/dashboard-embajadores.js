@@ -9,6 +9,16 @@
     var db = window.db;
     var K = window.KXON;
 
+/* ═══ EMAILJS CONFIG ═══ */
+var EMAILJS_PUBLIC_KEY = 'JgRyKiNEcoF5oOEjV';
+var EMAILJS_SERVICE_ID = 'service_rdsr8wb';
+var EMAILJS_TEMPLATE_WELCOME = 'template_76gbiq7';
+var EMAILJS_TEMPLATE_REFERIDO = 'template_9b3995p';
+
+if (window.emailjs) {
+    window.emailjs.init(EMAILJS_PUBLIC_KEY);
+}
+
     var myEmbajador = null;
     var myReferidos = [];
     var allEmbajadores = [];
@@ -291,6 +301,7 @@ var NIVELES = {
                 myEmbajador = insertResult.data;
 
                 K.showToast('🏆 ¡Ya eres Embajador KXON! Comparte tu código', 'success');
+                sendWelcomeEmail(K.currentUser.email, nombre, codigo);
 
                 showDashboardView();
                 await loadRanking();
@@ -761,5 +772,80 @@ if (info.comision > 0 && comisionPendiente > 0) {
             K.showToast('Error: ' + e.message, 'error');
         }
     }
+
+/* ══════════════════════════════════════════
+   📧 EMAIL: BIENVENIDA EMBAJADOR
+   ══════════════════════════════════════════ */
+function sendWelcomeEmail(email, nombre, codigo) {
+    if (!window.emailjs) {
+        console.warn('EmailJS no disponible');
+        return;
+    }
+
+    var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(codigo);
+
+    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_WELCOME, {
+        to_email: email,
+        nombre: nombre,
+        codigo: codigo,
+        link: link
+    }).then(function () {
+        console.log('✅ Email de bienvenida enviado a', email);
+    }).catch(function (err) {
+        console.warn('⚠️ Error enviando email:', err);
+    });
+}
+
+/* ══════════════════════════════════════════
+   📧 EMAIL: REFERIDO SE SUSCRIBIÓ
+   ══════════════════════════════════════════ */
+K.sendReferidoEmail = function (embajadorEmail, embajadorNombre, referidoNombre, referidoEmail, planNombre, nivelActual, totalSuscritos) {
+    if (!window.emailjs) {
+        console.warn('EmailJS no disponible');
+        return;
+    }
+
+    var info = getNivelInfo(nivelActual);
+    var rewardType, rewardColor, rewardValue, rewardDesc;
+
+    if (info.comision > 0) {
+        rewardType = 'Comisión Ganada';
+        rewardColor = '#34c759';
+        rewardValue = '+$' + info.comision.toLocaleString('es-CO') + ' COP';
+        rewardDesc = 'Se sumó a tu comisión acumulada';
+    } else if (info.tieneRifa) {
+        rewardType = 'Suma para tu Rifa';
+        rewardColor = '#ffd700';
+        rewardValue = '🎰 Rifa del ' + info.rifaPorcentaje + '%';
+        rewardDesc = 'Este suscrito cuenta para tu participación en la rifa mensual';
+    } else {
+        rewardType = 'Nuevo Suscrito';
+        rewardColor = '#c0c0c0';
+        rewardValue = '+1 Suscrito';
+        rewardDesc = 'Suma a tu contador de referidos';
+    }
+
+    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_REFERIDO, {
+        to_email: embajadorEmail,
+        embajador_nombre: embajadorNombre,
+        referido_nombre: referidoNombre,
+        referido_email: referidoEmail,
+        plan_nombre: planNombre,
+        reward_type: rewardType,
+        reward_color: rewardColor,
+        reward_value: rewardValue,
+        reward_desc: rewardDesc,
+        total_suscritos: String(totalSuscritos),
+        nivel_badge: info.badge,
+        nivel_name: info.name,
+        nivel_color: info.color,
+        dashboard_link: window.location.origin + '/dashboard.html'
+    }).then(function () {
+        console.log('✅ Email de referido enviado a', embajadorEmail);
+    }).catch(function (err) {
+        console.warn('⚠️ Error enviando email referido:', err);
+    });
+};
+
 
 })();

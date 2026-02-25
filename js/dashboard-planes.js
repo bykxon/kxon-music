@@ -53,6 +53,45 @@
         return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
     }
 
+    /* ═══ HELPER: ENVIAR EMAIL AL EMBAJADOR ═══ */
+    async function sendEmbajadorEmail(refCode, userId, subId, planNombre) {
+        try {
+            var embForEmail = await db.from('embajadores')
+                .select('usuario_email, usuario_nombre, nivel, total_suscritos')
+                .eq('codigo', refCode)
+                .single();
+
+            if (embForEmail.data && typeof K.sendReferidoEmail === 'function') {
+                var userProfile = await db.from('profiles')
+                    .select('full_name')
+                    .eq('id', userId)
+                    .single();
+
+                var refNombre = userProfile.data ? userProfile.data.full_name : 'Usuario';
+                var refEmail = '';
+
+                // Get email from suscripcion
+                var subData = await db.from('suscripciones')
+                    .select('usuario_email')
+                    .eq('id', subId)
+                    .single();
+                if (subData.data) refEmail = subData.data.usuario_email;
+
+                K.sendReferidoEmail(
+                    embForEmail.data.usuario_email,
+                    embForEmail.data.usuario_nombre,
+                    refNombre,
+                    refEmail,
+                    planNombre,
+                    embForEmail.data.nivel,
+                    embForEmail.data.total_suscritos
+                );
+            }
+        } catch (emailErr) {
+            console.warn('Error sending referral email:', emailErr);
+        }
+    }
+
     /* ═══ ALL FEATURES CONFIG ═══ */
     var allFeatures = [
         { key: 'albumes',        label: 'Álbumes completos',  icon: '💿' },
@@ -121,7 +160,6 @@
 
     /* ═══ RENDER KPIs ═══ */
     function renderKPIs(pendingSub) {
-        var el = document.getElementById;
         document.getElementById('planStatTotal').textContent = allPlanes.length;
 
         if (K.isAdmin) {
@@ -717,113 +755,119 @@
     window._closeSubDetail = closeSubDetail;
 
     /* ══════════════════════════════════════════
-   ✅ CONFIRM SUBSCRIPTION — WITH REFERRAL PROCESSING
-   ══════════════════════════════════════════ */
-async function confirmSub(subId, userId, planId, duracion) {
-    if (!confirm('¿Confirmar esta suscripción? El usuario tendrá acceso por ' + duracion + ' días.')) return;
+       ✅ CONFIRM SUBSCRIPTION — WITH REFERRAL PROCESSING
+       ══════════════════════════════════════════ */
+    async function confirmSub(subId, userId, planId, duracion) {
+        if (!confirm('¿Confirmar esta suscripción? El usuario tendrá acceso por ' + duracion + ' días.')) return;
 
-    try {
-        var ahora = new Date();
-        var fin = new Date(ahora.getTime() + duracion * 24 * 60 * 60 * 1000);
-
-        var upd = await db.from('suscripciones').update({
-            estado: 'activa',
-            fecha_inicio: ahora.toISOString(),
-            fecha_fin: fin.toISOString()
-        }).eq('id', subId);
-
-        if (upd.error) throw upd.error;
-
-        // ═══ PROCESS REFERRAL ═══
         try {
-            // Get user's profile to check if they were referred
-            var profileResult = await db.from('profiles')
-                .select('referido_por')
-                .eq('id', userId)
-                .single();
+            var ahora = new Date();
+            var fin = new Date(ahora.getTime() + duracion * 24 * 60 * 60 * 1000);
 
-            if (profileResult.data && profileResult.data.referido_por) {
-                var refCode = profileResult.data.referido_por;
+            var upd = await db.from('suscripciones').update({
+                estado: 'activa',
+                fecha_inicio: ahora.toISOString(),
+                fecha_fin: fin.toISOString()
+            }).eq('id', subId);
 
-                // Get plan name for the referral record
-                var planResult = await db.from('planes')
-                    .select('nombre')
-                    .eq('id', planId)
+            if (upd.error) throw upd.error;
+
+            // ═══ PROCESS REFERRAL ═══
+            try {
+                // Get user's profile to check if they were referred
+                var profileResult = await db.from('profiles')
+                    .select('referido_por')
+                    .eq('id', userId)
                     .single();
 
-                var planNombre = planResult.data ? planResult.data.nombre : 'Plan';
+                if (profileResult.data && profileResult.data.referido_por) {
+                    var refCode = profileResult.data.referido_por;
 
-                // Try using the DB function first
-                var rpcResult = await db.rpc('procesar_referido_suscripcion', {
-                    p_user_id: userId,
-                    p_suscripcion_id: subId,
-                    p_plan_nombre: planNombre
-                });
-
-                if (rpcResult.error) {
-                    // Fallback: process manually
-                    console.warn('RPC failed, processing manually:', rpcResult.error);
-
-                    // Find ambassador
-                    var embResult = await db.from('embajadores')
-                        .select('id, nivel, total_suscritos, comision_acumulada')
-                        .eq('codigo', refCode)
-                        .eq('estado', 'activo')
+                    // Get plan name for the referral record
+                    var planResult = await db.from('planes')
+                        .select('nombre')
+                        .eq('id', planId)
                         .single();
 
-                    if (embResult.data) {
-                        var emb = embResult.data;
-                        var nivelInfo = { activador: 3000, constructor: 0, lider: 0 };
-                        var comision = nivelInfo[emb.nivel] || 1000;
+                    var planNombre = planResult.data ? planResult.data.nombre : 'Plan';
 
-                        // Update referido record
-                        await db.from('referidos').update({
-                            estado: 'suscrito',
-                            suscripcion_id: subId,
-                            plan_nombre: planNombre,
-                            comision_generada: comision,
-                            fecha_suscripcion: ahora.toISOString()
-                        })
-                        .eq('embajador_codigo', refCode)
-                        .eq('referido_user_id', userId)
-                        .eq('estado', 'registrado');
+                    // Try using the DB function first
+                    var rpcResult = await db.rpc('procesar_referido_suscripcion', {
+                        p_user_id: userId,
+                        p_suscripcion_id: subId,
+                        p_plan_nombre: planNombre
+                    });
 
-                        // Update ambassador counters
-                        var newTotal = (emb.total_suscritos || 0) + 1;
-                        var newComision = (emb.comision_acumulada || 0) + comision;
+                    if (rpcResult.error) {
+                        // Fallback: process manually
+                        console.warn('RPC failed, processing manually:', rpcResult.error);
 
-                        // Calculate new level
-                        var nuevoNivel = 'activador';
-                        if (newTotal >= 15) nuevoNivel = 'lider';
-                        else if (newTotal >= 6) nuevoNivel = 'constructor';
+                        // Find ambassador
+                        var embResult = await db.from('embajadores')
+                            .select('id, nivel, total_suscritos, comision_acumulada')
+                            .eq('codigo', refCode)
+                            .eq('estado', 'activo')
+                            .single();
 
-                        await db.from('embajadores').update({
-                            total_suscritos: newTotal,
-                            comision_acumulada: newComision,
-                            nivel: nuevoNivel,
-                            updated_at: ahora.toISOString()
-                        }).eq('id', emb.id);
+                        if (embResult.data) {
+                            var emb = embResult.data;
+                            var nivelInfo = { activador: 3000, constructor: 0, lider: 0 };
+                            var comision = nivelInfo[emb.nivel] || 1000;
 
-                        console.log('✅ Referral processed: ambassador ' + refCode + ' gets ' + comision + ' COP');
+                            // Update referido record
+                            await db.from('referidos').update({
+                                estado: 'suscrito',
+                                suscripcion_id: subId,
+                                plan_nombre: planNombre,
+                                comision_generada: comision,
+                                fecha_suscripcion: ahora.toISOString()
+                            })
+                            .eq('embajador_codigo', refCode)
+                            .eq('referido_user_id', userId)
+                            .eq('estado', 'registrado');
+
+                            // Update ambassador counters
+                            var newTotal = (emb.total_suscritos || 0) + 1;
+                            var newComision = (emb.comision_acumulada || 0) + comision;
+
+                            // Calculate new level
+                            var nuevoNivel = 'activador';
+                            if (newTotal >= 15) nuevoNivel = 'lider';
+                            else if (newTotal >= 6) nuevoNivel = 'constructor';
+
+                            await db.from('embajadores').update({
+                                total_suscritos: newTotal,
+                                comision_acumulada: newComision,
+                                nivel: nuevoNivel,
+                                updated_at: ahora.toISOString()
+                            }).eq('id', emb.id);
+
+                            console.log('✅ Referral processed (manual): ambassador ' + refCode + ' gets ' + comision + ' COP');
+
+                            // Enviar email al embajador (fallback manual)
+                            await sendEmbajadorEmail(refCode, userId, subId, planNombre);
+                        }
+                    } else {
+                        console.log('✅ Referral processed via RPC for code:', refCode);
+
+                        // Enviar email al embajador (RPC exitoso)
+                        await sendEmbajadorEmail(refCode, userId, subId, planNombre);
                     }
-                } else {
-                    console.log('✅ Referral processed via RPC for code:', refCode);
                 }
+            } catch (refError) {
+                // Don't fail the whole subscription just because referral processing failed
+                console.error('Error processing referral (non-critical):', refError);
             }
-        } catch (refError) {
-            // Don't fail the whole subscription just because referral processing failed
-            console.error('Error processing referral (non-critical):', refError);
+
+            K.showToast('¡Suscripción confirmada! El usuario ya tiene acceso', 'success');
+            closeSubDetail();
+            loadSubSolicitudes();
+        } catch (e) {
+            K.showToast('Error: ' + e.message, 'error');
         }
-
-        K.showToast('¡Suscripción confirmada! El usuario ya tiene acceso', 'success');
-        closeSubDetail();
-        loadSubSolicitudes();
-    } catch (e) {
-        K.showToast('Error: ' + e.message, 'error');
     }
-}
 
-window._confirmSub = confirmSub;
+    window._confirmSub = confirmSub;
 
     /* ══════════════════════════════════════════
        ❌ REJECT SUBSCRIPTION
