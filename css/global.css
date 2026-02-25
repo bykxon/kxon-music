@@ -1,12 +1,11 @@
 /* ============================================
    🌐 GLOBAL CSS — KXON MUSIC PLATFORM
    Design Tokens · Reset · Tipografía · Utilidades
-   Versión: 3.0 — Rediseño Total 2026
+   Versión: 4.0 — Rediseño Premium 2026
    ============================================ */
 
 /* ──────────────────────────────────
    🎨 DESIGN TOKENS
-   Sistema unificado para toda la app
    ────────────────────────────────── */
 :root {
 
@@ -91,18 +90,18 @@
     --kx-weight-black:      900;
 
     /* ── Espaciado ── */
-    --kx-space-1:           0.25rem;   /* 4px  */
-    --kx-space-2:           0.5rem;    /* 8px  */
-    --kx-space-3:           0.75rem;   /* 12px */
-    --kx-space-4:           1rem;      /* 16px */
-    --kx-space-5:           1.25rem;   /* 20px */
-    --kx-space-6:           1.5rem;    /* 24px */
-    --kx-space-8:           2rem;      /* 32px */
-    --kx-space-10:          2.5rem;    /* 40px */
-    --kx-space-12:          3rem;      /* 48px */
-    --kx-space-16:          4rem;      /* 64px */
-    --kx-space-20:          5rem;      /* 80px */
-    --kx-space-24:          6rem;      /* 96px */
+    --kx-space-1:           0.25rem;
+    --kx-space-2:           0.5rem;
+    --kx-space-3:           0.75rem;
+    --kx-space-4:           1rem;
+    --kx-space-5:           1.25rem;
+    --kx-space-6:           1.5rem;
+    --kx-space-8:           2rem;
+    --kx-space-10:          2.5rem;
+    --kx-space-12:          3rem;
+    --kx-space-16:          4rem;
+    --kx-space-20:          5rem;
+    --kx-space-24:          6rem;
     --kx-space-section:     clamp(4rem, 3rem + 4vw, 7rem);
 
     /* ── Bordes ── */
@@ -253,6 +252,12 @@ p {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--kx-silver-800);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--kx-black-hover) var(--kx-black-deep);
 }
 
 /* ── Selección de texto ── */
@@ -426,6 +431,7 @@ p {
     animation: kx-slide-in 0.3s var(--kx-ease-spring);
     pointer-events: auto;
     backdrop-filter: blur(12px);
+    transition: opacity 0.3s, transform 0.3s;
 }
 
 .kx-toast--success {
@@ -530,5 +536,9 @@ p {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+    }
+
+    .kx-gradient-text {
+        animation: none;
     }
 }
