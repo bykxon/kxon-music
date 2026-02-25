@@ -773,7 +773,7 @@ async function confirmSub(subId, userId, planId, duracion) {
 
                     if (embResult.data) {
                         var emb = embResult.data;
-                        var nivelInfo = { activador: 1000, constructor: 2000, lider: 3000 };
+                        var nivelInfo = { activador: 3000, constructor: 0, lider: 0 };
                         var comision = nivelInfo[emb.nivel] || 1000;
 
                         // Update referido record

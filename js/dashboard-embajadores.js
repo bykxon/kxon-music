@@ -37,38 +37,47 @@
     }
 
     /* ═══ NIVEL CONFIG ═══ */
-    var NIVELES = {
-        activador: {
-            badge: '🥉',
-            name: 'Activador',
-            comision: 1000,
-            min: 0,
-            max: 5,
-            nextName: 'Constructor',
-            nextMin: 6,
-            color: '#cd7f32'
-        },
-        constructor: {
-            badge: '🥈',
-            name: 'Constructor',
-            comision: 2000,
-            min: 6,
-            max: 14,
-            nextName: 'Líder KXON',
-            nextMin: 15,
-            color: '#c0c0c0'
-        },
-        lider: {
-            badge: '🥇',
-            name: 'Líder KXON',
-            comision: 3000,
-            min: 15,
-            max: 999,
-            nextName: null,
-            nextMin: null,
-            color: '#ffd700'
-        }
-    };
+var NIVELES = {
+    activador: {
+        badge: '🥉',
+        name: 'Activador',
+        comision: 3000,
+        min: 0,
+        max: 5,
+        nextName: 'Constructor',
+        nextMin: 6,
+        color: '#cd7f32',
+        tieneRifa: false,
+        rifaPorcentaje: 0,
+        descripcionPremio: 'Solo comisión directa'
+    },
+    constructor: {
+        badge: '🥈',
+        name: 'Constructor',
+        comision: 0,
+        min: 6,
+        max: 14,
+        nextName: 'Líder KXON',
+        nextMin: 15,
+        color: '#c0c0c0',
+        tieneRifa: true,
+        rifaPorcentaje: 10,
+        descripcionPremio: 'Rifa del 10% de ingresos'
+    },
+    lider: {
+        badge: '🥇',
+        name: 'Líder KXON',
+        comision: 0,
+        min: 15,
+        max: 999,
+        nextName: null,
+        nextMin: null,
+        color: '#ffd700',
+        tieneRifa: true,
+        rifaPorcentaje: 20,
+        descripcionPremio: 'Rifa GRANDE del 20% de ingresos'
+    }
+};
 
     function getNivelInfo(nivel) {
         return NIVELES[nivel] || NIVELES.activador;
@@ -154,7 +163,11 @@
         setKPI('embStatRegistrados', String(myEmbajador.total_registrados || 0));
         setKPI('embStatSuscritos', String(myEmbajador.total_suscritos || 0));
         setKPI('embStatNivel', info.badge + ' ' + info.name);
-        setKPI('embStatComision', K.formatPrice(myEmbajador.comision_acumulada || 0));
+        if (info.comision > 0) {
+    setKPI('embStatComision', K.formatPrice(myEmbajador.comision_acumulada || 0));
+} else {
+    setKPI('embStatComision', info.tieneRifa ? '🎰 Rifa ' + info.rifaPorcentaje + '%' : '$0');
+}
 
         // Código y Link
         var codigoEl = document.getElementById('embCodigo');
@@ -370,8 +383,10 @@
             h += '<span class="kx-emb-ref-status ' + statusClass + '">' + statusIcon + ' ' + statusText + '</span>';
 
             if (isSuscrito && ref.comision_generada > 0) {
-                h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(ref.comision_generada) + '</span>';
-            }
+    h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(ref.comision_generada) + '</span>';
+} else if (isSuscrito && ref.comision_generada === 0) {
+    h += '<span class="kx-emb-ref-rifa-badge">🎰 Cuenta para rifa</span>';
+}
 
             h += '<span class="kx-emb-ref-date">' + esc(fecha) + '</span>';
             h += '</div>';
@@ -454,6 +469,9 @@
             h += '</div>';
             h += '<div class="kx-emb-rank-meta">';
             h += '<span class="kx-emb-rank-nivel-badge" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
+            if (info.tieneRifa) {
+    h += '<span class="kx-emb-rank-rifa-tag">🎰 Rifa ' + info.rifaPorcentaje + '%</span>';
+}
             h += '</div>';
             h += '</div>';
             h += '<div class="kx-emb-rank-stats">';
@@ -547,7 +565,15 @@
             h += '<div class="kx-emb-admin-item-stats">';
             h += '<span class="kx-emb-admin-item-nivel" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
             h += '<span class="kx-emb-admin-item-count">' + (emb.total_suscritos || 0) + ' susc. / ' + (emb.total_registrados || 0) + ' reg.</span>';
-            h += '<span class="kx-emb-admin-item-comision">' + K.formatPrice(emb.comision_acumulada || 0) + '</span>';
+            var comisionPendiente = (emb.comision_acumulada || 0) - (emb.comision_pagada || 0);
+
+if (info.comision > 0 && comisionPendiente > 0) {
+    h += '<span class="kx-emb-admin-item-comision">Pendiente: ' + K.formatPrice(comisionPendiente) + '</span>';
+} else if (info.tieneRifa) {
+    h += '<span class="kx-emb-admin-item-rifa">🎰 Participa en rifa ' + info.rifaPorcentaje + '%</span>';
+} else {
+    h += '<span class="kx-emb-admin-item-comision-paid">✅ Sin deuda</span>';
+}
             h += '</div>';
             h += '<div class="kx-emb-admin-item-actions">';
 
@@ -561,7 +587,12 @@
                 h += '</button>';
             }
 
-            h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--pay" data-action="pay-emb" data-emb-id="' + esc(emb.id) + '" data-emb-name="' + esc(nombre) + '" data-emb-comision="' + (emb.comision_acumulada || 0) + '" data-emb-pagada="' + (emb.comision_pagada || 0) + '" title="Marcar comisión pagada">';
+            if (info.comision > 0 && comisionPendiente > 0) {
+    h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--pay" data-action="pay-emb" data-emb-id="' + esc(emb.id) + '" data-emb-name="' + esc(nombre) + '" data-emb-comision="' + (emb.comision_acumulada || 0) + '" data-emb-pagada="' + (emb.comision_pagada || 0) + '" title="Marcar comisión pagada">';
+    h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+    h += '</button>';
+}
+
             h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
             h += '</button>';
 
