@@ -1,8 +1,9 @@
 /* ============================================
-   📱 DASHBOARD RESPONSIVE - KXON
-   ✅ FIX: Sidebar móvil + Perfil visible
-   + Scroll correcto + Cards compactas
-   ============================================ */
+📱 DASHBOARD RESPONSIVE - KXON
+🎨 UNIFIED VIOLET PALETTE v2.0
+✅ FIX: Sidebar móvil + Perfil visible
+Scroll correcto + Cards compactas
+============================================ */
 
 /* ── TABLET (1024px) ── */
 @media (max-width: 1024px) {
@@ -858,9 +859,10 @@
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     }
 }
+
 /* ══════════════════════════════════════════════
-   📱 SIDEBAR COLLAPSED — RESPONSIVE OVERRIDE
-   ══════════════════════════════════════════════ */
+📱 SIDEBAR COLLAPSED — RESPONSIVE OVERRIDE
+══════════════════════════════════════════════ */
 
 /* Hide collapse button on mobile */
 @media (max-width: 1024px) {
@@ -934,9 +936,10 @@
         transition: margin-left var(--sidebar-transition, 0.35s cubic-bezier(0.4, 0, 0.2, 1));
     }
 }
+
 /* ══════════════════════════════════════════════
-   📱 SIDEBAR ELITE — RESPONSIVE OVERRIDE
-   ══════════════════════════════════════════════ */
+📱 SIDEBAR ELITE — RESPONSIVE OVERRIDE
+══════════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
     .sidebar-collapse-btn {

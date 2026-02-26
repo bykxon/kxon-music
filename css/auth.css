@@ -2,6 +2,7 @@
    🔐 AUTH CSS — KXON MUSIC PLATFORM
    Login · Register · Forgot Password
    Versión: 3.0 — Rediseño Total 2026
+   🎨 UNIFIED VIOLET PALETTE — Matching Landing/Global
    Naming: kx-auth-[componente]__[elemento]
    Approach: Mobile-first
    Requires: global.css (design tokens)
@@ -13,16 +14,16 @@
    ────────────────────────────────── */
 :root {
     --kx-auth-card-bg:          rgba(10, 10, 10, 0.75);
-    --kx-auth-card-border:      rgba(255, 255, 255, 0.06);
+    --kx-auth-card-border:      rgba(139, 92, 246, 0.06);
     --kx-auth-card-blur:        32px;
     --kx-auth-card-max-w:       440px;
     --kx-auth-card-padding:     clamp(28px, 5vw, 44px);
     --kx-auth-card-padding-x:   clamp(24px, 5vw, 40px);
     --kx-auth-card-radius:      var(--kx-radius-xl);
-    --kx-auth-input-bg:         rgba(255, 255, 255, 0.025);
-    --kx-auth-input-bg-focus:   rgba(255, 255, 255, 0.045);
-    --kx-auth-input-border:     rgba(255, 255, 255, 0.07);
-    --kx-auth-input-border-focus: rgba(192, 192, 192, 0.3);
+    --kx-auth-input-bg:         rgba(139, 92, 246, 0.025);
+    --kx-auth-input-bg-focus:   rgba(139, 92, 246, 0.05);
+    --kx-auth-input-border:     rgba(139, 92, 246, 0.07);
+    --kx-auth-input-border-focus: rgba(139, 92, 246, 0.30);
     --kx-auth-input-height:     50px;
     --kx-auth-input-radius:     var(--kx-radius-md);
     --kx-auth-transition:       var(--kx-duration-base) var(--kx-ease-default);
@@ -57,8 +58,8 @@
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+        linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
     background-size: 64px 64px;
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
@@ -75,7 +76,7 @@
 .kx-auth-bg__orb--1 {
     width: 500px;
     height: 500px;
-    background: rgba(192, 192, 192, 0.025);
+    background: rgba(139, 92, 246, 0.06);
     top: -15%;
     animation-delay: 0.2s;
 }
@@ -83,7 +84,7 @@
 .kx-auth-bg__orb--2 {
     width: 350px;
     height: 350px;
-    background: rgba(192, 192, 192, 0.018);
+    background: rgba(59, 130, 246, 0.04);
     bottom: -10%;
     animation-delay: 0.5s;
 }
@@ -91,7 +92,7 @@
 .kx-auth-bg__orb--3 {
     width: 200px;
     height: 200px;
-    background: rgba(192, 192, 192, 0.03);
+    background: rgba(139, 92, 246, 0.08);
     top: 50%;
     transform: translateY(-50%);
     animation-delay: 0.8s;
@@ -161,7 +162,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(192, 192, 192, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.15), transparent);
     z-index: 1;
 }
 
@@ -172,7 +173,7 @@
     left: 0;
     right: 0;
     height: 120px;
-    background: linear-gradient(180deg, rgba(192, 192, 192, 0.015), transparent);
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.02), transparent);
     pointer-events: none;
     z-index: 0;
 }
@@ -212,8 +213,8 @@
     font-weight: var(--kx-weight-bold);
     letter-spacing: 0.35em;
     text-transform: uppercase;
-    background: linear-gradient(135deg, var(--kx-silver-100) 0%, var(--kx-silver-600) 50%, var(--kx-silver-100) 100%);
-    background-size: 200% auto;
+    background: linear-gradient(135deg, var(--kx-silver-100) 0%, #8b5cf6 35%, var(--kx-silver-100) 50%, #8b5cf6 65%, var(--kx-silver-100) 100%);
+    background-size: 300% auto;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -223,9 +224,9 @@
 .kx-auth-logo__dot {
     width: 7px;
     height: 7px;
-    background: var(--kx-accent);
+    background: var(--kx-violet, #8b5cf6);
     border-radius: var(--kx-radius-full);
-    box-shadow: 0 0 10px rgba(192, 192, 192, 0.4);
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
     animation: kx-glow-pulse 2.5s ease-in-out infinite;
     margin-top: 4px;
 }
@@ -268,8 +269,8 @@
     align-items: center;
     justify-content: center;
     gap: var(--kx-space-3);
-    background: var(--kx-auth-input-bg);
-    border: 1px solid var(--kx-auth-input-border);
+    background: rgba(139, 92, 246, 0.03);
+    border: 1px solid rgba(139, 92, 246, 0.07);
     border-radius: var(--kx-auth-input-radius);
     color: var(--kx-silver-200);
     font-family: var(--kx-font-display);
@@ -289,10 +290,10 @@
 }
 
 .kx-auth-google:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(139, 92, 246, 0.06);
+    border-color: rgba(139, 92, 246, 0.18);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 15px rgba(139, 92, 246, 0.05);
 }
 
 .kx-auth-google:active {
@@ -348,7 +349,7 @@
 .kx-auth-divider__line {
     flex: 1;
     height: 1px;
-    background: var(--kx-border-subtle);
+    background: rgba(139, 92, 246, 0.06);
 }
 
 .kx-auth-divider__text {
@@ -421,7 +422,7 @@
 }
 
 .kx-auth-forgot:hover {
-    color: var(--kx-silver-200);
+    color: #a78bfa;
 }
 
 /* ──────────────────────────────────
@@ -444,7 +445,7 @@
 }
 
 .kx-auth-field:focus-within .kx-auth-input-icon {
-    color: var(--kx-silver-400);
+    color: #a78bfa;
 }
 
 .kx-auth-input {
@@ -475,7 +476,7 @@
 .kx-auth-input:focus {
     background: var(--kx-auth-input-bg-focus);
     border-color: var(--kx-auth-input-border-focus);
-    box-shadow: 0 0 0 3px rgba(192, 192, 192, 0.04);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.06);
 }
 
 /* Validation states */
@@ -540,7 +541,7 @@
 
 .kx-auth-toggle:hover {
     color: var(--kx-silver-300);
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(139, 92, 246, 0.04);
 }
 
 .kx-auth-toggle__hide {
@@ -578,7 +579,7 @@
 .kx-auth-strength__track {
     flex: 1;
     height: 3px;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(139, 92, 246, 0.06);
     border-radius: var(--kx-radius-full);
     overflow: hidden;
 }
@@ -655,8 +656,8 @@
     align-items: center;
     gap: var(--kx-space-2);
     padding: var(--kx-space-5) var(--kx-space-4);
-    background: var(--kx-auth-input-bg);
-    border: 1px solid var(--kx-auth-input-border);
+    background: rgba(139, 92, 246, 0.025);
+    border: 1px solid rgba(139, 92, 246, 0.07);
     border-radius: var(--kx-auth-input-radius);
     text-align: center;
     position: relative;
@@ -669,23 +670,23 @@
 }
 
 .kx-auth-role__card:hover {
-    border-color: rgba(192, 192, 192, 0.15);
-    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(139, 92, 246, 0.18);
+    background: rgba(139, 92, 246, 0.04);
 }
 
 /* Selected state */
 .kx-auth-role input:checked + .kx-auth-role__card {
-    border-color: rgba(192, 192, 192, 0.35);
-    background: rgba(192, 192, 192, 0.05);
-    box-shadow: 0 0 20px rgba(192, 192, 192, 0.04);
+    border-color: rgba(139, 92, 246, 0.40);
+    background: rgba(139, 92, 246, 0.06);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.06);
 }
 
 .kx-auth-role input:checked + .kx-auth-role__card .kx-auth-role__icon {
-    color: var(--kx-silver-200);
+    color: #a78bfa;
 }
 
 .kx-auth-role input:focus-visible + .kx-auth-role__card {
-    outline: 2px solid var(--kx-accent);
+    outline: 2px solid #8b5cf6;
     outline-offset: 2px;
 }
 
@@ -721,7 +722,7 @@
     justify-content: center;
     border-radius: var(--kx-radius-full);
     background: transparent;
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(139, 92, 246, 0.12);
     color: transparent;
     transition:
         background var(--kx-auth-transition),
@@ -732,8 +733,8 @@
 }
 
 .kx-auth-role input:checked + .kx-auth-role__card .kx-auth-role__check {
-    background: var(--kx-accent);
-    border-color: var(--kx-accent);
+    background: #8b5cf6;
+    border-color: #8b5cf6;
     color: var(--kx-black-base);
     transform: scale(1);
 }
@@ -747,9 +748,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--kx-black-hover) 0%, var(--kx-black-surface) 100%);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.08) 100%);
     color: var(--kx-silver-100);
-    border: 1px solid rgba(192, 192, 192, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.20);
     border-radius: var(--kx-auth-input-radius);
     font-family: var(--kx-font-display);
     font-weight: var(--kx-weight-bold);
@@ -773,16 +774,16 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.08), transparent);
     transform: translateX(-100%);
     transition: transform 0.5s var(--kx-ease-default);
 }
 
 .kx-auth-submit:hover {
-    background: var(--kx-grad-btn-solid);
-    color: var(--kx-text-inverse);
-    border-color: var(--kx-accent);
-    box-shadow: 0 0 30px rgba(192, 192, 192, 0.08);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+    color: #ffffff;
+    border-color: rgba(139, 92, 246, 0.50);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.15), 0 8px 25px rgba(139, 92, 246, 0.20);
     transform: translateY(-2px);
 }
 
@@ -829,8 +830,8 @@
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid rgba(192, 192, 192, 0.2);
-    border-top-color: var(--kx-silver-100);
+    border: 2px solid rgba(139, 92, 246, 0.2);
+    border-top-color: #a78bfa;
     border-radius: var(--kx-radius-full);
     animation: kx-spin 0.6s linear infinite;
     opacity: 0;
@@ -876,9 +877,9 @@
 
 .kx-auth-message--info,
 .kx-auth-message.is-visible.is-info {
-    background: rgba(192, 192, 192, 0.06);
-    color: var(--kx-silver-400);
-    border: 1px solid rgba(192, 192, 192, 0.12);
+    background: rgba(139, 92, 246, 0.06);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.15);
 }
 
 @keyframes kx-auth-msg-in {
@@ -922,12 +923,12 @@
     left: 0;
     width: 0;
     height: 1px;
-    background: var(--kx-accent);
+    background: #8b5cf6;
     transition: width var(--kx-auth-transition);
 }
 
 .kx-auth-link:hover {
-    color: var(--kx-white);
+    color: #a78bfa;
 }
 
 .kx-auth-link:hover::after {
@@ -951,7 +952,7 @@
 }
 
 .kx-auth-back:hover {
-    color: var(--kx-silver-200);
+    color: #a78bfa;
 }
 
 .kx-auth-back svg {
@@ -973,7 +974,7 @@
 }
 
 .kx-auth-success__icon {
-    color: var(--kx-silver-400);
+    color: #a78bfa;
     margin-bottom: var(--kx-space-5);
     opacity: 0;
     animation: kx-auth-success-icon 0.6s var(--kx-ease-spring) 0.2s forwards;
@@ -1087,6 +1088,7 @@
         animation: none;
     }
 }
+
 /* ═══════════════════════════════════
    🏆 REFERRAL BANNER — Register Page
    ═══════════════════════════════════ */
@@ -1097,15 +1099,15 @@
     gap: 12px;
     padding: 12px 16px;
     border-radius: 12px;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 165, 0, 0.05));
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(124, 58, 237, 0.05));
+    border: 1px solid rgba(139, 92, 246, 0.20);
     margin-bottom: 16px;
     animation: refBannerIn 0.5s ease;
 }
 
 .kx-auth-referral-banner--invalid {
-    background: linear-gradient(135deg, rgba(255, 59, 48, 0.08), rgba(255, 59, 48, 0.03));
-    border-color: rgba(255, 59, 48, 0.2);
+    background: linear-gradient(135deg, rgba(248, 113, 113, 0.08), rgba(248, 113, 113, 0.03));
+    border-color: rgba(248, 113, 113, 0.20);
 }
 
 .kx-auth-referral-icon {
@@ -1130,24 +1132,24 @@
 .kx-auth-referral-code {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #ffd700;
+    color: #a78bfa;
     font-family: 'Montserrat', monospace;
     letter-spacing: 0.5px;
 }
 
 .kx-auth-referral-banner--invalid .kx-auth-referral-code {
-    color: #ff3b30;
+    color: #f87171;
 }
 
 .kx-auth-referral-check {
     font-size: 16px;
-    color: #34c759;
+    color: #34d399;
     flex-shrink: 0;
     font-weight: 700;
 }
 
 .kx-auth-referral-banner--invalid .kx-auth-referral-check {
-    color: #ff3b30;
+    color: #f87171;
 }
 
 @keyframes refBannerIn {
@@ -1164,14 +1166,14 @@
 /* ═══ Referral Code Field ═══ */
 
 .kx-auth-field--referral {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(139, 92, 246, 0.06);
     padding-top: 16px;
     margin-top: 4px;
 }
 
 .kx-auth-label-optional {
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(139, 92, 246, 0.35);
     font-size: 0.75rem;
     margin-left: 4px;
 }
@@ -1179,7 +1181,7 @@
 .kx-auth-hint {
     display: block;
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(139, 92, 246, 0.30);
     margin-top: 4px;
     padding-left: 2px;
 }
