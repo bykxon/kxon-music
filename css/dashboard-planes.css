@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   🎫 KXON PLANES — REDESIGN 2026
+   🎫 KXON PLANES — REDESIGN 2026 — VIOLET THEME
    Arquitectura: BEM-like con namespace kx-plan
    ═══════════════════════════════════════════════════ */
 
@@ -12,10 +12,10 @@
   --kx-s4: #1c1c1c;
   --kx-s5: #242424;
 
-  --kx-b0: rgba(255,255,255,.04);
-  --kx-b1: rgba(255,255,255,.06);
-  --kx-b2: rgba(255,255,255,.10);
-  --kx-b3: rgba(255,255,255,.16);
+  --kx-b0: rgba(139, 92, 246, 0.06);
+  --kx-b1: rgba(139, 92, 246, 0.08);
+  --kx-b2: rgba(139, 92, 246, 0.12);
+  --kx-b3: rgba(139, 92, 246, 0.20);
 
   --kx-t0: #ffffff;
   --kx-t1: #e5e5e5;
@@ -23,22 +23,24 @@
   --kx-t3: rgba(255,255,255,.32);
   --kx-t4: rgba(255,255,255,.16);
 
-  --kx-accent: #c0c0c0;
-  --kx-accent-soft: rgba(192,192,192,.10);
-  --kx-accent-hover: rgba(192,192,192,.06);
+  --kx-accent: #8b5cf6;
+  --kx-accent-light: #a78bfa;
+  --kx-accent-dark: #7c3aed;
+  --kx-accent-soft: rgba(139, 92, 246, 0.08);
+  --kx-accent-hover: rgba(139, 92, 246, 0.06);
 
-  --kx-success: #2ed573;
-  --kx-success-soft: rgba(46,213,115,.08);
-  --kx-success-border: rgba(46,213,115,.15);
-  --kx-warning: #ffa502;
-  --kx-warning-soft: rgba(255,165,0,.08);
-  --kx-warning-border: rgba(255,165,0,.15);
-  --kx-danger: #ff4757;
-  --kx-danger-soft: rgba(255,71,87,.08);
-  --kx-danger-border: rgba(255,71,87,.15);
-  --kx-gold: #d4af37;
-  --kx-gold-soft: rgba(212,175,55,.08);
-  --kx-gold-border: rgba(212,175,55,.15);
+  --kx-success: #34d399;
+  --kx-success-soft: rgba(52, 211, 153, 0.08);
+  --kx-success-border: rgba(52, 211, 153, 0.15);
+  --kx-warning: #fbbf24;
+  --kx-warning-soft: rgba(251, 191, 36, 0.08);
+  --kx-warning-border: rgba(251, 191, 36, 0.15);
+  --kx-danger: #f87171;
+  --kx-danger-soft: rgba(248, 113, 113, 0.08);
+  --kx-danger-border: rgba(248, 113, 113, 0.15);
+  --kx-gold: #8b5cf6;
+  --kx-gold-soft: rgba(139, 92, 246, 0.08);
+  --kx-gold-border: rgba(139, 92, 246, 0.15);
 
   --kx-r-xs: 6px;
   --kx-r-sm: 10px;
@@ -83,12 +85,12 @@
   50%      { opacity: .6; }
 }
 @keyframes kxPlanGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(212,175,55,.05); }
-  50%      { box-shadow: 0 0 40px rgba(212,175,55,.12); }
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.05); }
+  50%      { box-shadow: 0 0 40px rgba(139, 92, 246, 0.15); }
 }
 @keyframes kxPlanSuccessGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(46,213,115,.03); }
-  50%      { box-shadow: 0 0 35px rgba(46,213,115,.08); }
+  0%, 100% { box-shadow: 0 0 20px rgba(52, 211, 153, 0.03); }
+  50%      { box-shadow: 0 0 35px rgba(52, 211, 153, 0.08); }
 }
 
 /* ═══ HEADER ═══ */
@@ -112,7 +114,7 @@
   font-size: .6rem;
   font-weight: 700;
   letter-spacing: 3px;
-  color: var(--kx-t3);
+  color: var(--kx-accent-light);
   margin-bottom: var(--kx-sp-2);
 }
 
@@ -165,13 +167,13 @@
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--kx-t4);
+  color: var(--kx-accent-light);
 }
 
 .kx-plan-kpi-divider {
   width: 1px;
   height: 28px;
-  background: var(--kx-b1);
+  background: rgba(139, 92, 246, 0.15);
 }
 
 /* ═══ STATUS BANNER ═══ */
@@ -189,18 +191,18 @@
 
 .kx-plan-status-banner--active {
   border-color: var(--kx-success-border);
-  background: linear-gradient(135deg, rgba(46,213,115,.03), var(--kx-s2));
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.03), var(--kx-s2));
   animation: kxPlanFadeIn var(--kx-t-slow) var(--kx-ease) .05s both, kxPlanSuccessGlow 4s ease-in-out infinite;
 }
 
 .kx-plan-status-banner--pending {
   border-color: var(--kx-warning-border);
-  background: linear-gradient(135deg, rgba(255,165,0,.03), var(--kx-s2));
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.03), var(--kx-s2));
 }
 
 .kx-plan-status-banner--admin {
-  border-color: var(--kx-gold-border);
-  background: linear-gradient(135deg, rgba(212,175,55,.03), var(--kx-s2));
+  border-color: rgba(139, 92, 246, 0.2);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.04), var(--kx-s2));
 }
 
 .kx-plan-status-icon {
@@ -258,7 +260,7 @@
 }
 
 .kx-plan-status-badge--admin {
-  color: var(--kx-gold);
+  color: var(--kx-accent-light);
   background: var(--kx-gold-soft);
   border-color: var(--kx-gold-border);
 }
@@ -289,36 +291,33 @@
   animation-delay: calc(var(--i, 0) * 60ms);
 }
 
-/* Top shine line */
 .kx-plan-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(192,192,192,.08), transparent);
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.10), transparent);
   z-index: 1;
 }
 
 .kx-plan-card:hover {
   border-color: var(--kx-b2);
   transform: translateY(-6px);
-  box-shadow: 0 16px 50px rgba(0,0,0,.35);
+  box-shadow: 0 16px 50px rgba(0,0,0,.35), 0 0 20px rgba(139, 92, 246, 0.06);
 }
 
 /* Premium variant */
 .kx-plan-card--premium {
-  border-color: var(--kx-gold-border);
+  border-color: rgba(139, 92, 246, 0.18);
 }
 
 .kx-plan-card--premium::before {
-  background: linear-gradient(90deg, transparent, rgba(212,175,55,.25), transparent);
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.30), transparent);
 }
 
 .kx-plan-card--premium:hover {
-  border-color: rgba(212,175,55,.3);
-  box-shadow: 0 16px 50px rgba(0,0,0,.35), 0 0 40px rgba(212,175,55,.06);
+  border-color: rgba(139, 92, 246, 0.35);
+  box-shadow: 0 16px 50px rgba(0,0,0,.35), 0 0 40px rgba(139, 92, 246, 0.10);
 }
 
 /* Active variant */
@@ -327,11 +326,11 @@
 }
 
 .kx-plan-card--active::before {
-  background: linear-gradient(90deg, transparent, rgba(46,213,115,.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.2), transparent);
 }
 
 .kx-plan-card--active:hover {
-  border-color: rgba(46,213,115,.25);
+  border-color: rgba(52, 211, 153, 0.25);
 }
 
 /* ── Premium ambient bg ── */
@@ -343,14 +342,13 @@
 }
 
 .kx-plan-card--premium .kx-plan-card-ambient {
-  background: radial-gradient(ellipse at 50% 0%, rgba(212,175,55,.04) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
 }
 
 .kx-plan-card--active .kx-plan-card-ambient {
-  background: radial-gradient(ellipse at 50% 0%, rgba(46,213,115,.03) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(52, 211, 153, 0.03) 0%, transparent 60%);
 }
 
-/* ── Card inner (above ambient) ── */
 .kx-plan-card > *:not(.kx-plan-card-ambient) {
   position: relative;
   z-index: 1;
@@ -380,7 +378,7 @@
 }
 
 .kx-plan-badge--premium {
-  color: var(--kx-gold);
+  color: var(--kx-accent-light);
   background: var(--kx-gold-soft);
   border-color: var(--kx-gold-border);
 }
@@ -459,21 +457,15 @@
   color: var(--kx-success);
 }
 
-.kx-plan-feature-check--yes svg {
-  width: 10px;
-  height: 10px;
-}
+.kx-plan-feature-check--yes svg { width: 10px; height: 10px; }
 
 .kx-plan-feature-check--no {
-  background: rgba(255,255,255,.02);
+  background: rgba(139, 92, 246, 0.03);
   border: 1px solid var(--kx-b0);
   color: var(--kx-t4);
 }
 
-.kx-plan-feature-check--no svg {
-  width: 8px;
-  height: 8px;
-}
+.kx-plan-feature-check--no svg { width: 8px; height: 8px; }
 
 .kx-plan-feature-text {
   font-size: .78rem;
@@ -508,15 +500,12 @@
   overflow: hidden;
 }
 
-/* Shine on hover */
 .kx-plan-cta::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent);
   transition: left .5s var(--kx-ease);
 }
 
@@ -540,14 +529,14 @@
 
 /* Premium subscribe */
 .kx-plan-cta--premium {
-  background: linear-gradient(135deg, var(--kx-gold), #b8941e);
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   border: none;
-  color: #1a1400;
+  color: #fff;
 }
 
 .kx-plan-cta--premium:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(212,175,55,.2);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
 }
 
 /* Active variant */
@@ -573,7 +562,7 @@
 .kx-plan-cta--admin {
   background: var(--kx-gold-soft);
   border: 1px solid var(--kx-gold-border);
-  color: var(--kx-gold);
+  color: var(--kx-accent-light);
   cursor: default;
   pointer-events: none;
 }
@@ -602,7 +591,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--kx-t3);
+  color: var(--kx-accent-light);
   cursor: pointer;
   transition: all var(--kx-t-med) var(--kx-ease);
   z-index: 2;
@@ -618,10 +607,7 @@
   transform: scale(1.08);
 }
 
-.kx-plan-edit-btn svg {
-  width: 14px;
-  height: 14px;
-}
+.kx-plan-edit-btn svg { width: 14px; height: 14px; }
 
 /* ═══ SKELETON ═══ */
 .kx-plan-skeleton {
@@ -632,101 +618,73 @@
 }
 
 .kx-plan-skeleton-badge {
-  width: 80px;
-  height: 22px;
+  width: 80px; height: 22px;
   border-radius: var(--kx-r-full);
   background: var(--kx-s3);
   margin-bottom: var(--kx-sp-5);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
 .kx-plan-skeleton-badge::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.04), transparent);
   animation: kxPlanShimmer 1.8s ease infinite;
 }
 
 .kx-plan-skeleton-name {
-  width: 60%;
-  height: 18px;
+  width: 60%; height: 18px;
   border-radius: var(--kx-r-xs);
   background: var(--kx-s3);
   margin-bottom: var(--kx-sp-3);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
 .kx-plan-skeleton-name::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.04), transparent);
   animation: kxPlanShimmer 1.8s ease infinite;
 }
 
 .kx-plan-skeleton-price {
-  width: 45%;
-  height: 28px;
+  width: 45%; height: 28px;
   border-radius: var(--kx-r-xs);
   background: var(--kx-s3);
   margin-bottom: var(--kx-sp-6);
   padding-bottom: var(--kx-sp-5);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
 .kx-plan-skeleton-price::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.04), transparent);
   animation: kxPlanShimmer 1.8s ease infinite;
 }
 
 .kx-plan-skeleton-features {
-  display: flex;
-  flex-direction: column;
-  gap: var(--kx-sp-3);
-  margin-bottom: var(--kx-sp-6);
+  display: flex; flex-direction: column;
+  gap: var(--kx-sp-3); margin-bottom: var(--kx-sp-6);
 }
 
 .kx-plan-skeleton-feat {
-  width: 100%;
-  height: 14px;
+  width: 100%; height: 14px;
   border-radius: var(--kx-r-xs);
   background: var(--kx-s3);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
 .kx-plan-skeleton-feat:nth-child(even) { width: 85%; }
 .kx-plan-skeleton-feat:nth-child(3n) { width: 70%; }
-
 .kx-plan-skeleton-feat::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.04), transparent);
   animation: kxPlanShimmer 1.8s ease infinite;
 }
 
 .kx-plan-skeleton-btn {
-  width: 100%;
-  height: 48px;
+  width: 100%; height: 48px;
   border-radius: var(--kx-r-md);
   background: var(--kx-s3);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
 .kx-plan-skeleton-btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.04), transparent);
   animation: kxPlanShimmer 1.8s ease infinite;
 }
 
@@ -742,8 +700,7 @@
 }
 
 .kx-plan-empty-icon {
-  width: 64px;
-  height: 64px;
+  width: 64px; height: 64px;
   border-radius: 50%;
   background: var(--kx-s3);
   display: flex;
@@ -752,11 +709,7 @@
   margin-bottom: var(--kx-sp-5);
 }
 
-.kx-plan-empty-icon svg {
-  width: 28px;
-  height: 28px;
-  stroke: var(--kx-t4);
-}
+.kx-plan-empty-icon svg { width: 28px; height: 28px; stroke: var(--kx-accent-light); }
 
 .kx-plan-empty-title {
   font-family: var(--font-titulo);
@@ -794,15 +747,14 @@
 }
 
 .kx-plan-solicitudes-icon {
-  width: 38px;
-  height: 38px;
-  background: var(--kx-s3);
+  width: 38px; height: 38px;
+  background: rgba(139, 92, 246, 0.04);
   border: 1px solid var(--kx-b0);
   border-radius: var(--kx-r-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--kx-t3);
+  color: var(--kx-accent-light);
   flex-shrink: 0;
 }
 
@@ -820,7 +772,7 @@
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--kx-t4);
+  color: var(--kx-accent-light);
   margin-top: 1px;
   display: block;
 }
@@ -837,22 +789,21 @@
   align-items: center;
   gap: var(--kx-sp-3);
   padding: var(--kx-sp-3) var(--kx-sp-5);
-  background: var(--kx-s2);
+  background: rgba(139, 92, 246, 0.02);
   border: 1px solid transparent;
   border-radius: var(--kx-r-sm);
   transition: all var(--kx-t-fast) var(--kx-ease);
 }
 
 .kx-plan-sol-item:hover {
-  background: var(--kx-s3);
+  background: rgba(139, 92, 246, 0.04);
   border-color: var(--kx-b1);
 }
 
 .kx-plan-sol-avatar {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--kx-s4), var(--kx-s3));
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
   border: 1.5px solid var(--kx-b2);
   display: flex;
   align-items: center;
@@ -860,7 +811,7 @@
   font-family: var(--font-titulo);
   font-size: .82rem;
   font-weight: 700;
-  color: var(--kx-t2);
+  color: #fff;
   flex-shrink: 0;
 }
 
@@ -893,14 +844,14 @@
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  background: rgba(255,255,255,.04);
+  background: rgba(139, 92, 246, 0.04);
   color: var(--kx-t3);
   border: 1px solid var(--kx-b0);
 }
 
 .kx-plan-sol-plan-badge--premium {
   background: var(--kx-gold-soft);
-  color: var(--kx-gold);
+  color: var(--kx-accent-light);
   border-color: var(--kx-gold-border);
 }
 
@@ -913,15 +864,14 @@
 }
 
 .kx-plan-sol-view {
-  width: 32px;
-  height: 32px;
+  width: 32px; height: 32px;
   border-radius: var(--kx-r-sm);
   background: transparent;
   border: 1px solid var(--kx-b0);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--kx-t3);
+  color: var(--kx-accent-light);
   cursor: pointer;
   transition: all var(--kx-t-med) var(--kx-ease);
   flex-shrink: 0;
@@ -934,10 +884,7 @@
   transform: scale(1.06);
 }
 
-.kx-plan-sol-view svg {
-  width: 16px;
-  height: 16px;
-}
+.kx-plan-sol-view svg { width: 16px; height: 16px; }
 
 /* ═══ SOLICITUDES EMPTY ═══ */
 .kx-plan-sol-empty {
@@ -966,9 +913,7 @@
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 1024px) {
-  .kx-plan-grid {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
+  .kx-plan-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 }
 
 @media (max-width: 768px) {
@@ -979,35 +924,15 @@
   }
   .kx-plan-kpis { width: 100%; }
   .kx-plan-kpi { flex: 1; }
-
-  .kx-plan-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .kx-plan-status-banner {
-    flex-wrap: wrap;
-    gap: var(--kx-sp-3);
-  }
-
-  .kx-plan-status-badge {
-    width: 100%;
-    text-align: center;
-  }
-
-  .kx-plan-sol-item {
-    flex-wrap: wrap;
-    gap: var(--kx-sp-2);
-  }
-
+  .kx-plan-grid { grid-template-columns: 1fr; }
+  .kx-plan-status-banner { flex-wrap: wrap; gap: var(--kx-sp-3); }
+  .kx-plan-status-badge { width: 100%; text-align: center; }
+  .kx-plan-sol-item { flex-wrap: wrap; gap: var(--kx-sp-2); }
   .kx-plan-sol-date { display: none; }
 }
 
 @media (max-width: 480px) {
   .kx-plan-title { font-size: 1.5rem; }
-
-  .kx-plan-card {
-    padding: var(--kx-sp-6) var(--kx-sp-5);
-  }
-
+  .kx-plan-card { padding: var(--kx-sp-6) var(--kx-sp-5); }
   .kx-plan-price { font-size: 1.7rem; }
 }

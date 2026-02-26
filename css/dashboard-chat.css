@@ -1,33 +1,33 @@
 /* ═══════════════════════════════════════════════════════════════
    💬 KXON CHAT — PREMIUM DESIGN SYSTEM 2026
    Namespace: kx-chat-*
-   Archivo: css/dashboard-chat.css
+   Paleta: Violeta Premium (matching landing)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ─────────────────────────────────────────
    🎨 DESIGN TOKENS (Scoped)
    ───────────────────────────────────────── */
 .panel#panel-chat {
-  --kxc-bg:           rgba(8, 8, 8, 0.95);
+  --kxc-bg:           rgba(3, 3, 3, 0.95);
   --kxc-surface:      rgba(14, 14, 14, 0.9);
   --kxc-surface-2:    rgba(18, 18, 18, 0.8);
   --kxc-surface-3:    rgba(22, 22, 22, 0.7);
-  --kxc-border:       rgba(255, 255, 255, 0.04);
-  --kxc-border-hover: rgba(192, 192, 192, 0.08);
-  --kxc-border-focus: rgba(192, 192, 192, 0.15);
-  --kxc-t1:           rgba(240, 240, 240, 0.95);
-  --kxc-t2:           rgba(192, 192, 192, 0.75);
-  --kxc-t3:           rgba(192, 192, 192, 0.45);
-  --kxc-t4:           rgba(192, 192, 192, 0.25);
-  --kxc-t5:           rgba(192, 192, 192, 0.12);
-  --kxc-accent:       rgba(192, 192, 192, 0.85);
-  --kxc-accent-soft:  rgba(192, 192, 192, 0.06);
-  --kxc-me-bg:        rgba(192, 192, 192, 0.04);
-  --kxc-me-border:    rgba(192, 192, 192, 0.08);
+  --kxc-border:       rgba(139, 92, 246, 0.06);
+  --kxc-border-hover: rgba(139, 92, 246, 0.12);
+  --kxc-border-focus: rgba(139, 92, 246, 0.25);
+  --kxc-t1:           rgba(250, 250, 250, 0.95);
+  --kxc-t2:           rgba(167, 139, 250, 0.75);
+  --kxc-t3:           rgba(167, 139, 250, 0.45);
+  --kxc-t4:           rgba(139, 92, 246, 0.25);
+  --kxc-t5:           rgba(139, 92, 246, 0.12);
+  --kxc-accent:       rgba(139, 92, 246, 0.85);
+  --kxc-accent-soft:  rgba(139, 92, 246, 0.06);
+  --kxc-me-bg:        rgba(139, 92, 246, 0.04);
+  --kxc-me-border:    rgba(139, 92, 246, 0.12);
   --kxc-link:         rgba(130, 170, 255, 0.85);
   --kxc-link-hover:   rgba(130, 170, 255, 1);
-  --kxc-error:        rgba(255, 71, 87, 0.85);
-  --kxc-online:       rgba(46, 213, 115, 0.85);
+  --kxc-error:        rgba(248, 113, 113, 0.85);
+  --kxc-online:       rgba(52, 211, 153, 0.85);
   --kxc-radius-sm:    8px;
   --kxc-radius-md:    12px;
   --kxc-radius-lg:    16px;
@@ -69,7 +69,7 @@
   font-weight: 800;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--kxc-t4);
+  color: var(--kxc-t3);
   margin-bottom: 8px;
 }
 
@@ -130,7 +130,7 @@
 .kx-chat-kpi-divider {
   width: 1px;
   height: 28px;
-  background: var(--kxc-border);
+  background: rgba(139, 92, 246, 0.12);
 }
 
 
@@ -159,7 +159,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.01);
+  background: rgba(139, 92, 246, 0.02);
   border-bottom: 1px solid var(--kxc-border);
   flex-shrink: 0;
 }
@@ -175,7 +175,7 @@
   height: 8px;
   background: var(--kxc-online);
   border-radius: var(--kxc-radius-full);
-  box-shadow: 0 0 6px rgba(46, 213, 115, 0.4);
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.4);
   animation: kxcPulseOnline 2s ease-in-out infinite;
 }
 
@@ -203,8 +203,8 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  background: rgba(46, 213, 115, 0.04);
-  border: 1px solid rgba(46, 213, 115, 0.1);
+  background: rgba(52, 211, 153, 0.04);
+  border: 1px solid rgba(52, 211, 153, 0.1);
   border-radius: 50px;
   font-family: var(--font-titulo);
   font-size: 0.58rem;
@@ -245,12 +245,12 @@
 }
 
 .kx-chat-messages::-webkit-scrollbar-thumb {
-  background: var(--kxc-t5);
+  background: rgba(139, 92, 246, 0.08);
   border-radius: 4px;
 }
 
 .kx-chat-messages::-webkit-scrollbar-thumb:hover {
-  background: var(--kxc-t4);
+  background: rgba(139, 92, 246, 0.15);
 }
 
 
@@ -270,7 +270,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--kxc-border), transparent);
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
 }
 
 .kx-chat-date-sep span {
@@ -314,7 +314,7 @@
 }
 
 .kx-chat-msg:hover {
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(139, 92, 246, 0.02);
 }
 
 /* ── My message ── */
@@ -324,7 +324,7 @@
 }
 
 .kx-chat-msg--me:hover {
-  background: rgba(192, 192, 192, 0.06);
+  background: rgba(139, 92, 246, 0.06);
 }
 
 
@@ -335,8 +335,8 @@
   width: 36px;
   height: 36px;
   border-radius: var(--kxc-radius-full);
-  background: linear-gradient(135deg, rgba(30, 30, 30, 1), rgba(20, 20, 20, 1));
-  border: 1.5px solid rgba(192, 192, 192, 0.08);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(124, 58, 237, 0.1));
+  border: 1.5px solid rgba(139, 92, 246, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -462,7 +462,7 @@
 }
 
 .kx-chat-msg-delete:hover {
-  background: rgba(255, 71, 87, 0.08);
+  background: rgba(248, 113, 113, 0.08);
   color: var(--kxc-error);
 }
 
@@ -473,7 +473,7 @@
 .kx-chat-input-section {
   padding: 16px 20px 14px;
   border-top: 1px solid var(--kxc-border);
-  background: rgba(255, 255, 255, 0.008);
+  background: rgba(139, 92, 246, 0.01);
   flex-shrink: 0;
 }
 
@@ -490,7 +490,7 @@
 
 .kx-chat-input-wrap:focus-within {
   border-color: var(--kxc-border-focus);
-  box-shadow: 0 0 0 3px rgba(192, 192, 192, 0.03);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.04);
 }
 
 .kx-chat-input {
@@ -521,8 +521,8 @@
 .kx-chat-send-btn {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, rgba(50, 50, 50, 0.8), rgba(30, 30, 30, 0.9));
-  border: 1px solid rgba(192, 192, 192, 0.1);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(124, 58, 237, 0.25));
+  border: 1px solid rgba(139, 92, 246, 0.2);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -540,11 +540,11 @@
 }
 
 .kx-chat-send-btn:hover {
-  background: linear-gradient(135deg, rgba(192, 192, 192, 0.8), rgba(150, 150, 150, 0.85));
-  border-color: rgba(192, 192, 192, 0.4);
-  color: var(--negro-base, #0a0a0a);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.85), rgba(124, 58, 237, 0.9));
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #fafafa;
   transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(192, 192, 192, 0.1);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
 }
 
 .kx-chat-send-btn:active {
@@ -890,6 +890,7 @@
     display: none;
   }
 }
+
 @keyframes kxcMsgOut {
   to {
     opacity: 0;
