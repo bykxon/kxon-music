@@ -631,6 +631,74 @@
   gap: var(--kx-sp-4);
 }
 
+/* ═══ FORM FIELDS — Admin Panel ═══ */
+#panel-envivo .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#panel-envivo .form-label {
+  font-family: var(--font-titulo);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: var(--kx-t2);
+  text-transform: uppercase;
+}
+
+#panel-envivo .form-input,
+#panel-envivo .form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--kx-s3);
+  border: 1px solid var(--kx-b1);
+  border-radius: var(--kx-r-sm);
+  color: var(--kx-t0);
+  font-family: inherit;
+  font-size: .88rem;
+  font-weight: 400;
+  outline: none;
+  transition: all var(--kx-t-fast) var(--kx-ease);
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+#panel-envivo .form-input::placeholder,
+#panel-envivo .form-textarea::placeholder {
+  color: var(--kx-t4);
+  font-weight: 400;
+}
+
+#panel-envivo .form-input:focus,
+#panel-envivo .form-textarea:focus {
+  border-color: var(--kx-accent);
+  background: var(--kx-s4);
+  box-shadow: 0 0 0 3px rgba(139,92,246,.08);
+}
+
+#panel-envivo .form-input:hover,
+#panel-envivo .form-textarea:hover {
+  border-color: var(--kx-b2);
+  background: var(--kx-s4);
+}
+
+#panel-envivo .form-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.6;
+}
+
+/* Checkbox styling */
+#panel-envivo input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--kx-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 /* Admin actions */
 .kx-live-admin-actions {
   display: flex;

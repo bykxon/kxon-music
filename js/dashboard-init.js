@@ -2,6 +2,7 @@
  * 🚀 KXON — Dashboard Init v4.2
  * Session · Navigation · Player · Access Control · Referrals
  * UPDATED: Compatible with kx-ply-* player redesign (SVG icons)
+ * FIX: envivo panel now correctly calls K.loadEnVivo
  */
 (function () {
     'use strict';
@@ -388,7 +389,7 @@
             'canciones':      function () { if (typeof K.loadAllCanciones === 'function') K.loadAllCanciones(); },
             'radio':          function () { if (typeof K.initRadio === 'function') K.initRadio(); },
             'videos':         function () { if (typeof K.loadVideos === 'function') K.loadVideos(); },
-            'envivo':         function () { if (typeof K.loadLiveStatus === 'function') K.loadLiveStatus(); },
+            'envivo':         function () { if (typeof K.loadEnVivo === 'function') K.loadEnVivo(); },
             'documentales':   function () {
                 var dl = $('docuListSection'); if (dl) dl.style.display = 'block';
                 var dd = $('docuDetailView'); if (dd) dd.classList.remove('show');
@@ -781,7 +782,6 @@
        PROCESS PENDING REFERRAL
        ══════════════════════════════════════ */
     async function processPendingReferral() {
-        // ═══ Flow 1: Google Auth referral (kxon_ref_code) ═══
         var pendingRef = localStorage.getItem('kxon_ref_code');
         if (pendingRef && K.currentProfile) {
             if (!K.currentProfile.referido_por) {
@@ -819,7 +819,6 @@
             localStorage.removeItem('kxon_ref_code');
         }
 
-        // ═══ Flow 2: Email confirmation referral (kxon_pending_ref) ═══
         var pendingRefName = localStorage.getItem('kxon_pending_ref');
         if (pendingRefName && K.currentProfile) {
             if (!K.currentProfile.referido_por) {
@@ -883,7 +882,6 @@
                 K.isAdmin = false;
             }
 
-            // ═══ PROCESS PENDING REFERRAL (after profile is loaded) ═══
             await processPendingReferral();
 
             renderSidebar();
