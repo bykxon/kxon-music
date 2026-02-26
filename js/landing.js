@@ -291,28 +291,49 @@
         else sticky.setAttribute('hidden', '');
     }
 
-    // ═══════════════════════════════════════
-    //  🍔 MOBILE MENU
+        // ═══════════════════════════════════════
+    //  🍔 MOBILE MENU — ✅ FIX COMPLETO
+    //  Usa clase .is-open en vez de hidden
     // ═══════════════════════════════════════
     function initMobileMenu() {
         const toggle = $('#mobileMenuToggle');
         const menu = $('#mobileMenu');
         if (!toggle || !menu) return;
 
+        // Quitar el atributo hidden del HTML para que CSS controle todo
+        menu.removeAttribute('hidden');
+
+        function openMenu() {
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.setAttribute('aria-label', 'Cerrar menú');
+            menu.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.setAttribute('aria-label', 'Abrir menú');
+            menu.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
         toggle.addEventListener('click', () => {
             const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-            toggle.setAttribute('aria-expanded', String(!isOpen));
-            toggle.setAttribute('aria-label', isOpen ? 'Abrir menú' : 'Cerrar menú');
-            if (isOpen) { menu.setAttribute('hidden', ''); document.body.style.overflow = ''; }
-            else { menu.removeAttribute('hidden'); document.body.style.overflow = 'hidden'; }
+            if (isOpen) closeMenu();
+            else openMenu();
         });
 
+        // Cerrar al hacer click en un link del menú
         menu.addEventListener('click', (e) => {
             if (e.target.closest('.kx-landing-mobile__link')) {
-                toggle.setAttribute('aria-expanded', 'false');
-                toggle.setAttribute('aria-label', 'Abrir menú');
-                menu.setAttribute('hidden', '');
-                document.body.style.overflow = '';
+                closeMenu();
+            }
+        });
+
+        // Cerrar con tecla Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+                closeMenu();
             }
         });
     }
@@ -474,12 +495,13 @@
             if (target) {
                 e.preventDefault();
                 window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
-                // Close mobile menu
+                                // Close mobile menu
                 const toggle = $('#mobileMenuToggle');
                 const menu = $('#mobileMenu');
                 if (toggle?.getAttribute('aria-expanded') === 'true') {
                     toggle.setAttribute('aria-expanded', 'false');
-                    menu?.setAttribute('hidden', '');
+                    toggle.setAttribute('aria-label', 'Abrir menú');
+                    menu?.classList.remove('is-open');
                     document.body.style.overflow = '';
                 }
             }
