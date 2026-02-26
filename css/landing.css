@@ -3,6 +3,7 @@
    Rediseño ULTRA PREMIUM 2026 — v6.0
    Level: 20/10 · Inmersivo · Cinematográfico
    FULL COLOR · VISIBLE BACKGROUNDS · MOBILE FIRST
+   ✅ FIX: Menú móvil fondo sólido
    ============================================ */
 
 /* ══════════════════════════════════════════
@@ -390,13 +391,14 @@
 .kx-landing-header__toggle[aria-expanded="true"] .kx-landing-header__hamburger span:nth-child(2) { opacity: 0; width: 0; }
 .kx-landing-header__toggle[aria-expanded="true"] .kx-landing-header__hamburger span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-/* Mobile Menu */
+/* ══════════════════════════════════════════
+   📱 MOBILE MENU — ✅ FIX FONDO SÓLIDO
+   ══════════════════════════════════════════ */
 .kx-landing-mobile {
     position: fixed;
     inset: 0;
-    background: rgba(3, 3, 3, 0.97);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    /* ✅ FIX: Fondo 100% sólido — elimina transparencia */
+    background: #030303;
     padding: calc(var(--kx-header-height) + var(--kx-space-8)) var(--kx-gutter) var(--kx-space-8);
     display: flex;
     flex-direction: column;
@@ -405,9 +407,15 @@
     transition: opacity 0.4s var(--kx-ease-spring), transform 0.4s var(--kx-ease-spring);
     pointer-events: none;
     z-index: calc(var(--kx-z-sticky) - 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.kx-landing-mobile:not([hidden]) { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.kx-landing-mobile:not([hidden]) { 
+    opacity: 1; 
+    transform: translateY(0); 
+    pointer-events: auto; 
+}
 
 .kx-landing-mobile__nav { display: flex; flex-direction: column; gap: var(--kx-space-2); margin-bottom: auto; }
 
