@@ -1,11 +1,10 @@
 /* ============================================
    🏠 LANDING JS — KXON MUSIC PLATFORM
-   Rediseño ULTRA PREMIUM 2026 — v5.0
+   Rediseño ULTRA PREMIUM 2026 — v6.0
    Level: 20/10
-   Features: Custom Cursor Trail, Magnetic Buttons,
-   Spotlight Cards, Tilt 3D, Morphing Text,
-   Page Loader Counter, Parallax Orbs,
-   CTA Particles, Stagger Animations
+   OPTIMIZED: Reduced particles on mobile,
+   no will-change abuse, lazy Supabase,
+   improved touch targets, performance first
    ============================================ */
 
 (function () {
@@ -28,9 +27,10 @@
     // ── Device detection ──
     const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = () => window.innerWidth < 768;
 
     // ═══════════════════════════════════════
-    //  🔃 PAGE LOADER — CINEMATIC WITH COUNTER
+    //  🔃 PAGE LOADER
     // ═══════════════════════════════════════
     function initPageLoader() {
         const loader = $('#pageLoader');
@@ -38,31 +38,23 @@
         if (!loader) return;
 
         let progress = 0;
-        const targetProgress = 100;
         const startTime = Date.now();
         const duration = 2200;
 
         function updateCounter() {
             const elapsed = Date.now() - startTime;
             const t = Math.min(elapsed / duration, 1);
-            // Ease out expo
             const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-            progress = Math.round(eased * targetProgress);
-
+            progress = Math.round(eased * 100);
             if (counter) counter.textContent = progress + '%';
-
-            if (t < 1) {
-                requestAnimationFrame(updateCounter);
-            }
+            if (t < 1) requestAnimationFrame(updateCounter);
         }
 
         requestAnimationFrame(updateCounter);
 
         const hide = () => {
             loader.classList.add('is-hidden');
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 900);
+            setTimeout(() => { loader.style.display = 'none'; }, 900);
         };
 
         if (document.readyState === 'complete') {
@@ -137,56 +129,42 @@
     function initMagneticButtons() {
         if (isTouchDevice() || prefersReducedMotion()) return;
 
-        const magneticEls = $$('[data-magnetic]');
-        const strength = 0.3;
-        const smoothness = 0.15;
-
-        magneticEls.forEach(el => {
-            let currentX = 0, currentY = 0;
-            let targetX = 0, targetY = 0;
-            let animating = false;
+        $$('[data-magnetic]').forEach(el => {
+            let currentX = 0, currentY = 0, targetX = 0, targetY = 0, animating = false;
+            const strength = 0.3, smoothness = 0.15;
 
             function animate() {
                 currentX += (targetX - currentX) * smoothness;
                 currentY += (targetY - currentY) * smoothness;
-
                 if (Math.abs(targetX - currentX) < 0.1 && Math.abs(targetY - currentY) < 0.1) {
-                    currentX = targetX;
-                    currentY = targetY;
+                    currentX = targetX; currentY = targetY;
                     el.style.transform = targetX === 0 && targetY === 0 ? '' : `translate(${currentX}px, ${currentY}px)`;
-                    animating = false;
-                    return;
+                    animating = false; return;
                 }
-
                 el.style.transform = `translate(${currentX}px, ${currentY}px)`;
                 requestAnimationFrame(animate);
             }
 
             el.addEventListener('mousemove', (e) => {
                 const rect = el.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                targetX = (e.clientX - centerX) * strength;
-                targetY = (e.clientY - centerY) * strength;
+                targetX = (e.clientX - rect.left - rect.width / 2) * strength;
+                targetY = (e.clientY - rect.top - rect.height / 2) * strength;
                 if (!animating) { animating = true; requestAnimationFrame(animate); }
             });
 
             el.addEventListener('mouseleave', () => {
-                targetX = 0;
-                targetY = 0;
+                targetX = 0; targetY = 0;
                 if (!animating) { animating = true; requestAnimationFrame(animate); }
             });
         });
     }
 
     // ═══════════════════════════════════════
-    //  💡 SPOTLIGHT EFFECT
+    //  💡 SPOTLIGHT + TILT
     // ═══════════════════════════════════════
     function initSpotlightCards() {
         if (isTouchDevice() || prefersReducedMotion()) return;
-
-        const cards = $$('[data-spotlight]');
-        cards.forEach(card => {
+        $$('[data-spotlight]').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 card.style.setProperty('--kx-mouse-x', (e.clientX - rect.left) + 'px');
@@ -195,29 +173,16 @@
         });
     }
 
-    // ═══════════════════════════════════════
-    //  🎲 TILT 3D CARDS — NEW
-    // ═══════════════════════════════════════
     function initTiltCards() {
         if (isTouchDevice() || prefersReducedMotion()) return;
-
-        const cards = $$('[data-tilt-card]');
         const maxTilt = 4;
-
-        cards.forEach(card => {
+        $$('[data-tilt-card]').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                const mouseX = e.clientX - centerX;
-                const mouseY = e.clientY - centerY;
-
-                const rotateX = (mouseY / (rect.height / 2)) * -maxTilt;
-                const rotateY = (mouseX / (rect.width / 2)) * maxTilt;
-
+                const rotateX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -maxTilt;
+                const rotateY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * maxTilt;
                 card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
             });
-
             card.addEventListener('mouseleave', () => {
                 card.style.transform = '';
                 card.style.transition = 'transform 0.5s var(--kx-ease-spring)';
@@ -227,69 +192,45 @@
     }
 
     // ═══════════════════════════════════════
-    //  🔤 MORPHING TEXT — NEW
+    //  🔤 MORPHING TEXT
     // ═══════════════════════════════════════
     function initMorphingText() {
         const container = $('#heroMorphWords');
         if (!container) return;
-
         const words = container.querySelectorAll('.kx-landing-hero__morph-word');
         if (words.length <= 1) return;
 
         let currentIndex = 0;
-        const interval = 3000;
-
         setInterval(() => {
             const current = words[currentIndex];
             current.classList.remove('is-active');
             current.classList.add('is-exiting');
-
-            setTimeout(() => {
-                current.classList.remove('is-exiting');
-            }, 400);
-
+            setTimeout(() => { current.classList.remove('is-exiting'); }, 400);
             currentIndex = (currentIndex + 1) % words.length;
-
-            setTimeout(() => {
-                words[currentIndex].classList.add('is-active');
-            }, 300);
-        }, interval);
+            setTimeout(() => { words[currentIndex].classList.add('is-active'); }, 300);
+        }, 3000);
     }
 
     // ═══════════════════════════════════════
     //  🎵 PREVIEW PLAYER (30s)
     // ═══════════════════════════════════════
     const preview = {
-        audio: new Audio(),
-        playing: false,
-        trackId: null,
-        timer: null,
-        interval: null,
-        DURATION: 30,
+        audio: new Audio(), playing: false, trackId: null, timer: null, interval: null, DURATION: 30,
 
         play(trackId, audioUrl) {
             if (this.playing && this.trackId === trackId) { this.stop(); return; }
             this.stop();
             if (!audioUrl) return;
-
-            this.trackId = trackId;
-            this.audio.src = audioUrl;
-            this.audio.currentTime = 0;
-            this.audio.volume = 0.7;
-
+            this.trackId = trackId; this.audio.src = audioUrl; this.audio.currentTime = 0; this.audio.volume = 0.7;
             this.audio.play().then(() => {
-                this.playing = true;
-                this.updateButtons();
+                this.playing = true; this.updateButtons();
                 this.timer = setTimeout(() => this.stop(), this.DURATION * 1000);
                 this.interval = setInterval(() => this.updateProgress(), 100);
             }).catch(() => this.stop());
         },
 
         stop() {
-            this.audio.pause();
-            this.audio.currentTime = 0;
-            this.playing = false;
-            this.trackId = null;
+            this.audio.pause(); this.audio.currentTime = 0; this.playing = false; this.trackId = null;
             if (this.timer) { clearTimeout(this.timer); this.timer = null; }
             if (this.interval) { clearInterval(this.interval); this.interval = null; }
             this.updateButtons();
@@ -301,16 +242,10 @@
                 const icon = btn.querySelector('.kx-landing-track__icon');
                 const progress = btn.querySelector('.kx-landing-track__progress');
                 const time = btn.closest('.kx-landing-track')?.querySelector('.kx-landing-track__time');
-
                 if (this.playing && id === String(this.trackId)) {
-                    btn.classList.add('is-playing');
-                    if (icon) icon.textContent = '⏸';
-                    if (time) time.textContent = 'Reproduciendo...';
+                    btn.classList.add('is-playing'); if (icon) icon.textContent = '⏸'; if (time) time.textContent = 'Reproduciendo...';
                 } else {
-                    btn.classList.remove('is-playing');
-                    if (icon) icon.textContent = '▶';
-                    if (progress) progress.style.width = '0%';
-                    if (time) time.textContent = '0:30 preview';
+                    btn.classList.remove('is-playing'); if (icon) icon.textContent = '▶'; if (progress) progress.style.width = '0%'; if (time) time.textContent = '0:30 preview';
                 }
             });
         },
@@ -320,7 +255,6 @@
             const current = this.audio.currentTime;
             const pct = Math.min((current / this.DURATION) * 100, 100);
             const remaining = Math.max(0, this.DURATION - Math.floor(current));
-
             $$('.kx-landing-track__play[data-track-id="' + this.trackId + '"]').forEach(btn => {
                 const progress = btn.querySelector('.kx-landing-track__progress');
                 const time = btn.closest('.kx-landing-track')?.querySelector('.kx-landing-track__time');
@@ -329,54 +263,32 @@
             });
         },
 
-        init() {
-            this.audio.addEventListener('ended', () => this.stop());
-        }
+        init() { this.audio.addEventListener('ended', () => this.stop()); }
     };
 
     // ═══════════════════════════════════════
-    //  📊 SCROLL PROGRESS
+    //  📊 SCROLL + HEADER + STICKY
     // ═══════════════════════════════════════
     function updateScrollProgress() {
         const el = $('#scrollProgress');
         if (!el) return;
-        const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        el.style.width = docHeight > 0 ? (scrollTop / docHeight) * 100 + '%' : '0%';
+        el.style.width = docHeight > 0 ? (window.scrollY / docHeight) * 100 + '%' : '0%';
     }
 
-    // ═══════════════════════════════════════
-    //  📌 HEADER SCROLL
-    // ═══════════════════════════════════════
     function handleHeaderScroll() {
         const header = $('#landingHeader');
-        if (!header) return;
-        header.classList.toggle('is-scrolled', window.scrollY > 60);
+        if (header) header.classList.toggle('is-scrolled', window.scrollY > 60);
     }
 
-    // ═══════════════════════════════════════
-    //  📱 MOBILE STICKY CTA
-    // ═══════════════════════════════════════
     function handleStickyCta() {
         const sticky = $('#stickyCta');
-        if (!sticky) return;
-
         const hero = $('#hero');
-        if (!hero) return;
-
+        if (!sticky || !hero) return;
         const heroBottom = hero.offsetTop + hero.offsetHeight;
-        const scrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const docHeight = document.documentElement.scrollHeight;
-
-        const shouldShow = scrollY > heroBottom - 200 &&
-                          scrollY < docHeight - windowHeight - 200;
-
-        if (shouldShow) {
-            sticky.removeAttribute('hidden');
-        } else {
-            sticky.setAttribute('hidden', '');
-        }
+        const shouldShow = window.scrollY > heroBottom - 200 && window.scrollY < document.documentElement.scrollHeight - window.innerHeight - 200;
+        if (shouldShow) sticky.removeAttribute('hidden');
+        else sticky.setAttribute('hidden', '');
     }
 
     // ═══════════════════════════════════════
@@ -391,14 +303,8 @@
             const isOpen = toggle.getAttribute('aria-expanded') === 'true';
             toggle.setAttribute('aria-expanded', String(!isOpen));
             toggle.setAttribute('aria-label', isOpen ? 'Abrir menú' : 'Cerrar menú');
-
-            if (isOpen) {
-                menu.setAttribute('hidden', '');
-                document.body.style.overflow = '';
-            } else {
-                menu.removeAttribute('hidden');
-                document.body.style.overflow = 'hidden';
-            }
+            if (isOpen) { menu.setAttribute('hidden', ''); document.body.style.overflow = ''; }
+            else { menu.removeAttribute('hidden'); document.body.style.overflow = 'hidden'; }
         });
 
         menu.addEventListener('click', (e) => {
@@ -418,7 +324,6 @@
 
     function initScrollReveal() {
         if (prefersReducedMotion()) return;
-
         revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -431,19 +336,8 @@
                     revealObserver.unobserve(entry.target);
                 }
             });
-        }, {
-            rootMargin: '0px 0px -60px 0px',
-            threshold: 0.1
-        });
-
+        }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
         $$('.kx-reveal').forEach(el => revealObserver.observe(el));
-    }
-
-    function observeNewElements(container) {
-        if (!revealObserver) return;
-        container.querySelectorAll('.kx-reveal:not(.is-visible)').forEach(el => {
-            revealObserver.observe(el);
-        });
     }
 
     // ═══════════════════════════════════════
@@ -454,14 +348,11 @@
     function animateCounter(el) {
         if (animatedCounters.has(el)) return;
         animatedCounters.add(el);
-
         const target = parseInt(el.dataset.target) || 0;
         const suffix = el.dataset.suffix || '';
         const duration = 2000;
         let startTime = null;
-
         function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
-
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = Math.min((timestamp - startTime) / duration, 1);
@@ -474,14 +365,11 @@
     function animateCounterInline(el) {
         if (animatedCounters.has(el)) return;
         animatedCounters.add(el);
-
         const target = parseInt(el.dataset.counter) || 0;
         const suffix = el.dataset.suffix || '';
         const duration = 2200;
         let startTime = null;
-
         function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
-
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = Math.min((timestamp - startTime) / duration, 1);
@@ -489,71 +377,49 @@
             if (progress < 1) requestAnimationFrame(update);
         }
 
-        // Decode effect first
-        const chars = '0123456789!@#$%^&*';
+        const chars = '0123456789!@#$%';
         let decodeFrame = 0;
         const decodeInterval = setInterval(() => {
-            if (decodeFrame > 8) {
-                clearInterval(decodeInterval);
-                requestAnimationFrame(update);
-                return;
-            }
+            if (decodeFrame > 6) { clearInterval(decodeInterval); requestAnimationFrame(update); return; }
             let str = '';
-            for (let i = 0; i < String(target).length; i++) {
-                str += chars[Math.floor(Math.random() * chars.length)];
-            }
+            for (let i = 0; i < String(target).length; i++) str += chars[Math.floor(Math.random() * chars.length)];
             el.textContent = str + suffix;
             decodeFrame++;
-        }, 50);
+        }, 60);
     }
 
     // ═══════════════════════════════════════
-    //  ✨ HERO PARTICLES
+    //  ✨ PARTICLES — MOBILE OPTIMIZED
     // ═══════════════════════════════════════
     function initHeroParticles() {
         const container = $('#heroParticles');
         if (!container || prefersReducedMotion()) return;
 
-        const count = window.innerWidth < 768 ? 20 : 45;
+        // Reduced count on mobile for performance
+        const count = isMobile() ? 10 : 35;
         const fragment = document.createDocumentFragment();
 
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
             p.className = 'kx-landing-hero__particle';
             const size = Math.random() * 2.5 + 1;
-            p.style.cssText = `
-                width:${size}px;height:${size}px;
-                left:${Math.random() * 100}%;
-                animation-duration:${Math.random() * 14 + 9}s;
-                animation-delay:${Math.random() * 10}s;
-                opacity:${Math.random() * 0.4 + 0.1};
-            `;
+            p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random() * 100}%;animation-duration:${Math.random() * 14 + 9}s;animation-delay:${Math.random() * 10}s;opacity:${Math.random() * 0.5 + 0.1};`;
             fragment.appendChild(p);
         }
         container.appendChild(fragment);
     }
 
-    // ═══════════════════════════════════════
-    //  ✨ CTA PARTICLES — NEW
-    // ═══════════════════════════════════════
     function initCtaParticles() {
         const container = $('#ctaParticles');
-        if (!container || prefersReducedMotion()) return;
+        if (!container || prefersReducedMotion() || isMobile()) return;
 
-        const count = 15;
+        const count = 12;
         const fragment = document.createDocumentFragment();
-
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
             p.className = 'kx-landing-hero__particle';
             const size = Math.random() * 2 + 0.5;
-            p.style.cssText = `
-                width:${size}px;height:${size}px;
-                left:${Math.random() * 100}%;
-                animation-duration:${Math.random() * 10 + 6}s;
-                animation-delay:${Math.random() * 8}s;
-                opacity:${Math.random() * 0.3 + 0.05};
-            `;
+            p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random() * 100}%;animation-duration:${Math.random() * 10 + 6}s;animation-delay:${Math.random() * 8}s;opacity:${Math.random() * 0.3 + 0.05};`;
             fragment.appendChild(p);
         }
         container.appendChild(fragment);
@@ -565,22 +431,10 @@
     function initHeroScroll() {
         const btn = $('#heroScrollBtn');
         if (!btn) return;
-
         btn.addEventListener('click', () => {
             const hero = btn.closest('.kx-landing-hero');
-            if (!hero) return;
-            const next = hero.nextElementSibling;
-            if (next) next.scrollIntoView({ behavior: 'smooth' });
+            if (hero?.nextElementSibling) hero.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
         });
-
-        const hero = btn.closest('.kx-landing-hero');
-        if (hero) {
-            const observer = new IntersectionObserver(([entry]) => {
-                btn.style.opacity = entry.intersectionRatio > 0.7 ? '' : '0';
-                btn.style.pointerEvents = entry.intersectionRatio > 0.7 ? '' : 'none';
-            }, { threshold: [0, 0.3, 0.7, 1] });
-            observer.observe(hero);
-        }
     }
 
     // ═══════════════════════════════════════
@@ -593,11 +447,8 @@
         if (!btn || !video) return;
 
         const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-                video.play().catch(() => {});
-            } else {
-                video.pause();
-            }
+            if (entry.isIntersecting) video.play().catch(() => {});
+            else video.pause();
         }, { threshold: 0.3 });
         observer.observe(video);
 
@@ -619,18 +470,16 @@
             if (!link) return;
             const href = link.getAttribute('href');
             if (href === '#') return;
-
             const target = $(href);
             if (target) {
                 e.preventDefault();
-                const offset = target.getBoundingClientRect().top + window.scrollY - 80;
-                window.scrollTo({ top: offset, behavior: 'smooth' });
-
+                window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+                // Close mobile menu
                 const toggle = $('#mobileMenuToggle');
                 const menu = $('#mobileMenu');
-                if (toggle && menu && toggle.getAttribute('aria-expanded') === 'true') {
+                if (toggle?.getAttribute('aria-expanded') === 'true') {
                     toggle.setAttribute('aria-expanded', 'false');
-                    menu.setAttribute('hidden', '');
+                    menu?.setAttribute('hidden', '');
                     document.body.style.overflow = '';
                 }
             }
@@ -641,7 +490,6 @@
     //  📜 SCROLL HANDLER
     // ═══════════════════════════════════════
     let scrollTicking = false;
-
     function onScroll() {
         if (!scrollTicking) {
             requestAnimationFrame(() => {
@@ -655,7 +503,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🎬 PARALLAX ON SCROLL — ENHANCED
+    //  🎬 PARALLAX — DESKTOP ONLY
     // ═══════════════════════════════════════
     function initParallax() {
         if (prefersReducedMotion() || isTouchDevice()) return;
@@ -663,7 +511,6 @@
         const glowLeft = $('.kx-landing-glow--left');
         const glowRight = $('.kx-landing-glow--right');
         const heroRadial = $('#heroRadial');
-
         let ticking = false;
 
         window.addEventListener('scroll', () => {
@@ -678,40 +525,29 @@
             }
         }, { passive: true });
 
-        // Mouse parallax on hero radial
         if (heroRadial) {
             document.addEventListener('mousemove', (e) => {
-                const x = (e.clientX / window.innerWidth - 0.5) * 30;
-                const y = (e.clientY / window.innerHeight - 0.5) * 30;
+                const x = (e.clientX / window.innerWidth - 0.5) * 40;
+                const y = (e.clientY / window.innerHeight - 0.5) * 40;
                 heroRadial.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
             }, { passive: true });
         }
     }
 
     // ═══════════════════════════════════════
-    //  📱 PHONE TILT EFFECT
+    //  📱 PHONE TILT
     // ═══════════════════════════════════════
     function initPhoneTilt() {
         if (isTouchDevice() || prefersReducedMotion()) return;
-
         const phone = $('[data-tilt]');
         if (!phone) return;
-
         const maxTilt = 8;
-
         phone.addEventListener('mousemove', (e) => {
             const rect = phone.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const mouseX = e.clientX - centerX;
-            const mouseY = e.clientY - centerY;
-
-            const rotateX = (mouseY / (rect.height / 2)) * -maxTilt;
-            const rotateY = (mouseX / (rect.width / 2)) * maxTilt;
-
+            const rotateX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -maxTilt;
+            const rotateY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * maxTilt;
             phone.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
-
         phone.addEventListener('mouseleave', () => {
             phone.style.transform = '';
             phone.style.transition = 'transform 0.5s var(--kx-ease-spring)';
@@ -725,23 +561,11 @@
     async function loadNews() {
         const grid = $('#newsGrid');
         if (!grid || !db) return;
-
         grid.innerHTML = buildSkeletons(NEWS_PER_PAGE);
-
         try {
-            const { data, error } = await db
-                .from('noticias')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(9);
-
+            const { data, error } = await db.from('noticias').select('*').order('created_at', { ascending: false }).limit(9);
             if (error) throw error;
-
-            if (!data || data.length === 0) {
-                grid.innerHTML = buildEmpty('📰', 'Sin noticias aún', 'Las últimas novedades aparecerán aquí');
-                return;
-            }
-
+            if (!data || data.length === 0) { grid.innerHTML = buildEmpty('📰', 'Sin noticias aún', 'Las últimas novedades aparecerán aquí'); return; }
             landingNoticias = data;
             currentNewsPage = 0;
             renderNewsPage();
@@ -755,17 +579,11 @@
     function renderNewsPage() {
         const grid = $('#newsGrid');
         if (!grid) return;
-
         const start = currentNewsPage * NEWS_PER_PAGE;
         const end = Math.min(start + NEWS_PER_PAGE, landingNoticias.length);
         let html = '';
-
-        for (let i = start; i < end; i++) {
-            html += buildNewsCard(landingNoticias[i], i);
-        }
-
+        for (let i = start; i < end; i++) html += buildNewsCard(landingNoticias[i], i);
         grid.innerHTML = html;
-
         grid.querySelectorAll('.kx-landing-news__card').forEach((card, idx) => {
             card.classList.add('kx-reveal', 'is-visible');
             card.style.animationDelay = idx * 100 + 'ms';
@@ -773,26 +591,18 @@
     }
 
     function buildNewsCard(n, idx) {
-        const fecha = new Date(n.created_at)
-            .toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-            .toUpperCase();
+        const fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
         const img = n.imagen_url || 'https://placehold.co/600x400/0e0e0e/333?text=KXON';
-        const desc = n.descripcion || '';
-
         return `
             <article class="kx-landing-news__card" data-news-idx="${idx}">
                 <div class="kx-landing-news__img">
-                    <img src="${img}" alt="${n.titulo || ''}" loading="lazy"
-                         onerror="this.src='https://placehold.co/600x400/0e0e0e/333?text=KXON'">
+                    <img src="${img}" alt="${n.titulo || ''}" loading="lazy" onerror="this.src='https://placehold.co/600x400/0e0e0e/333?text=KXON'">
                     <span class="kx-landing-news__date">${fecha}</span>
                 </div>
                 <div class="kx-landing-news__body">
                     <h3 class="kx-landing-news__title">${n.titulo || ''}</h3>
-                    <p class="kx-landing-news__excerpt">${desc}</p>
-                    <span class="kx-landing-news__read-more">
-                        Leer más
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                    </span>
+                    <p class="kx-landing-news__excerpt">${n.descripcion || ''}</p>
+                    <span class="kx-landing-news__read-more">Leer más <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
                 </div>
             </article>`;
     }
@@ -800,7 +610,6 @@
     function updateNewsPagination() {
         const dotsContainer = $('#newsPaginationDots');
         if (!dotsContainer) return;
-
         const totalPages = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
         dotsContainer.innerHTML = Array.from({ length: totalPages }, (_, i) =>
             `<span class="kx-landing-news__dot${i === currentNewsPage ? ' is-active' : ''}" data-page="${i}"></span>`
@@ -812,35 +621,26 @@
         const nextBtn = $('#newsNext');
         const dotsContainer = $('#newsPaginationDots');
 
-        if (prevBtn) {
-            prevBtn.addEventListener('click', () => {
-                const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
-                if (total === 0) return;
-                currentNewsPage = (currentNewsPage - 1 + total) % total;
-                renderNewsPage();
-                updateNewsPagination();
-            });
-        }
+        if (prevBtn) prevBtn.addEventListener('click', () => {
+            const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
+            if (total === 0) return;
+            currentNewsPage = (currentNewsPage - 1 + total) % total;
+            renderNewsPage(); updateNewsPagination();
+        });
 
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
-                const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
-                if (total === 0) return;
-                currentNewsPage = (currentNewsPage + 1) % total;
-                renderNewsPage();
-                updateNewsPagination();
-            });
-        }
+        if (nextBtn) nextBtn.addEventListener('click', () => {
+            const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
+            if (total === 0) return;
+            currentNewsPage = (currentNewsPage + 1) % total;
+            renderNewsPage(); updateNewsPagination();
+        });
 
-        if (dotsContainer) {
-            dotsContainer.addEventListener('click', (e) => {
-                const dot = e.target.closest('.kx-landing-news__dot');
-                if (!dot) return;
-                currentNewsPage = parseInt(dot.dataset.page);
-                renderNewsPage();
-                updateNewsPagination();
-            });
-        }
+        if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
+            const dot = e.target.closest('.kx-landing-news__dot');
+            if (!dot) return;
+            currentNewsPage = parseInt(dot.dataset.page);
+            renderNewsPage(); updateNewsPagination();
+        });
     }
 
     // ═══════════════════════════════════════
@@ -848,28 +648,14 @@
     // ═══════════════════════════════════════
     async function loadAlbums() {
         if (!db) return;
-
         try {
-            const { data, error } = await db
-                .from('albumes')
-                .select('*, canciones(id, titulo, duracion, archivo_url)')
-                .order('created_at', { ascending: false })
-                .limit(8);
-
+            const { data, error } = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(8);
             if (error) throw error;
-
             if (!data || data.length === 0) { hideCarousel(); return; }
-
             landingAlbumes = data;
             currentAlbumIndex = 0;
-            renderCarousel();
-            updateCarouselDots();
-            initCarouselControls();
-            initCarouselSwipe();
-        } catch (err) {
-            console.error('Error cargando álbumes:', err);
-            hideCarousel();
-        }
+            renderCarousel(); updateCarouselDots(); initCarouselControls(); initCarouselSwipe();
+        } catch (err) { console.error('Error cargando álbumes:', err); hideCarousel(); }
     }
 
     function hideCarousel() {
@@ -883,10 +669,7 @@
 
     function renderCarousel() {
         if (landingAlbumes.length === 0) return;
-
-        const mainEl = $('#carouselMain');
-        const prevEl = $('#carouselPrev');
-        const nextEl = $('#carouselNext');
+        const mainEl = $('#carouselMain'), prevEl = $('#carouselPrev'), nextEl = $('#carouselNext');
         if (!mainEl || !prevEl || !nextEl) return;
 
         const current = landingAlbumes[currentAlbumIndex];
@@ -902,16 +685,12 @@
         if (prevImg) prevImg.src = landingAlbumes[prevIdx].imagen_url || placeholder;
         if (nextImg) nextImg.src = landingAlbumes[nextIdx].imagen_url || placeholder;
 
-        const titleEl = $('#carouselTitle');
-        const artistEl = $('#carouselArtist');
-        const tracksEl = $('#carouselTracks');
-
+        const titleEl = $('#carouselTitle'), artistEl = $('#carouselArtist'), tracksEl = $('#carouselTracks');
         if (titleEl) titleEl.textContent = current.titulo || '';
         if (artistEl) artistEl.textContent = (current.artista || 'KXON') + ' · ' + new Date().getFullYear() + ' Edition';
         if (tracksEl) {
             const cnt = current.canciones ? current.canciones.length : 0;
-            const pos = currentAlbumIndex + 1;
-            tracksEl.textContent = String(pos).padStart(2, '0') + ' / ' + String(cnt).padStart(2, '0') + ' TRACKS';
+            tracksEl.textContent = String(currentAlbumIndex + 1).padStart(2, '0') + ' / ' + String(cnt).padStart(2, '0') + ' TRACKS';
         }
 
         const hide = landingAlbumes.length <= 1;
@@ -921,74 +700,46 @@
 
     function navigateCarousel(direction) {
         if (landingAlbumes.length <= 1) return;
-
         const stage = $('#carouselStage');
         if (stage) stage.classList.add('is-transitioning');
-
         currentAlbumIndex = direction === 'next'
             ? (currentAlbumIndex + 1) % landingAlbumes.length
             : (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
-
-        renderCarousel();
-        updateCarouselDots();
-
+        renderCarousel(); updateCarouselDots();
         setTimeout(() => { if (stage) stage.classList.remove('is-transitioning'); }, 700);
     }
 
     function updateCarouselDots() {
         const container = $('#carouselDots');
         if (!container) return;
-
         container.innerHTML = landingAlbumes.map((_, i) =>
             `<div class="kx-landing-carousel__dot${i === currentAlbumIndex ? ' is-active' : ''}" data-idx="${i}"></div>`
         ).join('');
     }
 
     function initCarouselControls() {
-        const prevBtn = $('#carouselBtnPrev');
-        const nextBtn = $('#carouselBtnNext');
-        const dotsContainer = $('#carouselDots');
-        const mainEl = $('#carouselMain');
-
+        const prevBtn = $('#carouselBtnPrev'), nextBtn = $('#carouselBtnNext'), dotsContainer = $('#carouselDots'), mainEl = $('#carouselMain');
         if (prevBtn) prevBtn.addEventListener('click', () => navigateCarousel('prev'));
         if (nextBtn) nextBtn.addEventListener('click', () => navigateCarousel('next'));
-
-        if (dotsContainer) {
-            dotsContainer.addEventListener('click', (e) => {
-                const dot = e.target.closest('.kx-landing-carousel__dot');
-                if (!dot) return;
-                const idx = parseInt(dot.dataset.idx);
-                if (idx !== currentAlbumIndex) {
-                    currentAlbumIndex = idx;
-                    renderCarousel();
-                    updateCarouselDots();
-                }
-            });
-        }
-
+        if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
+            const dot = e.target.closest('.kx-landing-carousel__dot');
+            if (!dot) return;
+            const idx = parseInt(dot.dataset.idx);
+            if (idx !== currentAlbumIndex) { currentAlbumIndex = idx; renderCarousel(); updateCarouselDots(); }
+        });
         if (mainEl) mainEl.addEventListener('click', () => openAlbumModal(currentAlbumIndex));
     }
 
     function initCarouselSwipe() {
         const stage = $('#carouselStage');
         if (!stage) return;
-
         let startX = 0, isDragging = false;
-
-        stage.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            isDragging = true;
-        }, { passive: true });
-
+        stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
         stage.addEventListener('touchend', (e) => {
             if (!isDragging) return;
             isDragging = false;
             const diffX = e.changedTouches[0].clientX - startX;
-            const diffY = e.changedTouches[0].clientY - (e.touches[0]?.clientY || 0);
-
-            if (Math.abs(diffX) > 50) {
-                diffX > 0 ? navigateCarousel('prev') : navigateCarousel('next');
-            }
+            if (Math.abs(diffX) > 50) diffX > 0 ? navigateCarousel('prev') : navigateCarousel('next');
         }, { passive: true });
     }
 
@@ -998,26 +749,14 @@
     function openNewsModal(idx) {
         const n = landingNoticias[idx];
         if (!n) return;
-
         const modal = $('#modalNoticia');
-        const titulo = $('#noticiaModalTitle');
-        const desc = $('#noticiaDesc');
-        const fecha = $('#noticiaFecha');
-        const imgWrap = $('#noticiaImgWrap');
-        const img = $('#noticiaImg');
-
-        if (titulo) titulo.textContent = n.titulo;
-        if (desc) desc.textContent = n.descripcion;
-        if (fecha) fecha.textContent = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-
+        if ($('#noticiaModalTitle')) $('#noticiaModalTitle').textContent = n.titulo;
+        if ($('#noticiaDesc')) $('#noticiaDesc').textContent = n.descripcion;
+        if ($('#noticiaFecha')) $('#noticiaFecha').textContent = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        const imgWrap = $('#noticiaImgWrap'), img = $('#noticiaImg');
         if (imgWrap && img) {
-            if (n.imagen_url) {
-                img.src = n.imagen_url;
-                img.alt = n.titulo || '';
-                imgWrap.removeAttribute('hidden');
-            } else {
-                imgWrap.setAttribute('hidden', '');
-            }
+            if (n.imagen_url) { img.src = n.imagen_url; img.alt = n.titulo || ''; imgWrap.removeAttribute('hidden'); }
+            else imgWrap.setAttribute('hidden', '');
         }
         openModal(modal);
     }
@@ -1029,21 +768,15 @@
         preview.stop();
         const a = landingAlbumes[idx];
         if (!a) return;
-
         const modal = $('#modalAlbum');
-        const titulo = $('#albumModalTitle');
-        const desc = $('#albumDesc');
-        const cover = $('#albumCover');
-        const meta = $('#albumMeta');
-        const tracks = $('#albumTracks');
-
-        if (titulo) titulo.textContent = a.titulo;
-        if (desc) desc.textContent = a.descripcion || 'Sin descripción';
-        if (cover) { cover.src = a.imagen_url || 'https://placehold.co/300x300/0e0e0e/333?text=♪'; cover.alt = a.titulo || ''; }
+        if ($('#albumModalTitle')) $('#albumModalTitle').textContent = a.titulo;
+        if ($('#albumDesc')) $('#albumDesc').textContent = a.descripcion || 'Sin descripción';
+        if ($('#albumCover')) { $('#albumCover').src = a.imagen_url || 'https://placehold.co/300x300/0e0e0e/333?text=♪'; $('#albumCover').alt = a.titulo || ''; }
 
         const canciones = a.canciones || [];
-        if (meta) meta.textContent = canciones.length + ' CANCIONES';
+        if ($('#albumMeta')) $('#albumMeta').textContent = canciones.length + ' CANCIONES';
 
+        const tracks = $('#albumTracks');
         if (tracks) {
             if (canciones.length === 0) {
                 tracks.innerHTML = '<div style="text-align:center;padding:24px;color:var(--kx-silver-700);font-size:var(--kx-text-sm)">Sin canciones en este álbum</div>';
@@ -1051,25 +784,9 @@
                 let html = '';
                 canciones.forEach((c, i) => {
                     const url = (c.archivo_url || '').replace(/'/g, "\\'");
-                    html += `
-                        <div class="kx-landing-track" data-track-id="${c.id}" data-audio-url="${url}">
-                            <span class="kx-landing-track__num">${i + 1}</span>
-                            <button class="kx-landing-track__play" data-track-id="${c.id}" type="button" aria-label="Reproducir ${c.titulo}">
-                                <span class="kx-landing-track__icon">▶</span>
-                                <div class="kx-landing-track__progress-bar"><div class="kx-landing-track__progress"></div></div>
-                            </button>
-                            <div class="kx-landing-track__info">
-                                <span class="kx-landing-track__title">${c.titulo}</span>
-                                <span class="kx-landing-track__time">0:30 preview</span>
-                            </div>
-                            <span class="kx-landing-track__duration">${c.duracion || '--:--'}</span>
-                        </div>`;
+                    html += `<div class="kx-landing-track" data-track-id="${c.id}" data-audio-url="${url}"><span class="kx-landing-track__num">${i + 1}</span><button class="kx-landing-track__play" data-track-id="${c.id}" type="button" aria-label="Reproducir ${c.titulo}"><span class="kx-landing-track__icon">▶</span><div class="kx-landing-track__progress-bar"><div class="kx-landing-track__progress"></div></div></button><div class="kx-landing-track__info"><span class="kx-landing-track__title">${c.titulo}</span><span class="kx-landing-track__time">0:30 preview</span></div><span class="kx-landing-track__duration">${c.duracion || '--:--'}</span></div>`;
                 });
-                html += `
-                    <div class="kx-landing-track__notice">
-                        <span>🎧</span>
-                        <span>Preview de 30 segundos · <a href="register.html">Regístrate</a> para escuchar completo</span>
-                    </div>`;
+                html += `<div class="kx-landing-track__notice"><span>🎧</span><span>Preview de 30 segundos · <a href="register.html">Regístrate</a> para escuchar completo</span></div>`;
                 tracks.innerHTML = html;
             }
         }
@@ -1083,10 +800,7 @@
         if (!modal) return;
         modal.removeAttribute('hidden');
         document.body.style.overflow = 'hidden';
-        requestAnimationFrame(() => {
-            const closeBtn = modal.querySelector('.kx-landing-modal__close');
-            if (closeBtn) closeBtn.focus();
-        });
+        requestAnimationFrame(() => { modal.querySelector('.kx-landing-modal__close')?.focus(); });
     }
 
     function closeModal(modal) {
@@ -1100,18 +814,14 @@
         document.addEventListener('click', (e) => {
             const closeBtn = e.target.closest('.kx-landing-modal__close, [data-close-modal]');
             if (closeBtn) { closeModal(closeBtn.closest('.kx-landing-modal')); return; }
-
             const backdrop = e.target.closest('.kx-landing-modal__backdrop');
             if (backdrop) { closeModal(backdrop.closest('.kx-landing-modal')); return; }
-
             const newsCard = e.target.closest('.kx-landing-news__card');
             if (newsCard) { openNewsModal(parseInt(newsCard.dataset.newsIdx)); return; }
-
             const playBtn = e.target.closest('.kx-landing-track__play');
             if (playBtn) {
                 const track = playBtn.closest('.kx-landing-track');
                 if (track) preview.play(track.dataset.trackId, track.dataset.audioUrl);
-                return;
             }
         });
 
@@ -1129,8 +839,7 @@
     function initIosModal() {
         const btn = $('#btnIosInstall');
         const modal = $('#iosModal');
-        if (!btn || !modal) return;
-        btn.addEventListener('click', () => openModal(modal));
+        if (btn && modal) btn.addEventListener('click', () => openModal(modal));
     }
 
     // ═══════════════════════════════════════
@@ -1145,7 +854,8 @@
             toggle.addEventListener('click', () => {
                 const isOpen = toggle.getAttribute('aria-expanded') === 'true';
                 toggle.setAttribute('aria-expanded', String(!isOpen));
-                if (isOpen) { links.setAttribute('hidden', ''); } else { links.removeAttribute('hidden'); }
+                if (isOpen) links.setAttribute('hidden', '');
+                else links.removeAttribute('hidden');
             });
         }
 
@@ -1153,13 +863,9 @@
             shareBtn.addEventListener('click', async () => {
                 const url = 'https://kxon-music.vercel.app';
                 try {
-                    if (navigator.share) {
-                        await navigator.share({ title: 'KXON Music', url });
-                    } else {
-                        await navigator.clipboard.writeText(url);
-                        showToast('Enlace copiado ✓', 'success');
-                    }
-                } catch { /* User cancelled */ }
+                    if (navigator.share) await navigator.share({ title: 'KXON Music', url });
+                    else { await navigator.clipboard.writeText(url); showToast('Enlace copiado ✓', 'success'); }
+                } catch { /* cancelled */ }
             });
         }
     }
@@ -1170,17 +876,11 @@
     function showToast(message, type = 'info') {
         const container = $('#toastContainer');
         if (!container) return;
-
         const toast = document.createElement('div');
         toast.className = 'kx-toast kx-toast--' + type;
         toast.textContent = message;
         container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(24px)';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(24px)'; setTimeout(() => toast.remove(), 300); }, 3000);
     }
 
     // ═══════════════════════════════════════
@@ -1190,11 +890,8 @@
         $$('.kx-landing-faq__item').forEach(item => {
             const question = item.querySelector('.kx-landing-faq__question');
             if (!question) return;
-
             question.addEventListener('click', () => {
-                $$('.kx-landing-faq__item[open]').forEach(other => {
-                    if (other !== item) other.removeAttribute('open');
-                });
+                $$('.kx-landing-faq__item[open]').forEach(other => { if (other !== item) other.removeAttribute('open'); });
             });
         });
     }
@@ -1203,63 +900,42 @@
     //  🔢 HERO COUNTER OBSERVER
     // ═══════════════════════════════════════
     function initHeroCounters() {
-        const heroProof = $('.kx-landing-hero__proof');
-        const heroStats = $('#heroStats');
-
-        [heroProof, heroStats].forEach(el => {
+        [$('.kx-landing-hero__proof'), $('#heroStats')].forEach(el => {
             if (!el) return;
             const observer = new IntersectionObserver(([entry]) => {
-                if (entry.isIntersecting) {
-                    el.querySelectorAll('[data-counter]').forEach(animateCounterInline);
-                    observer.unobserve(el);
-                }
+                if (entry.isIntersecting) { el.querySelectorAll('[data-counter]').forEach(animateCounterInline); observer.unobserve(el); }
             }, { threshold: 0.5 });
             observer.observe(el);
         });
     }
 
     // ═══════════════════════════════════════
-    //  🎨 ACTIVE NAV HIGHLIGHT — ENHANCED
+    //  🎨 ACTIVE NAV HIGHLIGHT
     // ═══════════════════════════════════════
     function initActiveNav() {
         const sections = $$('section[id]');
         const navLinks = $$('.kx-landing-header__link');
         if (sections.length === 0 || navLinks.length === 0) return;
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const id = entry.target.getAttribute('id');
-                    navLinks.forEach(link => {
-                        const href = link.getAttribute('href');
-                        if (href === '#' + id) {
-                            link.classList.add('is-active');
-                        } else {
-                            link.classList.remove('is-active');
-                        }
-                    });
+                    navLinks.forEach(link => link.classList.toggle('is-active', link.getAttribute('href') === '#' + id));
                 }
             });
-        }, {
-            rootMargin: '-30% 0px -60% 0px',
-            threshold: 0
-        });
-
+        }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
         sections.forEach(section => observer.observe(section));
     }
 
     // ═══════════════════════════════════════
-    //  ⌨️ KEYBOARD NAVIGATION CAROUSEL
+    //  ⌨️ KEYBOARD NAV CAROUSEL
     // ═══════════════════════════════════════
     function initCarouselKeyboard() {
         document.addEventListener('keydown', (e) => {
             const carousel = $('.kx-landing-carousel');
             if (!carousel) return;
-
             const rect = carousel.getBoundingClientRect();
-            const inView = rect.top < window.innerHeight && rect.bottom > 0;
-            if (!inView) return;
-
+            if (rect.top > window.innerHeight || rect.bottom < 0) return;
             if (e.key === 'ArrowLeft') { e.preventDefault(); navigateCarousel('prev'); }
             else if (e.key === 'ArrowRight') { e.preventDefault(); navigateCarousel('next'); }
         });
@@ -1277,37 +953,32 @@
                     <div class="kx-landing-news__skeleton" style="height:14px;width:100%;margin-bottom:var(--kx-space-2)"></div>
                     <div class="kx-landing-news__skeleton" style="height:14px;width:55%"></div>
                 </div>
-            </article>`
-        ).join('');
+            </article>`).join('');
     }
 
     function buildEmpty(icon, title, text = '') {
-        return `
-            <div style="grid-column:1/-1;text-align:center;padding:var(--kx-space-16) var(--kx-space-6)">
-                <div style="font-size:2.5rem;margin-bottom:var(--kx-space-5);opacity:0.3">${icon}</div>
-                <h3 style="font-size:var(--kx-text-lg);color:var(--kx-silver-600);margin-bottom:var(--kx-space-2)">${title}</h3>
-                ${text ? `<p style="font-size:var(--kx-text-sm);color:var(--kx-silver-700)">${text}</p>` : ''}
-            </div>`;
+        return `<div style="grid-column:1/-1;text-align:center;padding:var(--kx-space-16) var(--kx-space-6)">
+            <div style="font-size:2.5rem;margin-bottom:var(--kx-space-5);opacity:0.3">${icon}</div>
+            <h3 style="font-size:var(--kx-text-lg);color:var(--kx-silver-600);margin-bottom:var(--kx-space-2)">${title}</h3>
+            ${text ? `<p style="font-size:var(--kx-text-sm);color:var(--kx-silver-700)">${text}</p>` : ''}
+        </div>`;
     }
 
     // ═══════════════════════════════════════
     //  🚀 INIT
     // ═══════════════════════════════════════
     function init() {
-        // Page loader first
         initPageLoader();
-
-        // Core interactions
         preview.init();
         initCustomCursor();
         initMagneticButtons();
         initSpotlightCards();
-        initTiltCards();          // NEW
-        initMorphingText();       // NEW
+        initTiltCards();
+        initMorphingText();
         initMobileMenu();
         initScrollReveal();
         initHeroParticles();
-        initCtaParticles();       // NEW
+        initCtaParticles();
         initHeroScroll();
         initHeroCounters();
         initVideoSound();
@@ -1322,23 +993,17 @@
         initActiveNav();
         initCarouselKeyboard();
 
-        // Scroll handler
         window.addEventListener('scroll', onScroll, { passive: true });
         handleHeaderScroll();
         updateScrollProgress();
         handleStickyCta();
 
-        // Load data
         loadNews();
         loadAlbums();
 
-        console.log('🎵 KXON Landing v5.0 ULTRA PREMIUM — 20/10 · Immersive');
+        console.log('🎵 KXON Landing v6.0 ULTRA PREMIUM — 20/10 · Violet Edition');
     }
 
-    // Start when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
 })();

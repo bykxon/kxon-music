@@ -1,8 +1,8 @@
 /* ============================================
    🌐 GLOBAL CSS — KXON MUSIC PLATFORM
    Design Tokens · Reset · Tipografía · Utilidades
-   Versión: 5.0 — Rediseño ULTRA PREMIUM 2026
-   Level: 20/10
+   Versión: 6.0 — Rediseño ULTRA PREMIUM 2026
+   Level: 20/10 · Inmersivo · Cinematográfico
    ============================================ */
 
 /* ──────────────────────────────────
@@ -33,6 +33,20 @@
     --kx-silver-50:         #f0f0f0;
     --kx-white:             #fafafa;
 
+    /* ── NEW: Color accent vibrante ── */
+    --kx-violet:            #8b5cf6;
+    --kx-violet-light:      #a78bfa;
+    --kx-violet-dark:       #7c3aed;
+    --kx-violet-glow:       rgba(139, 92, 246, 0.15);
+    --kx-violet-subtle:     rgba(139, 92, 246, 0.08);
+    --kx-violet-medium:     rgba(139, 92, 246, 0.20);
+    --kx-blue:              #3b82f6;
+    --kx-blue-glow:         rgba(59, 130, 246, 0.12);
+    --kx-cyan:              #06b6d4;
+    --kx-cyan-glow:         rgba(6, 182, 212, 0.10);
+    --kx-amber:             #f59e0b;
+    --kx-amber-glow:        rgba(245, 158, 11, 0.12);
+
     /* ── Colores: Semánticos ── */
     --kx-text-primary:      var(--kx-silver-100);
     --kx-text-secondary:    var(--kx-silver-500);
@@ -45,54 +59,71 @@
     --kx-border-subtle:     rgba(255, 255, 255, 0.06);
     --kx-border-default:    rgba(255, 255, 255, 0.09);
     --kx-border-strong:     rgba(255, 255, 255, 0.14);
-    --kx-border-accent:     rgba(192, 192, 192, 0.25);
+    --kx-border-accent:     rgba(139, 92, 246, 0.30);
 
-    /* ── Acentos ── */
+    /* ── Acentos — UPDATED con violeta ── */
     --kx-accent:            #c0c0c0;
     --kx-accent-hover:      #e0e0e0;
     --kx-accent-subtle:     rgba(192, 192, 192, 0.08);
     --kx-accent-medium:     rgba(192, 192, 192, 0.15);
+    --kx-accent-vibrant:    var(--kx-violet);
+    --kx-accent-vibrant-glow: var(--kx-violet-glow);
     --kx-success:           #34d399;
     --kx-error:             #f87171;
     --kx-warning:           #fbbf24;
     --kx-info:              #60a5fa;
 
-    /* ── Gradientes ── */
-    --kx-grad-text:         linear-gradient(135deg, #f0f0f0 0%, #888 40%, #c0c0c0 70%, #f0f0f0 100%);
-    --kx-grad-btn-solid:    linear-gradient(135deg, #c0c0c0 0%, #888 100%);
-    --kx-grad-btn-hover:    linear-gradient(135deg, #e0e0e0 0%, #a8a8a8 100%);
+    /* ── Gradientes — ENHANCED ── */
+    --kx-grad-text:         linear-gradient(135deg, #f0f0f0 0%, #8b5cf6 35%, #c0c0c0 60%, #3b82f6 80%, #f0f0f0 100%);
+    --kx-grad-text-vibrant: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+    --kx-grad-btn-solid:    linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+    --kx-grad-btn-hover:    linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%);
+    --kx-grad-btn-silver:   linear-gradient(135deg, #c0c0c0 0%, #888 100%);
+    --kx-grad-btn-silver-h: linear-gradient(135deg, #e0e0e0 0%, #a8a8a8 100%);
     --kx-grad-overlay:      linear-gradient(180deg, transparent 0%, rgba(3, 3, 3, 0.95) 100%);
-    --kx-grad-divider:      linear-gradient(90deg, transparent, rgba(192, 192, 192, 0.12), transparent);
-    --kx-grad-glow:         radial-gradient(circle, rgba(192, 192, 192, 0.04) 0%, transparent 60%);
-    --kx-grad-mesh-1:       radial-gradient(at 40% 20%, rgba(192, 192, 192, 0.06) 0%, transparent 50%);
-    --kx-grad-mesh-2:       radial-gradient(at 80% 80%, rgba(120, 120, 120, 0.04) 0%, transparent 50%);
+    --kx-grad-divider:      linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.15), transparent);
+    --kx-grad-glow:         radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, rgba(59, 130, 246, 0.03) 40%, transparent 70%);
+    --kx-grad-mesh-1:       radial-gradient(at 40% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%);
+    --kx-grad-mesh-2:       radial-gradient(at 80% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+    --kx-grad-mesh-3:       radial-gradient(at 20% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+    --kx-grad-hero-bg:      radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.04) 30%, transparent 60%);
     --kx-grad-holographic:  linear-gradient(
                                 135deg,
-                                rgba(255, 255, 255, 0) 0%,
-                                rgba(255, 255, 255, 0.03) 20%,
-                                rgba(192, 192, 192, 0.08) 40%,
-                                rgba(255, 255, 255, 0.03) 60%,
-                                rgba(192, 192, 192, 0.06) 80%,
-                                rgba(255, 255, 255, 0) 100%
+                                rgba(139, 92, 246, 0) 0%,
+                                rgba(139, 92, 246, 0.06) 20%,
+                                rgba(59, 130, 246, 0.10) 40%,
+                                rgba(6, 182, 212, 0.06) 60%,
+                                rgba(139, 92, 246, 0.08) 80%,
+                                rgba(59, 130, 246, 0) 100%
+                            );
+    --kx-grad-aurora:       conic-gradient(
+                                from 180deg at 50% 50%,
+                                rgba(139, 92, 246, 0) 0deg,
+                                rgba(139, 92, 246, 0.08) 60deg,
+                                rgba(59, 130, 246, 0.12) 120deg,
+                                rgba(6, 182, 212, 0.06) 180deg,
+                                rgba(139, 92, 246, 0.10) 240deg,
+                                rgba(59, 130, 246, 0.05) 300deg,
+                                rgba(139, 92, 246, 0) 360deg
                             );
 
     /* ── Tipografía ── */
     --kx-font-display:      'Montserrat', system-ui, sans-serif;
     --kx-font-body:         'Inter', system-ui, sans-serif;
-    --kx-font-accent:       'Space Grotesk', system-ui, sans-serif;
-    --kx-font-mono:         'JetBrains Mono', 'Fira Code', monospace;
+    --kx-font-accent:       'Inter', system-ui, sans-serif;
+    --kx-font-mono:         ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
 
     /* Escala tipográfica fluida */
-    --kx-text-xs:           clamp(0.65rem, 0.6rem + 0.2vw, 0.75rem);
-    --kx-text-sm:           clamp(0.78rem, 0.74rem + 0.2vw, 0.875rem);
-    --kx-text-base:         clamp(0.875rem, 0.84rem + 0.2vw, 1rem);
-    --kx-text-lg:           clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-    --kx-text-xl:           clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
-    --kx-text-2xl:          clamp(1.4rem, 1.2rem + 1vw, 1.875rem);
-    --kx-text-3xl:          clamp(1.8rem, 1.4rem + 1.5vw, 2.5rem);
-    --kx-text-4xl:          clamp(2.2rem, 1.6rem + 2.5vw, 3.5rem);
-    --kx-text-5xl:          clamp(3rem, 2rem + 4vw, 5rem);
-    --kx-text-hero:         clamp(4rem, 3rem + 5vw, 8rem);
+    --kx-text-xs:           clamp(0.7rem, 0.65rem + 0.2vw, 0.8rem);
+    --kx-text-sm:           clamp(0.8rem, 0.76rem + 0.2vw, 0.9rem);
+    --kx-text-base:         clamp(0.9rem, 0.86rem + 0.2vw, 1rem);
+    --kx-text-lg:           clamp(1.05rem, 0.98rem + 0.25vw, 1.175rem);
+    --kx-text-xl:           clamp(1.2rem, 1.1rem + 0.5vw, 1.4rem);
+    --kx-text-2xl:          clamp(1.5rem, 1.3rem + 1vw, 2rem);
+    --kx-text-3xl:          clamp(1.9rem, 1.5rem + 1.5vw, 2.75rem);
+    --kx-text-4xl:          clamp(2.4rem, 1.8rem + 2.5vw, 3.75rem);
+    --kx-text-5xl:          clamp(3.2rem, 2.2rem + 4vw, 5.5rem);
+    --kx-text-hero:         clamp(4.5rem, 3.5rem + 5vw, 9rem);
 
     /* Pesos */
     --kx-weight-thin:       200;
@@ -117,7 +148,7 @@
     --kx-space-16:          4rem;
     --kx-space-20:          5rem;
     --kx-space-24:          6rem;
-    --kx-space-section:     clamp(4rem, 3rem + 4vw, 7rem);
+    --kx-space-section:     clamp(5rem, 4rem + 4vw, 8rem);
 
     /* ── Bordes ── */
     --kx-radius-xs:         4px;
@@ -129,16 +160,18 @@
     --kx-radius-3xl:        36px;
     --kx-radius-full:       9999px;
 
-    /* ── Sombras ── */
+    /* ── Sombras — ENHANCED ── */
     --kx-shadow-sm:         0 1px 3px rgba(0, 0, 0, 0.4);
     --kx-shadow-md:         0 4px 16px rgba(0, 0, 0, 0.5);
     --kx-shadow-lg:         0 8px 32px rgba(0, 0, 0, 0.6);
     --kx-shadow-xl:         0 16px 48px rgba(0, 0, 0, 0.7);
     --kx-shadow-2xl:        0 24px 64px rgba(0, 0, 0, 0.8);
-    --kx-shadow-glow:       0 0 24px rgba(192, 192, 192, 0.08);
-    --kx-shadow-glow-strong:0 0 40px rgba(192, 192, 192, 0.14);
-    --kx-shadow-glow-ultra: 0 0 60px rgba(192, 192, 192, 0.2), 0 0 120px rgba(192, 192, 192, 0.05);
-    --kx-shadow-inner-glow: inset 0 0 30px rgba(192, 192, 192, 0.03);
+    --kx-shadow-glow:       0 0 24px rgba(139, 92, 246, 0.12);
+    --kx-shadow-glow-strong:0 0 40px rgba(139, 92, 246, 0.20);
+    --kx-shadow-glow-ultra: 0 0 60px rgba(139, 92, 246, 0.25), 0 0 120px rgba(59, 130, 246, 0.08);
+    --kx-shadow-inner-glow: inset 0 0 30px rgba(139, 92, 246, 0.04);
+    --kx-shadow-violet:     0 4px 30px rgba(139, 92, 246, 0.15);
+    --kx-shadow-blue:       0 4px 30px rgba(59, 130, 246, 0.12);
 
     /* ── Transiciones ── */
     --kx-ease-default:      cubic-bezier(0.4, 0, 0.2, 1);
@@ -147,6 +180,7 @@
     --kx-ease-spring:       cubic-bezier(0.16, 1, 0.3, 1);
     --kx-ease-elastic:      cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --kx-ease-smooth:       cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --kx-ease-bounce:       cubic-bezier(0.34, 1.56, 0.64, 1);
     --kx-duration-fast:     150ms;
     --kx-duration-base:     250ms;
     --kx-duration-slow:     400ms;
@@ -170,7 +204,7 @@
     --kx-max-width:         1200px;
     --kx-max-width-narrow:  800px;
     --kx-max-width-text:    640px;
-    --kx-gutter:            clamp(1rem, 0.5rem + 2vw, 2rem);
+    --kx-gutter:            clamp(1.25rem, 0.5rem + 2vw, 2.5rem);
     --kx-header-height:     72px;
 }
 
@@ -207,44 +241,12 @@ body {
     overflow-x: hidden;
 }
 
-/* ── Elementos base ── */
-img,
-picture,
-video,
-canvas,
-svg {
-    display: block;
-    max-width: 100%;
-}
-
-img {
-    height: auto;
-    font-style: italic;
-}
-
-input,
-button,
-textarea,
-select {
-    font: inherit;
-    color: inherit;
-}
-
-button {
-    cursor: pointer;
-    border: none;
-    background: none;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-ul,
-ol {
-    list-style: none;
-}
+img, picture, video, canvas, svg { display: block; max-width: 100%; }
+img { height: auto; font-style: italic; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--kx-font-display);
@@ -253,53 +255,30 @@ h1, h2, h3, h4, h5, h6 {
     text-wrap: balance;
 }
 
-p {
-    text-wrap: pretty;
-    max-width: 75ch;
-}
+p { text-wrap: pretty; max-width: 75ch; }
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--kx-black-deep);
-}
-
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--kx-black-deep); }
 ::-webkit-scrollbar-thumb {
-    background: var(--kx-black-hover);
+    background: linear-gradient(180deg, var(--kx-violet-dark), var(--kx-black-hover));
     border-radius: var(--kx-radius-full);
-    transition: background 0.3s;
 }
+::-webkit-scrollbar-thumb:hover { background: var(--kx-violet); }
+* { scrollbar-width: thin; scrollbar-color: var(--kx-black-hover) var(--kx-black-deep); }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--kx-silver-800);
-}
-
-/* Firefox scrollbar */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--kx-black-hover) var(--kx-black-deep);
-}
-
-/* ── Selección de texto ── */
 ::selection {
-    background: rgba(192, 192, 192, 0.2);
+    background: rgba(139, 92, 246, 0.25);
     color: var(--kx-white);
 }
 
-/* ── Focus visible ── */
 :focus-visible {
-    outline: 2px solid var(--kx-accent);
+    outline: 2px solid var(--kx-violet);
     outline-offset: 3px;
     border-radius: var(--kx-radius-xs);
 }
 
-:focus:not(:focus-visible) {
-    outline: none;
-}
+:focus:not(:focus-visible) { outline: none; }
 
 /* ──────────────────────────────────
    🏗️ LAYOUT
@@ -311,9 +290,7 @@ p {
     padding-inline: var(--kx-gutter);
 }
 
-.kx-container--narrow {
-    max-width: var(--kx-max-width-narrow);
-}
+.kx-container--narrow { max-width: var(--kx-max-width-narrow); }
 
 /* ──────────────────────────────────
    📝 TIPOGRAFÍA GLOBAL
@@ -327,8 +304,17 @@ p {
     animation: kx-shimmer 6s linear infinite;
 }
 
+.kx-gradient-text--vibrant {
+    background: var(--kx-grad-text-vibrant);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: kx-shimmer 4s linear infinite;
+}
+
 /* ──────────────────────────────────
-   🔘 SISTEMA DE BOTONES — ENHANCED
+   🔘 SISTEMA DE BOTONES — ENHANCED v6
    ────────────────────────────────── */
 .kx-btn {
     display: inline-flex;
@@ -358,33 +344,44 @@ p {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
     translate: -100% 0;
     transition: translate var(--kx-duration-slow) var(--kx-ease-default);
     z-index: -1;
 }
 
-.kx-btn:hover::after {
-    translate: 100% 0;
-}
+.kx-btn:hover::after { translate: 100% 0; }
+.kx-btn:active { transform: scale(0.97); }
 
-.kx-btn:active {
-    transform: scale(0.97);
-}
-
-/* Variantes */
+/* ── Solid — NOW VIOLET ── */
 .kx-btn--solid {
     background: var(--kx-grad-btn-solid);
-    color: var(--kx-text-inverse);
-    border: 1px solid transparent;
+    color: var(--kx-white);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .kx-btn--solid:hover {
     background: var(--kx-grad-btn-hover);
-    box-shadow: var(--kx-shadow-glow);
+    box-shadow: var(--kx-shadow-glow-strong), 0 8px 25px rgba(139, 92, 246, 0.25);
+    transform: translateY(-3px);
+    border-color: rgba(139, 92, 246, 0.5);
+}
+
+/* ── Silver variant ── */
+.kx-btn--silver {
+    background: var(--kx-grad-btn-silver);
+    color: var(--kx-text-inverse);
+    border: 1px solid transparent;
+}
+
+.kx-btn--silver:hover {
+    background: var(--kx-grad-btn-silver-h);
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.15);
     transform: translateY(-2px);
 }
 
+/* ── Ghost ── */
 .kx-btn--ghost {
     background: transparent;
     color: var(--kx-silver-300);
@@ -392,13 +389,14 @@ p {
 }
 
 .kx-btn--ghost:hover {
-    background: var(--kx-accent-subtle);
+    background: var(--kx-violet-subtle);
     border-color: var(--kx-border-accent);
     color: var(--kx-white);
     transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.08);
 }
 
-/* Glass variant */
+/* ── Glass ── */
 .kx-btn--glass {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(12px);
@@ -414,21 +412,10 @@ p {
 }
 
 /* Tamaños */
-.kx-btn--sm {
-    padding: var(--kx-space-2) var(--kx-space-4);
-    font-size: 0.65rem;
-}
+.kx-btn--sm { padding: var(--kx-space-2) var(--kx-space-4); font-size: 0.7rem; }
+.kx-btn--lg { padding: var(--kx-space-4) var(--kx-space-8); font-size: var(--kx-text-sm); }
+.kx-btn--full { width: 100%; }
 
-.kx-btn--lg {
-    padding: var(--kx-space-4) var(--kx-space-8);
-    font-size: var(--kx-text-sm);
-}
-
-.kx-btn--full {
-    width: 100%;
-}
-
-/* Hero button — extra emphasis */
 .kx-btn--hero {
     padding: var(--kx-space-4) var(--kx-space-10);
     font-size: var(--kx-text-sm);
@@ -436,66 +423,51 @@ p {
     letter-spacing: 0.12em;
 }
 
-/* Glow enhancement */
+/* Glow — NOW VIOLET */
 .kx-btn--glow {
-    box-shadow: 0 0 20px rgba(192, 192, 192, 0.1),
-                0 0 6px rgba(192, 192, 192, 0.05);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.15),
+                0 0 6px rgba(139, 92, 246, 0.08);
 }
 
 .kx-btn--glow:hover {
-    box-shadow: 0 0 30px rgba(192, 192, 192, 0.2),
-                0 0 10px rgba(192, 192, 192, 0.1),
-                0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 35px rgba(139, 92, 246, 0.3),
+                0 0 15px rgba(139, 92, 246, 0.15),
+                0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* Shine effect */
+/* Shine */
 .kx-btn__shine {
     position: absolute;
     top: 0;
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.15),
-        transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transform: skewX(-20deg);
-    transition: none;
     pointer-events: none;
 }
 
-.kx-btn:hover .kx-btn__shine {
-    animation: kx-btn-shine 0.8s var(--kx-ease-out);
-}
+.kx-btn:hover .kx-btn__shine { animation: kx-btn-shine 0.8s var(--kx-ease-out); }
 
-@keyframes kx-btn-shine {
-    0% { left: -100%; }
-    100% { left: 150%; }
-}
+@keyframes kx-btn-shine { 0% { left: -100%; } 100% { left: 150%; } }
 
-/* Ripple effect */
+/* Ripple */
 .kx-btn__ripple {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 60%);
+    background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 60%);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.6s;
 }
 
-.kx-btn:active .kx-btn__ripple {
-    opacity: 1;
-    animation: kx-ripple-out 0.6s var(--kx-ease-out);
-}
+.kx-btn:active .kx-btn__ripple { opacity: 1; animation: kx-ripple-out 0.6s var(--kx-ease-out); }
 
 @keyframes kx-ripple-out {
     0% { transform: scale(0); opacity: 1; }
     100% { transform: scale(2.5); opacity: 0; }
 }
 
-/* Pulse dot for CTA buttons */
+/* Pulse dot */
 .kx-btn__pulse-dot {
     width: 6px;
     height: 6px;
@@ -506,7 +478,7 @@ p {
 }
 
 /* ──────────────────────────────────
-   🏷️ BADGES
+   🏷️ BADGES — ENHANCED
    ────────────────────────────────── */
 .kx-badge {
     display: inline-flex;
@@ -514,23 +486,21 @@ p {
     gap: var(--kx-space-2);
     padding: var(--kx-space-1) var(--kx-space-4);
     font-family: var(--kx-font-display);
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: var(--kx-weight-semibold);
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     border-radius: var(--kx-radius-full);
-    background: var(--kx-accent-subtle);
-    color: var(--kx-silver-400);
-    border: 1px solid var(--kx-border-default);
+    background: var(--kx-violet-subtle);
+    color: var(--kx-violet-light);
+    border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
-/* Badge pulse */
 .kx-badge__pulse {
     width: 6px;
     height: 6px;
     background: var(--kx-success);
     border-radius: var(--kx-radius-full);
-    display: inline-block;
     animation: kx-badge-pulse 2s ease-in-out infinite;
     box-shadow: 0 0 6px rgba(52, 211, 153, 0.4);
 }
@@ -566,37 +536,16 @@ p {
     transition: opacity 0.3s, transform 0.3s;
 }
 
-.kx-toast--success {
-    background: rgba(52, 211, 153, 0.1);
-    color: var(--kx-success);
-    border-color: var(--kx-success);
-}
-
-.kx-toast--error {
-    background: rgba(248, 113, 113, 0.1);
-    color: var(--kx-error);
-    border-color: var(--kx-error);
-}
-
-.kx-toast--info {
-    background: var(--kx-accent-subtle);
-    color: var(--kx-silver-300);
-    border-color: var(--kx-silver-700);
-}
+.kx-toast--success { background: rgba(52, 211, 153, 0.12); color: var(--kx-success); border-color: var(--kx-success); }
+.kx-toast--error { background: rgba(248, 113, 113, 0.12); color: var(--kx-error); border-color: var(--kx-error); }
+.kx-toast--info { background: var(--kx-violet-subtle); color: var(--kx-violet-light); border-color: var(--kx-violet); }
 
 /* ──────────────────────────────────
    ♿ ACCESIBILIDAD
    ────────────────────────────────── */
 .kx-sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
 .kx-skip-link {
@@ -604,17 +553,15 @@ p {
     top: -100%;
     left: var(--kx-space-4);
     padding: var(--kx-space-3) var(--kx-space-6);
-    background: var(--kx-accent);
-    color: var(--kx-text-inverse);
+    background: var(--kx-violet);
+    color: var(--kx-white);
     font-weight: var(--kx-weight-bold);
     border-radius: 0 0 var(--kx-radius-md) var(--kx-radius-md);
     z-index: var(--kx-z-max);
     transition: top var(--kx-transition-base);
 }
 
-.kx-skip-link:focus {
-    top: 0;
-}
+.kx-skip-link:focus { top: 0; }
 
 /* ──────────────────────────────────
    🎬 ANIMACIONES GLOBALES — ENHANCED
@@ -629,6 +576,11 @@ p {
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes kx-fade-in-up {
+    from { opacity: 0; transform: translateY(30px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @keyframes kx-scale-in {
     from { opacity: 0; transform: scale(0.92); }
     to { opacity: 1; transform: scale(1); }
@@ -639,47 +591,39 @@ p {
     to { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes kx-spin {
-    to { transform: rotate(360deg); }
-}
+@keyframes kx-spin { to { transform: rotate(360deg); } }
 
 @keyframes kx-glow-pulse {
-    0%, 100% { box-shadow: 0 0 6px rgba(192, 192, 192, 0.2); }
-    50% { box-shadow: 0 0 18px rgba(192, 192, 192, 0.4); }
+    0%, 100% { box-shadow: 0 0 6px rgba(139, 92, 246, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
 }
 
-/* NEW: Float animation */
 @keyframes kx-float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
 }
 
-/* NEW: Breathe animation */
 @keyframes kx-breathe {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
+    0%, 100% { opacity: 0.6; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.05); }
 }
 
-/* NEW: Rotate slow */
 @keyframes kx-rotate-slow {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-/* NEW: Gradient shift */
 @keyframes kx-gradient-shift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-/* NEW: Typewriter cursor */
 @keyframes kx-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
 }
 
-/* NEW: Morph words */
 @keyframes kx-morph-in {
     0% { opacity: 0; transform: translateY(100%) rotateX(-80deg); filter: blur(4px); }
     100% { opacity: 1; transform: translateY(0) rotateX(0deg); filter: blur(0); }
@@ -688,6 +632,18 @@ p {
 @keyframes kx-morph-out {
     0% { opacity: 1; transform: translateY(0) rotateX(0deg); filter: blur(0); }
     100% { opacity: 0; transform: translateY(-100%) rotateX(80deg); filter: blur(4px); }
+}
+
+/* NEW: Color pulse */
+@keyframes kx-color-pulse {
+    0%, 100% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(30deg); }
+}
+
+/* NEW: Border glow animation */
+@keyframes kx-border-glow {
+    0%, 100% { border-color: rgba(139, 92, 246, 0.15); }
+    50% { border-color: rgba(139, 92, 246, 0.4); }
 }
 
 /* ──────────────────────────────────
@@ -712,7 +668,8 @@ p {
         scroll-behavior: auto !important;
     }
 
-    .kx-gradient-text {
+    .kx-gradient-text,
+    .kx-gradient-text--vibrant {
         animation: none;
     }
 }
