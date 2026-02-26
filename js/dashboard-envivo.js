@@ -1,7 +1,7 @@
 /* ============================================
-   🏆 DASHBOARD-EMBAJADORES.JS — KXON 2026
-   Panel de embajadores, referidos, ranking
-   Namespace: kx-emb-*
+   🔴 DASHBOARD-ENVIO.JS — KXON EN VIVO 2026
+   Transmisión en vivo con YouTube embed
+   IDs match: kxLive*, kxBtn*, kxForm*
    ============================================ */
 (function () {
     'use strict';
@@ -9,753 +9,703 @@
     var db = window.db;
     var K = window.KXON;
 
-    var myEmbajador = null;
-    var myReferidos = [];
-    var allEmbajadores = [];
+    /* ── State ── */
+    var isLive = false;
+    var currentStream = null;
+    var durationInterval = null;
+    var liveStartTime = null;
 
-    /* ═══ UTILS ═══ */
-    function esc(str) {
+    /* ═══════════════════════════════════════════
+       DOM CACHE
+       ═══════════════════════════════════════════ */
+    var els = {};
+
+    function cacheElements() {
+        // Header
+        els.headerDot        = document.getElementById('kxLiveHeaderDot');
+
+        // KPIs
+        els.kpiViewers       = document.getElementById('liveKpiViewers');
+        els.kpiStatus        = document.getElementById('liveKpiStatus');
+        els.kpiDuration      = document.getElementById('liveKpiDuration');
+
+        // Live active section (wrapper)
+        els.activeSection    = document.getElementById('kxLiveActiveSection');
+
+        // Hero
+        els.hero             = document.getElementById('kxLiveHero');
+        els.streamTitle      = document.getElementById('kxLiveStreamTitle');
+        els.viewersNum       = document.getElementById('kxLiveViewersNum');
+        els.durationText     = document.getElementById('kxLiveDuration');
+
+        // Player
+        els.player           = document.getElementById('kxLivePlayer');
+        els.iframe           = document.getElementById('kxLiveIframe');
+
+        // Description
+        els.descSection      = document.getElementById('kxLiveDescSection');
+        els.descText         = document.getElementById('kxLiveDescription');
+
+        // Chat
+        els.chatSection      = document.getElementById('kxLiveChatSection');
+        els.chatContainer    = document.getElementById('kxLiveChatContainer');
+        els.chatIframe       = document.getElementById('kxLiveChatIframe');
+        els.chatToggle       = document.getElementById('kxLiveChatToggle');
+
+        // Offline
+        els.offlineSection   = document.getElementById('kxLiveOfflineSection');
+        els.offlineLast      = document.getElementById('kxLiveOfflineLast');
+        els.offlineLastText  = document.getElementById('kxLiveOfflineLastText');
+
+        // Admin
+        els.adminSection     = document.getElementById('kxLiveAdminSection');
+        els.adminDot         = document.getElementById('kxLiveAdminDot');
+        els.adminStatusText  = document.getElementById('kxLiveAdminStatusText');
+
+        // Admin form inputs
+        els.inputYoutubeId   = document.getElementById('kxLiveYoutubeId');
+        els.inputTitle       = document.getElementById('kxLiveTitle');
+        els.inputDesc        = document.getElementById('kxLiveDesc');
+        els.inputIncludeChat = document.getElementById('kxLiveIncludeChat');
+
+        // Admin buttons
+        els.btnGoLive        = document.getElementById('kxBtnGoLive');
+        els.btnStopLive      = document.getElementById('kxBtnStopLive');
+
+        // History
+        els.historyList      = document.getElementById('kxLiveHistory');
+    }
+
+    /* ═══════════════════════════════════════════
+       YOUTUBE HELPERS
+       ═══════════════════════════════════════════ */
+    function extractYoutubeId(input) {
+        if (!input) return null;
+        input = input.trim();
+
+        // Si ya es un ID limpio (11 chars)
+        if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+
+        // Extraer de URL
+        var patterns = [
+            /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
+            /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+            /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+            /(?:youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/,
+            /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+            /(?:youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/
+        ];
+
+        for (var i = 0; i < patterns.length; i++) {
+            var match = input.match(patterns[i]);
+            if (match && match[1]) return match[1];
+        }
+
+        return null;
+    }
+
+    function buildEmbedUrl(videoId) {
+        return 'https://www.youtube.com/embed/' + videoId +
+               '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+    }
+
+    function buildChatUrl(videoId) {
+        return 'https://www.youtube.com/live_chat?v=' + videoId +
+               '&embed_domain=' + window.location.hostname +
+               '&dark_theme=1';
+    }
+
+    /* ═══════════════════════════════════════════
+       UTILITY
+       ═══════════════════════════════════════════ */
+    function escHTML(str) {
         if (!str) return '';
         var d = document.createElement('div');
         d.appendChild(document.createTextNode(str));
         return d.innerHTML;
     }
 
-    function formatDate(dateStr, opts) {
+    function pad(n) {
+        return n < 10 ? '0' + n : String(n);
+    }
+
+    function formatDuration(seconds) {
+        var h = Math.floor(seconds / 3600);
+        var m = Math.floor((seconds % 3600) / 60);
+        var s = seconds % 60;
+        if (h > 0) return h + 'h ' + m + 'min';
+        if (m > 0) return m + 'min';
+        return s + 's';
+    }
+
+    function formatDateShort(dateStr) {
         if (!dateStr) return '—';
         try {
-            return new Date(dateStr).toLocaleDateString('es-ES', opts || {
-                day: 'numeric', month: 'short'
+            return new Date(dateStr).toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
             });
         } catch (e) { return '—'; }
     }
 
-    function formatDateLong(dateStr) {
-        return formatDate(dateStr, {
-            day: 'numeric', month: 'long', year: 'numeric'
-        });
+    function minutesAgo(dateStr) {
+        if (!dateStr) return 0;
+        return Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
     }
 
-    /* ═══ NIVEL CONFIG ═══ */
-    var NIVELES = {
-        activador: {
-            badge: '🥉',
-            name: 'Activador',
-            comision: 3000,
-            min: 0,
-            max: 5,
-            nextName: 'Constructor',
-            nextMin: 6,
-            color: '#cd7f32',
-            tieneRifa: false,
-            rifaPorcentaje: 0,
-            descripcionPremio: 'Solo comisión directa'
-        },
-        constructor: {
-            badge: '🥈',
-            name: 'Constructor',
-            comision: 0,
-            min: 6,
-            max: 14,
-            nextName: 'Líder KXON',
-            nextMin: 15,
-            color: '#c0c0c0',
-            tieneRifa: true,
-            rifaPorcentaje: 10,
-            descripcionPremio: 'Rifa del 10% de ingresos'
-        },
-        lider: {
-            badge: '🥇',
-            name: 'Líder KXON',
-            comision: 0,
-            min: 15,
-            max: 999,
-            nextName: null,
-            nextMin: null,
-            color: '#ffd700',
-            tieneRifa: true,
-            rifaPorcentaje: 20,
-            descripcionPremio: 'Rifa GRANDE del 20% de ingresos'
-        }
-    };
+    /* ═══════════════════════════════════════════
+       🔴 MAIN ENTRY — K.loadEnVivo()
+       ═══════════════════════════════════════════ */
+    K.loadEnVivo = async function () {
+        cacheElements();
+        bindEvents();
 
-    function getNivelInfo(nivel) {
-        return NIVELES[nivel] || NIVELES.activador;
-    }
-
-    /* ══════════════════════════════════════════
-       🏆 LOAD EMBAJADORES (Main Entry)
-       ══════════════════════════════════════════ */
-    K.loadEmbajadores = async function () {
         try {
-            var embResult = await db.from('embajadores')
+            // Buscar stream activo
+            var result = await db.from('envivo')
                 .select('*')
-                .eq('usuario_id', K.currentUser.id)
+                .eq('activo', true)
+                .order('inicio', { ascending: false })
                 .limit(1);
 
-            if (embResult.error) throw embResult.error;
+            if (result.error) throw result.error;
 
-            if (embResult.data && embResult.data.length > 0) {
-                myEmbajador = embResult.data[0];
+            if (result.data && result.data.length > 0) {
+                currentStream = result.data[0];
+                activateLiveState();
             } else {
-                myEmbajador = null;
+                currentStream = null;
+                activateOfflineState();
             }
 
-            if (myEmbajador && myEmbajador.estado === 'activo') {
-                showDashboardView();
-                await loadMyReferidos();
-            } else {
-                showActivateView();
+            // Mostrar admin si es admin
+            if (K.isAdmin && els.adminSection) {
+                els.adminSection.classList.add('visible');
             }
 
-            await loadRanking();
+            // Cargar historial
+            await loadHistory();
 
-            if (K.isAdmin) {
-                await loadAdminSection();
-            }
+            // Cargar última transmisión para offline
+            await loadLastStreamInfo();
 
         } catch (e) {
-            console.error('Error loading embajadores:', e);
-            K.showToast('Error cargando embajadores', 'error');
+            console.error('[EnVivo] Error loading:', e);
+            activateOfflineState();
         }
     };
 
-    /* ══════════════════════════════════════════
-       📋 SHOW ACTIVATE VIEW
-       ══════════════════════════════════════════ */
-    function showActivateView() {
-        var activateView = document.getElementById('embActivateView');
-        var dashView = document.getElementById('embDashboardView');
-        var kpis = document.getElementById('embKPIs');
+    /* ═══════════════════════════════════════════
+       ✅ ACTIVATE LIVE STATE
+       ═══════════════════════════════════════════ */
+    function activateLiveState() {
+        isLive = true;
 
-        if (activateView) activateView.style.display = 'block';
-        if (dashView) dashView.style.display = 'none';
-        if (kpis) kpis.style.display = 'none';
+        if (!currentStream) return;
 
-        setKPI('embStatRegistrados', '0');
-        setKPI('embStatSuscritos', '0');
-        setKPI('embStatNivel', '—');
-        setKPI('embStatComision', '$0');
-    }
+        var videoId = currentStream.youtube_id;
 
-    /* ══════════════════════════════════════════
-       📊 SHOW DASHBOARD VIEW
-       ══════════════════════════════════════════ */
-    function showDashboardView() {
-        var activateView = document.getElementById('embActivateView');
-        var dashView = document.getElementById('embDashboardView');
-        var kpis = document.getElementById('embKPIs');
+        // — Show active section, hide offline —
+        if (els.activeSection) els.activeSection.style.display = 'block';
+        if (els.hero) {
+            els.hero.classList.add('active');
+            els.hero.style.display = 'block';
+        }
+        if (els.player) els.player.style.display = 'block';
+        if (els.offlineSection) {
+            els.offlineSection.classList.remove('active');
+            els.offlineSection.style.display = 'none';
+        }
 
-        if (activateView) activateView.style.display = 'none';
-        if (dashView) dashView.style.display = 'block';
-        if (kpis) kpis.style.display = 'flex';
+        // — Header dot —
+        if (els.headerDot) {
+            els.headerDot.classList.add('live');
+        }
 
-        if (!myEmbajador) return;
+        // — Stream title —
+        if (els.streamTitle) {
+            els.streamTitle.textContent = currentStream.titulo || 'KXON en directo';
+        }
 
-        var info = getNivelInfo(myEmbajador.nivel);
+        // — YouTube Player iframe —
+        if (els.iframe && videoId) {
+            els.iframe.src = buildEmbedUrl(videoId);
+        }
 
-        setKPI('embStatRegistrados', String(myEmbajador.total_registrados || 0));
-        setKPI('embStatSuscritos', String(myEmbajador.total_suscritos || 0));
-        setKPI('embStatNivel', info.badge + ' ' + info.name);
-
-        if (info.comision > 0) {
-            setKPI('embStatComision', K.formatPrice(myEmbajador.comision_acumulada || 0));
+        // — Description —
+        if (currentStream.descripcion && currentStream.descripcion.trim()) {
+            if (els.descSection) els.descSection.style.display = 'block';
+            if (els.descText) els.descText.textContent = currentStream.descripcion;
         } else {
-            setKPI('embStatComision', info.tieneRifa ? '🎰 Rifa ' + info.rifaPorcentaje + '%' : '$0');
+            if (els.descSection) els.descSection.style.display = 'none';
         }
 
-        var codigoEl = document.getElementById('embCodigo');
-        var linkEl = document.getElementById('embLink');
-        var baseUrl = window.location.origin + '/register.html?ref=';
-        var fullLink = baseUrl + encodeURIComponent(myEmbajador.codigo);
-
-        if (codigoEl) codigoEl.textContent = myEmbajador.codigo;
-        if (linkEl) linkEl.textContent = fullLink;
-
-        var waBtn = document.getElementById('embBtnWhatsapp');
-        if (waBtn) {
-            var waMsg = '🎵 ¡Únete a KXON, la plataforma musical exclusiva!\n\n' +
-                'Regístrate con mi código de embajador y accede a música, videos y más.\n\n' +
-                '🔗 ' + fullLink + '\n\n' +
-                '📌 Código: ' + myEmbajador.codigo;
-            waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(waMsg);
-        }
-
-        renderNivelProgress();
-    }
-
-    function setKPI(id, value) {
-        var el = document.getElementById(id);
-        if (el) el.textContent = value;
-    }
-
-    /* ══════════════════════════════════════════
-       🏅 RENDER NIVEL PROGRESS
-       ══════════════════════════════════════════ */
-    function renderNivelProgress() {
-        if (!myEmbajador) return;
-
-        var info = getNivelInfo(myEmbajador.nivel);
-        var total = myEmbajador.total_suscritos || 0;
-
-        var badgeEl = document.getElementById('embNivelBadge');
-        var nameEl = document.getElementById('embNivelName');
-        var descEl = document.getElementById('embNivelDesc');
-        var fillEl = document.getElementById('embNivelProgressFill');
-        var textEl = document.getElementById('embNivelProgressText');
-        var cardEl = document.getElementById('embNivelCard');
-        var premioEl = document.getElementById('embNivelPremio');
-
-        if (badgeEl) badgeEl.textContent = info.badge;
-        if (nameEl) nameEl.textContent = info.name;
-
-        if (cardEl) {
-            cardEl.className = 'kx-emb-nivel-card kx-emb-nivel-card--' + myEmbajador.nivel;
-        }
-
-        if (premioEl) {
-            if (info.comision > 0) {
-                premioEl.textContent = '💵 Comisión: ' + K.formatPrice(info.comision) + ' por suscriptor';
-                premioEl.className = 'kx-emb-nivel-premio kx-emb-nivel-premio--comision';
-            } else if (info.tieneRifa) {
-                premioEl.textContent = '🎰 ' + info.descripcionPremio;
-                premioEl.className = 'kx-emb-nivel-premio kx-emb-nivel-premio--rifa';
+        // — Chat —
+        var showChat = currentStream.include_chat !== false;
+        if (showChat && videoId) {
+            if (els.chatSection) {
+                els.chatSection.classList.add('active');
+                els.chatSection.style.display = 'block';
+            }
+            if (els.chatIframe) {
+                els.chatIframe.src = buildChatUrl(videoId);
+            }
+        } else {
+            if (els.chatSection) {
+                els.chatSection.classList.remove('active');
+                els.chatSection.style.display = 'none';
             }
         }
 
-        if (info.nextName && info.nextMin) {
-            var progress = Math.min(100, (total / info.nextMin) * 100);
-            var remaining = Math.max(0, info.nextMin - total);
+        // — Duration —
+        liveStartTime = currentStream.inicio
+            ? new Date(currentStream.inicio)
+            : new Date();
+        startDurationCounter();
 
-            if (fillEl) fillEl.style.width = progress + '%';
-            if (textEl) textEl.textContent = total + ' / ' + info.nextMin + ' para ' + info.nextName;
-            if (descEl) {
-                if (remaining > 0) {
-                    if (myEmbajador.nivel === 'activador') {
-                        descEl.textContent = 'Te faltan ' + remaining + ' suscritos para entrar a la rifa del 10%';
-                    } else {
-                        descEl.textContent = 'Te faltan ' + remaining + ' suscritos para ' + info.nextName;
-                    }
-                } else {
-                    descEl.textContent = '¡Ya alcanzaste el nivel ' + info.nextName + '!';
-                }
-            }
-        } else {
-            if (fillEl) fillEl.style.width = '100%';
-            if (textEl) textEl.textContent = total + ' suscritos — ¡Nivel máximo!';
-            if (descEl) descEl.textContent = '¡Felicidades! Participas en la rifa del PREMIO GRANDE 🏆';
+        // — KPIs —
+        updateKPIs();
+
+        // — Admin status —
+        updateAdminUI(true);
+
+        // — Pre-fill admin form —
+        if (els.inputYoutubeId) els.inputYoutubeId.value = currentStream.youtube_url || currentStream.youtube_id || '';
+        if (els.inputTitle) els.inputTitle.value = currentStream.titulo || '';
+        if (els.inputDesc) els.inputDesc.value = currentStream.descripcion || '';
+        if (els.inputIncludeChat) els.inputIncludeChat.checked = currentStream.include_chat !== false;
+    }
+
+    /* ═══════════════════════════════════════════
+       ⬛ ACTIVATE OFFLINE STATE
+       ═══════════════════════════════════════════ */
+    function activateOfflineState() {
+        isLive = false;
+
+        // — Hide active, show offline —
+        if (els.activeSection) els.activeSection.style.display = 'none';
+        if (els.hero) {
+            els.hero.classList.remove('active');
+            els.hero.style.display = 'none';
+        }
+        if (els.player) els.player.style.display = 'none';
+        if (els.chatSection) {
+            els.chatSection.classList.remove('active');
+            els.chatSection.style.display = 'none';
+        }
+        if (els.descSection) els.descSection.style.display = 'none';
+
+        if (els.offlineSection) {
+            els.offlineSection.classList.add('active');
+            els.offlineSection.style.display = 'block';
+        }
+
+        // — Clear iframes —
+        if (els.iframe) els.iframe.src = '';
+        if (els.chatIframe) els.chatIframe.src = '';
+
+        // — Header dot —
+        if (els.headerDot) els.headerDot.classList.remove('live');
+
+        // — Stop counter —
+        stopDurationCounter();
+
+        // — KPIs —
+        if (els.kpiViewers) els.kpiViewers.textContent = '0';
+        if (els.kpiStatus) els.kpiStatus.textContent = 'Offline';
+        if (els.kpiDuration) els.kpiDuration.textContent = '0m';
+
+        // — Admin —
+        updateAdminUI(false);
+    }
+
+    /* ═══════════════════════════════════════════
+       ADMIN UI UPDATE
+       ═══════════════════════════════════════════ */
+    function updateAdminUI(live) {
+        if (els.adminDot) {
+            els.adminDot.className = 'kx-live-admin-status-dot ' + (live ? 'online' : 'offline');
+        }
+        if (els.adminStatusText) {
+            els.adminStatusText.textContent = live ? 'EN VIVO' : 'Offline';
+        }
+
+        // Toggle buttons
+        if (els.btnGoLive) {
+            els.btnGoLive.style.display = live ? 'none' : 'flex';
+            els.btnGoLive.disabled = false;
+            els.btnGoLive.innerHTML =
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>' +
+                ' Iniciar En Vivo';
+        }
+        if (els.btnStopLive) {
+            els.btnStopLive.classList.toggle('visible', live);
         }
     }
 
-    /* ══════════════════════════════════════════
-       🚀 ACTIVATE AS AMBASSADOR
-       ══════════════════════════════════════════ */
-    var btnActivar = document.getElementById('btnActivarEmbajador');
-    if (btnActivar) {
-        btnActivar.addEventListener('click', async function () {
-            if (myEmbajador) {
-                K.showToast('Ya eres embajador', 'info');
+    /* ═══════════════════════════════════════════
+       KPIs
+       ═══════════════════════════════════════════ */
+    function updateKPIs() {
+        if (els.kpiStatus) {
+            els.kpiStatus.textContent = isLive ? '🔴 LIVE' : 'Offline';
+        }
+        if (els.kpiViewers) {
+            els.kpiViewers.textContent = isLive ? '—' : '0';
+        }
+    }
+
+    /* ═══════════════════════════════════════════
+       DURATION COUNTER
+       ═══════════════════════════════════════════ */
+    function startDurationCounter() {
+        stopDurationCounter();
+        tickDuration();
+        durationInterval = setInterval(tickDuration, 1000);
+    }
+
+    function stopDurationCounter() {
+        if (durationInterval) {
+            clearInterval(durationInterval);
+            durationInterval = null;
+        }
+    }
+
+    function tickDuration() {
+        if (!liveStartTime) return;
+
+        var diffSec = Math.max(0, Math.floor((Date.now() - liveStartTime.getTime()) / 1000));
+        var h = Math.floor(diffSec / 3600);
+        var m = Math.floor((diffSec % 3600) / 60);
+        var s = diffSec % 60;
+
+        // KPI
+        if (els.kpiDuration) {
+            if (h > 0) {
+                els.kpiDuration.textContent = h + 'h ' + m + 'm';
+            } else {
+                els.kpiDuration.textContent = m + 'm';
+            }
+        }
+
+        // Hero duration text
+        if (els.durationText) {
+            var totalMin = Math.floor(diffSec / 60);
+            if (totalMin < 1) {
+                els.durationText.innerHTML =
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+                    ' Iniciado hace unos segundos';
+            } else if (totalMin < 60) {
+                els.durationText.innerHTML =
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+                    ' Iniciado hace ' + totalMin + ' min';
+            } else {
+                els.durationText.innerHTML =
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+                    ' ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+            }
+        }
+    }
+
+    /* ═══════════════════════════════════════════
+       🚀 GO LIVE
+       ═══════════════════════════════════════════ */
+    async function goLive() {
+        if (!els.inputYoutubeId) return;
+
+        var rawInput = els.inputYoutubeId.value.trim();
+        var titulo   = els.inputTitle ? els.inputTitle.value.trim() : '';
+        var desc     = els.inputDesc ? els.inputDesc.value.trim() : '';
+        var inclChat = els.inputIncludeChat ? els.inputIncludeChat.checked : true;
+
+        // Validar
+        if (!rawInput) {
+            K.showToast('Pega el ID o URL de YouTube', 'error');
+            if (els.inputYoutubeId) els.inputYoutubeId.focus();
+            return;
+        }
+
+        var videoId = extractYoutubeId(rawInput);
+        if (!videoId) {
+            K.showToast('No se pudo extraer un ID de YouTube válido. Verifica el link.', 'error');
+            if (els.inputYoutubeId) els.inputYoutubeId.focus();
+            return;
+        }
+
+        if (!titulo) titulo = 'KXON en directo';
+
+        // Disable button
+        if (els.btnGoLive) {
+            els.btnGoLive.disabled = true;
+            els.btnGoLive.innerHTML =
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>' +
+                ' Iniciando…';
+        }
+
+        try {
+            // Desactivar streams anteriores
+            await db.from('envivo')
+                .update({ activo: false, fin: new Date().toISOString() })
+                .eq('activo', true);
+
+            // Crear nuevo stream
+            var result = await db.from('envivo').insert({
+                youtube_id: videoId,
+                youtube_url: rawInput,
+                titulo: titulo,
+                descripcion: desc,
+                include_chat: inclChat,
+                activo: true,
+                inicio: new Date().toISOString(),
+                usuario_id: K.currentUser.id
+            }).select().single();
+
+            if (result.error) throw result.error;
+
+            currentStream = result.data;
+            activateLiveState();
+
+            K.showToast('🔴 ¡Transmisión en vivo iniciada!', 'success');
+
+            // Recargar historial
+            await loadHistory();
+
+        } catch (e) {
+            console.error('[EnVivo] Error going live:', e);
+            K.showToast('Error al iniciar: ' + (e.message || 'Intenta de nuevo'), 'error');
+            updateAdminUI(false);
+        }
+    }
+
+    /* ═══════════════════════════════════════════
+       ⛔ STOP LIVE
+       ═══════════════════════════════════════════ */
+    async function stopLive() {
+        if (!confirm('¿Finalizar la transmisión en vivo?')) return;
+
+        try {
+            if (currentStream && currentStream.id) {
+                await db.from('envivo')
+                    .update({
+                        activo: false,
+                        fin: new Date().toISOString()
+                    })
+                    .eq('id', currentStream.id);
+            } else {
+                // Fallback: desactivar todos
+                await db.from('envivo')
+                    .update({ activo: false, fin: new Date().toISOString() })
+                    .eq('activo', true);
+            }
+
+            currentStream = null;
+            activateOfflineState();
+
+            // Limpiar form
+            if (els.inputYoutubeId) els.inputYoutubeId.value = '';
+            if (els.inputTitle) els.inputTitle.value = '';
+            if (els.inputDesc) els.inputDesc.value = '';
+            if (els.inputIncludeChat) els.inputIncludeChat.checked = true;
+
+            K.showToast('Transmisión finalizada', 'success');
+
+            await loadHistory();
+            await loadLastStreamInfo();
+
+        } catch (e) {
+            console.error('[EnVivo] Error stopping:', e);
+            K.showToast('Error al detener: ' + (e.message || ''), 'error');
+        }
+    }
+
+    /* ═══════════════════════════════════════════
+       📜 HISTORY
+       ═══════════════════════════════════════════ */
+    async function loadHistory() {
+        if (!els.historyList) return;
+
+        try {
+            var r = await db.from('envivo')
+                .select('*')
+                .eq('activo', false)
+                .order('inicio', { ascending: false })
+                .limit(10);
+
+            if (r.error) throw r.error;
+
+            var items = r.data || [];
+
+            if (!items.length) {
+                els.historyList.innerHTML =
+                    '<div class="kx-live-history-empty">Sin transmisiones anteriores</div>';
                 return;
             }
 
-            var btn = this;
-            btn.classList.add('loading');
-            btn.disabled = true;
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var titulo = item.titulo || 'Sin título';
+                var fecha = formatDateShort(item.inicio);
 
-            try {
-                var nombre = K.currentProfile.full_name ||
-                    K.currentUser.email.split('@')[0];
-
-                var codeResult = await db.rpc('generar_codigo_embajador', {
-                    nombre: nombre
-                });
-
-                var codigo;
-                if (codeResult.error) {
-                    var clean = nombre.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8).toUpperCase();
-                    if (!clean) clean = 'USER';
-                    codigo = 'KXON-' + clean + '-' + Math.floor(Math.random() * 9999).toString().padStart(4, '0');
-                } else {
-                    codigo = codeResult.data;
+                var durText = '';
+                if (item.inicio && item.fin) {
+                    var diffSec = Math.floor(
+                        (new Date(item.fin).getTime() - new Date(item.inicio).getTime()) / 1000
+                    );
+                    if (diffSec > 0) durText = ' · ' + formatDuration(diffSec);
                 }
 
-                var insertResult = await db.from('embajadores').insert({
-                    usuario_id: K.currentUser.id,
-                    usuario_email: K.currentUser.email,
-                    usuario_nombre: nombre,
-                    codigo: codigo,
-                    estado: 'activo',
-                    nivel: 'activador',
-                    total_registrados: 0,
-                    total_suscritos: 0,
-                    comision_acumulada: 0,
-                    comision_pagada: 0
-                }).select().single();
+                html += '<div class="kx-live-history-item">';
+                html += '  <div class="kx-live-history-dot was-live"></div>';
+                html += '  <div class="kx-live-history-info">';
+                html += '    <div class="kx-live-history-title">' + escHTML(titulo) + '</div>';
+                html += '    <div class="kx-live-history-meta">' + escHTML(fecha) + escHTML(durText) + '</div>';
+                html += '  </div>';
 
-                if (insertResult.error) throw insertResult.error;
-
-                myEmbajador = insertResult.data;
-
-                K.showToast('🏆 ¡Ya eres Embajador KXON! Comparte tu código', 'success');
-
-                showDashboardView();
-                await loadRanking();
-
-            } catch (e) {
-                console.error('Error activating ambassador:', e);
-
-                if (e.message && e.message.indexOf('duplicate') >= 0) {
-                    K.showToast('Ya tienes una cuenta de embajador', 'error');
-                    K.loadEmbajadores();
-                } else {
-                    K.showToast('Error: ' + e.message, 'error');
+                if (K.isAdmin) {
+                    html += '  <button class="kx-live-history-delete" data-action="delete-stream" data-stream-id="' + escHTML(item.id) + '" title="Eliminar">';
+                    html += '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">';
+                    html += '      <polyline points="3 6 5 6 21 6"/>';
+                    html += '      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>';
+                    html += '    </svg>';
+                    html += '  </button>';
                 }
+
+                html += '</div>';
             }
 
-            btn.classList.remove('loading');
-            btn.disabled = false;
-        });
+            els.historyList.innerHTML = html;
+
+        } catch (e) {
+            console.error('[EnVivo] Error loading history:', e);
+            if (els.historyList) {
+                els.historyList.innerHTML =
+                    '<div class="kx-live-history-empty">Error cargando historial</div>';
+            }
+        }
     }
 
-    /* ══════════════════════════════════════════
-       📋 LOAD MY REFERIDOS
-       ══════════════════════════════════════════ */
-    async function loadMyReferidos() {
-        if (!myEmbajador) return;
-
+    /* ═══════════════════════════════════════════
+       LAST STREAM INFO (for offline card)
+       ═══════════════════════════════════════════ */
+    async function loadLastStreamInfo() {
         try {
-            var r = await db.from('referidos')
-                .select('*')
-                .eq('embajador_id', myEmbajador.id)
-                .order('fecha_registro', { ascending: false });
+            var r = await db.from('envivo')
+                .select('titulo, inicio, fin')
+                .eq('activo', false)
+                .order('inicio', { ascending: false })
+                .limit(1);
 
             if (r.error) throw r.error;
 
-            myReferidos = r.data || [];
-            renderReferidos();
-
-        } catch (e) {
-            console.error('Error loading referidos:', e);
-        }
-    }
-
-    /* ══════════════════════════════════════════
-       📋 RENDER REFERIDOS LIST
-       ══════════════════════════════════════════ */
-    function renderReferidos() {
-        var container = document.getElementById('embReferidosList');
-        var countEl = document.getElementById('embReferidosCount');
-
-        if (countEl) countEl.textContent = myReferidos.length + ' personas';
-
-        if (!container) return;
-
-        if (!myReferidos.length) {
-            container.innerHTML =
-                '<div class="kx-emb-referidos-empty">' +
-                    '<div class="kx-emb-referidos-empty-icon">👥</div>' +
-                    '<div class="kx-emb-referidos-empty-title">Sin referidos aún</div>' +
-                    '<div class="kx-emb-referidos-empty-text">Comparte tu código para empezar a invitar personas</div>' +
-                '</div>';
-            return;
-        }
-
-        var h = '';
-        for (var i = 0; i < myReferidos.length; i++) {
-            var ref = myReferidos[i];
-            var nombre = ref.referido_nombre || ref.referido_email.split('@')[0];
-            var inicial = esc(nombre.charAt(0).toUpperCase());
-            var isSuscrito = ref.estado === 'suscrito';
-            var statusClass = isSuscrito ? 'kx-emb-ref-status--suscrito' : 'kx-emb-ref-status--registrado';
-            var statusIcon = isSuscrito ? '✅' : '⏳';
-            var statusText = isSuscrito ? 'Suscrito' : 'Registrado';
-            var fecha = formatDate(ref.fecha_registro);
-
-            h += '<div class="kx-emb-ref-item" role="listitem">';
-            h += '<div class="kx-emb-ref-avatar">' + inicial + '</div>';
-            h += '<div class="kx-emb-ref-info">';
-            h += '<div class="kx-emb-ref-name">' + esc(nombre) + '</div>';
-            h += '<div class="kx-emb-ref-meta">';
-            h += '<span class="kx-emb-ref-email">' + esc(ref.referido_email) + '</span>';
-
-            if (isSuscrito && ref.plan_nombre) {
-                h += '<span class="kx-emb-ref-plan">' + esc(ref.plan_nombre) + '</span>';
-            }
-
-            h += '</div>';
-            h += '</div>';
-            h += '<div class="kx-emb-ref-right">';
-            h += '<span class="kx-emb-ref-status ' + statusClass + '">' + statusIcon + ' ' + statusText + '</span>';
-
-            if (isSuscrito && ref.comision_generada > 0) {
-                h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(ref.comision_generada) + '</span>';
-            } else if (isSuscrito && ref.comision_generada === 0) {
-                h += '<span class="kx-emb-ref-rifa-badge">🎰 Cuenta para rifa</span>';
-            }
-
-            h += '<span class="kx-emb-ref-date">' + esc(fecha) + '</span>';
-            h += '</div>';
-            h += '</div>';
-        }
-
-        container.innerHTML = h;
-    }
-
-    /* ══════════════════════════════════════════
-       🏆 LOAD RANKING
-       ══════════════════════════════════════════ */
-    async function loadRanking() {
-        try {
-            var r = await db.from('embajadores')
-                .select('id, usuario_id, usuario_nombre, nivel, total_suscritos, total_registrados')
-                .eq('estado', 'activo')
-                .order('total_suscritos', { ascending: false })
-                .limit(20);
-
-            if (r.error) throw r.error;
-
-            allEmbajadores = r.data || [];
-            renderRanking();
-
-        } catch (e) {
-            console.error('Error loading ranking:', e);
-        }
-    }
-
-    /* ══════════════════════════════════════════
-       🏆 RENDER RANKING
-       ══════════════════════════════════════════ */
-    function renderRanking() {
-        var container = document.getElementById('embRankingList');
-        var subtitleEl = document.getElementById('embRankingSubtitle');
-
-        if (subtitleEl) {
-            subtitleEl.textContent = allEmbajadores.length + ' embajadores activos';
-        }
-
-        if (!container) return;
-
-        if (!allEmbajadores.length) {
-            container.innerHTML =
-                '<div class="kx-emb-ranking-empty">' +
-                    '<div class="kx-emb-ranking-empty-icon">🏆</div>' +
-                    '<div class="kx-emb-ranking-empty-title">Sin embajadores aún</div>' +
-                    '<div class="kx-emb-ranking-empty-text">¡Sé el primero en activarte como embajador!</div>' +
-                '</div>';
-            return;
-        }
-
-        var h = '';
-        for (var i = 0; i < allEmbajadores.length; i++) {
-            var emb = allEmbajadores[i];
-            var info = getNivelInfo(emb.nivel);
-            var nombre = emb.usuario_nombre || 'Embajador';
-            var inicial = esc(nombre.charAt(0).toUpperCase());
-            var position = i + 1;
-            var isMe = myEmbajador && emb.id === myEmbajador.id;
-
-            var positionBadge;
-            if (position === 1) positionBadge = '🥇';
-            else if (position === 2) positionBadge = '🥈';
-            else if (position === 3) positionBadge = '🥉';
-            else positionBadge = '#' + position;
-
-            var itemClass = 'kx-emb-rank-item';
-            if (isMe) itemClass += ' kx-emb-rank-item--me';
-            if (position <= 3) itemClass += ' kx-emb-rank-item--top';
-
-            h += '<div class="' + itemClass + '" role="listitem">';
-            h += '<div class="kx-emb-rank-position">' + positionBadge + '</div>';
-            h += '<div class="kx-emb-rank-avatar" style="border-color:' + info.color + '">' + inicial + '</div>';
-            h += '<div class="kx-emb-rank-info">';
-            h += '<div class="kx-emb-rank-name">';
-            h += esc(nombre);
-            if (isMe) h += ' <span class="kx-emb-rank-me-badge">TÚ</span>';
-            h += '</div>';
-            h += '<div class="kx-emb-rank-meta">';
-            h += '<span class="kx-emb-rank-nivel-badge" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
-            if (info.tieneRifa) {
-                h += '<span class="kx-emb-rank-rifa-tag">🎰 Rifa ' + info.rifaPorcentaje + '%</span>';
-            }
-            h += '</div>';
-            h += '</div>';
-            h += '<div class="kx-emb-rank-stats">';
-            h += '<span class="kx-emb-rank-suscritos">' + (emb.total_suscritos || 0) + '</span>';
-            h += '<span class="kx-emb-rank-stats-label">suscritos</span>';
-            h += '</div>';
-            h += '</div>';
-        }
-
-        container.innerHTML = h;
-    }
-
-    /* ══════════════════════════════════════════
-       🔧 ADMIN SECTION
-       ══════════════════════════════════════════ */
-    async function loadAdminSection() {
-        if (!K.isAdmin) return;
-
-        var section = document.getElementById('embAdminSection');
-        if (section) section.style.display = 'block';
-
-        try {
-            var r = await db.from('embajadores')
-                .select('*')
-                .order('total_suscritos', { ascending: false });
-
-            if (r.error) throw r.error;
-
-            var allEmb = r.data || [];
-
-            var totalEmb = allEmb.length;
-            var totalRef = 0;
-            var totalSusc = 0;
-            var totalComision = 0;
-
-            for (var i = 0; i < allEmb.length; i++) {
-                totalRef += allEmb[i].total_registrados || 0;
-                totalSusc += allEmb[i].total_suscritos || 0;
-                totalComision += allEmb[i].comision_acumulada || 0;
-            }
-
-            setKPI('embAdminTotalEmb', String(totalEmb));
-            setKPI('embAdminTotalRef', String(totalRef));
-            setKPI('embAdminTotalSusc', String(totalSusc));
-            setKPI('embAdminTotalComision', K.formatPrice(totalComision));
-
-            var countEl = document.getElementById('embAdminCount');
-            if (countEl) countEl.textContent = totalEmb + ' embajadores';
-
-            renderAdminList(allEmb);
-
-        } catch (e) {
-            console.error('Error loading admin section:', e);
-        }
-    }
-
-    function renderAdminList(embs) {
-        var container = document.getElementById('embAdminList');
-        if (!container) return;
-
-        if (!embs.length) {
-            container.innerHTML =
-                '<div class="kx-emb-admin-empty">' +
-                    '<div class="kx-emb-admin-empty-icon">📋</div>' +
-                    '<div class="kx-emb-admin-empty-title">Sin embajadores registrados</div>' +
-                '</div>';
-            return;
-        }
-
-        var h = '';
-        for (var i = 0; i < embs.length; i++) {
-            var emb = embs[i];
-            var info = getNivelInfo(emb.nivel);
-            var nombre = emb.usuario_nombre || 'Sin nombre';
-            var inicial = esc(nombre.charAt(0).toUpperCase());
-            var isActivo = emb.estado === 'activo';
-            var fecha = formatDate(emb.created_at);
-            var comisionPendiente = (emb.comision_acumulada || 0) - (emb.comision_pagada || 0);
-
-            h += '<div class="kx-emb-admin-item" role="listitem" data-emb-id="' + esc(emb.id) + '">';
-            h += '<div class="kx-emb-admin-item-avatar" style="border-color:' + info.color + '">' + inicial + '</div>';
-            h += '<div class="kx-emb-admin-item-info">';
-            h += '<div class="kx-emb-admin-item-name">' + esc(nombre) + '</div>';
-            h += '<div class="kx-emb-admin-item-meta">';
-            h += '<span class="kx-emb-admin-item-email">' + esc(emb.usuario_email) + '</span>';
-            h += '<span class="kx-emb-admin-item-code">' + esc(emb.codigo) + '</span>';
-            h += '</div>';
-            h += '</div>';
-            h += '<div class="kx-emb-admin-item-stats">';
-            h += '<span class="kx-emb-admin-item-nivel" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
-            h += '<span class="kx-emb-admin-item-count">' + (emb.total_suscritos || 0) + ' susc. / ' + (emb.total_registrados || 0) + ' reg.</span>';
-
-            if (info.comision > 0 && comisionPendiente > 0) {
-                h += '<span class="kx-emb-admin-item-comision">Pendiente: ' + K.formatPrice(comisionPendiente) + '</span>';
-            } else if (info.tieneRifa) {
-                h += '<span class="kx-emb-admin-item-rifa">🎰 Participa en rifa ' + info.rifaPorcentaje + '%</span>';
+            if (r.data && r.data.length > 0) {
+                var last = r.data[0];
+                if (els.offlineLast) els.offlineLast.style.display = 'inline-flex';
+                if (els.offlineLastText) {
+                    els.offlineLastText.textContent =
+                        'Última: "' + (last.titulo || 'Sin título') + '" — ' +
+                        formatDateShort(last.inicio);
+                }
             } else {
-                h += '<span class="kx-emb-admin-item-comision-paid">✅ Sin deuda</span>';
+                if (els.offlineLast) els.offlineLast.style.display = 'none';
             }
-
-            h += '</div>';
-            h += '<div class="kx-emb-admin-item-actions">';
-
-            if (isActivo) {
-                h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--pause" data-action="pause-emb" data-emb-id="' + esc(emb.id) + '" title="Pausar">';
-                h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-                h += '</button>';
-            } else {
-                h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--activate" data-action="activate-emb" data-emb-id="' + esc(emb.id) + '" title="Activar">';
-                h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-                h += '</button>';
-            }
-
-            if (info.comision > 0 && comisionPendiente > 0) {
-                h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--pay" data-action="pay-emb" data-emb-id="' + esc(emb.id) + '" data-emb-name="' + esc(nombre) + '" data-emb-comision="' + (emb.comision_acumulada || 0) + '" data-emb-pagada="' + (emb.comision_pagada || 0) + '" title="Marcar comisión pagada">';
-                h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
-                h += '</button>';
-            }
-
-            h += '</div>';
-            h += '<span class="kx-emb-admin-item-date">' + esc(fecha) + '</span>';
-            h += '<span class="kx-emb-admin-item-estado kx-emb-admin-estado--' + esc(emb.estado) + '">' + esc(emb.estado) + '</span>';
-            h += '</div>';
+        } catch (e) {
+            console.error('[EnVivo] Error loading last stream:', e);
         }
-
-        container.innerHTML = h;
     }
 
-    /* ══════════════════════════════════════════
-       📋 COPY BUTTONS
-       ══════════════════════════════════════════ */
-    var btnCopyCodigo = document.getElementById('btnCopyCodigo');
-    if (btnCopyCodigo) {
-        btnCopyCodigo.addEventListener('click', function () {
-            if (!myEmbajador) return;
-            copyToClipboard(myEmbajador.codigo);
-            K.showToast('📋 Código copiado', 'success');
-        });
+    /* ═══════════════════════════════════════════
+       DELETE STREAM
+       ═══════════════════════════════════════════ */
+    async function deleteStream(streamId) {
+        if (!confirm('¿Eliminar esta transmisión del historial?')) return;
+
+        try {
+            var r = await db.from('envivo').delete().eq('id', streamId);
+            if (r.error) throw r.error;
+
+            K.showToast('Transmisión eliminada', 'success');
+            await loadHistory();
+            await loadLastStreamInfo();
+
+        } catch (e) {
+            K.showToast('Error: ' + (e.message || ''), 'error');
+        }
     }
 
-    var btnCopyLink = document.getElementById('btnCopyLink');
-    if (btnCopyLink) {
-        btnCopyLink.addEventListener('click', function () {
-            if (!myEmbajador) return;
-            var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
-            copyToClipboard(link);
-            K.showToast('🔗 Link copiado', 'success');
-        });
+    /* ═══════════════════════════════════════════
+       CHAT TOGGLE
+       ═══════════════════════════════════════════ */
+    function toggleChat() {
+        if (!els.chatContainer) return;
+
+        var isVisible = els.chatContainer.style.display !== 'none';
+
+        if (isVisible) {
+            els.chatContainer.style.display = 'none';
+            if (els.chatToggle) els.chatToggle.textContent = 'Mostrar';
+        } else {
+            els.chatContainer.style.display = 'block';
+            if (els.chatToggle) els.chatToggle.textContent = 'Ocultar';
+        }
     }
 
-    var btnCopyAll = document.getElementById('embBtnCopyAll');
-    if (btnCopyAll) {
-        btnCopyAll.addEventListener('click', function () {
-            if (!myEmbajador) return;
-            var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
-            var msg = '🎵 ¡Únete a KXON, la plataforma musical exclusiva!\n\n' +
-                'Regístrate con mi código de embajador y accede a música, videos y más.\n\n' +
-                '🔗 ' + link + '\n\n' +
-                '📌 Código: ' + myEmbajador.codigo;
-            copyToClipboard(msg);
-            K.showToast('📋 Mensaje completo copiado', 'success');
-        });
-    }
+    /* ═══════════════════════════════════════════
+       EVENT BINDING
+       ═══════════════════════════════════════════ */
+    var eventsBound = false;
 
-    function copyToClipboard(text) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).catch(function () {
-                fallbackCopy(text);
+    function bindEvents() {
+        if (eventsBound) return;
+        eventsBound = true;
+
+        // Go Live button
+        if (els.btnGoLive) {
+            els.btnGoLive.addEventListener('click', function (e) {
+                e.preventDefault();
+                goLive();
             });
-        } else {
-            fallbackCopy(text);
-        }
-    }
-
-    function fallbackCopy(text) {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); } catch (e) { }
-        document.body.removeChild(ta);
-    }
-
-    /* ══════════════════════════════════════════
-       🔧 ADMIN EVENT DELEGATION
-       ══════════════════════════════════════════ */
-    var panelEl = document.getElementById('panel-embajadores');
-    if (panelEl) {
-        panelEl.addEventListener('click', function (e) {
-            var target = e.target;
-
-            var pauseBtn = target.closest('[data-action="pause-emb"]');
-            if (pauseBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                var embId = pauseBtn.getAttribute('data-emb-id');
-                if (embId) toggleEmbajadorEstado(embId, 'pausado');
-                return;
-            }
-
-            var activateBtn = target.closest('[data-action="activate-emb"]');
-            if (activateBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                var embId2 = activateBtn.getAttribute('data-emb-id');
-                if (embId2) toggleEmbajadorEstado(embId2, 'activo');
-                return;
-            }
-
-            var payBtn = target.closest('[data-action="pay-emb"]');
-            if (payBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                var payEmbId = payBtn.getAttribute('data-emb-id');
-                var payName = payBtn.getAttribute('data-emb-name');
-                var payComision = parseInt(payBtn.getAttribute('data-emb-comision')) || 0;
-                var payPagada = parseInt(payBtn.getAttribute('data-emb-pagada')) || 0;
-                if (payEmbId) markComisionPaid(payEmbId, payName, payComision, payPagada);
-                return;
-            }
-        });
-    }
-
-    /* ══════════════════════════════════════════
-       🔧 ADMIN: TOGGLE ESTADO
-       ══════════════════════════════════════════ */
-    async function toggleEmbajadorEstado(embId, nuevoEstado) {
-        var action = nuevoEstado === 'activo' ? 'activar' : 'pausar';
-        if (!confirm('¿' + action.charAt(0).toUpperCase() + action.slice(1) + ' este embajador?')) return;
-
-        try {
-            var upd = await db.from('embajadores')
-                .update({
-                    estado: nuevoEstado,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', embId);
-
-            if (upd.error) throw upd.error;
-
-            K.showToast('Embajador ' + (nuevoEstado === 'activo' ? 'activado' : 'pausado'), 'success');
-            await loadAdminSection();
-            await loadRanking();
-
-        } catch (e) {
-            K.showToast('Error: ' + e.message, 'error');
-        }
-    }
-
-    /* ══════════════════════════════════════════
-       🔧 ADMIN: MARK COMISION PAID
-       ══════════════════════════════════════════ */
-    async function markComisionPaid(embId, nombre, comisionTotal, comisionPagada) {
-        var pendiente = comisionTotal - comisionPagada;
-
-        if (pendiente <= 0) {
-            K.showToast('No hay comisiones pendientes para ' + nombre, 'info');
-            return;
         }
 
-        if (!confirm('¿Marcar como pagada la comisión pendiente de ' + nombre + '?\n\nPendiente: ' + K.formatPrice(pendiente))) return;
+        // Stop Live button
+        if (els.btnStopLive) {
+            els.btnStopLive.addEventListener('click', function (e) {
+                e.preventDefault();
+                stopLive();
+            });
+        }
 
-        try {
-            var upd = await db.from('embajadores')
-                .update({
-                    comision_pagada: comisionTotal,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', embId);
+        // Chat toggle
+        if (els.chatToggle) {
+            els.chatToggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                toggleChat();
+            });
+        }
 
-            if (upd.error) throw upd.error;
+        // Event delegation — delete history items
+        var panel = document.getElementById('panel-envivo');
+        if (panel) {
+            panel.addEventListener('click', function (e) {
+                var deleteBtn = e.target.closest('[data-action="delete-stream"]');
+                if (deleteBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var sid = deleteBtn.getAttribute('data-stream-id');
+                    if (sid) deleteStream(sid);
+                }
+            });
+        }
 
-            K.showToast('✅ Comisión marcada como pagada: ' + K.formatPrice(pendiente), 'success');
-            await loadAdminSection();
-
-        } catch (e) {
-            K.showToast('Error: ' + e.message, 'error');
+        // Allow Enter key on YouTube ID input to trigger go live
+        if (els.inputYoutubeId) {
+            els.inputYoutubeId.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    goLive();
+                }
+            });
         }
     }
 
