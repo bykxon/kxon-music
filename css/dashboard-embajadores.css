@@ -39,6 +39,16 @@
     100% { left: 200%; }
 }
 
+@keyframes embCountUp {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes embBonoGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.15); }
+    50% { box-shadow: 0 0 24px 6px rgba(255, 215, 0, 0.10); }
+}
+
 /* ═══ HEADER ═══ */
 .kx-emb-header {
     margin-bottom: 24px;
@@ -106,6 +116,7 @@
 .kx-emb-kpi:nth-child(3) { animation-delay: 0.1s; }
 .kx-emb-kpi:nth-child(5) { animation-delay: 0.15s; }
 .kx-emb-kpi:nth-child(7) { animation-delay: 0.2s; }
+.kx-emb-kpi:nth-child(9) { animation-delay: 0.25s; }
 
 .kx-emb-kpi-value {
     font-family: 'Montserrat', sans-serif;
@@ -422,6 +433,130 @@
     border-color: rgba(255, 215, 0, 0.20);
     color: #ffd700;
     font-size: 0.8rem;
+}
+
+/* ═══ BONO META SECTION ═══ */
+.kx-emb-bono-section {
+    margin-bottom: 28px;
+    animation: embFadeInUp 0.5s ease both;
+    animation-delay: 0.2s;
+}
+
+.kx-emb-bono-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 14px;
+    text-align: center;
+}
+
+.kx-emb-bono-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+}
+
+.kx-emb-bono-card {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.04), rgba(139, 92, 246, 0.03));
+    border: 1px solid rgba(255, 215, 0, 0.12);
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.kx-emb-bono-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 215, 0, 0.25);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.08);
+}
+
+.kx-emb-bono-card--mega {
+    border-color: rgba(255, 215, 0, 0.20);
+    animation: embBonoGlow 3s ease infinite;
+}
+
+.kx-emb-bono-card--mega::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.06), transparent);
+    animation: embShine 4s ease infinite;
+}
+
+.kx-emb-bono-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.kx-emb-bono-meta {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #a78bfa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.kx-emb-bono-amount {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffd700;
+    margin-bottom: 4px;
+}
+
+.kx-emb-bono-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.4;
+}
+
+.kx-emb-bono-progress {
+    margin-top: 12px;
+}
+
+.kx-emb-bono-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 215, 0, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.kx-emb-bono-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #f59e0b);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.kx-emb-bono-progress-text {
+    font-size: 0.65rem;
+    color: rgba(255, 215, 0, 0.7);
+    text-align: right;
+}
+
+.kx-emb-bono-badge-earned {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 6px 14px;
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #34d399;
+    animation: embCountUp 0.4s ease both;
 }
 
 /* ═══ FAQ ═══ */
@@ -788,10 +923,17 @@
     margin-top: 2px;
 }
 
+.kx-emb-nivel-premios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
 .kx-emb-nivel-premio {
     font-size: 0.72rem;
     font-weight: 600;
-    margin-top: 4px;
+    margin-top: 0;
     padding: 3px 8px;
     border-radius: 6px;
     display: inline-block;
@@ -805,6 +947,11 @@
 .kx-emb-nivel-premio--rifa {
     color: #a78bfa;
     background: rgba(139, 92, 246, 0.1);
+}
+
+.kx-emb-nivel-premio--vip {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
 }
 
 .kx-emb-nivel-progress {
@@ -828,10 +975,121 @@
     transition: width 0.6s ease;
 }
 
+.kx-emb-nivel-progress-fill--gold {
+    background: linear-gradient(90deg, #ffd700, #f59e0b);
+}
+
 .kx-emb-nivel-progress-text {
     font-size: 0.65rem;
     color: #a78bfa;
     text-align: right;
+}
+
+/* ═══ BONO META DASHBOARD ═══ */
+.kx-emb-bono-dashboard {
+    margin-bottom: 24px;
+    animation: embFadeInUp 0.4s ease both;
+    animation-delay: 0.12s;
+}
+
+.kx-emb-bono-dash-card {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.04), rgba(139, 92, 246, 0.02));
+    border: 1px solid rgba(255, 215, 0, 0.10);
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.kx-emb-bono-dash-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.kx-emb-bono-dash-icon {
+    font-size: 24px;
+}
+
+.kx-emb-bono-dash-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffd700;
+}
+
+.kx-emb-bono-dash-subtitle {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.kx-emb-bono-dash-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.kx-emb-bono-dash-item {
+    background: rgba(255, 215, 0, 0.03);
+    border: 1px solid rgba(255, 215, 0, 0.08);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    transition: border-color 0.2s ease;
+}
+
+.kx-emb-bono-dash-item:hover {
+    border-color: rgba(255, 215, 0, 0.18);
+}
+
+.kx-emb-bono-dash-item--earned {
+    border-color: rgba(52, 211, 153, 0.25);
+    background: rgba(52, 211, 153, 0.04);
+}
+
+.kx-emb-bono-dash-target {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #a78bfa;
+    margin-bottom: 4px;
+}
+
+.kx-emb-bono-dash-amount {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ffd700;
+    margin-bottom: 6px;
+}
+
+.kx-emb-bono-dash-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 215, 0, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.kx-emb-bono-dash-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #f59e0b);
+    border-radius: 2px;
+    transition: width 0.6s ease;
+}
+
+.kx-emb-bono-dash-progress-text {
+    font-size: 0.6rem;
+    color: rgba(255, 215, 0, 0.6);
+}
+
+.kx-emb-bono-dash-earned-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #34d399;
 }
 
 /* ═══ MINI CHART ═══ */
@@ -1187,6 +1445,10 @@
     background: rgba(59, 130, 246, 0.1);
 }
 
+.kx-emb-historial-item-icon--bono {
+    background: rgba(255, 215, 0, 0.1);
+}
+
 .kx-emb-historial-item-info {
     flex: 1;
     min-width: 0;
@@ -1217,6 +1479,10 @@
 
 .kx-emb-historial-item-amount--rifa {
     color: #a78bfa;
+}
+
+.kx-emb-historial-item-amount--bono {
+    color: #ffd700;
 }
 
 .kx-emb-historial-item-status {
@@ -1394,6 +1660,15 @@
     font-weight: 600;
     color: #a78bfa;
     background: rgba(139, 92, 246, 0.08);
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.kx-emb-rank-comision-tag {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.08);
     padding: 1px 5px;
     border-radius: 4px;
 }
@@ -1803,12 +2078,15 @@
     .kx-emb-nivel-card { flex-direction: column; text-align: center; }
     .kx-emb-nivel-progress { width: 100%; }
     .kx-emb-nivel-progress-text { text-align: center; }
+    .kx-emb-nivel-premios { justify-content: center; }
     .kx-emb-ref-item { flex-wrap: wrap; }
     .kx-emb-ref-right { width: 100%; flex-direction: row; justify-content: flex-start; gap: 8px; padding-left: 48px; margin-top: 4px; }
     .kx-emb-admin-item { flex-direction: column; align-items: flex-start; gap: 8px; }
     .kx-emb-admin-item-stats { align-items: flex-start; flex-direction: row; gap: 12px; }
     .kx-emb-admin-item-actions { width: 100%; justify-content: flex-end; }
     .kx-emb-admin-stats { grid-template-columns: repeat(2, 1fr); }
+    .kx-emb-bono-cards { grid-template-columns: 1fr; }
+    .kx-emb-bono-dash-items { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {

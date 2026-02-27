@@ -1,6 +1,7 @@
 /* ============================================
    🏆 DASHBOARD-EMBAJADORES.JS — KXON 2026
    Panel de embajadores, referidos, ranking
+   NUEVO SISTEMA: Comisión + Rifa + Bono Meta
    Namespace: kx-emb-*
    ============================================ */
 (function () {
@@ -148,7 +149,7 @@
         }, 3000);
     }
 
-    /* ═══ NIVEL CONFIG ═══ */
+    /* ═══ NIVEL CONFIG — NUEVO SISTEMA ═══ */
     var NIVELES = {
         activador: {
             badge: '🥉',
@@ -162,12 +163,13 @@
             tieneRifa: false,
             rifaPorcentaje: 0,
             descripcionPremio: '$3,000 COP por suscrito',
-            descripcionCorta: 'Comisión directa por cada persona que se suscriba'
+            descripcionCorta: 'Comisión directa por cada persona que se suscriba',
+            motivacion: '💡 Consigue 6 suscritos para desbloquear comisión + rifa'
         },
         constructor: {
             badge: '🥈',
             name: 'Constructor',
-            comision: 0,
+            comision: 2000,
             min: 6,
             max: 14,
             nextName: 'Líder KXON',
@@ -175,13 +177,14 @@
             color: '#c0c0c0',
             tieneRifa: true,
             rifaPorcentaje: 10,
-            descripcionPremio: 'Rifa del 10% mensual',
-            descripcionCorta: 'Participas en la rifa del 10% de ingresos del mes'
+            descripcionPremio: '$2,000 + Rifa 10%',
+            descripcionCorta: '$2,000 COP por suscrito + participa en rifa del 10% mensual',
+            motivacion: '🔥 15 suscritos para Líder VIP con rifa del 20%'
         },
         lider: {
             badge: '🥇',
             name: 'Líder KXON',
-            comision: 0,
+            comision: 1500,
             min: 15,
             max: 999,
             nextName: null,
@@ -189,10 +192,17 @@
             color: '#ffd700',
             tieneRifa: true,
             rifaPorcentaje: 20,
-            descripcionPremio: 'Rifa GRANDE del 20%',
-            descripcionCorta: 'Participas en el PREMIO GRANDE — 20% de ingresos'
+            descripcionPremio: '$1,500 + Rifa 20% + VIP',
+            descripcionCorta: '$1,500 COP por suscrito + rifa GRANDE del 20% + beneficios VIP',
+            motivacion: '👑 ¡Eres un Líder KXON! Máximo nivel alcanzado'
         }
     };
+
+    /* ═══ BONO META CONFIG ═══ */
+    var BONOS_META = [
+        { target: 10, bono: 10000, label: '10 referidos/mes', emoji: '🎯' },
+        { target: 20, bono: 30000, label: '20 referidos/mes', emoji: '💎' }
+    ];
 
     function getNivelInfo(nivel) {
         return NIVELES[nivel] || NIVELES.activador;
@@ -202,6 +212,28 @@
         if (totalSuscritos >= 15) return 'lider';
         if (totalSuscritos >= 6) return 'constructor';
         return 'activador';
+    }
+
+    /* ═══ BONO META: CALCULAR REFERIDOS DEL MES ═══ */
+    function getReferidosDelMes() {
+        if (!myReferidos || !myReferidos.length) return 0;
+
+        var now = new Date();
+        var mesActual = now.getMonth();
+        var anioActual = now.getFullYear();
+        var count = 0;
+
+        for (var i = 0; i < myReferidos.length; i++) {
+            var ref = myReferidos[i];
+            if (ref.estado === 'suscrito' && ref.fecha_registro) {
+                var fecha = new Date(ref.fecha_registro);
+                if (fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 
     /* ══════════════════════════════════════════
@@ -239,6 +271,7 @@
                 await loadMyReferidos();
                 await loadHistorial();
                 renderWeeklyChart();
+                renderBonoMeta();
                 initShareButtons();
                 requestNotificationPermission();
             } else {
@@ -278,6 +311,7 @@
         setKPI('embStatSuscritos', '0');
         setKPI('embStatNivel', '—');
         setKPI('embStatComision', '$0');
+        setKPI('embStatBonoMes', '—');
     }
 
     /* ══════════════════════════════════════════
@@ -300,12 +334,10 @@
         setKPI('embStatRegistrados', String(myEmbajador.total_registrados || 0));
         setKPI('embStatSuscritos', String(myEmbajador.total_suscritos || 0));
         setKPI('embStatNivel', info.badge + ' ' + info.name);
+        setKPI('embStatComision', K.formatPrice(myEmbajador.comision_acumulada || 0));
 
-        if (info.comision > 0) {
-            setKPI('embStatComision', K.formatPrice(myEmbajador.comision_acumulada || 0));
-        } else {
-            setKPI('embStatComision', info.tieneRifa ? '🎰 Rifa ' + info.rifaPorcentaje + '%' : '$0');
-        }
+        // Bono mes KPI — will update after referidos load
+        setKPI('embStatBonoMes', '...');
 
         // Code and Link
         var codigoEl = document.getElementById('embCodigo');
@@ -345,7 +377,7 @@
         var fillEl = document.getElementById('embNivelProgressFill');
         var textEl = document.getElementById('embNivelProgressText');
         var cardEl = document.getElementById('embNivelCard');
-        var premioEl = document.getElementById('embNivelPremio');
+        var premiosEl = document.getElementById('embNivelPremios');
 
         if (badgeEl) badgeEl.textContent = info.badge;
         if (nameEl) nameEl.textContent = info.name;
@@ -354,26 +386,48 @@
             cardEl.className = 'kx-emb-nivel-card kx-emb-nivel-card--' + myEmbajador.nivel;
         }
 
-        // Premio badge
-        if (premioEl) {
-            premioEl.textContent = info.descripcionPremio;
-            premioEl.className = 'kx-emb-nivel-premio ' +
-                (info.comision > 0 ? 'kx-emb-nivel-premio--comision' : 'kx-emb-nivel-premio--rifa');
+        // Premios badges — show all applicable rewards
+        if (premiosEl) {
+            var premiosHTML = '';
+
+            // Comisión badge (all levels now have comision)
+            premiosHTML += '<span class="kx-emb-nivel-premio kx-emb-nivel-premio--comision">' +
+                '💰 ' + K.formatPrice(info.comision) + '/suscrito</span>';
+
+            // Rifa badge
+            if (info.tieneRifa) {
+                premiosHTML += '<span class="kx-emb-nivel-premio kx-emb-nivel-premio--rifa">' +
+                    '🎟️ Rifa ' + info.rifaPorcentaje + '%</span>';
+            }
+
+            // VIP badge for lider
+            if (myEmbajador.nivel === 'lider') {
+                premiosHTML += '<span class="kx-emb-nivel-premio kx-emb-nivel-premio--vip">' +
+                    '👑 VIP</span>';
+            }
+
+            premiosEl.innerHTML = premiosHTML;
         }
 
         if (info.nextName && info.nextMin) {
             var progress = Math.min(100, (total / info.nextMin) * 100);
             var remaining = Math.max(0, info.nextMin - total);
 
-            if (fillEl) fillEl.style.width = progress + '%';
+            if (fillEl) {
+                fillEl.style.width = progress + '%';
+                fillEl.className = 'kx-emb-nivel-progress-fill';
+            }
             if (textEl) textEl.textContent = total + ' / ' + info.nextMin + ' para ' + info.nextName;
             if (descEl) descEl.textContent = remaining > 0
                 ? 'Te faltan ' + remaining + ' suscritos para ' + info.nextName
                 : '¡Ya alcanzaste el nivel ' + info.nextName + '!';
         } else {
-            if (fillEl) fillEl.style.width = '100%';
+            if (fillEl) {
+                fillEl.style.width = '100%';
+                fillEl.className = 'kx-emb-nivel-progress-fill kx-emb-nivel-progress-fill--gold';
+            }
             if (textEl) textEl.textContent = total + ' suscritos — ¡Nivel máximo!';
-            if (descEl) descEl.textContent = '¡Felicidades! Eres un Líder KXON 🏆';
+            if (descEl) descEl.textContent = info.motivacion;
         }
 
         // Check for level up
@@ -381,9 +435,61 @@
         if (previousNivel && currentCalcNivel !== previousNivel) {
             var newInfo = getNivelInfo(currentCalcNivel);
             launchConfetti();
-            K.showToast('🎉 ¡Subiste a ' + newInfo.name + '! ' + newInfo.badge, 'success');
+            K.showToast('🎉 ¡Subiste a ' + newInfo.name + '! ' + newInfo.badge + ' — ' + newInfo.descripcionPremio, 'success');
             previousNivel = currentCalcNivel;
         }
+    }
+
+    /* ══════════════════════════════════════════
+       💎 RENDER BONO META (Dashboard)
+       ══════════════════════════════════════════ */
+    function renderBonoMeta() {
+        var container = document.getElementById('embBonoMetaDashboard');
+        if (!container) return;
+
+        var refMes = getReferidosDelMes();
+
+        // Update KPI
+        setKPI('embStatBonoMes', refMes + '/mes');
+
+        var h = '';
+        h += '<div class="kx-emb-bono-dash-card">';
+        h += '<div class="kx-emb-bono-dash-header">';
+        h += '<span class="kx-emb-bono-dash-icon">💎</span>';
+        h += '<div>';
+        h += '<div class="kx-emb-bono-dash-title">Bono Meta Mensual</div>';
+        h += '<div class="kx-emb-bono-dash-subtitle">Referidos suscritos este mes: ' + refMes + '</div>';
+        h += '</div>';
+        h += '</div>';
+
+        h += '<div class="kx-emb-bono-dash-items">';
+
+        for (var i = 0; i < BONOS_META.length; i++) {
+            var bono = BONOS_META[i];
+            var earned = refMes >= bono.target;
+            var progress = Math.min(100, (refMes / bono.target) * 100);
+            var remaining = Math.max(0, bono.target - refMes);
+
+            h += '<div class="kx-emb-bono-dash-item' + (earned ? ' kx-emb-bono-dash-item--earned' : '') + '">';
+            h += '<div class="kx-emb-bono-dash-target">' + bono.emoji + ' ' + bono.label + '</div>';
+            h += '<div class="kx-emb-bono-dash-amount">' + K.formatPrice(bono.bono) + '</div>';
+
+            if (earned) {
+                h += '<div class="kx-emb-bono-dash-earned-badge">✅ ¡Bono desbloqueado!</div>';
+            } else {
+                h += '<div class="kx-emb-bono-dash-progress-bar">';
+                h += '<div class="kx-emb-bono-dash-progress-fill" style="width:' + progress + '%"></div>';
+                h += '</div>';
+                h += '<div class="kx-emb-bono-dash-progress-text">' + refMes + '/' + bono.target + ' — Faltan ' + remaining + '</div>';
+            }
+
+            h += '</div>';
+        }
+
+        h += '</div>';
+        h += '</div>';
+
+        container.innerHTML = h;
     }
 
     /* ══════════════════════════════════════════
@@ -393,7 +499,6 @@
         if (!myEmbajador) return;
 
         var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
-        var msg = '🎵 ¡Únete a KXON, la plataforma musical exclusiva!\n\n🔗 ' + link;
 
         // Telegram
         var tgBtn = document.getElementById('embBtnTelegram');
@@ -603,12 +708,13 @@
             previousNivel = 'activador';
 
             launchConfetti();
-            K.showToast('🏆 ¡Ya eres Embajador KXON! Comparte tu código', 'success');
+            K.showToast('🏆 ¡Ya eres Embajador KXON! Gana $3,000 por cada suscrito', 'success');
             sendWelcomeEmail(K.currentUser.email, nombre, codigo);
 
             showDashboardView();
             initShareButtons();
             renderWeeklyChart();
+            renderBonoMeta();
             await loadRanking();
             requestNotificationPermission();
 
@@ -643,6 +749,7 @@
 
             myReferidos = r.data || [];
             renderReferidos();
+            renderBonoMeta(); // Update bono after loading referidos
 
         } catch (e) {
             console.error('Error loading referidos:', e);
@@ -665,10 +772,12 @@
                 '<div class="kx-emb-referidos-empty">' +
                 '<div class="kx-emb-referidos-empty-icon">👥</div>' +
                 '<div class="kx-emb-referidos-empty-title">Sin referidos aún</div>' +
-                '<div class="kx-emb-referidos-empty-text">Comparte tu código para empezar a invitar personas</div>' +
+                '<div class="kx-emb-referidos-empty-text">Comparte tu código para empezar a ganar comisiones</div>' +
                 '</div>';
             return;
         }
+
+        var info = getNivelInfo(myEmbajador ? myEmbajador.nivel : 'activador');
 
         var h = '';
         for (var i = 0; i < myReferidos.length; i++) {
@@ -697,10 +806,18 @@
             h += '<div class="kx-emb-ref-right">';
             h += '<span class="kx-emb-ref-status ' + statusClass + '">' + statusIcon + ' ' + statusText + '</span>';
 
-            if (isSuscrito && ref.comision_generada > 0) {
-                h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(ref.comision_generada) + '</span>';
-            } else if (isSuscrito && ref.comision_generada === 0) {
-                h += '<span class="kx-emb-ref-rifa-badge">🎰 Cuenta para rifa</span>';
+            if (isSuscrito) {
+                // All levels now earn comision
+                if (ref.comision_generada > 0) {
+                    h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(ref.comision_generada) + '</span>';
+                } else {
+                    h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(info.comision) + '</span>';
+                }
+
+                // Show rifa badge for constructor and lider
+                if (info.tieneRifa) {
+                    h += '<span class="kx-emb-ref-rifa-badge">🎟️ +1 rifa</span>';
+                }
             }
 
             h += '<span class="kx-emb-ref-date">' + esc(fecha) + '</span>';
@@ -729,7 +846,6 @@
                 .limit(20);
 
             if (r.error) {
-                // Table might not exist yet — hide section silently
                 if (section) section.style.display = 'none';
                 return;
             }
@@ -749,9 +865,20 @@
             var h = '';
             for (var i = 0; i < items.length; i++) {
                 var item = items[i];
-                var iconClass = 'kx-emb-historial-item-icon--' + (item.tipo || 'comision');
-                var icon = item.tipo === 'rifa' ? '🎰' : item.tipo === 'pago' ? '💰' : '💵';
-                var amountClass = item.tipo === 'rifa' ? 'kx-emb-historial-item-amount--rifa' : 'kx-emb-historial-item-amount--positive';
+                var tipo = item.tipo || 'comision';
+                var iconClass = 'kx-emb-historial-item-icon--' + tipo;
+                var icon = '💵';
+                var amountClass = 'kx-emb-historial-item-amount--positive';
+
+                if (tipo === 'rifa') {
+                    icon = '🎰';
+                    amountClass = 'kx-emb-historial-item-amount--rifa';
+                } else if (tipo === 'pago') {
+                    icon = '💰';
+                } else if (tipo === 'bono') {
+                    icon = '💎';
+                    amountClass = 'kx-emb-historial-item-amount--bono';
+                }
 
                 h += '<div class="kx-emb-historial-item">';
                 h += '<div class="kx-emb-historial-item-icon ' + iconClass + '">' + icon + '</div>';
@@ -853,8 +980,12 @@
             h += '</div>';
             h += '<div class="kx-emb-rank-meta">';
             h += '<span class="kx-emb-rank-nivel-badge" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
+
+            // Show comision tag for all levels
+            h += '<span class="kx-emb-rank-comision-tag">💰 ' + K.formatPrice(info.comision) + '</span>';
+
             if (info.tieneRifa) {
-                h += '<span class="kx-emb-rank-rifa-tag">🎰 Rifa ' + info.rifaPorcentaje + '%</span>';
+                h += '<span class="kx-emb-rank-rifa-tag">🎟️ Rifa ' + info.rifaPorcentaje + '%</span>';
             }
             h += '</div>';
             h += '</div>';
@@ -984,12 +1115,15 @@
             h += '<span class="kx-emb-admin-item-nivel" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
             h += '<span class="kx-emb-admin-item-count">' + (emb.total_suscritos || 0) + ' susc. / ' + (emb.total_registrados || 0) + ' reg.</span>';
 
-            if (info.comision > 0 && comisionPendiente > 0) {
+            // All levels now have comision
+            if (comisionPendiente > 0) {
                 h += '<span class="kx-emb-admin-item-comision">Pendiente: ' + K.formatPrice(comisionPendiente) + '</span>';
-            } else if (info.tieneRifa) {
-                h += '<span class="kx-emb-admin-item-rifa">🎰 Participa en rifa ' + info.rifaPorcentaje + '%</span>';
             } else {
                 h += '<span class="kx-emb-admin-item-comision-paid">✅ Sin deuda</span>';
+            }
+
+            if (info.tieneRifa) {
+                h += '<span class="kx-emb-admin-item-rifa">🎟️ Rifa ' + info.rifaPorcentaje + '%</span>';
             }
 
             h += '</div>';
@@ -1005,7 +1139,7 @@
                 h += '</button>';
             }
 
-            if (info.comision > 0 && comisionPendiente > 0) {
+            if (comisionPendiente > 0) {
                 h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--pay" data-action="pay-emb" data-emb-id="' + esc(emb.id) + '" data-emb-name="' + esc(nombre) + '" data-emb-comision="' + (emb.comision_acumulada || 0) + '" data-emb-pagada="' + (emb.comision_pagada || 0) + '" title="Marcar comisión pagada">';
                 h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
                 h += '</button>';
@@ -1114,21 +1248,14 @@
         var info = getNivelInfo(nivelActual);
         var rewardType, rewardColor, rewardValue, rewardDesc;
 
-        if (info.comision > 0) {
-            rewardType = 'Comisión Ganada';
-            rewardColor = '#34c759';
-            rewardValue = '+$' + info.comision.toLocaleString('es-CO') + ' COP';
-            rewardDesc = 'Se sumó a tu comisión acumulada';
-        } else if (info.tieneRifa) {
-            rewardType = 'Suma para tu Rifa';
-            rewardColor = '#ffd700';
-            rewardValue = '🎰 Rifa del ' + info.rifaPorcentaje + '%';
-            rewardDesc = 'Este suscrito cuenta para tu participación en la rifa mensual';
-        } else {
-            rewardType = 'Nuevo Suscrito';
-            rewardColor = '#c0c0c0';
-            rewardValue = '+1 Suscrito';
-            rewardDesc = 'Suma a tu contador de referidos';
+        // All levels now have comision
+        rewardType = 'Comisión Ganada';
+        rewardColor = '#34c759';
+        rewardValue = '+$' + info.comision.toLocaleString('es-CO') + ' COP';
+        rewardDesc = 'Se sumó a tu comisión acumulada';
+
+        if (info.tieneRifa) {
+            rewardDesc += ' + Cuenta para tu rifa del ' + info.rifaPorcentaje + '% mensual';
         }
 
         window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_REFERIDO, {
@@ -1158,7 +1285,8 @@
        ══════════════════════════════════════════ */
     K.notifyReferidoSuscrito = function (embajadorId, referidoNombre, planNombre) {
         if (myEmbajador && myEmbajador.id === embajadorId) {
-            K.showToast('🎉 ¡' + referidoNombre + ' se suscribió a ' + planNombre + '!', 'success');
+            var info = getNivelInfo(myEmbajador.nivel);
+            K.showToast('🎉 ¡' + referidoNombre + ' se suscribió! +' + K.formatPrice(info.comision), 'success');
         }
 
         if ('Notification' in window && Notification.permission === 'granted') {
