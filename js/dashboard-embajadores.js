@@ -9,19 +9,32 @@
     var db = window.db;
     var K = window.KXON;
 
-/* ═══ EMAILJS CONFIG ═══ */
-var EMAILJS_PUBLIC_KEY = 'JgRyKiNEcoF5oOEjV';
-var EMAILJS_SERVICE_ID = 'service_rdsr8wb';
-var EMAILJS_TEMPLATE_WELCOME = 'template_76gbiq7';
-var EMAILJS_TEMPLATE_REFERIDO = 'template_9b3995p';
+    /* ═══ GUARDS ═══ */
+    if (!K) {
+        console.error('KXON namespace not found');
+        return;
+    }
 
-if (window.emailjs) {
-    window.emailjs.init(EMAILJS_PUBLIC_KEY);
-}
+    if (!K.formatPrice) {
+        K.formatPrice = function (amount) {
+            return '$' + (amount || 0).toLocaleString('es-CO');
+        };
+    }
+
+    /* ═══ EMAILJS CONFIG ═══ */
+    var EMAILJS_PUBLIC_KEY = 'JgRyKiNEcoF5oOEjV';
+    var EMAILJS_SERVICE_ID = 'service_rdsr8wb';
+    var EMAILJS_TEMPLATE_WELCOME = 'template_76gbiq7';
+    var EMAILJS_TEMPLATE_REFERIDO = 'template_9b3995p';
+
+    if (window.emailjs) {
+        window.emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
 
     var myEmbajador = null;
     var myReferidos = [];
     var allEmbajadores = [];
+    var previousNivel = null;
 
     /* ═══ UTILS ═══ */
     function esc(str) {
@@ -46,57 +59,164 @@ if (window.emailjs) {
         });
     }
 
-    /* ═══ NIVEL CONFIG ═══ */
-var NIVELES = {
-    activador: {
-        badge: '🥉',
-        name: 'Activador',
-        comision: 3000,
-        min: 0,
-        max: 5,
-        nextName: 'Constructor',
-        nextMin: 6,
-        color: '#cd7f32',
-        tieneRifa: false,
-        rifaPorcentaje: 0,
-        descripcionPremio: 'Solo comisión directa'
-    },
-    constructor: {
-        badge: '🥈',
-        name: 'Constructor',
-        comision: 0,
-        min: 6,
-        max: 14,
-        nextName: 'Líder KXON',
-        nextMin: 15,
-        color: '#c0c0c0',
-        tieneRifa: true,
-        rifaPorcentaje: 10,
-        descripcionPremio: 'Rifa del 10% de ingresos'
-    },
-    lider: {
-        badge: '🥇',
-        name: 'Líder KXON',
-        comision: 0,
-        min: 15,
-        max: 999,
-        nextName: null,
-        nextMin: null,
-        color: '#ffd700',
-        tieneRifa: true,
-        rifaPorcentaje: 20,
-        descripcionPremio: 'Rifa GRANDE del 20% de ingresos'
+    function setKPI(id, value) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = value;
     }
-};
+
+    function showSkeletons(containerId, count) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        var h = '';
+        for (var i = 0; i < (count || 3); i++) {
+            h += '<div class="kx-emb-skeleton-item">';
+            h += '<div class="kx-emb-skeleton kx-emb-skeleton-avatar"></div>';
+            h += '<div style="flex:1">';
+            h += '<div class="kx-emb-skeleton kx-emb-skeleton-line kx-emb-skeleton-line--short"></div>';
+            h += '<div class="kx-emb-skeleton kx-emb-skeleton-line kx-emb-skeleton-line--tiny"></div>';
+            h += '</div>';
+            h += '</div>';
+        }
+        container.innerHTML = h;
+    }
+
+    /* ═══ CLIPBOARD ═══ */
+    function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).catch(function () {
+                fallbackCopy(text);
+            });
+        } else {
+            fallbackCopy(text);
+        }
+    }
+
+    function fallbackCopy(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) { }
+        document.body.removeChild(ta);
+    }
+
+    function copyWithFeedback(text, buttonEl, toastMsg) {
+        copyToClipboard(text);
+        if (buttonEl) {
+            buttonEl.classList.add('copied');
+            var spanEl = buttonEl.querySelector('span');
+            var originalText = '';
+            if (spanEl) {
+                originalText = spanEl.textContent;
+                spanEl.textContent = '✓ Copiado';
+            }
+            setTimeout(function () {
+                buttonEl.classList.remove('copied');
+                if (spanEl && originalText) {
+                    spanEl.textContent = originalText;
+                }
+            }, 1500);
+        }
+        if (toastMsg) K.showToast(toastMsg, 'success');
+    }
+
+    /* ═══ CONFETTI ═══ */
+    function launchConfetti() {
+        var container = document.getElementById('embConfettiContainer');
+        if (!container) return;
+
+        container.innerHTML = '';
+        var colors = ['#8b5cf6', '#a78bfa', '#7c3aed', '#ffd700', '#34d399', '#f472b6'];
+
+        for (var i = 0; i < 40; i++) {
+            var piece = document.createElement('div');
+            piece.className = 'kx-emb-confetti-piece';
+            piece.style.setProperty('--x', (Math.random() * 100) + 'vw');
+            piece.style.setProperty('--delay', (Math.random() * 0.5) + 's');
+            piece.style.setProperty('--duration', (Math.random() * 1.5 + 1.5) + 's');
+            piece.style.setProperty('--rotate', (Math.random() * 720 - 360) + 'deg');
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            container.appendChild(piece);
+        }
+
+        container.classList.add('active');
+        setTimeout(function () {
+            container.classList.remove('active');
+            container.innerHTML = '';
+        }, 3000);
+    }
+
+    /* ═══ NIVEL CONFIG ═══ */
+    var NIVELES = {
+        activador: {
+            badge: '🥉',
+            name: 'Activador',
+            comision: 3000,
+            min: 0,
+            max: 5,
+            nextName: 'Constructor',
+            nextMin: 6,
+            color: '#cd7f32',
+            tieneRifa: false,
+            rifaPorcentaje: 0,
+            descripcionPremio: '$3,000 COP por suscrito',
+            descripcionCorta: 'Comisión directa por cada persona que se suscriba'
+        },
+        constructor: {
+            badge: '🥈',
+            name: 'Constructor',
+            comision: 0,
+            min: 6,
+            max: 14,
+            nextName: 'Líder KXON',
+            nextMin: 15,
+            color: '#c0c0c0',
+            tieneRifa: true,
+            rifaPorcentaje: 10,
+            descripcionPremio: 'Rifa del 10% mensual',
+            descripcionCorta: 'Participas en la rifa del 10% de ingresos del mes'
+        },
+        lider: {
+            badge: '🥇',
+            name: 'Líder KXON',
+            comision: 0,
+            min: 15,
+            max: 999,
+            nextName: null,
+            nextMin: null,
+            color: '#ffd700',
+            tieneRifa: true,
+            rifaPorcentaje: 20,
+            descripcionPremio: 'Rifa GRANDE del 20%',
+            descripcionCorta: 'Participas en el PREMIO GRANDE — 20% de ingresos'
+        }
+    };
 
     function getNivelInfo(nivel) {
         return NIVELES[nivel] || NIVELES.activador;
+    }
+
+    function calcNivel(totalSuscritos) {
+        if (totalSuscritos >= 15) return 'lider';
+        if (totalSuscritos >= 6) return 'constructor';
+        return 'activador';
     }
 
     /* ══════════════════════════════════════════
        🏆 LOAD EMBAJADORES (Main Entry)
        ══════════════════════════════════════════ */
     K.loadEmbajadores = async function () {
+        if (!K.currentUser || !K.currentUser.id) {
+            console.warn('No hay usuario autenticado para embajadores');
+            return;
+        }
+
+        // Show skeletons while loading
+        showSkeletons('embRankingList', 5);
+        showSkeletons('embReferidosList', 3);
+
         try {
             // 1) Check if current user is already an ambassador
             var embResult = await db.from('embajadores')
@@ -114,8 +234,13 @@ var NIVELES = {
 
             // 2) Render views based on status
             if (myEmbajador && myEmbajador.estado === 'activo') {
+                previousNivel = myEmbajador.nivel;
                 showDashboardView();
                 await loadMyReferidos();
+                await loadHistorial();
+                renderWeeklyChart();
+                initShareButtons();
+                requestNotificationPermission();
             } else {
                 showActivateView();
             }
@@ -128,6 +253,9 @@ var NIVELES = {
                 await loadAdminSection();
             }
 
+            // 5) Init event listeners
+            initEventListeners();
+
         } catch (e) {
             console.error('Error loading embajadores:', e);
             K.showToast('Error cargando embajadores', 'error');
@@ -135,7 +263,7 @@ var NIVELES = {
     };
 
     /* ══════════════════════════════════════════
-       📋 SHOW ACTIVATE VIEW (not ambassador yet)
+       📋 SHOW ACTIVATE VIEW
        ══════════════════════════════════════════ */
     function showActivateView() {
         var activateView = document.getElementById('embActivateView');
@@ -146,7 +274,6 @@ var NIVELES = {
         if (dashView) dashView.style.display = 'none';
         if (kpis) kpis.style.display = 'none';
 
-        // KPIs to defaults
         setKPI('embStatRegistrados', '0');
         setKPI('embStatSuscritos', '0');
         setKPI('embStatNivel', '—');
@@ -154,7 +281,7 @@ var NIVELES = {
     }
 
     /* ══════════════════════════════════════════
-       📊 SHOW DASHBOARD VIEW (is ambassador)
+       📊 SHOW DASHBOARD VIEW
        ══════════════════════════════════════════ */
     function showDashboardView() {
         var activateView = document.getElementById('embActivateView');
@@ -173,13 +300,14 @@ var NIVELES = {
         setKPI('embStatRegistrados', String(myEmbajador.total_registrados || 0));
         setKPI('embStatSuscritos', String(myEmbajador.total_suscritos || 0));
         setKPI('embStatNivel', info.badge + ' ' + info.name);
-        if (info.comision > 0) {
-    setKPI('embStatComision', K.formatPrice(myEmbajador.comision_acumulada || 0));
-} else {
-    setKPI('embStatComision', info.tieneRifa ? '🎰 Rifa ' + info.rifaPorcentaje + '%' : '$0');
-}
 
-        // Código y Link
+        if (info.comision > 0) {
+            setKPI('embStatComision', K.formatPrice(myEmbajador.comision_acumulada || 0));
+        } else {
+            setKPI('embStatComision', info.tieneRifa ? '🎰 Rifa ' + info.rifaPorcentaje + '%' : '$0');
+        }
+
+        // Code and Link
         var codigoEl = document.getElementById('embCodigo');
         var linkEl = document.getElementById('embLink');
         var baseUrl = window.location.origin + '/register.html?ref=';
@@ -202,11 +330,6 @@ var NIVELES = {
         renderNivelProgress();
     }
 
-    function setKPI(id, value) {
-        var el = document.getElementById(id);
-        if (el) el.textContent = value;
-    }
-
     /* ══════════════════════════════════════════
        🏅 RENDER NIVEL PROGRESS
        ══════════════════════════════════════════ */
@@ -222,6 +345,7 @@ var NIVELES = {
         var fillEl = document.getElementById('embNivelProgressFill');
         var textEl = document.getElementById('embNivelProgressText');
         var cardEl = document.getElementById('embNivelCard');
+        var premioEl = document.getElementById('embNivelPremio');
 
         if (badgeEl) badgeEl.textContent = info.badge;
         if (nameEl) nameEl.textContent = info.name;
@@ -230,8 +354,14 @@ var NIVELES = {
             cardEl.className = 'kx-emb-nivel-card kx-emb-nivel-card--' + myEmbajador.nivel;
         }
 
+        // Premio badge
+        if (premioEl) {
+            premioEl.textContent = info.descripcionPremio;
+            premioEl.className = 'kx-emb-nivel-premio ' +
+                (info.comision > 0 ? 'kx-emb-nivel-premio--comision' : 'kx-emb-nivel-premio--rifa');
+        }
+
         if (info.nextName && info.nextMin) {
-            // Has next level
             var progress = Math.min(100, (total / info.nextMin) * 100);
             var remaining = Math.max(0, info.nextMin - total);
 
@@ -241,86 +371,260 @@ var NIVELES = {
                 ? 'Te faltan ' + remaining + ' suscritos para ' + info.nextName
                 : '¡Ya alcanzaste el nivel ' + info.nextName + '!';
         } else {
-            // Max level
             if (fillEl) fillEl.style.width = '100%';
             if (textEl) textEl.textContent = total + ' suscritos — ¡Nivel máximo!';
             if (descEl) descEl.textContent = '¡Felicidades! Eres un Líder KXON 🏆';
+        }
+
+        // Check for level up
+        var currentCalcNivel = calcNivel(total);
+        if (previousNivel && currentCalcNivel !== previousNivel) {
+            var newInfo = getNivelInfo(currentCalcNivel);
+            launchConfetti();
+            K.showToast('🎉 ¡Subiste a ' + newInfo.name + '! ' + newInfo.badge, 'success');
+            previousNivel = currentCalcNivel;
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       📋 INIT SHARE BUTTONS
+       ══════════════════════════════════════════ */
+    function initShareButtons() {
+        if (!myEmbajador) return;
+
+        var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
+        var msg = '🎵 ¡Únete a KXON, la plataforma musical exclusiva!\n\n🔗 ' + link;
+
+        // Telegram
+        var tgBtn = document.getElementById('embBtnTelegram');
+        if (tgBtn) {
+            tgBtn.href = 'https://t.me/share/url?url=' + encodeURIComponent(link) +
+                '&text=' + encodeURIComponent('🎵 ¡Únete a KXON, la plataforma musical exclusiva!');
+        }
+
+        // Twitter/X
+        var twBtn = document.getElementById('embBtnTwitter');
+        if (twBtn) {
+            twBtn.href = 'https://twitter.com/intent/tweet?text=' +
+                encodeURIComponent('🎵 Únete a KXON, la plataforma musical exclusiva!\n\n' + link);
+        }
+
+        // Native Share API
+        var nativeBtn = document.getElementById('embBtnNativeShare');
+        if (nativeBtn) {
+            if (navigator.share) {
+                nativeBtn.style.display = 'inline-flex';
+                nativeBtn.addEventListener('click', function () {
+                    navigator.share({
+                        title: 'KXON — Plataforma Musical',
+                        text: '🎵 Únete a KXON con mi código de embajador',
+                        url: link
+                    }).catch(function () { });
+                });
+            }
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       🔔 NOTIFICATION PERMISSION
+       ══════════════════════════════════════════ */
+    function requestNotificationPermission() {
+        if ('Notification' in window && Notification.permission === 'default') {
+            setTimeout(function () {
+                Notification.requestPermission();
+            }, 5000);
+        }
+    }
+
+    /* ══════════════════════════════════════════
+       📊 WEEKLY CHART
+       ══════════════════════════════════════════ */
+    function renderWeeklyChart() {
+        var container = document.getElementById('embChartBars');
+        if (!container) return;
+
+        var today = new Date();
+        var days = [];
+        var dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+        for (var i = 6; i >= 0; i--) {
+            var d = new Date(today);
+            d.setDate(d.getDate() - i);
+            days.push({
+                date: d.toISOString().split('T')[0],
+                dayName: dayNames[d.getDay()],
+                count: 0
+            });
+        }
+
+        if (myReferidos && myReferidos.length) {
+            for (var j = 0; j < myReferidos.length; j++) {
+                var refDate = myReferidos[j].fecha_registro;
+                if (refDate) {
+                    var refDay = refDate.split('T')[0];
+                    for (var k = 0; k < days.length; k++) {
+                        if (days[k].date === refDay) {
+                            days[k].count++;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        var counts = [];
+        for (var m = 0; m < days.length; m++) {
+            counts.push(days[m].count);
+        }
+        var maxCount = Math.max(1, Math.max.apply(null, counts));
+
+        var h = '';
+        for (var n = 0; n < days.length; n++) {
+            var day = days[n];
+            var heightPct = Math.max(3, (day.count / maxCount) * 100);
+            var isToday = n === days.length - 1;
+
+            h += '<div class="kx-emb-chart-bar-wrap">';
+            h += '<div class="kx-emb-chart-bar" style="height:' + heightPct + '%">';
+            h += '<span class="kx-emb-chart-bar-value">' + day.count + '</span>';
+            h += '</div>';
+            h += '<span class="kx-emb-chart-bar-day"' + (isToday ? ' style="color:#a78bfa;font-weight:700"' : '') + '>';
+            h += isToday ? 'Hoy' : day.dayName;
+            h += '</span>';
+            h += '</div>';
+        }
+
+        container.innerHTML = h;
+    }
+
+    /* ══════════════════════════════════════════
+       🎯 EVENT LISTENERS
+       ══════════════════════════════════════════ */
+    var listenersInitialized = false;
+
+    function initEventListeners() {
+        if (listenersInitialized) return;
+        listenersInitialized = true;
+
+        // Activate button
+        var btnActivar = document.getElementById('btnActivarEmbajador');
+        if (btnActivar) {
+            btnActivar.addEventListener('click', handleActivate);
+        }
+
+        // Copy buttons
+        var btnCopyCodigo = document.getElementById('btnCopyCodigo');
+        if (btnCopyCodigo) {
+            btnCopyCodigo.addEventListener('click', function () {
+                if (!myEmbajador) return;
+                copyWithFeedback(myEmbajador.codigo, this, '📋 Código copiado');
+            });
+        }
+
+        var btnCopyLink = document.getElementById('btnCopyLink');
+        if (btnCopyLink) {
+            btnCopyLink.addEventListener('click', function () {
+                if (!myEmbajador) return;
+                var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
+                copyWithFeedback(link, this, '🔗 Link copiado');
+            });
+        }
+
+        var btnCopyAll = document.getElementById('embBtnCopyAll');
+        if (btnCopyAll) {
+            btnCopyAll.addEventListener('click', function () {
+                if (!myEmbajador) return;
+                var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
+                var msg = '🎵 ¡Únete a KXON, la plataforma musical exclusiva!\n\n' +
+                    'Regístrate con mi código de embajador y accede a música, videos y más.\n\n' +
+                    '🔗 ' + link + '\n\n' +
+                    '📌 Código: ' + myEmbajador.codigo;
+                copyWithFeedback(msg, this, '📋 Mensaje completo copiado');
+            });
+        }
+
+        // Admin event delegation
+        var panelEl = document.getElementById('panel-embajadores');
+        if (panelEl) {
+            panelEl.addEventListener('click', handleAdminClick);
         }
     }
 
     /* ══════════════════════════════════════════
        🚀 ACTIVATE AS AMBASSADOR
        ══════════════════════════════════════════ */
-    var btnActivar = document.getElementById('btnActivarEmbajador');
-    if (btnActivar) {
-        btnActivar.addEventListener('click', async function () {
-            if (myEmbajador) {
-                K.showToast('Ya eres embajador', 'info');
-                return;
-            }
+    async function handleActivate() {
+        if (myEmbajador) {
+            K.showToast('Ya eres embajador', 'info');
+            return;
+        }
 
-            var btn = this;
-            btn.classList.add('loading');
-            btn.disabled = true;
+        var btn = document.getElementById('btnActivarEmbajador');
+        if (!btn) return;
 
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        try {
+            var nombre = (K.currentProfile && K.currentProfile.full_name) ||
+                K.currentUser.email.split('@')[0];
+
+            // Generate unique code
+            var codigo;
             try {
-                var nombre = K.currentProfile.full_name ||
-                    K.currentUser.email.split('@')[0];
-
-                // Generate unique code via DB function
                 var codeResult = await db.rpc('generar_codigo_embajador', {
                     nombre: nombre
                 });
-
-                var codigo;
-                if (codeResult.error) {
-                    // Fallback: generate locally
-                    var clean = nombre.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8).toUpperCase();
-                    if (!clean) clean = 'USER';
-                    codigo = 'KXON-' + clean + '-' + Math.floor(Math.random() * 9999).toString().padStart(4, '0');
-                } else {
-                    codigo = codeResult.data;
-                }
-
-                // Insert ambassador
-                var insertResult = await db.from('embajadores').insert({
-                    usuario_id: K.currentUser.id,
-                    usuario_email: K.currentUser.email,
-                    usuario_nombre: nombre,
-                    codigo: codigo,
-                    estado: 'activo',
-                    nivel: 'activador',
-                    total_registrados: 0,
-                    total_suscritos: 0,
-                    comision_acumulada: 0,
-                    comision_pagada: 0
-                }).select().single();
-
-                if (insertResult.error) throw insertResult.error;
-
-                myEmbajador = insertResult.data;
-
-                K.showToast('🏆 ¡Ya eres Embajador KXON! Comparte tu código', 'success');
-                sendWelcomeEmail(K.currentUser.email, nombre, codigo);
-
-                showDashboardView();
-                await loadRanking();
-
-            } catch (e) {
-                console.error('Error activating ambassador:', e);
-
-                if (e.message && e.message.indexOf('duplicate') >= 0) {
-                    K.showToast('Ya tienes una cuenta de embajador', 'error');
-                    // Reload to show dashboard
-                    K.loadEmbajadores();
-                } else {
-                    K.showToast('Error: ' + e.message, 'error');
-                }
+                if (codeResult.error) throw codeResult.error;
+                codigo = codeResult.data;
+            } catch (codeErr) {
+                var clean = nombre.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8).toUpperCase();
+                if (!clean) clean = 'USER';
+                codigo = 'KXON-' + clean + '-' + Math.floor(Math.random() * 9999).toString().padStart(4, '0');
             }
 
-            btn.classList.remove('loading');
-            btn.disabled = false;
-        });
+            // Insert ambassador
+            var insertResult = await db.from('embajadores').insert({
+                usuario_id: K.currentUser.id,
+                usuario_email: K.currentUser.email,
+                usuario_nombre: nombre,
+                codigo: codigo,
+                estado: 'activo',
+                nivel: 'activador',
+                total_registrados: 0,
+                total_suscritos: 0,
+                comision_acumulada: 0,
+                comision_pagada: 0
+            }).select().single();
+
+            if (insertResult.error) throw insertResult.error;
+
+            myEmbajador = insertResult.data;
+            previousNivel = 'activador';
+
+            launchConfetti();
+            K.showToast('🏆 ¡Ya eres Embajador KXON! Comparte tu código', 'success');
+            sendWelcomeEmail(K.currentUser.email, nombre, codigo);
+
+            showDashboardView();
+            initShareButtons();
+            renderWeeklyChart();
+            await loadRanking();
+            requestNotificationPermission();
+
+        } catch (e) {
+            console.error('Error activating ambassador:', e);
+
+            if (e.message && e.message.indexOf('duplicate') >= 0) {
+                K.showToast('Ya tienes una cuenta de embajador', 'error');
+                K.loadEmbajadores();
+            } else {
+                K.showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        btn.classList.remove('loading');
+        btn.disabled = false;
     }
 
     /* ══════════════════════════════════════════
@@ -359,9 +663,9 @@ var NIVELES = {
         if (!myReferidos.length) {
             container.innerHTML =
                 '<div class="kx-emb-referidos-empty">' +
-                    '<div class="kx-emb-referidos-empty-icon">👥</div>' +
-                    '<div class="kx-emb-referidos-empty-title">Sin referidos aún</div>' +
-                    '<div class="kx-emb-referidos-empty-text">Comparte tu código para empezar a invitar personas</div>' +
+                '<div class="kx-emb-referidos-empty-icon">👥</div>' +
+                '<div class="kx-emb-referidos-empty-title">Sin referidos aún</div>' +
+                '<div class="kx-emb-referidos-empty-text">Comparte tu código para empezar a invitar personas</div>' +
                 '</div>';
             return;
         }
@@ -394,10 +698,10 @@ var NIVELES = {
             h += '<span class="kx-emb-ref-status ' + statusClass + '">' + statusIcon + ' ' + statusText + '</span>';
 
             if (isSuscrito && ref.comision_generada > 0) {
-    h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(ref.comision_generada) + '</span>';
-} else if (isSuscrito && ref.comision_generada === 0) {
-    h += '<span class="kx-emb-ref-rifa-badge">🎰 Cuenta para rifa</span>';
-}
+                h += '<span class="kx-emb-ref-comision">+' + K.formatPrice(ref.comision_generada) + '</span>';
+            } else if (isSuscrito && ref.comision_generada === 0) {
+                h += '<span class="kx-emb-ref-rifa-badge">🎰 Cuenta para rifa</span>';
+            }
 
             h += '<span class="kx-emb-ref-date">' + esc(fecha) + '</span>';
             h += '</div>';
@@ -405,6 +709,75 @@ var NIVELES = {
         }
 
         container.innerHTML = h;
+    }
+
+    /* ══════════════════════════════════════════
+       📜 LOAD HISTORIAL
+       ══════════════════════════════════════════ */
+    async function loadHistorial() {
+        if (!myEmbajador) return;
+
+        var section = document.getElementById('embHistorialSection');
+        var container = document.getElementById('embHistorialList');
+        if (!container) return;
+
+        try {
+            var r = await db.from('historial_recompensas')
+                .select('*')
+                .eq('embajador_id', myEmbajador.id)
+                .order('created_at', { ascending: false })
+                .limit(20);
+
+            if (r.error) {
+                // Table might not exist yet — hide section silently
+                if (section) section.style.display = 'none';
+                return;
+            }
+
+            var items = r.data || [];
+
+            if (!items.length) {
+                if (section) section.style.display = 'none';
+                return;
+            }
+
+            if (section) section.style.display = 'block';
+
+            var countEl = document.getElementById('embHistorialCount');
+            if (countEl) countEl.textContent = items.length + ' registros';
+
+            var h = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var iconClass = 'kx-emb-historial-item-icon--' + (item.tipo || 'comision');
+                var icon = item.tipo === 'rifa' ? '🎰' : item.tipo === 'pago' ? '💰' : '💵';
+                var amountClass = item.tipo === 'rifa' ? 'kx-emb-historial-item-amount--rifa' : 'kx-emb-historial-item-amount--positive';
+
+                h += '<div class="kx-emb-historial-item">';
+                h += '<div class="kx-emb-historial-item-icon ' + iconClass + '">' + icon + '</div>';
+                h += '<div class="kx-emb-historial-item-info">';
+                h += '<div class="kx-emb-historial-item-desc">' + esc(item.descripcion) + '</div>';
+                h += '<div class="kx-emb-historial-item-date">' + formatDateLong(item.created_at) + '</div>';
+                h += '</div>';
+
+                if (item.monto > 0) {
+                    h += '<span class="kx-emb-historial-item-amount ' + amountClass + '">+' + K.formatPrice(item.monto) + '</span>';
+                }
+
+                if (item.estado) {
+                    var statusClass = item.estado === 'pagado' ? 'kx-emb-historial-status--pagado' : 'kx-emb-historial-status--pendiente';
+                    h += '<span class="kx-emb-historial-item-status ' + statusClass + '">' + esc(item.estado) + '</span>';
+                }
+
+                h += '</div>';
+            }
+
+            container.innerHTML = h;
+
+        } catch (e) {
+            console.error('Error loading historial:', e);
+            if (section) section.style.display = 'none';
+        }
     }
 
     /* ══════════════════════════════════════════
@@ -444,9 +817,9 @@ var NIVELES = {
         if (!allEmbajadores.length) {
             container.innerHTML =
                 '<div class="kx-emb-ranking-empty">' +
-                    '<div class="kx-emb-ranking-empty-icon">🏆</div>' +
-                    '<div class="kx-emb-ranking-empty-title">Sin embajadores aún</div>' +
-                    '<div class="kx-emb-ranking-empty-text">¡Sé el primero en activarte como embajador!</div>' +
+                '<div class="kx-emb-ranking-empty-icon">🏆</div>' +
+                '<div class="kx-emb-ranking-empty-title">Sin embajadores aún</div>' +
+                '<div class="kx-emb-ranking-empty-text">¡Sé el primero en activarte como embajador!</div>' +
                 '</div>';
             return;
         }
@@ -470,7 +843,7 @@ var NIVELES = {
             if (isMe) itemClass += ' kx-emb-rank-item--me';
             if (position <= 3) itemClass += ' kx-emb-rank-item--top';
 
-            h += '<div class="' + itemClass + '" role="listitem">';
+            h += '<div class="' + itemClass + '" role="listitem" style="animation-delay:' + (i * 0.03) + 's">';
             h += '<div class="kx-emb-rank-position">' + positionBadge + '</div>';
             h += '<div class="kx-emb-rank-avatar" style="border-color:' + info.color + '">' + inicial + '</div>';
             h += '<div class="kx-emb-rank-info">';
@@ -481,8 +854,8 @@ var NIVELES = {
             h += '<div class="kx-emb-rank-meta">';
             h += '<span class="kx-emb-rank-nivel-badge" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
             if (info.tieneRifa) {
-    h += '<span class="kx-emb-rank-rifa-tag">🎰 Rifa ' + info.rifaPorcentaje + '%</span>';
-}
+                h += '<span class="kx-emb-rank-rifa-tag">🎰 Rifa ' + info.rifaPorcentaje + '%</span>';
+            }
             h += '</div>';
             h += '</div>';
             h += '<div class="kx-emb-rank-stats">';
@@ -496,6 +869,42 @@ var NIVELES = {
     }
 
     /* ══════════════════════════════════════════
+       🔧 ADMIN: CLICK HANDLER
+       ══════════════════════════════════════════ */
+    function handleAdminClick(e) {
+        var target = e.target;
+
+        var pauseBtn = target.closest('[data-action="pause-emb"]');
+        if (pauseBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleEmbajadorEstado(pauseBtn.getAttribute('data-emb-id'), 'pausado');
+            return;
+        }
+
+        var activateBtn = target.closest('[data-action="activate-emb"]');
+        if (activateBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleEmbajadorEstado(activateBtn.getAttribute('data-emb-id'), 'activo');
+            return;
+        }
+
+        var payBtn = target.closest('[data-action="pay-emb"]');
+        if (payBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            markComisionPaid(
+                payBtn.getAttribute('data-emb-id'),
+                payBtn.getAttribute('data-emb-name'),
+                parseInt(payBtn.getAttribute('data-emb-comision')) || 0,
+                parseInt(payBtn.getAttribute('data-emb-pagada')) || 0
+            );
+            return;
+        }
+    }
+
+    /* ══════════════════════════════════════════
        🔧 ADMIN SECTION
        ══════════════════════════════════════════ */
     async function loadAdminSection() {
@@ -505,7 +914,6 @@ var NIVELES = {
         if (section) section.style.display = 'block';
 
         try {
-            // Load all ambassadors
             var r = await db.from('embajadores')
                 .select('*')
                 .order('total_suscritos', { ascending: false });
@@ -514,7 +922,6 @@ var NIVELES = {
 
             var allEmb = r.data || [];
 
-            // Stats
             var totalEmb = allEmb.length;
             var totalRef = 0;
             var totalSusc = 0;
@@ -534,7 +941,6 @@ var NIVELES = {
             var countEl = document.getElementById('embAdminCount');
             if (countEl) countEl.textContent = totalEmb + ' embajadores';
 
-            // Render list
             renderAdminList(allEmb);
 
         } catch (e) {
@@ -549,8 +955,8 @@ var NIVELES = {
         if (!embs.length) {
             container.innerHTML =
                 '<div class="kx-emb-admin-empty">' +
-                    '<div class="kx-emb-admin-empty-icon">📋</div>' +
-                    '<div class="kx-emb-admin-empty-title">Sin embajadores registrados</div>' +
+                '<div class="kx-emb-admin-empty-icon">📋</div>' +
+                '<div class="kx-emb-admin-empty-title">Sin embajadores registrados</div>' +
                 '</div>';
             return;
         }
@@ -563,6 +969,7 @@ var NIVELES = {
             var inicial = esc(nombre.charAt(0).toUpperCase());
             var isActivo = emb.estado === 'activo';
             var fecha = formatDate(emb.created_at);
+            var comisionPendiente = (emb.comision_acumulada || 0) - (emb.comision_pagada || 0);
 
             h += '<div class="kx-emb-admin-item" role="listitem" data-emb-id="' + esc(emb.id) + '">';
             h += '<div class="kx-emb-admin-item-avatar" style="border-color:' + info.color + '">' + inicial + '</div>';
@@ -576,15 +983,15 @@ var NIVELES = {
             h += '<div class="kx-emb-admin-item-stats">';
             h += '<span class="kx-emb-admin-item-nivel" style="color:' + info.color + '">' + info.badge + ' ' + info.name + '</span>';
             h += '<span class="kx-emb-admin-item-count">' + (emb.total_suscritos || 0) + ' susc. / ' + (emb.total_registrados || 0) + ' reg.</span>';
-            var comisionPendiente = (emb.comision_acumulada || 0) - (emb.comision_pagada || 0);
 
-if (info.comision > 0 && comisionPendiente > 0) {
-    h += '<span class="kx-emb-admin-item-comision">Pendiente: ' + K.formatPrice(comisionPendiente) + '</span>';
-} else if (info.tieneRifa) {
-    h += '<span class="kx-emb-admin-item-rifa">🎰 Participa en rifa ' + info.rifaPorcentaje + '%</span>';
-} else {
-    h += '<span class="kx-emb-admin-item-comision-paid">✅ Sin deuda</span>';
-}
+            if (info.comision > 0 && comisionPendiente > 0) {
+                h += '<span class="kx-emb-admin-item-comision">Pendiente: ' + K.formatPrice(comisionPendiente) + '</span>';
+            } else if (info.tieneRifa) {
+                h += '<span class="kx-emb-admin-item-rifa">🎰 Participa en rifa ' + info.rifaPorcentaje + '%</span>';
+            } else {
+                h += '<span class="kx-emb-admin-item-comision-paid">✅ Sin deuda</span>';
+            }
+
             h += '</div>';
             h += '<div class="kx-emb-admin-item-actions">';
 
@@ -599,13 +1006,10 @@ if (info.comision > 0 && comisionPendiente > 0) {
             }
 
             if (info.comision > 0 && comisionPendiente > 0) {
-    h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--pay" data-action="pay-emb" data-emb-id="' + esc(emb.id) + '" data-emb-name="' + esc(nombre) + '" data-emb-comision="' + (emb.comision_acumulada || 0) + '" data-emb-pagada="' + (emb.comision_pagada || 0) + '" title="Marcar comisión pagada">';
-    h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
-    h += '</button>';
-}
-
-            h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
-            h += '</button>';
+                h += '<button class="kx-emb-admin-btn kx-emb-admin-btn--pay" data-action="pay-emb" data-emb-id="' + esc(emb.id) + '" data-emb-name="' + esc(nombre) + '" data-emb-comision="' + (emb.comision_acumulada || 0) + '" data-emb-pagada="' + (emb.comision_pagada || 0) + '" title="Marcar comisión pagada">';
+                h += '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+                h += '</button>';
+            }
 
             h += '</div>';
             h += '<span class="kx-emb-admin-item-date">' + esc(fecha) + '</span>';
@@ -617,109 +1021,10 @@ if (info.comision > 0 && comisionPendiente > 0) {
     }
 
     /* ══════════════════════════════════════════
-       📋 COPY BUTTONS
-       ══════════════════════════════════════════ */
-    var btnCopyCodigo = document.getElementById('btnCopyCodigo');
-    if (btnCopyCodigo) {
-        btnCopyCodigo.addEventListener('click', function () {
-            if (!myEmbajador) return;
-            copyToClipboard(myEmbajador.codigo);
-            K.showToast('📋 Código copiado', 'success');
-        });
-    }
-
-    var btnCopyLink = document.getElementById('btnCopyLink');
-    if (btnCopyLink) {
-        btnCopyLink.addEventListener('click', function () {
-            if (!myEmbajador) return;
-            var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
-            copyToClipboard(link);
-            K.showToast('🔗 Link copiado', 'success');
-        });
-    }
-
-    var btnCopyAll = document.getElementById('embBtnCopyAll');
-    if (btnCopyAll) {
-        btnCopyAll.addEventListener('click', function () {
-            if (!myEmbajador) return;
-            var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(myEmbajador.codigo);
-            var msg = '🎵 ¡Únete a KXON, la plataforma musical exclusiva!\n\n' +
-                'Regístrate con mi código de embajador y accede a música, videos y más.\n\n' +
-                '🔗 ' + link + '\n\n' +
-                '📌 Código: ' + myEmbajador.codigo;
-            copyToClipboard(msg);
-            K.showToast('📋 Mensaje completo copiado', 'success');
-        });
-    }
-
-    function copyToClipboard(text) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).catch(function () {
-                fallbackCopy(text);
-            });
-        } else {
-            fallbackCopy(text);
-        }
-    }
-
-    function fallbackCopy(text) {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); } catch (e) { }
-        document.body.removeChild(ta);
-    }
-
-    /* ══════════════════════════════════════════
-       🔧 ADMIN EVENT DELEGATION
-       ══════════════════════════════════════════ */
-    var panelEl = document.getElementById('panel-embajadores');
-    if (panelEl) {
-        panelEl.addEventListener('click', function (e) {
-            var target = e.target;
-
-            // Pause ambassador
-            var pauseBtn = target.closest('[data-action="pause-emb"]');
-            if (pauseBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                var embId = pauseBtn.getAttribute('data-emb-id');
-                if (embId) toggleEmbajadorEstado(embId, 'pausado');
-                return;
-            }
-
-            // Activate ambassador
-            var activateBtn = target.closest('[data-action="activate-emb"]');
-            if (activateBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                var embId2 = activateBtn.getAttribute('data-emb-id');
-                if (embId2) toggleEmbajadorEstado(embId2, 'activo');
-                return;
-            }
-
-            // Pay commission
-            var payBtn = target.closest('[data-action="pay-emb"]');
-            if (payBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                var payEmbId = payBtn.getAttribute('data-emb-id');
-                var payName = payBtn.getAttribute('data-emb-name');
-                var payComision = parseInt(payBtn.getAttribute('data-emb-comision')) || 0;
-                var payPagada = parseInt(payBtn.getAttribute('data-emb-pagada')) || 0;
-                if (payEmbId) markComisionPaid(payEmbId, payName, payComision, payPagada);
-                return;
-            }
-        });
-    }
-
-    /* ══════════════════════════════════════════
        🔧 ADMIN: TOGGLE ESTADO
        ══════════════════════════════════════════ */
     async function toggleEmbajadorEstado(embId, nuevoEstado) {
+        if (!embId) return;
         var action = nuevoEstado === 'activo' ? 'activar' : 'pausar';
         if (!confirm('¿' + action.charAt(0).toUpperCase() + action.slice(1) + ' este embajador?')) return;
 
@@ -746,6 +1051,7 @@ if (info.comision > 0 && comisionPendiente > 0) {
        🔧 ADMIN: MARK COMISION PAID
        ══════════════════════════════════════════ */
     async function markComisionPaid(embId, nombre, comisionTotal, comisionPagada) {
+        if (!embId) return;
         var pendiente = comisionTotal - comisionPagada;
 
         if (pendiente <= 0) {
@@ -773,79 +1079,98 @@ if (info.comision > 0 && comisionPendiente > 0) {
         }
     }
 
-/* ══════════════════════════════════════════
-   📧 EMAIL: BIENVENIDA EMBAJADOR
-   ══════════════════════════════════════════ */
-function sendWelcomeEmail(email, nombre, codigo) {
-    if (!window.emailjs) {
-        console.warn('EmailJS no disponible');
-        return;
+    /* ══════════════════════════════════════════
+       📧 EMAIL: BIENVENIDA EMBAJADOR
+       ══════════════════════════════════════════ */
+    function sendWelcomeEmail(email, nombre, codigo) {
+        if (!window.emailjs) {
+            console.warn('EmailJS no disponible');
+            return;
+        }
+
+        var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(codigo);
+
+        window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_WELCOME, {
+            to_email: email,
+            nombre: nombre,
+            codigo: codigo,
+            link: link
+        }).then(function () {
+            console.log('✅ Email de bienvenida enviado a', email);
+        }).catch(function (err) {
+            console.warn('⚠️ Error enviando email:', err);
+        });
     }
 
-    var link = window.location.origin + '/register.html?ref=' + encodeURIComponent(codigo);
+    /* ══════════════════════════════════════════
+       📧 EMAIL: REFERIDO SE SUSCRIBIÓ
+       ══════════════════════════════════════════ */
+    K.sendReferidoEmail = function (embajadorEmail, embajadorNombre, referidoNombre, referidoEmail, planNombre, nivelActual, totalSuscritos) {
+        if (!window.emailjs) {
+            console.warn('EmailJS no disponible');
+            return;
+        }
 
-    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_WELCOME, {
-        to_email: email,
-        nombre: nombre,
-        codigo: codigo,
-        link: link
-    }).then(function () {
-        console.log('✅ Email de bienvenida enviado a', email);
-    }).catch(function (err) {
-        console.warn('⚠️ Error enviando email:', err);
-    });
-}
+        var info = getNivelInfo(nivelActual);
+        var rewardType, rewardColor, rewardValue, rewardDesc;
 
-/* ══════════════════════════════════════════
-   📧 EMAIL: REFERIDO SE SUSCRIBIÓ
-   ══════════════════════════════════════════ */
-K.sendReferidoEmail = function (embajadorEmail, embajadorNombre, referidoNombre, referidoEmail, planNombre, nivelActual, totalSuscritos) {
-    if (!window.emailjs) {
-        console.warn('EmailJS no disponible');
-        return;
-    }
+        if (info.comision > 0) {
+            rewardType = 'Comisión Ganada';
+            rewardColor = '#34c759';
+            rewardValue = '+$' + info.comision.toLocaleString('es-CO') + ' COP';
+            rewardDesc = 'Se sumó a tu comisión acumulada';
+        } else if (info.tieneRifa) {
+            rewardType = 'Suma para tu Rifa';
+            rewardColor = '#ffd700';
+            rewardValue = '🎰 Rifa del ' + info.rifaPorcentaje + '%';
+            rewardDesc = 'Este suscrito cuenta para tu participación en la rifa mensual';
+        } else {
+            rewardType = 'Nuevo Suscrito';
+            rewardColor = '#c0c0c0';
+            rewardValue = '+1 Suscrito';
+            rewardDesc = 'Suma a tu contador de referidos';
+        }
 
-    var info = getNivelInfo(nivelActual);
-    var rewardType, rewardColor, rewardValue, rewardDesc;
+        window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_REFERIDO, {
+            to_email: embajadorEmail,
+            embajador_nombre: embajadorNombre,
+            referido_nombre: referidoNombre,
+            referido_email: referidoEmail,
+            plan_nombre: planNombre,
+            reward_type: rewardType,
+            reward_color: rewardColor,
+            reward_value: rewardValue,
+            reward_desc: rewardDesc,
+            total_suscritos: String(totalSuscritos),
+            nivel_badge: info.badge,
+            nivel_name: info.name,
+            nivel_color: info.color,
+            dashboard_link: window.location.origin + '/dashboard.html'
+        }).then(function () {
+            console.log('✅ Email de referido enviado a', embajadorEmail);
+        }).catch(function (err) {
+            console.warn('⚠️ Error enviando email referido:', err);
+        });
+    };
 
-    if (info.comision > 0) {
-        rewardType = 'Comisión Ganada';
-        rewardColor = '#34c759';
-        rewardValue = '+$' + info.comision.toLocaleString('es-CO') + ' COP';
-        rewardDesc = 'Se sumó a tu comisión acumulada';
-    } else if (info.tieneRifa) {
-        rewardType = 'Suma para tu Rifa';
-        rewardColor = '#ffd700';
-        rewardValue = '🎰 Rifa del ' + info.rifaPorcentaje + '%';
-        rewardDesc = 'Este suscrito cuenta para tu participación en la rifa mensual';
-    } else {
-        rewardType = 'Nuevo Suscrito';
-        rewardColor = '#c0c0c0';
-        rewardValue = '+1 Suscrito';
-        rewardDesc = 'Suma a tu contador de referidos';
-    }
+    /* ══════════════════════════════════════════
+       🔔 NOTIFY REFERIDO SUSCRITO
+       ══════════════════════════════════════════ */
+    K.notifyReferidoSuscrito = function (embajadorId, referidoNombre, planNombre) {
+        if (myEmbajador && myEmbajador.id === embajadorId) {
+            K.showToast('🎉 ¡' + referidoNombre + ' se suscribió a ' + planNombre + '!', 'success');
+        }
 
-    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_REFERIDO, {
-        to_email: embajadorEmail,
-        embajador_nombre: embajadorNombre,
-        referido_nombre: referidoNombre,
-        referido_email: referidoEmail,
-        plan_nombre: planNombre,
-        reward_type: rewardType,
-        reward_color: rewardColor,
-        reward_value: rewardValue,
-        reward_desc: rewardDesc,
-        total_suscritos: String(totalSuscritos),
-        nivel_badge: info.badge,
-        nivel_name: info.name,
-        nivel_color: info.color,
-        dashboard_link: window.location.origin + '/dashboard.html'
-    }).then(function () {
-        console.log('✅ Email de referido enviado a', embajadorEmail);
-    }).catch(function (err) {
-        console.warn('⚠️ Error enviando email referido:', err);
-    });
-};
-
+        if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+                new Notification('¡Nuevo suscrito! 🎉', {
+                    body: referidoNombre + ' se suscribió al plan ' + planNombre,
+                    icon: '/icons/icon-192.png',
+                    badge: '/icons/icon-96.png',
+                    tag: 'referido-' + Date.now()
+                });
+            } catch (e) { }
+        }
+    };
 
 })();
