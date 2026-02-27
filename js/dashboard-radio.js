@@ -1,24 +1,40 @@
 /* ============================================
-   📻 DASHBOARD-RADIO.JS — KXON REDESIGN 2026
-   Radio KXON: Reproducción continua, cola, shuffle
-   Namespace: kx-rad-*
-   ✅ escapeHtml en toda interpolación
-   ✅ Event delegation
-   ✅ ARIA + Accesibilidad
-   ✅ Lazy loading de imágenes
-   ✅ Búsqueda en cola
-   ✅ FIX: Event listeners se registran en initRadio
-   ============================================ */
+📻 DASHBOARD-RADIO.JS — KXON REDESIGN 2026
+Radio KXON: Reproducción continua, cola, shuffle
+Namespace: kx-rad-*
+✅ FIX: Compatibilidad con init order
+✅ FIX: Canciones no cargaban por filtro de fechas
+✅ FIX: Event listeners duplicados
+✅ FIX: radioAudio referencia segura
+============================================ */
 (function () {
 
-  var db = window.db;
-  var K = window.KXON;
-  var radioAudio = K.radioAudio;
+  /* ══════════════════════════════════════════
+     🛡️ SAFE REFERENCES — Espera a que KXON exista
+  ══════════════════════════════════════════ */
+  function getK() {
+    return window.KXON || {};
+  }
+
+  function getDb() {
+    return window.db;
+  }
+
+  function getRadioAudio() {
+    var K = getK();
+    if (K.radioAudio) return K.radioAudio;
+    // Fallback: crear uno si no existe aún
+    if (!window._kxRadioAudioFallback) {
+      window._kxRadioAudioFallback = new Audio();
+    }
+    return window._kxRadioAudioFallback;
+  }
+
   var eventsReady = false;
 
   /* ══════════════════════════════════════════
      🛡️ HELPERS
-     ══════════════════════════════════════════ */
+  ══════════════════════════════════════════ */
   function escapeHtml(str) {
     if (!str) return '';
     var d = document.createElement('div');
@@ -32,7 +48,13 @@
 
   function isReleased(fecha) {
     if (!fecha) return true;
-    return new Date(fecha) <= new Date();
+    try {
+      var d = new Date(fecha);
+      if (isNaN(d.getTime())) return true; // fecha inválida = mostrar
+      return d <= new Date();
+    } catch (e) {
+      return true; // si hay error, mostrar la canción
+    }
   }
 
   function parseDuration(dur) {
@@ -66,10 +88,9 @@
     };
   }
 
-
   /* ══════════════════════════════════════════
-     🎨 VISUALIZER — Generate bars via JS
-     ══════════════════════════════════════════ */
+     🎨 VISUALIZER
+  ══════════════════════════════════════════ */
   function initVisualizer() {
     var wave = $('kxRadWave');
     if (!wave || wave.children.length > 0) return;
@@ -83,17 +104,15 @@
     wave.appendChild(frag);
   }
 
-
   /* ══════════════════════════════════════════
-     🎚 BIND ALL EVENTS — Called once on first init
-     ══════════════════════════════════════════ */
+     🎚 BIND ALL EVENTS
+  ══════════════════════════════════════════ */
   function bindEvents() {
     if (eventsReady) return;
     eventsReady = true;
 
     console.log('📻 Radio: Binding events...');
 
-    /* ── Play / Nav / Shuffle buttons ── */
     var playBtn = $('kxRadPlayBtn');
     if (playBtn) playBtn.addEventListener('click', function (e) {
       e.preventDefault();
@@ -122,7 +141,6 @@
       radioShuffleToggle();
     });
 
-    /* ── Volume icon (mute toggle) ── */
     var volIcon = $('kxRadVolIcon');
     if (volIcon) volIcon.addEventListener('click', function (e) {
       e.preventDefault();
@@ -130,23 +148,23 @@
       toggleMute();
     });
 
-    /* ── Progress bar ── */
     var progressBar = $('kxRadProgressBar');
     if (progressBar) {
       progressBar.addEventListener('click', function (e) {
-        if (!radioAudio.duration) return;
+        var ra = getRadioAudio();
+        if (!ra.duration) return;
         var r = this.getBoundingClientRect();
-        radioAudio.currentTime = ((e.clientX - r.left) / r.width) * radioAudio.duration;
+        ra.currentTime = ((e.clientX - r.left) / r.width) * ra.duration;
       });
 
       progressBar.addEventListener('keydown', function (e) {
-        if (!radioAudio.duration) return;
-        if (e.key === 'ArrowRight') { radioAudio.currentTime = Math.min(radioAudio.duration, radioAudio.currentTime + 5); e.preventDefault(); }
-        if (e.key === 'ArrowLeft') { radioAudio.currentTime = Math.max(0, radioAudio.currentTime - 5); e.preventDefault(); }
+        var ra = getRadioAudio();
+        if (!ra.duration) return;
+        if (e.key === 'ArrowRight') { ra.currentTime = Math.min(ra.duration, ra.currentTime + 5); e.preventDefault(); }
+        if (e.key === 'ArrowLeft') { ra.currentTime = Math.max(0, ra.currentTime - 5); e.preventDefault(); }
       });
     }
 
-    /* ── Volume bar ── */
     var volBar = $('kxRadVolBar');
     if (volBar) {
       volBar.addEventListener('click', function (e) {
@@ -156,18 +174,18 @@
       });
 
       volBar.addEventListener('keydown', function (e) {
+        var K = getK();
         if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-          setVolume(Math.min(1, K.radioVolume + 0.05));
+          setVolume(Math.min(1, (K.radioVolume || 0.7) + 0.05));
           e.preventDefault();
         }
         if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-          setVolume(Math.max(0, K.radioVolume - 0.05));
+          setVolume(Math.max(0, (K.radioVolume || 0.7) - 0.05));
           e.preventDefault();
         }
       });
     }
 
-    /* ── Queue list — Event delegation ── */
     var queueList = $('kxRadQueueList');
     if (queueList) {
       queueList.addEventListener('click', function (e) {
@@ -190,7 +208,6 @@
       console.warn('📻 Radio: kxRadQueueList NOT FOUND');
     }
 
-    /* ── Search ── */
     var searchInput = $('kxRadSearchInput');
     if (searchInput) {
       searchInput.addEventListener('input', debounce(function () {
@@ -199,45 +216,184 @@
       }, 200));
     }
 
+    /* ── Audio events ── */
+    var radioAudio = getRadioAudio();
+
+    radioAudio.addEventListener('timeupdate', function () {
+      var K = getK();
+      if (!radioAudio.duration) return;
+      var pct = (radioAudio.currentTime / radioAudio.duration) * 100;
+
+      var fill = $('kxRadProgressFill');
+      if (fill) fill.style.width = pct + '%';
+
+      var thumb = $('kxRadProgressThumb');
+      if (thumb) thumb.style.left = pct + '%';
+
+      var ct = $('kxRadTimeCurrent');
+      if (ct && K.formatTime) ct.textContent = K.formatTime(radioAudio.currentTime);
+
+      var dt = $('kxRadTimeDuration');
+      if (dt && K.formatTime) dt.textContent = K.formatTime(radioAudio.duration);
+
+      if (K.activeSource === 'radio') {
+        var pf = document.getElementById('progressFill');
+        if (pf) pf.style.width = pct + '%';
+        var pct2 = document.getElementById('playerCurrentTime');
+        if (pct2 && K.formatTime) pct2.textContent = K.formatTime(radioAudio.currentTime);
+        var pd = document.getElementById('playerDuration');
+        if (pd && K.formatTime) pd.textContent = K.formatTime(radioAudio.duration);
+      }
+    });
+
+    radioAudio.addEventListener('ended', function () {
+      radioNext();
+    });
+
+    radioAudio.addEventListener('error', function (e) {
+      console.error('📻 Radio audio error:', e);
+      var K = getK();
+      if (K.showToast) K.showToast('Error al reproducir. Saltando...', 'error');
+      setTimeout(function () { radioNext(); }, 1000);
+    });
+
     console.log('📻 Radio: Events bound ✅');
   }
 
-
   /* ══════════════════════════════════════════
-     📻 INIT RADIO
-     ══════════════════════════════════════════ */
-  K.initRadio = async function () {
+     📻 INIT RADIO — Función principal
+  ══════════════════════════════════════════ */
+  function initRadio() {
+    var K = getK();
+    var db = getDb();
+
+    console.log('📻 Radio: initRadio called');
+    console.log('📻 Radio: K exists?', !!K);
+    console.log('📻 Radio: db exists?', !!db);
+    console.log('📻 Radio: radioReady?', K.radioReady);
+
+    // Verificar que el panel HTML existe (no fue reemplazado por access control)
+    var queueList = $('kxRadQueueList');
+    if (!queueList) {
+      console.warn('📻 Radio: Panel HTML no encontrado (posiblemente bloqueado por access control)');
+      return;
+    }
+
     initVisualizer();
     bindEvents();
 
-    if (K.radioReady && K.radioPlaylist.length > 0) {
+    if (K.radioReady && K.radioPlaylist && K.radioPlaylist.length > 0) {
+      console.log('📻 Radio: Already loaded, rendering...');
       renderQueue();
       updateStats();
       return;
     }
 
+    if (!db) {
+      console.error('📻 Radio: No database connection');
+      renderError('Sin conexión a la base de datos');
+      return;
+    }
+
+    // Cargar canciones
+    loadRadioSongs();
+  }
+
+  async function loadRadioSongs() {
+    var K = getK();
+    var db = getDb();
+
     try {
+      console.log('📻 Radio: Cargando canciones desde Supabase...');
+
       var r = await db.from('canciones')
         .select('*, albumes(titulo, imagen_url, fecha_lanzamiento)')
         .order('created_at', { ascending: false });
 
-      if (r.error) throw r.error;
+      if (r.error) {
+        console.error('📻 Radio: Supabase error:', r.error);
+        throw r.error;
+      }
 
       var allSongs = r.data || [];
+      console.log('📻 Radio: Total canciones en DB:', allSongs.length);
 
-      var released = allSongs.filter(function (s) {
+      // DEBUG: Mostrar las primeras canciones para verificar datos
+      if (allSongs.length > 0) {
+        console.log('📻 Radio: Primera canción:', JSON.stringify(allSongs[0], null, 2));
+      }
+
+      if (allSongs.length === 0) {
+        console.warn('📻 Radio: No hay canciones en la tabla "canciones"');
+        K.radioPlaylist = [];
+        K.radioShuffled = [];
+        renderQueue();
+        updateStats();
+        K.radioReady = true;
+        return;
+      }
+
+      // Filtrar canciones lanzadas (con logs para debug)
+      var released = [];
+      var blocked = [];
+
+      for (var i = 0; i < allSongs.length; i++) {
+        var s = allSongs[i];
         var songOk = isReleased(s.fecha_lanzamiento);
         var albumOk = true;
+
         if (s.albumes && s.albumes.fecha_lanzamiento) {
           albumOk = isReleased(s.albumes.fecha_lanzamiento);
         }
-        return songOk && albumOk;
-      });
 
-      K.radioPlaylist = released.map(function (s) {
+        if (songOk && albumOk) {
+          released.push(s);
+        } else {
+          blocked.push({
+            titulo: s.titulo,
+            fecha_cancion: s.fecha_lanzamiento,
+            fecha_album: s.albumes ? s.albumes.fecha_lanzamiento : null,
+            songOk: songOk,
+            albumOk: albumOk
+          });
+        }
+      }
+
+      console.log('📻 Radio: Canciones disponibles:', released.length);
+      console.log('📻 Radio: Canciones bloqueadas por fecha:', blocked.length);
+
+      if (blocked.length > 0) {
+        console.log('📻 Radio: Canciones bloqueadas:', JSON.stringify(blocked.slice(0, 5)));
+      }
+
+      // Si TODAS están bloqueadas por fecha, mostrar todas de todos modos
+      if (released.length === 0 && allSongs.length > 0) {
+        console.warn('📻 Radio: TODAS las canciones están bloqueadas por fecha. Mostrando todas de todos modos.');
+        released = allSongs;
+      }
+
+      // Filtrar canciones sin archivo de audio
+      var playable = [];
+      var noAudio = [];
+
+      for (var j = 0; j < released.length; j++) {
+        if (released[j].archivo_url && released[j].archivo_url.trim() !== '') {
+          playable.push(released[j]);
+        } else {
+          noAudio.push(released[j].titulo);
+        }
+      }
+
+      if (noAudio.length > 0) {
+        console.warn('📻 Radio: Canciones sin archivo_url:', noAudio);
+      }
+
+      console.log('📻 Radio: Canciones reproducibles:', playable.length);
+
+      K.radioPlaylist = playable.map(function (s) {
         return {
           id: s.id,
-          titulo: s.titulo,
+          titulo: s.titulo || 'Sin título',
           archivo_url: s.archivo_url,
           imagen_url: s.imagen_url || (s.albumes ? s.albumes.imagen_url : '') || '',
           album: s.albumes ? s.albumes.titulo : 'KXON Radio',
@@ -252,18 +408,31 @@
       updateStats();
       K.radioReady = true;
 
-      console.log('📻 Radio: ' + released.length + ' canciones disponibles (filtradas ' + (allSongs.length - released.length) + ' no lanzadas)');
+      console.log('📻 Radio: ✅ Listo! ' + K.radioPlaylist.length + ' canciones en la cola');
 
     } catch (e) {
-      console.error('Radio error:', e);
-      renderError();
+      console.error('📻 Radio: Error cargando canciones:', e);
+      renderError('Error al cargar: ' + (e.message || 'desconocido'));
     }
-  };
+  }
 
+  // Asignar initRadio al namespace KXON
+  // Necesitamos esperar a que KXON exista
+  function assignInitRadio() {
+    if (window.KXON) {
+      window.KXON.initRadio = initRadio;
+      console.log('📻 Radio: initRadio asignado a KXON ✅');
+    } else {
+      // KXON aún no existe, reintentar
+      console.log('📻 Radio: Esperando a KXON...');
+      setTimeout(assignInitRadio, 50);
+    }
+  }
+  assignInitRadio();
 
   /* ══════════════════════════════════════════
      🔧 HELPERS
-     ══════════════════════════════════════════ */
+  ══════════════════════════════════════════ */
   function shuffleArr(a) {
     for (var i = a.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
@@ -273,15 +442,16 @@
   }
 
   function getRL() {
-    return K.radioShuffleMode ? K.radioShuffled : K.radioPlaylist;
+    var K = getK();
+    return K.radioShuffleMode ? (K.radioShuffled || []) : (K.radioPlaylist || []);
   }
-
 
   /* ══════════════════════════════════════════
      📊 STATS
-     ══════════════════════════════════════════ */
+  ══════════════════════════════════════════ */
   function updateStats() {
-    var list = K.radioPlaylist;
+    var K = getK();
+    var list = K.radioPlaylist || [];
     var totalPlays = 0;
     var totalDurSecs = 0;
 
@@ -303,10 +473,9 @@
     if (elDur) elDur.textContent = formatDuration(totalDurSecs);
   }
 
-
   /* ══════════════════════════════════════════
      🖼️ DISC IMAGE
-     ══════════════════════════════════════════ */
+  ══════════════════════════════════════════ */
   function updateDiscImage(imgUrl) {
     var img = $('kxRadDiscImg');
     var fallback = $('kxRadDiscFallback');
@@ -331,11 +500,11 @@
     }
   }
 
-
   /* ══════════════════════════════════════════
      🎵 PLAY / TOGGLE / NEXT / PREV
-     ══════════════════════════════════════════ */
+  ══════════════════════════════════════════ */
   function setPlayingUI(isPlaying) {
+    var K = getK();
     var disc = $('kxRadDisc');
     var onAir = $('kxRadOnAir');
     var playBtn = $('kxRadPlayBtn');
@@ -353,29 +522,51 @@
     if (arm) arm.classList.toggle('is-playing', isPlaying);
 
     var pp = document.getElementById('playerPlayPause');
-    if (pp) pp.textContent = isPlaying ? '⏸' : '▶';
+    if (pp) {
+      var ppPlay = pp.querySelector('.kx-ply-icon-play');
+      var ppPause = pp.querySelector('.kx-ply-icon-pause');
+      if (ppPlay) ppPlay.style.display = isPlaying ? 'none' : 'block';
+      if (ppPause) ppPause.style.display = isPlaying ? 'block' : 'none';
+    }
     K.isPlaying = isPlaying;
   }
 
   function radioPlay(idx) {
+    var K = getK();
+    var db = getDb();
+    var radioAudio = getRadioAudio();
     var list = getRL();
+
     if (!list || !list[idx]) {
       console.warn('📻 radioPlay: No track at index', idx, 'list length:', list ? list.length : 0);
       return;
     }
+
     K.radioIndex = idx;
     var t = list[idx];
 
-    console.log('📻 Playing:', t.titulo, 'idx:', idx);
+    console.log('📻 Playing:', t.titulo, 'url:', t.archivo_url ? t.archivo_url.substring(0, 80) + '...' : 'NO URL');
 
-    K.stopAllAudio('radio');
+    if (!t.archivo_url) {
+      console.error('📻 Track has no archivo_url!');
+      if (K.showToast) K.showToast('Canción sin archivo de audio', 'error');
+      return;
+    }
+
+    if (typeof K.stopAllAudio === 'function') K.stopAllAudio('radio');
     K.activeSource = 'radio';
 
     radioAudio.src = t.archivo_url;
-    radioAudio.volume = K.radioVolume;
-    radioAudio.play().catch(function(err) {
-      console.error('📻 Play error:', err);
-    });
+    radioAudio.volume = K.radioVolume || 0.7;
+    
+    var playPromise = radioAudio.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(function (err) {
+        console.error('📻 Play error:', err.message);
+        if (K.showToast) K.showToast('Error al reproducir: ' + err.message, 'error');
+      });
+    }
+
     K.radioIsPlaying = true;
 
     updateDiscImage(t.imagen_url);
@@ -419,14 +610,19 @@
       K.addToHistorial(t);
     }
 
-    db.rpc('increment_reproducciones', { song_id: t.id }).then(function (res) {
-      if (res.error) console.warn('Error updating radio plays:', res.error.message);
-    });
+    if (db) {
+      db.rpc('increment_reproducciones', { song_id: t.id }).then(function (res) {
+        if (res && res.error) console.warn('Error updating radio plays:', res.error.message);
+      });
+    }
   }
 
   function radioToggle() {
-    if (K.radioPlaylist.length === 0) {
-      K.showToast('No hay canciones disponibles', 'error');
+    var K = getK();
+    var radioAudio = getRadioAudio();
+
+    if (!K.radioPlaylist || K.radioPlaylist.length === 0) {
+      if (K.showToast) K.showToast('No hay canciones disponibles', 'error');
       return;
     }
 
@@ -438,11 +634,14 @@
       if (K.radioIndex === -1) {
         radioPlay(0);
       } else {
-        K.stopAllAudio('radio');
+        if (typeof K.stopAllAudio === 'function') K.stopAllAudio('radio');
         K.activeSource = 'radio';
-        radioAudio.play().catch(function(err) {
-          console.error('📻 Resume error:', err);
-        });
+        var playPromise = radioAudio.play();
+        if (playPromise && playPromise.catch) {
+          playPromise.catch(function (err) {
+            console.error('📻 Resume error:', err);
+          });
+        }
         K.radioIsPlaying = true;
         setPlayingUI(true);
       }
@@ -450,9 +649,10 @@
   }
 
   function radioNext() {
+    var K = getK();
     var list = getRL();
-    if (list.length === 0) return;
-    var n = K.radioIndex + 1;
+    if (!list || list.length === 0) return;
+    var n = (K.radioIndex || 0) + 1;
     if (n >= list.length) {
       if (K.radioShuffleMode) K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
       n = 0;
@@ -461,18 +661,21 @@
   }
 
   function radioPrev() {
+    var K = getK();
+    var radioAudio = getRadioAudio();
     var list = getRL();
-    if (list.length === 0) return;
+    if (!list || list.length === 0) return;
     if (radioAudio.currentTime > 3) {
       radioAudio.currentTime = 0;
       return;
     }
-    var p = K.radioIndex - 1;
+    var p = (K.radioIndex || 0) - 1;
     if (p < 0) p = list.length - 1;
     radioPlay(p);
   }
 
   function radioShuffleToggle() {
+    var K = getK();
     K.radioShuffleMode = !K.radioShuffleMode;
     var btn = $('kxRadShuffle');
 
@@ -481,14 +684,14 @@
         btn.classList.add('is-active');
         btn.setAttribute('aria-pressed', 'true');
       }
-      K.radioShuffled = shuffleArr([].concat(K.radioPlaylist));
-      K.showToast('Aleatorio activado', 'success');
+      K.radioShuffled = shuffleArr([].concat(K.radioPlaylist || []));
+      if (K.showToast) K.showToast('Aleatorio activado', 'success');
     } else {
       if (btn) {
         btn.classList.remove('is-active');
         btn.setAttribute('aria-pressed', 'false');
       }
-      K.showToast('Modo secuencial', 'success');
+      if (K.showToast) K.showToast('Modo secuencial', 'success');
     }
 
     K.radioIndex = 0;
@@ -498,45 +701,12 @@
   /* Backward compat */
   window._rjump = function (i) { radioPlay(i); };
 
-
-  /* ══════════════════════════════════════════
-     ⏱ AUDIO EVENTS
-     ══════════════════════════════════════════ */
-  radioAudio.addEventListener('timeupdate', function () {
-    if (!radioAudio.duration) return;
-    var pct = (radioAudio.currentTime / radioAudio.duration) * 100;
-
-    var fill = $('kxRadProgressFill');
-    if (fill) fill.style.width = pct + '%';
-
-    var thumb = $('kxRadProgressThumb');
-    if (thumb) thumb.style.left = pct + '%';
-
-    var ct = $('kxRadTimeCurrent');
-    if (ct) ct.textContent = K.formatTime(radioAudio.currentTime);
-
-    var dt = $('kxRadTimeDuration');
-    if (dt) dt.textContent = K.formatTime(radioAudio.duration);
-
-    if (K.activeSource === 'radio') {
-      var pf = document.getElementById('progressFill');
-      if (pf) pf.style.width = pct + '%';
-      var pct2 = document.getElementById('playerCurrentTime');
-      if (pct2) pct2.textContent = K.formatTime(radioAudio.currentTime);
-      var pd = document.getElementById('playerDuration');
-      if (pd) pd.textContent = K.formatTime(radioAudio.duration);
-    }
-  });
-
-  radioAudio.addEventListener('ended', function () {
-    radioNext();
-  });
-
-
   /* ══════════════════════════════════════════
      🔊 VOLUME HELPERS
-     ══════════════════════════════════════════ */
+  ══════════════════════════════════════════ */
   function setVolume(p) {
+    var K = getK();
+    var radioAudio = getRadioAudio();
     K.radioVolume = p;
     radioAudio.volume = p;
 
@@ -575,6 +745,7 @@
   var savedVolume = 0.7;
 
   function toggleMute() {
+    var radioAudio = getRadioAudio();
     if (radioAudio.volume > 0) {
       savedVolume = radioAudio.volume;
       setVolume(0);
@@ -583,13 +754,13 @@
     }
   }
 
-
   /* ══════════════════════════════════════════
      📋 QUEUE RENDERING
-     ══════════════════════════════════════════ */
+  ══════════════════════════════════════════ */
   var currentSearchTerm = '';
 
   function renderQueue() {
+    var K = getK();
     var container = $('kxRadQueueList');
     if (!container) {
       console.warn('📻 renderQueue: container not found');
@@ -598,6 +769,8 @@
 
     var list = getRL();
 
+    console.log('📻 renderQueue: list length =', list ? list.length : 0);
+
     if (!list || list.length === 0) {
       container.innerHTML =
         '<div class="kx-rad-empty">' +
@@ -605,7 +778,7 @@
             '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' +
           '</div>' +
           '<p class="kx-rad-empty-title">Sin canciones disponibles</p>' +
-          '<p class="kx-rad-empty-text">Las canciones aparecerán cuando se lancen</p>' +
+          '<p class="kx-rad-empty-text">Sube canciones a la tabla "canciones" en Supabase</p>' +
         '</div>';
       return;
     }
@@ -674,11 +847,11 @@
     }
 
     container.innerHTML = html;
-    console.log('📻 Queue rendered:', filtered.length, 'items');
+    console.log('📻 Queue rendered:', filtered.length, 'items ✅');
   }
 
-
   function updateQueueHighlight() {
+    var K = getK();
     var items = document.querySelectorAll('.kx-rad-item');
     var list = getRL();
     var PLAY_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
@@ -711,11 +884,10 @@
     }
   }
 
-
   /* ══════════════════════════════════════════
      ❌ ERROR STATE
-     ══════════════════════════════════════════ */
-  function renderError() {
+  ══════════════════════════════════════════ */
+  function renderError(msg) {
     var container = $('kxRadQueueList');
     if (!container) return;
     container.innerHTML =
@@ -724,7 +896,8 @@
           '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
         '</div>' +
         '<p class="kx-rad-empty-title">Error al cargar la radio</p>' +
-        '<p class="kx-rad-empty-text">Intenta recargar la página</p>' +
+        '<p class="kx-rad-empty-text">' + escapeHtml(msg || 'Intenta recargar la página') + '</p>' +
+        '<button onclick="window.KXON && window.KXON.initRadio && window.KXON.initRadio()" style="margin-top:16px;padding:10px 24px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);color:#a78bfa;border-radius:8px;cursor:pointer;font-size:0.8rem;">🔄 Reintentar</button>' +
       '</div>';
   }
 
