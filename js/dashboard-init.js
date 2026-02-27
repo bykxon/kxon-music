@@ -1,8 +1,9 @@
 /**
- * 🚀 KXON — Dashboard Init v4.2
+ * 🚀 KXON — Dashboard Init v4.3
  * Session · Navigation · Player · Access Control · Referrals
  * UPDATED: Compatible with kx-ply-* player redesign (SVG icons)
  * FIX: envivo panel now correctly calls K.loadEnVivo
+ * FIX: Consolidated referral processing (Google OAuth + Email + Direct)
  */
 (function () {
     'use strict';
@@ -739,7 +740,7 @@
 
     var specialOverlays = [
         ['modalMarketAdd', function () { if (typeof window._closeMarketModal === 'function') window._closeMarketModal(); }],
-        ['marketDetailOverlay', function () { $(this.id)?.classList.remove('show'); K.marketPreviewAudio.pause(); }],
+        ['marketDetailOverlay', function () { var el = $('marketDetailOverlay'); if (el) el.classList.remove('show'); K.marketPreviewAudio.pause(); }],
         ['purchaseOverlay', function () { if (typeof window._closePurchase === 'function') window._closePurchase(); }]
     ];
 
@@ -779,84 +780,121 @@
     };
 
     /* ══════════════════════════════════════
-       PROCESS PENDING REFERRAL
+       🏆 CONSOLIDATED REFERRAL PROCESSING
+       Handles: Google OAuth, Email Confirmation, Direct Registration
+       Sources: kxon_ref_code, kxon_pending_ref, KXON_processPendingReferral
        ══════════════════════════════════════ */
     async function processPendingReferral() {
-        var pendingRef = localStorage.getItem('kxon_ref_code');
-        if (pendingRef && K.currentProfile) {
-            if (!K.currentProfile.referido_por) {
-                try {
-                    await db.from('profiles').update({
-                        referido_por: pendingRef
-                    }).eq('id', K.currentUser.id);
+        if (!K.currentUser || !K.currentProfile) return;
 
-                    var embResult = await db.from('embajadores')
-                        .select('id, codigo, total_registrados')
-                        .eq('codigo', pendingRef)
-                        .eq('estado', 'activo')
-                        .single();
-
-                    if (embResult.data) {
-                        await db.from('referidos').insert({
-                            embajador_id: embResult.data.id,
-                            embajador_codigo: embResult.data.codigo,
-                            referido_user_id: K.currentUser.id,
-                            referido_email: K.currentUser.email,
-                            referido_nombre: K.currentProfile.full_name || '',
-                            estado: 'registrado',
-                            fecha_registro: new Date().toISOString()
-                        });
-
-                        await db.from('embajadores').update({
-                            total_registrados: (embResult.data.total_registrados || 0) + 1,
-                            updated_at: new Date().toISOString()
-                        }).eq('id', embResult.data.id);
-                    }
-                } catch (refErr) {
-                    console.warn('Error processing pending referral (ref_code):', refErr);
-                }
-            }
-            localStorage.removeItem('kxon_ref_code');
+        // If profile already has a referrer recorded, skip everything
+        if (K.currentProfile.referido_por) {
+            cleanupReferralStorage();
+            return;
         }
 
-        var pendingRefName = localStorage.getItem('kxon_pending_ref');
-        if (pendingRefName && K.currentProfile) {
-            if (!K.currentProfile.referido_por) {
-                try {
-                    await db.from('profiles').update({
-                        referido_por: pendingRefName
-                    }).eq('id', K.currentUser.id);
+        // Gather the referral code from all possible sources
+        var refCode = null;
 
-                    var embResult2 = await db.from('embajadores')
-                        .select('id, codigo, total_registrados')
-                        .eq('codigo', pendingRefName)
-                        .eq('estado', 'activo')
-                        .single();
-
-                    if (embResult2.data) {
-                        var refName = localStorage.getItem('kxon_pending_ref_name') || '';
-                        await db.from('referidos').insert({
-                            embajador_id: embResult2.data.id,
-                            embajador_codigo: embResult2.data.codigo,
-                            referido_user_id: K.currentUser.id,
-                            referido_email: K.currentUser.email,
-                            referido_nombre: refName || K.currentProfile.full_name || '',
-                            estado: 'registrado',
-                            fecha_registro: new Date().toISOString()
-                        });
-
-                        await db.from('embajadores').update({
-                            total_registrados: (embResult2.data.total_registrados || 0) + 1,
-                            updated_at: new Date().toISOString()
-                        }).eq('id', embResult2.data.id);
-                    }
-                } catch (refErr2) {
-                    console.warn('Error processing pending referral (pending_ref):', refErr2);
-                }
+        // 1. Check if external handler exists (e.g., from login.js)
+        if (typeof window.KXON_processPendingReferral === 'function') {
+            try {
+                await window.KXON_processPendingReferral(
+                    K.currentUser.id,
+                    K.currentUser.email,
+                    K.currentProfile.full_name || K.currentUser.email.split('@')[0]
+                );
+                cleanupReferralStorage();
+                return; // External handler took care of it
+            } catch (e) {
+                console.warn('External referral handler failed, using fallback:', e);
             }
-            localStorage.removeItem('kxon_pending_ref');
-            localStorage.removeItem('kxon_pending_ref_name');
         }
+
+        // 2. Check localStorage for pending referral codes
+        refCode = localStorage.getItem('kxon_ref_code') ||
+                  localStorage.getItem('kxon_pending_ref');
+
+        if (!refCode) {
+            cleanupReferralStorage();
+            return;
+        }
+
+        try {
+            // Find the active ambassador with this code
+            var embResult = await db.from('embajadores')
+                .select('id, codigo, total_registrados')
+                .eq('codigo', refCode)
+                .eq('estado', 'activo')
+                .single();
+
+            if (!embResult.data) {
+                console.warn('Ambassador not found or inactive:', refCode);
+                cleanupReferralStorage();
+                return;
+            }
+
+            var emb = embResult.data;
+
+            // Check if this referral already exists (prevent duplicates)
+            var existingCheck = await db.from('referidos')
+                .select('id')
+                .eq('embajador_id', emb.id)
+                .eq('referido_email', K.currentUser.email)
+                .limit(1);
+
+            if (existingCheck.data && existingCheck.data.length > 0) {
+                console.log('Referral already exists, skipping');
+                // Still update the profile if needed
+                await db.from('profiles').update({
+                    referido_por: refCode
+                }).eq('id', K.currentUser.id);
+                cleanupReferralStorage();
+                return;
+            }
+
+            // Get the referral name from storage or profile
+            var refNombre = localStorage.getItem('kxon_pending_ref_name') ||
+                            K.currentProfile.full_name ||
+                            K.currentUser.email.split('@')[0];
+
+            // Create the referral record
+            await db.from('referidos').insert({
+                embajador_id: emb.id,
+                embajador_codigo: emb.codigo,
+                referido_user_id: K.currentUser.id,
+                referido_email: K.currentUser.email,
+                referido_nombre: refNombre,
+                estado: 'registrado',
+                comision_generada: 0,
+                fecha_registro: new Date().toISOString()
+            });
+
+            // Update ambassador stats
+            await db.from('embajadores').update({
+                total_registrados: (emb.total_registrados || 0) + 1,
+                updated_at: new Date().toISOString()
+            }).eq('id', emb.id);
+
+            // Update user profile with referrer
+            await db.from('profiles').update({
+                referido_por: refCode
+            }).eq('id', K.currentUser.id);
+
+            console.log('✅ Referral processed successfully:', refCode);
+
+        } catch (refErr) {
+            console.warn('Error processing pending referral:', refErr);
+        }
+
+        cleanupReferralStorage();
+    }
+
+    function cleanupReferralStorage() {
+        localStorage.removeItem('kxon_ref_code');
+        localStorage.removeItem('kxon_pending_ref');
+        localStorage.removeItem('kxon_pending_ref_name');
+        localStorage.removeItem('kxon_pending_ref_email');
     }
 
     /* ══════════════════════════════════════
@@ -882,6 +920,7 @@
                 K.isAdmin = false;
             }
 
+            // 🏆 Process any pending referral (consolidated handler)
             await processPendingReferral();
 
             renderSidebar();

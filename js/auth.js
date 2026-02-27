@@ -1,7 +1,7 @@
 /* ============================================
    🔐 AUTH JS — KXON MUSIC PLATFORM
    Unified auth controller for Login, Register, Forgot Password
-   Versión: 4.0 — Con soporte de Embajadores/Referidos
+   Versión: 5.0 — Con soporte completo de Embajadores/Referidos
    Requires: supabase-config.js (window.db)
    ============================================ */
 
@@ -85,6 +85,7 @@
        Detecta ?ref=CODIGO en la URL
        ────────────────────────────────── */
     let detectedRefCode = '';
+    let validatedEmbajador = null;
 
     function detectReferralCode() {
         if (page !== 'register') return;
@@ -92,14 +93,31 @@
         const params = new URLSearchParams(window.location.search);
         const refCode = (params.get('ref') || '').trim().toUpperCase();
 
-        if (!refCode) return;
+        if (!refCode) {
+            // Also check localStorage (from previous visit or Google redirect)
+            const savedRef = localStorage.getItem('kxon_ref_code');
+            if (savedRef) {
+                detectedRefCode = savedRef;
+                prefillReferralUI(savedRef);
+                validateReferralCode(savedRef);
+            }
+            return;
+        }
 
         detectedRefCode = refCode;
 
+        // Save to localStorage (backup for Google OAuth redirect)
+        localStorage.setItem('kxon_ref_code', refCode);
+
+        prefillReferralUI(refCode);
+        validateReferralCode(refCode);
+    }
+
+    function prefillReferralUI(code) {
         // Pre-fill the referral input
         const refInput = $('#referralCode');
         if (refInput) {
-            refInput.value = refCode;
+            refInput.value = code;
             refInput.readOnly = true;
             refInput.style.opacity = '0.8';
         }
@@ -109,19 +127,16 @@
         const codeDisplay = $('#referralCodeDisplay');
 
         if (banner) banner.style.display = 'flex';
-        if (codeDisplay) codeDisplay.textContent = refCode;
-
-        // Validate the code exists
-        validateReferralCode(refCode);
+        if (codeDisplay) codeDisplay.textContent = code;
     }
 
     async function validateReferralCode(code) {
-        if (!code) return;
+        if (!code) return false;
 
         try {
             const { data, error } = await db
                 .from('embajadores')
-                .select('usuario_nombre, codigo, estado')
+                .select('id, usuario_nombre, codigo, estado, total_registrados')
                 .eq('codigo', code)
                 .eq('estado', 'activo')
                 .single();
@@ -132,23 +147,33 @@
 
             if (error || !data) {
                 // Invalid code
+                validatedEmbajador = null;
+
                 if (banner) {
                     banner.style.display = 'flex';
                     banner.classList.add('kx-auth-referral-banner--invalid');
-                    banner.querySelector('.kx-auth-referral-label').textContent = 'Código de referido no válido';
-                    banner.querySelector('.kx-auth-referral-check').textContent = '✗';
+                    const labelEl = banner.querySelector('.kx-auth-referral-label');
+                    const checkEl = banner.querySelector('.kx-auth-referral-check');
+                    if (labelEl) labelEl.textContent = 'Código de referido no válido';
+                    if (checkEl) checkEl.textContent = '✗';
                 }
                 if (codeDisplay) codeDisplay.textContent = code;
                 if (refField) setFieldError(refField, 'Este código no existe o está inactivo');
+
+                // Clear localStorage if code is invalid
+                localStorage.removeItem('kxon_ref_code');
+
                 return false;
             }
 
-            // Valid code — show ambassador name
+            // Valid code — save ambassador data for later use
+            validatedEmbajador = data;
+
             if (banner) {
                 banner.style.display = 'flex';
                 banner.classList.remove('kx-auth-referral-banner--invalid');
-                banner.querySelector('.kx-auth-referral-label').textContent =
-                    'Te invitó: ' + data.usuario_nombre;
+                const labelEl = banner.querySelector('.kx-auth-referral-label');
+                if (labelEl) labelEl.textContent = 'Te invitó: ' + data.usuario_nombre;
             }
             if (codeDisplay) codeDisplay.textContent = code;
             if (refField) {
@@ -172,27 +197,46 @@
         if (!refCode) return;
 
         try {
-            // Find the ambassador
-            const { data: embajador, error: embError } = await db
-                .from('embajadores')
-                .select('id, codigo')
-                .eq('codigo', refCode)
-                .eq('estado', 'activo')
-                .single();
+            // Use cached ambassador data if available, otherwise fetch
+            let embajador = validatedEmbajador;
 
-            if (embError || !embajador) {
-                console.warn('Ambassador not found for code:', refCode);
+            if (!embajador || embajador.codigo !== refCode) {
+                const { data, error } = await db
+                    .from('embajadores')
+                    .select('id, codigo, total_registrados')
+                    .eq('codigo', refCode)
+                    .eq('estado', 'activo')
+                    .single();
+
+                if (error || !data) {
+                    console.warn('Ambassador not found for code:', refCode);
+                    return;
+                }
+                embajador = data;
+            }
+
+            // Check if referral already exists (prevent duplicates)
+            const { data: existing } = await db
+                .from('referidos')
+                .select('id')
+                .eq('embajador_id', embajador.id)
+                .eq('referido_email', userEmail)
+                .limit(1);
+
+            if (existing && existing.length > 0) {
+                console.log('Referral already exists for', userEmail);
+                cleanupRefStorage();
                 return;
             }
 
             // Create referral record
             const { error: refError } = await db.from('referidos').insert({
                 embajador_id: embajador.id,
-                embajador_codigo: embajador.codigo,
                 referido_user_id: userId,
                 referido_email: userEmail,
                 referido_nombre: userName,
                 estado: 'registrado',
+                comision_generada: 0,
                 fecha_registro: new Date().toISOString()
             });
 
@@ -201,32 +245,48 @@
                 return;
             }
 
-            // Increment ambassador's registered count
-            const { error: updError } = await db
+            // Safely increment ambassador's registered count
+            const newCount = (embajador.total_registrados || 0) + 1;
+
+            await db
                 .from('embajadores')
                 .update({
-                    total_registrados: embajador.total_registrados
-                        ? embajador.total_registrados + 1
-                        : 1,
+                    total_registrados: newCount,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', embajador.id);
 
-            // Better: use RPC to safely increment
-            await db.rpc('increment_field', {
-                table_name: 'embajadores',
-                field_name: 'total_registrados',
-                row_id: embajador.id
-            }).catch(() => {
-                // If RPC doesn't exist, manual update already ran above
-            });
+            console.log('✅ Referral record created:', userEmail, '→', refCode);
 
-            console.log('✅ Referral record created for', refCode);
+            // Clean up localStorage
+            cleanupRefStorage();
 
         } catch (e) {
             console.error('Error in createReferralRecord:', e);
         }
     }
+
+    function cleanupRefStorage() {
+        localStorage.removeItem('kxon_ref_code');
+        localStorage.removeItem('kxon_pending_ref');
+        localStorage.removeItem('kxon_pending_ref_name');
+        localStorage.removeItem('kxon_pending_ref_email');
+    }
+
+    /* ──────────────────────────────────
+       🏆 PROCESS PENDING REFERRALS
+       Para Google OAuth y confirmación de email
+       Se llama desde dashboard-init.js
+       ────────────────────────────────── */
+    window.KXON_processPendingReferral = async function (userId, userEmail, userName) {
+        const pendingRef = localStorage.getItem('kxon_ref_code') ||
+            localStorage.getItem('kxon_pending_ref');
+
+        if (!pendingRef) return;
+
+        console.log('🏆 Processing pending referral:', pendingRef);
+        await createReferralRecord(userId, userEmail, userName, pendingRef);
+    };
 
     /* ──────────────────────────────────
        🔐 SESSION CHECK
@@ -361,12 +421,23 @@
         }, 400));
     });
 
-    // Validate referral code on blur
+    // Validate referral code on blur (only if manually typed)
     const refCodeInput = $('#referralCode');
     if (refCodeInput) {
         refCodeInput.addEventListener('blur', debounce(async () => {
+            if (refCodeInput.readOnly) return; // Skip if pre-filled from URL
             const val = refCodeInput.value.trim().toUpperCase();
-            if (!val) return;
+            if (!val) {
+                // Clear any previous validation
+                const refField = $(`.kx-auth-field[data-field="referralCode"]`);
+                if (refField) {
+                    setFieldError(refField, '');
+                    setFieldState(refField, null);
+                }
+                const banner = $('#referralBanner');
+                if (banner) banner.style.display = 'none';
+                return;
+            }
             refCodeInput.value = val;
             await validateReferralCode(val);
         }, 500));
@@ -383,7 +454,7 @@
             clearMessage();
 
             try {
-                // Store referral code before redirect
+                // Store referral code before redirect (Google will redirect away)
                 const refCode = ($('#referralCode')?.value || '').trim().toUpperCase();
                 if (refCode) {
                     localStorage.setItem('kxon_ref_code', refCode);
@@ -529,17 +600,21 @@
                     if (error) throw error;
 
                     if (data.user && data.session) {
-                        // Auto-confirmed
+                        // ── AUTO-CONFIRMED ──
                         localStorage.setItem('kxon_role', role);
                         localStorage.setItem('kxon_name', fullName);
 
                         // Save referral code to profile
-                        if (referralCode) {
+                        try {
                             await db.from('profiles').update({
-                                referido_por: referralCode
+                                referido_por: referralCode || null
                             }).eq('id', data.user.id);
+                        } catch (profileErr) {
+                            console.warn('Profile update for referral failed:', profileErr);
+                        }
 
-                            // Create referral record
+                        // Create referral record
+                        if (referralCode) {
                             await createReferralRecord(
                                 data.user.id,
                                 email,
@@ -555,11 +630,12 @@
                         }, 1200);
 
                     } else if (data.user && !data.session) {
-                        // Needs email confirmation
-                        // Store referral code to process later
+                        // ── NEEDS EMAIL CONFIRMATION ──
+                        // Store referral info to process after confirmation
                         if (referralCode) {
                             localStorage.setItem('kxon_pending_ref', referralCode);
                             localStorage.setItem('kxon_pending_ref_name', fullName);
+                            localStorage.setItem('kxon_pending_ref_email', email);
                         }
 
                         showMessage(
