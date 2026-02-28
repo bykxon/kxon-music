@@ -2918,3 +2918,396 @@
         height: 40px;
     }
 }
+
+/* ══════════════════════════════════════════
+   ★ HERO 3D TITLE — v8.0 ULTRA PREMIUM 2026
+   Efecto de perspectiva 3D + shadow layer
+   + waveform animado + metrics dashboard
+   ══════════════════════════════════════════ */
+
+/* ── 3D Title Container ── */
+.kx-landing-hero__title-3d {
+    position: relative;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* ── 3D Shadow Text Layer ── */
+.kx-landing-hero__title-shadow {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--kx-space-1);
+    pointer-events: none;
+    transform: translateZ(-60px) translateY(12px);
+    opacity: 0.04;
+    filter: blur(2px);
+    z-index: -1;
+}
+
+.kx-landing-hero__title-shadow span {
+    font-family: var(--kx-font-display);
+    font-size: var(--kx-text-5xl);
+    font-weight: var(--kx-weight-black);
+    color: var(--kx-violet);
+    line-height: 1.05;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* ── Interactive 3D tilt on hero title ── */
+.kx-landing-hero__title-3d:hover {
+    transform: rotateX(2deg) rotateY(-1deg);
+    transition: transform 0.5s var(--kx-ease-spring);
+}
+
+/* ── Waveform Visual ── */
+.kx-landing-hero__waveform {
+    width: 100%;
+    max-width: 480px;
+    height: 32px;
+    opacity: 0;
+    animation: kx-fade-in 0.6s var(--kx-ease-default) 1.6s forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.kx-landing-hero__waveform::before,
+.kx-landing-hero__waveform::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.kx-landing-hero__waveform::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--kx-black-deep), transparent);
+}
+
+.kx-landing-hero__waveform::after {
+    right: 0;
+    background: linear-gradient(-90deg, var(--kx-black-deep), transparent);
+}
+
+.kx-landing-hero__waveform-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.kx-landing-hero__waveform-path {
+    animation: kx-waveform-draw 2s var(--kx-ease-spring) 1.8s both;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+}
+
+@keyframes kx-waveform-draw {
+    0% { stroke-dashoffset: 1000; opacity: 0; }
+    30% { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* ── Metrics Dashboard (replaces old stats) ── */
+.kx-landing-hero__metrics {
+    display: flex;
+    align-items: center;
+    gap: var(--kx-space-5);
+    opacity: 0;
+    animation: kx-fade-in 0.6s var(--kx-ease-default) 2.9s forwards;
+    padding: var(--kx-space-4) var(--kx-space-6);
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(139, 92, 246, 0.12);
+    border-radius: var(--kx-radius-xl);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.kx-landing-hero__metrics::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(139, 92, 246, 0.3) 30%,
+        rgba(59, 130, 246, 0.4) 50%,
+        rgba(139, 92, 246, 0.3) 70%,
+        transparent 100%
+    );
+}
+
+.kx-landing-hero__metric {
+    display: flex;
+    align-items: center;
+    gap: var(--kx-space-3);
+}
+
+.kx-landing-hero__metric-ring {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.kx-landing-hero__metric-ring svg {
+    width: 100%;
+    height: 100%;
+}
+
+.kx-landing-hero__metric-circle {
+    animation: kx-metric-ring-fill 2s var(--kx-ease-spring) 3.2s both;
+}
+
+@keyframes kx-metric-ring-fill {
+    0% {
+        stroke-dashoffset: 106.8;
+        opacity: 0;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+}
+
+.kx-landing-hero__metric-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    background: var(--kx-violet-subtle);
+    border: 1px solid rgba(139, 92, 246, 0.12);
+    border-radius: var(--kx-radius-md);
+    flex-shrink: 0;
+}
+
+.kx-landing-hero__metric-data {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.kx-landing-hero__metric-value {
+    font-family: var(--kx-font-display);
+    font-size: var(--kx-text-lg);
+    font-weight: var(--kx-weight-bold);
+    color: var(--kx-white);
+    letter-spacing: 0.03em;
+    line-height: 1;
+}
+
+.kx-landing-hero__metric-label {
+    font-size: 0.6rem;
+    font-weight: var(--kx-weight-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--kx-silver-700);
+    line-height: 1;
+}
+
+.kx-landing-hero__metric-divider {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(139, 92, 246, 0.25),
+        transparent
+    );
+}
+
+/* ── Hide old stats (replaced by metrics) ── */
+.kx-landing-hero__stats {
+    display: none !important;
+}
+
+/* ── Responsive for new components ── */
+@media (max-width: 640px) {
+    .kx-landing-hero__title-shadow {
+        display: none;
+    }
+
+    .kx-landing-hero__title-shadow span {
+        font-size: var(--kx-text-3xl);
+    }
+
+    .kx-landing-hero__metrics {
+        flex-direction: column;
+        gap: var(--kx-space-3);
+        padding: var(--kx-space-4);
+        border-radius: var(--kx-radius-lg);
+    }
+
+    .kx-landing-hero__metric-divider {
+        width: 40px;
+        height: 1px;
+        background: linear-gradient(
+            to right,
+            transparent,
+            rgba(139, 92, 246, 0.25),
+            transparent
+        );
+    }
+
+    .kx-landing-hero__waveform {
+        max-width: 300px;
+        height: 24px;
+    }
+}
+
+@media (min-width: 961px) {
+    .kx-landing-hero__title-shadow span {
+        font-size: var(--kx-text-hero);
+    }
+}
+
+/* ── Waveform continuous animation ── */
+@keyframes kx-waveform-shift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* ══════════════════════════════════════════
+   ★ ENHANCED SECTION TRANSITIONS 2026
+   Sections fade-in from different directions
+   ══════════════════════════════════════════ */
+
+/* Alternating section bg pattern */
+.kx-landing-section:nth-child(even of .kx-landing-section) {
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.015) 0%, transparent 50%);
+}
+
+/* ══════════════════════════════════════════
+   ★ MICRO-INTERACTION: Badge hover glow
+   ══════════════════════════════════════════ */
+.kx-badge {
+    transition: box-shadow var(--kx-transition-base),
+                border-color var(--kx-transition-base),
+                transform var(--kx-duration-fast) var(--kx-ease-out);
+}
+
+.kx-badge:hover {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.12);
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════
+   ★ ENHANCED SECTION HEADERS — 3D depth
+   ══════════════════════════════════════════ */
+.kx-landing-section__title {
+    position: relative;
+}
+
+.kx-landing-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--kx-violet), var(--kx-blue));
+    border-radius: var(--kx-radius-full);
+    opacity: 0;
+    transition: opacity 0.6s var(--kx-ease-spring), width 0.6s var(--kx-ease-spring);
+}
+
+.kx-landing-section__header--start .kx-landing-section__title::after {
+    left: 0;
+    transform: none;
+}
+
+.kx-reveal.is-visible .kx-landing-section__title::after,
+.kx-landing-section__title.kx-reveal.is-visible::after {
+    opacity: 1;
+    width: 64px;
+}
+
+/* ══════════════════════════════════════════
+   ★ SMOOTH ENTRANCE — Enhanced blur-in
+   ══════════════════════════════════════════ */
+.kx-reveal[data-animation="fade-up"] {
+    transform: translateY(40px);
+    filter: blur(4px);
+}
+
+.kx-reveal[data-animation="fade-up"].is-visible {
+    filter: blur(0);
+}
+
+.kx-reveal[data-animation="scale-up"] {
+    transform: scale(0.88) translateY(20px);
+    filter: blur(4px);
+}
+
+.kx-reveal[data-animation="scale-up"].is-visible {
+    filter: blur(0);
+}
+
+.kx-reveal[data-animation="fade-down"] {
+    transform: translateY(-30px);
+    filter: blur(4px);
+}
+
+.kx-reveal[data-animation="fade-down"].is-visible {
+    filter: blur(0);
+}
+
+/* ══════════════════════════════════════════
+   ★ HERO TITLE LINE — Glowing underline
+   Enhanced for "Donde el Sonido Cobra Vida"
+   ══════════════════════════════════════════ */
+.kx-landing-hero__title-line::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(139, 92, 246, 0.4),
+        rgba(59, 130, 246, 0.3),
+        transparent
+    );
+    transition: width 1.2s var(--kx-ease-spring) 1.5s;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.2);
+}
+
+/* Trigger after animation completes */
+body.is-loaded .kx-landing-hero__title-line:first-child::after {
+    width: 200px;
+}
+
+/* ══════════════════════════════════════════
+   ★ FOOTER TAGLINE UPDATE
+   ══════════════════════════════════════════ */
+.kx-landing-footer__tagline {
+    background: linear-gradient(
+        135deg,
+        var(--kx-silver-700) 0%,
+        var(--kx-violet-light) 50%,
+        var(--kx-silver-700) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: kx-shimmer 6s linear infinite;
+}

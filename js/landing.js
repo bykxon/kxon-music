@@ -1,11 +1,13 @@
 /* ============================================
    🏠 LANDING JS — KXON MUSIC PLATFORM
-   Rediseño ULTRA PREMIUM 2025-2026 — v7.0
+   Rediseño ULTRA PREMIUM 2026 — v8.0
    Level: 20/10
-   NEW: Smooth scroll enhanced, scroll-driven
-   animations fallback, comparison section,
-   steps section, improved counters, 
-   enhanced magnetic, Lenis-style smoothness
+   "Donde el Sonido Cobra Vida" Edition
+   NEW: Hero 3D tilt, waveform animation,
+   metrics dashboard, enhanced reveals,
+   smooth scroll, scroll-driven animations,
+   comparison section, steps section,
+   improved counters, magnetic buttons
    ============================================ */
 
 (function () {
@@ -45,7 +47,6 @@
         function updateCounter() {
             const elapsed = Date.now() - startTime;
             const t = Math.min(elapsed / duration, 1);
-            // Smoother easing curve
             const eased = t < 0.5
                 ? 4 * t * t * t
                 : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -66,7 +67,7 @@
             setTimeout(hide, 2400);
         } else {
             window.addEventListener('load', () => setTimeout(hide, 1800));
-            setTimeout(hide, 4000); // Safety fallback
+            setTimeout(hide, 4000);
         }
     }
 
@@ -130,7 +131,6 @@
 
     // ═══════════════════════════════════════
     //  🧲 MAGNETIC BUTTONS — ENHANCED v2
-    //  Elastic deformation + spring physics
     // ═══════════════════════════════════════
     function initMagneticButtons() {
         if (isTouchDevice() || prefersReducedMotion()) return;
@@ -372,13 +372,11 @@
 
     // ═══════════════════════════════════════
     //  ✨ SCROLL REVEAL — ENHANCED v2
-    //  Staggered animations + new types
     // ═══════════════════════════════════════
     let revealObserver = null;
 
     function initScrollReveal() {
         if (prefersReducedMotion()) {
-            // Make everything visible immediately
             $$('.kx-reveal').forEach(el => el.classList.add('is-visible'));
             return;
         }
@@ -389,7 +387,6 @@
                     const delay = parseInt(entry.target.dataset.delay) || 0;
                     setTimeout(() => {
                         entry.target.classList.add('is-visible');
-                        // Trigger counters inside revealed elements
                         entry.target.querySelectorAll('.kx-counter').forEach(animateCounter);
                         entry.target.querySelectorAll('[data-counter]').forEach(animateCounterInline);
                     }, delay);
@@ -406,7 +403,6 @@
 
     // ═══════════════════════════════════════
     //  🔢 COUNTER ANIMATION — ENHANCED
-    //  Decode effect + smoother easing
     // ═══════════════════════════════════════
     const animatedCounters = new WeakSet();
 
@@ -544,7 +540,6 @@
 
     // ═══════════════════════════════════════
     //  🔗 SMOOTH SCROLL — ENHANCED
-    //  Lenis-style smooth with offset calc
     // ═══════════════════════════════════════
     function initSmoothScroll() {
         document.addEventListener('click', (e) => {
@@ -1077,7 +1072,7 @@
     //  🔢 HERO COUNTER OBSERVER
     // ═══════════════════════════════════════
     function initHeroCounters() {
-        [$('.kx-landing-hero__proof'), $('#heroStats')].forEach(el => {
+        [$('.kx-landing-hero__proof'), $('#heroStats'), $('.kx-landing-hero__metrics')].forEach(el => {
             if (!el) return;
             const observer = new IntersectionObserver(([entry]) => {
                 if (entry.isIntersecting) {
@@ -1127,13 +1122,11 @@
 
     // ═══════════════════════════════════════
     //  📊 COMPARISON TABLE — Row highlight
-    //  NEW: Animación en hover de filas
     // ═══════════════════════════════════════
     function initCompareTable() {
         const rows = $$('.kx-landing-compare__row');
         if (rows.length === 0) return;
 
-        // Staggered reveal on scroll
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1151,7 +1144,6 @@
 
         const table = $('.kx-landing-compare');
         if (table) {
-            // Set initial state for rows
             rows.forEach(row => {
                 row.style.opacity = '0';
                 row.style.transform = 'translateY(12px)';
@@ -1163,7 +1155,6 @@
 
     // ═══════════════════════════════════════
     //  🔧 STEPS — Connection line animation
-    //  NEW: Animar pasos cuando son visibles
     // ═══════════════════════════════════════
     function initStepsAnimation() {
         const stepsContainer = $('.kx-landing-steps');
@@ -1177,6 +1168,140 @@
         }, { threshold: 0.3 });
 
         observer.observe(stepsContainer);
+    }
+
+    // ═══════════════════════════════════════
+    //  🌊 HERO WAVEFORM — Animated SVG path
+    //  ★ NEW v8: Generates organic waveform
+    // ═══════════════════════════════════════
+    function initHeroWaveform() {
+        const path = document.querySelector('.kx-landing-hero__waveform-path');
+        if (!path) return;
+
+        function generateWaveformPath() {
+            const width = 200;
+            const height = 40;
+            const centerY = height / 2;
+            const segments = 50;
+            const segWidth = width / segments;
+
+            let d = `M 0 ${centerY}`;
+
+            for (let i = 1; i <= segments; i++) {
+                const x = i * segWidth;
+                const t = i / segments;
+
+                // Create organic waveform shape
+                const envelope = Math.sin(t * Math.PI); // fade in/out
+                const wave1 = Math.sin(t * Math.PI * 6) * 8;
+                const wave2 = Math.sin(t * Math.PI * 10 + 1.2) * 4;
+                const wave3 = Math.sin(t * Math.PI * 14 + 2.5) * 2;
+                const noise = (Math.random() - 0.5) * 3;
+
+                const y = centerY + (wave1 + wave2 + wave3 + noise) * envelope;
+                d += ` L ${x.toFixed(1)} ${Math.max(2, Math.min(height - 2, y)).toFixed(1)}`;
+            }
+
+            return d;
+        }
+
+        // Set initial path
+        path.setAttribute('d', generateWaveformPath());
+
+        // Animate waveform periodically
+        if (!prefersReducedMotion()) {
+            let frameCount = 0;
+            function animateWaveform() {
+                frameCount++;
+                if (frameCount % 8 === 0) { // ~5fps for performance
+                    path.setAttribute('d', generateWaveformPath());
+                }
+                requestAnimationFrame(animateWaveform);
+            }
+
+            // Start after loader finishes
+            setTimeout(animateWaveform, 3000);
+        }
+    }
+
+    // ═══════════════════════════════════════
+    //  🎯 HERO 3D TILT — Mouse-driven parallax
+    //  ★ NEW v8: Interactive 3D on hero title
+    // ═══════════════════════════════════════
+    function initHero3DTilt() {
+        if (isTouchDevice() || prefersReducedMotion()) return;
+
+        const titleContainer = document.getElementById('heroTitle3D');
+        if (!titleContainer) return;
+
+        const hero = document.getElementById('hero');
+        if (!hero) return;
+
+        const maxRotateX = 3;
+        const maxRotateY = 4;
+        let currentRotateX = 0;
+        let currentRotateY = 0;
+        let targetRotateX = 0;
+        let targetRotateY = 0;
+        let isAnimating = false;
+
+        function animate() {
+            currentRotateX += (targetRotateX - currentRotateX) * 0.08;
+            currentRotateY += (targetRotateY - currentRotateY) * 0.08;
+
+            titleContainer.style.transform =
+                `perspective(1200px) rotateX(${currentRotateX.toFixed(2)}deg) rotateY(${currentRotateY.toFixed(2)}deg)`;
+
+            if (
+                Math.abs(targetRotateX - currentRotateX) > 0.01 ||
+                Math.abs(targetRotateY - currentRotateY) > 0.01
+            ) {
+                requestAnimationFrame(animate);
+            } else {
+                isAnimating = false;
+            }
+        }
+
+        hero.addEventListener('mousemove', (e) => {
+            const rect = hero.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            targetRotateX = ((e.clientY - centerY) / (rect.height / 2)) * -maxRotateX;
+            targetRotateY = ((e.clientX - centerX) / (rect.width / 2)) * maxRotateY;
+
+            if (!isAnimating) {
+                isAnimating = true;
+                requestAnimationFrame(animate);
+            }
+        }, { passive: true });
+
+        hero.addEventListener('mouseleave', () => {
+            targetRotateX = 0;
+            targetRotateY = 0;
+            if (!isAnimating) {
+                isAnimating = true;
+                requestAnimationFrame(animate);
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════
+    //  📊 METRICS RING ANIMATION
+    //  ★ NEW v8: Animate SVG ring on scroll
+    // ═══════════════════════════════════════
+    function initMetricsAnimation() {
+        const metricsEl = document.querySelector('.kx-landing-hero__metrics');
+        if (!metricsEl) return;
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                metricsEl.querySelectorAll('[data-counter]').forEach(animateCounterInline);
+                observer.unobserve(metricsEl);
+            }
+        }, { threshold: 0.5 });
+
+        observer.observe(metricsEl);
     }
 
     // ═══════════════════════════════════════
@@ -1231,9 +1356,14 @@
         initActiveNav();
         initCarouselKeyboard();
 
-        // NEW modules v7
+        // v7 modules
         initCompareTable();
         initStepsAnimation();
+
+        // ★ NEW v8 modules — 3D Hero + Waveform + Metrics
+        initHeroWaveform();
+        initHero3DTilt();
+        initMetricsAnimation();
 
         // Scroll handler
         window.addEventListener('scroll', onScroll, { passive: true });
@@ -1245,7 +1375,7 @@
         loadNews();
         loadAlbums();
 
-        console.log('🎵 KXON Landing v7.0 — ULTRA PREMIUM 2025-2026 · Violet Edition');
+        console.log('🎵 KXON Landing v8.0 — ULTRA PREMIUM 2026 · "Donde el Sonido Cobra Vida" Edition');
     }
 
     if (document.readyState === 'loading') {
