@@ -1,17 +1,15 @@
 /* ============================================
    🏠 LANDING JS — KXON MUSIC PLATFORM
-   Rediseño ULTRA PREMIUM 2026 — v9.0
-   "La Frecuencia que te Define" Edition
-   ★ NEW: Canvas soundwave, frequency rings,
-   circular equalizer, immersive album gallery,
-   magazine news, glassmorphism metrics,
-   hero 3D tilt, enhanced animations
+   Rediseño ULTRA PREMIUM 2026 — v10.0
+   "SINTONIZA TU UNIVERSO" Edition
+   ★ Star field, DNA waveform canvas, orbital tilt,
+   spectrum analyzer, holographic albums,
+   editorial news grid, kinetic chars
    ============================================ */
 
 (function () {
     'use strict';
 
-    // ── Supabase reference ──
     const db = window.db;
 
     // ── State ──
@@ -21,11 +19,11 @@
     let currentAlbumIndex = 0;
     const NEWS_PER_PAGE = 3;
 
-    // ── DOM Cache ──
+    // ── DOM helpers ──
     const $ = (sel, ctx = document) => ctx.querySelector(sel);
     const $$ = (sel, ctx = document) => ctx.querySelectorAll(sel);
 
-    // ── Device detection ──
+    // ── Device ──
     const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isMobile = () => window.innerWidth < 768;
@@ -45,9 +43,7 @@
         function updateCounter() {
             const elapsed = Date.now() - startTime;
             const t = Math.min(elapsed / duration, 1);
-            const eased = t < 0.5
-                ? 4 * t * t * t
-                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
             progress = Math.round(eased * 100);
             if (counter) counter.textContent = progress + '%';
             if (t < 1) requestAnimationFrame(updateCounter);
@@ -108,7 +104,7 @@
         }
         updateRing();
 
-        const hoverTargets = 'a, button, [data-magnetic], .kx-news-magazine__card, .kx-album-gallery__item--main, .kx-landing-faq__question, [data-tilt-card], .kx-landing-compare__row';
+        const hoverTargets = 'a, button, [data-magnetic], .kx-news-v10__card, .kx-news-magazine__card, .kx-albums-v10__disc, .kx-landing-faq__question, [data-tilt-card], .kx-landing-compare__row';
 
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest(hoverTargets)) cursor.classList.add('is-hovering');
@@ -136,7 +132,7 @@
         $$('[data-magnetic]').forEach(el => {
             let currentX = 0, currentY = 0, targetX = 0, targetY = 0;
             let animating = false;
-            const strength = el.closest('.kx-landing-hero__actions') ? 0.4 : 0.3;
+            const strength = el.closest('.kx-hero-v10__cta-group') ? 0.4 : 0.3;
             const smoothness = 0.12;
 
             function animate() {
@@ -146,11 +142,8 @@
                 currentY += dy * smoothness;
 
                 if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
-                    currentX = targetX;
-                    currentY = targetY;
-                    el.style.transform = targetX === 0 && targetY === 0
-                        ? ''
-                        : `translate(${currentX}px, ${currentY}px)`;
+                    currentX = targetX; currentY = targetY;
+                    el.style.transform = targetX === 0 && targetY === 0 ? '' : `translate(${currentX}px, ${currentY}px)`;
                     animating = false;
                     return;
                 }
@@ -167,25 +160,22 @@
             });
 
             el.addEventListener('mouseleave', () => {
-                targetX = 0;
-                targetY = 0;
+                targetX = 0; targetY = 0;
                 if (!animating) { animating = true; requestAnimationFrame(animate); }
             });
         });
     }
 
     // ═══════════════════════════════════════
-    //  💡 SPOTLIGHT + TILT
+    //  💡 SPOTLIGHT + TILT CARDS
     // ═══════════════════════════════════════
     function initSpotlightCards() {
         if (isTouchDevice() || prefersReducedMotion()) return;
         $$('[data-spotlight]').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--kx-mouse-x', x + 'px');
-                card.style.setProperty('--kx-mouse-y', y + 'px');
+                card.style.setProperty('--kx-mouse-x', (e.clientX - rect.left) + 'px');
+                card.style.setProperty('--kx-mouse-y', (e.clientY - rect.top) + 'px');
             });
         });
     }
@@ -196,10 +186,8 @@
         $$('[data-tilt-card]').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -maxTilt;
-                const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * maxTilt;
+                const rotateX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -maxTilt;
+                const rotateY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * maxTilt;
                 card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
             });
             card.addEventListener('mouseleave', () => {
@@ -355,8 +343,7 @@
         }
 
         toggle.addEventListener('click', () => {
-            const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-            if (isOpen) closeMenu(); else openMenu();
+            toggle.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu();
         });
 
         menu.addEventListener('click', (e) => {
@@ -391,16 +378,13 @@
                     revealObserver.unobserve(entry.target);
                 }
             });
-        }, {
-            rootMargin: '0px 0px -60px 0px',
-            threshold: 0.1
-        });
+        }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
 
         $$('.kx-reveal').forEach(el => revealObserver.observe(el));
     }
 
     // ═══════════════════════════════════════
-    //  🔢 COUNTER ANIMATION
+    //  🔢 COUNTER ANIMATIONS
     // ═══════════════════════════════════════
     const animatedCounters = new WeakSet();
 
@@ -412,9 +396,7 @@
         const duration = 2000;
         let startTime = null;
 
-        function easeOutExpo(t) {
-            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-        }
+        function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
 
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
@@ -433,9 +415,7 @@
         const duration = 2200;
         let startTime = null;
 
-        function easeOutExpo(t) {
-            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-        }
+        function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
 
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
@@ -444,7 +424,7 @@
             if (progress < 1) requestAnimationFrame(update);
         }
 
-        // Decode scramble effect
+        // Decode scramble
         const chars = '0123456789!@#$%&';
         let decodeFrame = 0;
         const decodeInterval = setInterval(() => {
@@ -463,20 +443,56 @@
     }
 
     // ═══════════════════════════════════════
-    //  ✨ PARTICLES
+    //  ★ STAR FIELD — Twinkling Stars
     // ═══════════════════════════════════════
-    function initHeroParticles() {
-        const container = $('#heroParticles');
+    function initStarField() {
+        const container = $('#starField');
         if (!container || prefersReducedMotion()) return;
 
-        const count = isMobile() ? 10 : 35;
+        const count = isMobile() ? 30 : 80;
+        const fragment = document.createDocumentFragment();
+
+        for (let i = 0; i < count; i++) {
+            const star = document.createElement('div');
+            star.className = 'kx-hero-v10__star';
+            const size = Math.random() * 2 + 0.5;
+            star.style.cssText = `
+                width: ${size}px;
+                height: ${size}px;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                animation-duration: ${Math.random() * 4 + 2}s;
+                animation-delay: ${Math.random() * 5}s;
+            `;
+            fragment.appendChild(star);
+        }
+        container.appendChild(fragment);
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ HERO PARTICLES v10
+    // ═══════════════════════════════════════
+    function initHeroParticlesV10() {
+        const container = $('#heroParticlesV10');
+        if (!container || prefersReducedMotion()) return;
+
+        const count = isMobile() ? 8 : 25;
         const fragment = document.createDocumentFragment();
 
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
-            p.className = 'kx-landing-hero__particle';
-            const size = Math.random() * 2.5 + 1;
-            p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random() * 100}%;animation-duration:${Math.random() * 14 + 9}s;animation-delay:${Math.random() * 10}s;opacity:${Math.random() * 0.5 + 0.1};`;
+            p.className = 'kx-hero-v10__particle';
+            const size = Math.random() * 3 + 1;
+            const hue = Math.random() > 0.5 ? '139, 92, 246' : '59, 130, 246';
+            p.style.cssText = `
+                width: ${size}px;
+                height: ${size}px;
+                left: ${Math.random() * 100}%;
+                background: rgba(${hue}, ${Math.random() * 0.5 + 0.3});
+                animation-duration: ${Math.random() * 14 + 8}s;
+                animation-delay: ${Math.random() * 10}s;
+                opacity: ${Math.random() * 0.4 + 0.1};
+            `;
             fragment.appendChild(p);
         }
         container.appendChild(fragment);
@@ -490,12 +506,173 @@
         const fragment = document.createDocumentFragment();
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
-            p.className = 'kx-landing-hero__particle';
+            p.className = 'kx-hero-v10__particle';
             const size = Math.random() * 2 + 0.5;
-            p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random() * 100}%;animation-duration:${Math.random() * 10 + 6}s;animation-delay:${Math.random() * 8}s;opacity:${Math.random() * 0.3 + 0.05};`;
+            p.style.cssText = `
+                width: ${size}px;
+                height: ${size}px;
+                left: ${Math.random() * 100}%;
+                background: rgba(139, 92, 246, ${Math.random() * 0.4 + 0.1});
+                animation-duration: ${Math.random() * 10 + 6}s;
+                animation-delay: ${Math.random() * 8}s;
+                opacity: ${Math.random() * 0.3 + 0.05};
+            `;
             fragment.appendChild(p);
         }
         container.appendChild(fragment);
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ DNA WAVEFORM CANVAS
+    //  Dual helix waveform behind hero
+    // ═══════════════════════════════════════
+    function initDNAWaveform() {
+        const canvas = $('#heroWaveCanvas');
+        if (!canvas || prefersReducedMotion()) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const dpr = window.devicePixelRatio || 1;
+
+        function resize() {
+            const parent = canvas.parentElement;
+            if (!parent) return;
+            const r = parent.getBoundingClientRect();
+            canvas.width = r.width * dpr;
+            canvas.height = r.height * dpr;
+            canvas.style.width = r.width + 'px';
+            canvas.style.height = r.height + 'px';
+            ctx.scale(dpr, dpr);
+        }
+
+        resize();
+        window.addEventListener('resize', resize, { passive: true });
+
+        let time = 0;
+        let animId = null;
+
+        function draw() {
+            const w = canvas.width / dpr;
+            const h = canvas.height / dpr;
+            const centerY = h / 2;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // DNA Helix strand 1
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            for (let x = 0; x <= w; x += 2) {
+                const t = x / w;
+                const envelope = Math.sin(t * Math.PI);
+                const y = centerY +
+                    Math.sin(x * 0.018 + time * 0.025) * 30 * envelope +
+                    Math.sin(x * 0.04 + time * 0.035 + 1) * 10 * envelope;
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // DNA Helix strand 2 (mirrored)
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.25)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x <= w; x += 2) {
+                const t = x / w;
+                const envelope = Math.sin(t * Math.PI);
+                const y = centerY -
+                    Math.sin(x * 0.018 + time * 0.025) * 28 * envelope -
+                    Math.sin(x * 0.04 + time * 0.035 + 1) * 8 * envelope;
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Cross-links (DNA rungs)
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.06)';
+            ctx.lineWidth = 0.5;
+            for (let x = 0; x <= w; x += 30) {
+                const t = x / w;
+                const envelope = Math.sin(t * Math.PI);
+                const y1 = centerY + Math.sin(x * 0.018 + time * 0.025) * 30 * envelope;
+                const y2 = centerY - Math.sin(x * 0.018 + time * 0.025) * 28 * envelope;
+                ctx.beginPath();
+                ctx.moveTo(x, y1);
+                ctx.lineTo(x, y2);
+                ctx.stroke();
+            }
+
+            // Third subtle wave
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(6, 182, 212, 0.12)';
+            ctx.lineWidth = 0.8;
+            for (let x = 0; x <= w; x += 2) {
+                const t = x / w;
+                const envelope = Math.sin(t * Math.PI);
+                const y = centerY +
+                    Math.sin(x * 0.012 + time * 0.015 + 2.5) * 20 * envelope;
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            time++;
+            animId = requestAnimationFrame(draw);
+        }
+
+        // Start after loader
+        setTimeout(() => { draw(); }, 3000);
+
+        // Pause when not visible
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                if (!animId) draw();
+            } else {
+                if (animId) { cancelAnimationFrame(animId); animId = null; }
+            }
+        }, { threshold: 0.1 });
+
+        if (canvas.parentElement) observer.observe(canvas.parentElement);
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ ORBITAL SYSTEM — Mouse Reactive
+    // ═══════════════════════════════════════
+    function initOrbitalSystem() {
+        if (isTouchDevice() || prefersReducedMotion()) return;
+
+        const orbSystem = $('#heroOrbSystem');
+        const hero = $('#hero');
+        if (!orbSystem || !hero) return;
+
+        hero.addEventListener('mousemove', (e) => {
+            const rect = hero.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width - 0.5) * 30;
+            const y = ((e.clientY - rect.top) / rect.height - 0.5) * 30;
+            orbSystem.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        }, { passive: true });
+
+        hero.addEventListener('mouseleave', () => {
+            orbSystem.style.transform = 'translate(-50%, -50%)';
+            orbSystem.style.transition = 'transform 0.6s var(--kx-ease-spring)';
+            setTimeout(() => { orbSystem.style.transition = ''; }, 600);
+        });
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ HERO COUNTERS + RIBBON
+    // ═══════════════════════════════════════
+    function initHeroCounters() {
+        const ribbon = $('#heroRibbon');
+        if (!ribbon) return;
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                ribbon.querySelectorAll('[data-counter]').forEach(animateCounterInline);
+                observer.unobserve(ribbon);
+            }
+        }, { threshold: 0.5 });
+
+        observer.observe(ribbon);
     }
 
     // ═══════════════════════════════════════
@@ -505,7 +682,7 @@
         const btn = $('#heroScrollBtn');
         if (!btn) return;
         btn.addEventListener('click', () => {
-            const hero = btn.closest('.kx-landing-hero');
+            const hero = btn.closest('.kx-hero-v10');
             if (hero?.nextElementSibling) {
                 hero.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
             }
@@ -552,12 +729,8 @@
                 const offset = headerHeight + 20;
                 const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
 
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
 
-                // Close mobile menu if open
                 const toggle = $('#mobileMenuToggle');
                 const menu = $('#mobileMenu');
                 if (toggle?.getAttribute('aria-expanded') === 'true') {
@@ -594,7 +767,6 @@
 
         const glowLeft = $('.kx-landing-glow--left');
         const glowRight = $('.kx-landing-glow--right');
-        const heroRadial = $('#heroRadial');
         let ticking = false;
 
         window.addEventListener('scroll', () => {
@@ -608,14 +780,6 @@
                 ticking = true;
             }
         }, { passive: true });
-
-        if (heroRadial) {
-            document.addEventListener('mousemove', (e) => {
-                const x = (e.clientX / window.innerWidth - 0.5) * 40;
-                const y = (e.clientY / window.innerHeight - 0.5) * 40;
-                heroRadial.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-            }, { passive: true });
-        }
     }
 
     // ═══════════════════════════════════════
@@ -640,7 +804,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  📰 NEWS — Magazine Layout
+    //  📰 NEWS — Editorial Grid v10
     // ═══════════════════════════════════════
     async function loadNews() {
         const grid = $('#newsGrid');
@@ -674,7 +838,7 @@
         let html = '';
         for (let i = start; i < end; i++) html += buildNewsCard(landingNoticias[i], i);
         grid.innerHTML = html;
-        grid.querySelectorAll('.kx-news-magazine__card').forEach((card, idx) => {
+        grid.querySelectorAll('.kx-news-v10__card').forEach((card, idx) => {
             card.classList.add('kx-reveal', 'is-visible');
             card.style.animationDelay = idx * 100 + 'ms';
         });
@@ -686,7 +850,7 @@
             .toUpperCase();
         const img = n.imagen_url || 'https://placehold.co/600x400/0e0e0e/333?text=KXON';
         return `
-            <article class="kx-news-magazine__card" data-news-idx="${idx}">
+            <article class="kx-news-v10__card" data-news-idx="${idx}">
                 <div class="kx-landing-news__img">
                     <img src="${img}" alt="${n.titulo || ''}" loading="lazy" onerror="this.src='https://placehold.co/600x400/0e0e0e/333?text=KXON'">
                     <span class="kx-landing-news__date">${fecha}</span>
@@ -704,7 +868,7 @@
         if (!dotsContainer) return;
         const totalPages = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
         dotsContainer.innerHTML = Array.from({ length: totalPages }, (_, i) =>
-            `<span class="kx-news-magazine__dot${i === currentNewsPage ? ' is-active' : ''}" data-page="${i}"></span>`
+            `<span class="kx-news-v10__nav-dot${i === currentNewsPage ? ' is-active' : ''}" data-page="${i}"></span>`
         ).join('');
     }
 
@@ -717,29 +881,26 @@
             const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
             if (total === 0) return;
             currentNewsPage = (currentNewsPage - 1 + total) % total;
-            renderNewsPage();
-            updateNewsPagination();
+            renderNewsPage(); updateNewsPagination();
         });
 
         if (nextBtn) nextBtn.addEventListener('click', () => {
             const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
             if (total === 0) return;
             currentNewsPage = (currentNewsPage + 1) % total;
-            renderNewsPage();
-            updateNewsPagination();
+            renderNewsPage(); updateNewsPagination();
         });
 
         if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
-            const dot = e.target.closest('.kx-news-magazine__dot');
+            const dot = e.target.closest('.kx-news-v10__nav-dot');
             if (!dot) return;
             currentNewsPage = parseInt(dot.dataset.page);
-            renderNewsPage();
-            updateNewsPagination();
+            renderNewsPage(); updateNewsPagination();
         });
     }
 
     // ═══════════════════════════════════════
-    //  💿 ALBUM GALLERY — Immersive v9
+    //  💿 ALBUM GALLERY — Holographic v10
     // ═══════════════════════════════════════
     async function loadAlbums() {
         if (!db) return;
@@ -765,7 +926,7 @@
     function hideCarousel() {
         const stage = $('#carouselStage');
         const hud = $('#carouselHud');
-        const controls = $('.kx-album-gallery__controls');
+        const controls = $('.kx-albums-v10__controls');
         if (stage) stage.innerHTML = buildEmpty('💿', 'Sin álbumes aún');
         if (hud) hud.style.display = 'none';
         if (controls) controls.style.display = 'none';
@@ -783,7 +944,7 @@
         const nextIdx = (currentAlbumIndex + 1) % landingAlbumes.length;
         const placeholder = 'https://placehold.co/400x400/0e0e0e/333?text=♪';
 
-        const mainImg = mainEl.querySelector('img');
+        const mainImg = mainEl.querySelector('.kx-albums-v10__disc-cover img');
         const prevImg = prevEl.querySelector('img');
         const nextImg = nextEl.querySelector('img');
 
@@ -822,16 +983,14 @@
             : (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
         renderCarousel();
         updateCarouselDots();
-        setTimeout(() => {
-            if (stage) stage.classList.remove('is-transitioning');
-        }, 700);
+        setTimeout(() => { if (stage) stage.classList.remove('is-transitioning'); }, 700);
     }
 
     function updateCarouselDots() {
         const container = $('#carouselDots');
         if (!container) return;
         container.innerHTML = landingAlbumes.map((_, i) =>
-            `<div class="kx-album-gallery__dot${i === currentAlbumIndex ? ' is-active' : ''}" data-idx="${i}"></div>`
+            `<div class="kx-albums-v10__dot${i === currentAlbumIndex ? ' is-active' : ''}" data-idx="${i}"></div>`
         ).join('');
     }
 
@@ -844,7 +1003,7 @@
         if (prevBtn) prevBtn.addEventListener('click', () => navigateCarousel('prev'));
         if (nextBtn) nextBtn.addEventListener('click', () => navigateCarousel('next'));
         if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
-            const dot = e.target.closest('.kx-album-gallery__dot');
+            const dot = e.target.closest('.kx-albums-v10__dot');
             if (!dot) return;
             const idx = parseInt(dot.dataset.idx);
             if (idx !== currentAlbumIndex) {
@@ -975,8 +1134,8 @@
             const backdrop = e.target.closest('.kx-landing-modal__backdrop');
             if (backdrop) { closeModal(backdrop.closest('.kx-landing-modal')); return; }
 
-            // News card click — use new class
-            const newsCard = e.target.closest('.kx-news-magazine__card');
+            // News card click — v10 class
+            const newsCard = e.target.closest('.kx-news-v10__card, .kx-news-magazine__card');
             if (newsCard) { openNewsModal(parseInt(newsCard.dataset.newsIdx)); return; }
 
             const playBtn = e.target.closest('.kx-landing-track__play');
@@ -1068,28 +1227,6 @@
     }
 
     // ═══════════════════════════════════════
-    //  🔢 HERO COUNTERS + METRICS
-    // ═══════════════════════════════════════
-    function initHeroCounters() {
-        const targets = [
-            $('.kx-landing-hero__proof'),
-            $('#heroMetrics'),
-            $('.kx-hero-metrics')
-        ];
-
-        targets.forEach(el => {
-            if (!el) return;
-            const observer = new IntersectionObserver(([entry]) => {
-                if (entry.isIntersecting) {
-                    el.querySelectorAll('[data-counter]').forEach(animateCounterInline);
-                    observer.unobserve(el);
-                }
-            }, { threshold: 0.5 });
-            observer.observe(el);
-        });
-    }
-
-    // ═══════════════════════════════════════
     //  🎨 ACTIVE NAV HIGHLIGHT
     // ═══════════════════════════════════════
     function initActiveNav() {
@@ -1116,7 +1253,7 @@
     // ═══════════════════════════════════════
     function initCarouselKeyboard() {
         document.addEventListener('keydown', (e) => {
-            const carousel = $('.kx-album-gallery');
+            const carousel = $('.kx-albums-v10');
             if (!carousel) return;
             const rect = carousel.getBoundingClientRect();
             if (rect.top > window.innerHeight || rect.bottom < 0) return;
@@ -1176,225 +1313,11 @@
     }
 
     // ═══════════════════════════════════════
-    //  ★ NEW: CANVAS SOUNDWAVE ANIMATION
-    //  Organic sound wave drawn on canvas
-    // ═══════════════════════════════════════
-    function initSoundwaveCanvas() {
-        const canvas = $('#soundwaveCanvas');
-        if (!canvas || prefersReducedMotion()) return;
-
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        // Set canvas resolution
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-
-        function resize() {
-            const r = canvas.parentElement?.getBoundingClientRect();
-            if (!r) return;
-            canvas.width = r.width * dpr;
-            canvas.height = r.height * dpr;
-            canvas.style.width = r.width + 'px';
-            canvas.style.height = r.height + 'px';
-            ctx.scale(dpr, dpr);
-        }
-
-        resize();
-        window.addEventListener('resize', resize, { passive: true });
-
-        let time = 0;
-        let animId = null;
-
-        function draw() {
-            const w = canvas.width / dpr;
-            const h = canvas.height / dpr;
-            const centerY = h / 2;
-
-            ctx.clearRect(0, 0, w, h);
-
-            // Draw multiple waves with different parameters
-            const waves = [
-                { amplitude: 18, frequency: 0.015, speed: 0.03, color: 'rgba(139, 92, 246, 0.6)', width: 2 },
-                { amplitude: 12, frequency: 0.022, speed: 0.04, color: 'rgba(59, 130, 246, 0.4)', width: 1.5 },
-                { amplitude: 8,  frequency: 0.03,  speed: 0.05, color: 'rgba(6, 182, 212, 0.25)', width: 1 },
-            ];
-
-            waves.forEach(wave => {
-                ctx.beginPath();
-                ctx.strokeStyle = wave.color;
-                ctx.lineWidth = wave.width;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                for (let x = 0; x <= w; x++) {
-                    const t = x / w;
-                    // Envelope — fade edges
-                    const envelope = Math.sin(t * Math.PI);
-                    // Multiple sine combinations for organic feel
-                    const y = centerY +
-                        Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude * envelope +
-                        Math.sin(x * wave.frequency * 2.3 + time * wave.speed * 1.5 + 1.2) * (wave.amplitude * 0.4) * envelope +
-                        Math.sin(x * wave.frequency * 0.7 + time * wave.speed * 0.8 + 2.5) * (wave.amplitude * 0.2) * envelope;
-
-                    if (x === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-
-                ctx.stroke();
-            });
-
-            // Center glow dot
-            const pulseSize = 3 + Math.sin(time * 0.05) * 1.5;
-            const gradient = ctx.createRadialGradient(w / 2, centerY, 0, w / 2, centerY, pulseSize * 4);
-            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.8)');
-            gradient.addColorStop(1, 'rgba(139, 92, 246, 0)');
-            ctx.beginPath();
-            ctx.fillStyle = gradient;
-            ctx.arc(w / 2, centerY, pulseSize * 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.9)';
-            ctx.arc(w / 2, centerY, pulseSize, 0, Math.PI * 2);
-            ctx.fill();
-
-            time++;
-            animId = requestAnimationFrame(draw);
-        }
-
-        // Start after loader
-        setTimeout(() => {
-            draw();
-        }, 3000);
-
-        // Pause when not visible
-        const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-                if (!animId) draw();
-            } else {
-                if (animId) { cancelAnimationFrame(animId); animId = null; }
-            }
-        }, { threshold: 0.1 });
-
-        if (canvas.parentElement) {
-            observer.observe(canvas.parentElement);
-        }
-    }
-
-    // ═══════════════════════════════════════
-    //  ★ NEW: HERO 3D TILT
-    //  Mouse-driven parallax on hero title
-    // ═══════════════════════════════════════
-    function initHero3DTilt() {
-        if (isTouchDevice() || prefersReducedMotion()) return;
-
-        const titleContainer = document.getElementById('heroTitle3D');
-        if (!titleContainer) return;
-
-        const hero = document.getElementById('hero');
-        if (!hero) return;
-
-        const maxRotateX = 3;
-        const maxRotateY = 4;
-        let currentRotateX = 0;
-        let currentRotateY = 0;
-        let targetRotateX = 0;
-        let targetRotateY = 0;
-        let isAnimating = false;
-
-        function animate() {
-            currentRotateX += (targetRotateX - currentRotateX) * 0.08;
-            currentRotateY += (targetRotateY - currentRotateY) * 0.08;
-
-            titleContainer.style.transform =
-                `perspective(1200px) rotateX(${currentRotateX.toFixed(2)}deg) rotateY(${currentRotateY.toFixed(2)}deg)`;
-
-            if (
-                Math.abs(targetRotateX - currentRotateX) > 0.01 ||
-                Math.abs(targetRotateY - currentRotateY) > 0.01
-            ) {
-                requestAnimationFrame(animate);
-            } else {
-                isAnimating = false;
-            }
-        }
-
-        hero.addEventListener('mousemove', (e) => {
-            const rect = hero.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            targetRotateX = ((e.clientY - centerY) / (rect.height / 2)) * -maxRotateX;
-            targetRotateY = ((e.clientX - centerX) / (rect.width / 2)) * maxRotateY;
-
-            if (!isAnimating) {
-                isAnimating = true;
-                requestAnimationFrame(animate);
-            }
-        }, { passive: true });
-
-        hero.addEventListener('mouseleave', () => {
-            targetRotateX = 0;
-            targetRotateY = 0;
-            if (!isAnimating) {
-                isAnimating = true;
-                requestAnimationFrame(animate);
-            }
-        });
-    }
-
-    // ═══════════════════════════════════════
-    //  ★ NEW: FREQUENCY RINGS — Interactive
-    //  Rings react subtly to mouse position
-    // ═══════════════════════════════════════
-    function initFrequencyRings() {
-        if (isTouchDevice() || prefersReducedMotion()) return;
-
-        const container = document.getElementById('heroFrequency');
-        if (!container) return;
-
-        const hero = document.getElementById('hero');
-        if (!hero) return;
-
-        hero.addEventListener('mousemove', (e) => {
-            const rect = hero.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-            const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
-            container.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-        }, { passive: true });
-
-        hero.addEventListener('mouseleave', () => {
-            container.style.transform = 'translate(-50%, -50%)';
-            container.style.transition = 'transform 0.5s var(--kx-ease-spring)';
-            setTimeout(() => { container.style.transition = ''; }, 500);
-        });
-    }
-
-    // ═══════════════════════════════════════
-    //  ★ NEW: METRICS ANIMATION
-    //  Animate SVG ring + counters on view
-    // ═══════════════════════════════════════
-    function initMetricsAnimation() {
-        const metricsEl = document.querySelector('.kx-hero-metrics');
-        if (!metricsEl) return;
-
-        const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-                metricsEl.querySelectorAll('[data-counter]').forEach(animateCounterInline);
-                observer.unobserve(metricsEl);
-            }
-        }, { threshold: 0.5 });
-
-        observer.observe(metricsEl);
-    }
-
-    // ═══════════════════════════════════════
     //  🧩 HELPERS
     // ═══════════════════════════════════════
     function buildSkeletons(count) {
         return Array.from({ length: count }, () => `
-            <article class="kx-news-magazine__card">
+            <article class="kx-news-v10__card">
                 <div class="kx-landing-news__skeleton" style="width:100%;aspect-ratio:16/9;border-radius:var(--kx-radius-lg)"></div>
                 <div style="padding:var(--kx-space-5)">
                     <div class="kx-landing-news__skeleton" style="height:18px;width:75%;margin-bottom:var(--kx-space-3)"></div>
@@ -1413,7 +1336,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🚀 INIT — ALL MODULES
+    //  🚀 INIT
     // ═══════════════════════════════════════
     function init() {
         // Core
@@ -1426,8 +1349,6 @@
         initMorphingText();
         initMobileMenu();
         initScrollReveal();
-        initHeroParticles();
-        initCtaParticles();
         initHeroScroll();
         initHeroCounters();
         initVideoSound();
@@ -1441,28 +1362,27 @@
         initPhoneTilt();
         initActiveNav();
         initCarouselKeyboard();
-
-        // v7+ modules
         initCompareTable();
         initStepsAnimation();
 
-        // ★ NEW v9 modules
-        initSoundwaveCanvas();
-        initHero3DTilt();
-        initFrequencyRings();
-        initMetricsAnimation();
+        // ★ v10 NEW modules
+        initStarField();
+        initHeroParticlesV10();
+        initCtaParticles();
+        initDNAWaveform();
+        initOrbitalSystem();
 
-        // Scroll handler
+        // Scroll
         window.addEventListener('scroll', onScroll, { passive: true });
         handleHeaderScroll();
         updateScrollProgress();
         handleStickyCta();
 
-        // Load data from Supabase
+        // Load data
         loadNews();
         loadAlbums();
 
-        console.log('🎵 KXON Landing v9.0 — ULTRA PREMIUM 2026 · "La Frecuencia que te Define" Edition');
+        console.log('🎵 KXON Landing v10.0 — ULTRA PREMIUM 2026 · "SINTONIZA TU UNIVERSO" Edition');
     }
 
     if (document.readyState === 'loading') {
