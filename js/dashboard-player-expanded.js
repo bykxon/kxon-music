@@ -433,8 +433,8 @@
     _favObs.observe(miniFavBtn, { attributes: true, attributeFilter: ['class'] });
   }
 
-  /* ══════════════════════════════════════════
-     ➕ ADD TO PLAYLIST
+    /* ══════════════════════════════════════════
+     ➕ ADD TO PLAYLIST — FIXED
      ══════════════════════════════════════════ */
   $('playerExpAddPl').addEventListener('click', function (e) {
     e.stopPropagation();
@@ -443,30 +443,21 @@
       return;
     }
     var track = K.currentPlaylist[K.currentTrackIndex];
-    if (typeof window._openAddToPlaylist === 'function') {
-      window._openAddToPlaylist(track.id);
-    } else {
-      K.showToast('Función de playlists no disponible', 'error');
-    }
-  });
+    console.log('[Player] Track actual:', track);
+    console.log('[Player] Track ID:', track.id);
 
-  // Lyrics button
-  $('playerExpLyrics').addEventListener('click', function (e) {
-    e.stopPropagation();
-    if (typeof window._openLyrics === 'function') {
-      var track = K.currentPlaylist[K.currentTrackIndex];
-      if (track) window._openLyrics(track.id, track.titulo);
-    }
-  });
+    // ★ CERRAR el reproductor expandido PRIMERO
+    closeExpanded();
 
-  // Share button
-  $('playerExpShare').addEventListener('click', function (e) {
-    e.stopPropagation();
-    if (typeof window._shareFromPlayer === 'function') {
-      window._shareFromPlayer(e);
-    }
+    // ★ Esperar a que se cierre y luego abrir el modal
+    setTimeout(function () {
+      if (typeof window._openAddToPlaylist === 'function') {
+        window._openAddToPlaylist(track.id, track.titulo);
+      } else {
+        K.showToast('Función de playlists no disponible', 'error');
+      }
+    }, 350);
   });
-
   /* ══════════════════════════════════════════
      👁 EXPAND HINT
      ══════════════════════════════════════════ */
