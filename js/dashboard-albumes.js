@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════
-   💿 KXON ÁLBUMES — REBUILD 2026 (FIXED)
+   💿 KXON ÁLBUMES — REBUILD 2026 (CON EDICIÓN)
    Event delegation completa — todos los botones funcionan.
+   Incluye: Crear, Editar, Eliminar álbumes y canciones.
    ═══════════════════════════════════════════════════ */
 (function () {
 
@@ -22,6 +23,12 @@
     var d = new Date(f);
     var m = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
     return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function fmtDatetime(f) {
+    if (!f) return '';
+    var d = new Date(f);
+    return d.toISOString().slice(0, 16);
   }
 
   function countdown(f) {
@@ -72,7 +79,9 @@
     previewTimeout: null,
     ctxTarget: null,
     ctxType: null,
-    colorCache: {}
+    colorCache: {},
+    editOriginal: null,
+    editNewCoverFile: null
   };
 
   /* ── Dynamic color ── */
@@ -227,11 +236,9 @@
 
   /* ═══════════════════════════════════════
      🎯 EVENT DELEGATION — TODOS LOS BOTONES
-     Funciona sin importar cuándo se cargue el JS
      ═══════════════════════════════════════ */
   document.addEventListener('click', function (e) {
 
-    /* ── Solo procesar si estamos dentro del panel de álbumes ── */
     var panel = e.target.closest('#panel-albumes');
     if (!panel) return;
 
@@ -353,11 +360,18 @@
       return;
     }
 
+    /* ── EDIT ALBUM (detail view) ── */
+    var editBtn = e.target.closest('#albDetailEdit');
+    if (editBtn) {
+      e.preventDefault();
+      if (K.currentAlbumId) window._editAlbum(K.currentAlbumId);
+      return;
+    }
+
     /* ── FEATURED PLAY ── */
     var featPlay = e.target.closest('#albFeaturedPlay');
     if (featPlay) {
       e.preventDefault();
-      /* handled by renderSpotlight onclick */
       return;
     }
 
@@ -365,7 +379,6 @@
     var featView = e.target.closest('#albFeaturedView');
     if (featView) {
       e.preventDefault();
-      /* handled by renderSpotlight onclick */
       return;
     }
 
@@ -386,7 +399,7 @@
       return;
     }
 
-  }); /* end delegation */
+  });
 
   /* ── Close sort dropdown on outside click ── */
   document.addEventListener('click', function (e) {
@@ -397,7 +410,6 @@
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
     }
 
-    /* Close context menu */
     if (!e.target.closest('.kx-alb-ctx')) {
       var ctx = document.getElementById('albCtxMenu');
       if (ctx) ctx.classList.remove('show');
@@ -474,7 +486,6 @@
       if (eI.complete && eI.naturalWidth > 0) tryC(); else eI.onload = tryC;
     }
 
-    /* Assign onclick directly — guaranteed to work */
     var btnP = document.getElementById('albFeaturedPlay');
     if (btnP) {
       btnP.onclick = function (ev) {
@@ -540,7 +551,11 @@
         if (progress > 0) {
           h += '<div class="kx-alb-card-progress"><div class="kx-alb-card-progress-fill" style="width:' + progress + '%"></div></div>';
         }
-        if (K.isAdmin) h += '<button class="kx-alb-card-delete" onclick="event.stopPropagation();window._deleteAlbum(\'' + a.id + '\')" aria-label="Eliminar álbum"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>';
+        /* ── BOTÓN EDITAR en card (solo admin) ── */
+        if (K.isAdmin) {
+          h += '<button class="kx-alb-card-edit" onclick="event.stopPropagation();window._editAlbum(\'' + a.id + '\')" aria-label="Editar álbum"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>';
+          h += '<button class="kx-alb-card-delete" onclick="event.stopPropagation();window._deleteAlbum(\'' + a.id + '\')" aria-label="Eliminar álbum"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>';
+        }
         h += '</div>';
         h += '<div class="kx-alb-card-body"><div class="kx-alb-card-title">' + esc(a.titulo) + '</div><div class="kx-alb-card-sub">' + cnt + ' canciones</div></div></div>';
       }
@@ -584,7 +599,10 @@
         if (progress > 0) h += '<div class="kx-alb-list-progress"><div class="kx-alb-list-progress-fill" style="width:' + progress + '%"></div></div>';
         h += '<span class="kx-alb-list-count">' + cnt + '</span>';
         h += '<button class="kx-alb-list-play" onclick="event.stopPropagation();window._quickPlay(\'' + a.id + '\')" aria-label="Reproducir"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>';
-        if (K.isAdmin) h += '<button class="kx-alb-card-delete" style="position:static;opacity:1;transform:none;width:24px;height:24px;border-radius:6px" onclick="event.stopPropagation();window._deleteAlbum(\'' + a.id + '\')" aria-label="Eliminar"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>';
+        if (K.isAdmin) {
+          h += '<button class="kx-alb-card-edit" style="position:static;opacity:1;transform:none;width:24px;height:24px;border-radius:6px" onclick="event.stopPropagation();window._editAlbum(\'' + a.id + '\')" aria-label="Editar"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>';
+          h += '<button class="kx-alb-card-delete" style="position:static;opacity:1;transform:none;width:24px;height:24px;border-radius:6px" onclick="event.stopPropagation();window._deleteAlbum(\'' + a.id + '\')" aria-label="Eliminar"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>';
+        }
         h += '</div>';
       }
     }
@@ -717,6 +735,10 @@
 
       var btnAdd = document.getElementById('btnAddTrack');
       if (btnAdd) { if (K.isAdmin) btnAdd.classList.add('visible'); else btnAdd.classList.remove('visible'); }
+
+      /* ── Mostrar/ocultar botón editar en detalle ── */
+      var btnEdit = document.getElementById('albDetailEdit');
+      if (btnEdit) { if (K.isAdmin) btnEdit.classList.add('visible'); else btnEdit.classList.remove('visible'); }
 
       await loadTracks(aid);
       transitionToDetail();
@@ -888,7 +910,7 @@
     } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
   };
 
-  /* ═══ CRUD ALBUM ═══ */
+  /* ═══ CRUD ALBUM — CREAR ═══ */
   K._selectedCoverFile = null;
 
   var acf = document.getElementById('albumCoverFile');
@@ -939,6 +961,306 @@
     } catch (e2) { K.showToast('Error: ' + e2.message, 'error'); }
     btn.classList.remove('loading'); btn.disabled = false;
   });
+
+  /* ═══════════════════════════════════════
+     ✏️ CRUD ALBUM — EDITAR (NUEVO)
+     ═══════════════════════════════════════ */
+
+  /* ── Abrir modal de edición ── */
+  window._editAlbum = async function (aid) {
+    if (!K.isAdmin) { K.showToast('Sin permisos', 'error'); return; }
+
+    try {
+      /* Cargar datos actuales del álbum */
+      var r = await db.from('albumes').select('*, canciones(id)').eq('id', aid).single();
+      if (r.error) throw r.error;
+      var album = r.data;
+
+      /* Guardar datos originales para comparar cambios */
+      st.editOriginal = {
+        id: album.id,
+        titulo: album.titulo || '',
+        descripcion: album.descripcion || '',
+        imagen_url: album.imagen_url || '',
+        fecha_lanzamiento: album.fecha_lanzamiento || '',
+        created_at: album.created_at,
+        songCount: album.canciones ? album.canciones.length : 0
+      };
+      st.editNewCoverFile = null;
+
+      /* Poblar campos del formulario */
+      var eId = document.getElementById('editAlbumIdHidden');
+      var eTit = document.getElementById('editAlbumTitulo');
+      var eDesc = document.getElementById('editAlbumDesc');
+      var eFecha = document.getElementById('editAlbumFecha');
+      var eImg = document.getElementById('editAlbumCoverImg');
+      var ePreview = document.getElementById('editAlbumCoverPreview');
+      var eCreated = document.getElementById('editAlbumCreated');
+      var eSongCount = document.getElementById('editAlbumSongCount');
+      var eAlbumId = document.getElementById('editAlbumId');
+      var eTitCount = document.getElementById('editTituloCount');
+      var eDescCount = document.getElementById('editDescCount');
+
+      if (eId) eId.value = album.id;
+      if (eTit) { eTit.value = album.titulo || ''; }
+      if (eDesc) { eDesc.value = album.descripcion || ''; }
+      if (eFecha) { eFecha.value = album.fecha_lanzamiento ? fmtDatetime(album.fecha_lanzamiento) : ''; }
+
+      /* Contadores de caracteres */
+      if (eTitCount) eTitCount.textContent = (album.titulo || '').length;
+      if (eDescCount) eDescCount.textContent = (album.descripcion || '').length;
+
+      /* Imagen */
+      if (album.imagen_url) {
+        if (eImg) eImg.src = album.imagen_url;
+        if (ePreview) {
+          ePreview.classList.remove('no-image', 'has-new-image');
+        }
+      } else {
+        if (eImg) eImg.src = '';
+        if (ePreview) {
+          ePreview.classList.add('no-image');
+          ePreview.classList.remove('has-new-image');
+        }
+      }
+
+      /* Info bar */
+      if (eCreated) eCreated.textContent = fmtDate(album.created_at);
+      if (eSongCount) eSongCount.textContent = album.canciones ? album.canciones.length : 0;
+      if (eAlbumId) eAlbumId.textContent = album.id.substring(0, 12) + '...';
+
+      /* Resetear file input */
+      var fileInput = document.getElementById('editAlbumCoverFile');
+      if (fileInput) fileInput.value = '';
+
+      /* Abrir modal */
+      K.openModal('modalEditAlbum');
+
+    } catch (e) {
+      console.error('Error loading album for edit:', e);
+      K.showToast('Error al cargar álbum: ' + e.message, 'error');
+    }
+  };
+
+  /* ── Seleccionar nueva imagen ── */
+  var editCoverFile = document.getElementById('editAlbumCoverFile');
+  var btnEditCoverSelect = document.getElementById('btnEditCoverSelect');
+  var editCoverPreview = document.getElementById('editAlbumCoverPreview');
+
+  if (btnEditCoverSelect) {
+    btnEditCoverSelect.addEventListener('click', function () {
+      var fileInput = document.getElementById('editAlbumCoverFile');
+      if (fileInput) fileInput.click();
+    });
+  }
+
+  /* Click en preview también abre selector */
+  if (editCoverPreview) {
+    editCoverPreview.addEventListener('click', function () {
+      var fileInput = document.getElementById('editAlbumCoverFile');
+      if (fileInput) fileInput.click();
+    });
+  }
+
+  if (editCoverFile) {
+    editCoverFile.addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+
+      /* Validar tipo */
+      if (!f.type.startsWith('image/')) {
+        K.showToast('Selecciona una imagen válida', 'error');
+        return;
+      }
+
+      /* Validar tamaño (max 5MB) */
+      if (f.size > 5 * 1024 * 1024) {
+        K.showToast('La imagen debe ser menor a 5MB', 'error');
+        return;
+      }
+
+      st.editNewCoverFile = f;
+
+      var rd = new FileReader();
+      rd.onload = function (ev) {
+        var img = document.getElementById('editAlbumCoverImg');
+        var preview = document.getElementById('editAlbumCoverPreview');
+        if (img) {
+          img.src = ev.target.result;
+          img.style.display = 'block';
+        }
+        if (preview) {
+          preview.classList.remove('no-image');
+          preview.classList.add('has-new-image');
+        }
+      };
+      rd.readAsDataURL(f);
+
+      K.showToast('📷 Nueva imagen seleccionada', 'info');
+    });
+  }
+
+  /* ── Quitar imagen ── */
+  var btnEditCoverRemove = document.getElementById('btnEditCoverRemove');
+  if (btnEditCoverRemove) {
+    btnEditCoverRemove.addEventListener('click', function () {
+      st.editNewCoverFile = null;
+      var img = document.getElementById('editAlbumCoverImg');
+      var preview = document.getElementById('editAlbumCoverPreview');
+      var fileInput = document.getElementById('editAlbumCoverFile');
+
+      if (img) { img.src = ''; img.style.display = 'none'; }
+      if (preview) { preview.classList.add('no-image'); preview.classList.remove('has-new-image'); }
+      if (fileInput) fileInput.value = '';
+
+      /* Marcar que se quiere quitar la imagen */
+      st.editRemoveCover = true;
+
+      K.showToast('Imagen eliminada', 'info');
+    });
+  }
+
+  /* ── Contadores de caracteres ── */
+  var editTituloInput = document.getElementById('editAlbumTitulo');
+  if (editTituloInput) {
+    editTituloInput.addEventListener('input', function () {
+      var counter = document.getElementById('editTituloCount');
+      if (counter) {
+        counter.textContent = editTituloInput.value.length;
+        counter.className = editTituloInput.value.length > 90 ? 'over' : '';
+      }
+    });
+  }
+
+  var editDescInput = document.getElementById('editAlbumDesc');
+  if (editDescInput) {
+    editDescInput.addEventListener('input', function () {
+      var counter = document.getElementById('editDescCount');
+      if (counter) {
+        counter.textContent = editDescInput.value.length;
+        counter.className = editDescInput.value.length > 450 ? 'over' : '';
+      }
+    });
+  }
+
+  /* ── Guardar cambios ── */
+  var formEdit = document.getElementById('formEditAlbum');
+  if (formEdit) {
+    formEdit.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      var albumId = document.getElementById('editAlbumIdHidden').value;
+      if (!albumId) { K.showToast('ID de álbum no encontrado', 'error'); return; }
+
+      var titulo = document.getElementById('editAlbumTitulo').value.trim();
+      var desc = document.getElementById('editAlbumDesc').value.trim();
+      var fechaEl = document.getElementById('editAlbumFecha');
+      var fechaInput = fechaEl ? fechaEl.value : '';
+
+      if (!titulo) { K.showToast('El título es obligatorio', 'error'); return; }
+
+      var btn = document.getElementById('btnEditAlbumSubmit');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        var updateData = {
+          titulo: titulo,
+          descripcion: desc
+        };
+
+        /* Fecha de lanzamiento */
+        if (fechaInput) {
+          updateData.fecha_lanzamiento = new Date(fechaInput).toISOString();
+        } else {
+          updateData.fecha_lanzamiento = null;
+        }
+
+        /* Subir nueva imagen si se seleccionó */
+        if (st.editNewCoverFile) {
+          var fn = Date.now() + '_' + st.editNewCoverFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
+          var up = await db.storage.from('imagenes').upload('covers/' + fn, st.editNewCoverFile, {
+            contentType: st.editNewCoverFile.type
+          });
+          if (up.error) throw up.error;
+          updateData.imagen_url = db.storage.from('imagenes').getPublicUrl('covers/' + fn).data.publicUrl;
+
+          /* Intentar eliminar la imagen anterior del storage */
+          if (st.editOriginal && st.editOriginal.imagen_url) {
+            try {
+              var oldPath = st.editOriginal.imagen_url.split('/imagenes/')[1];
+              if (oldPath) {
+                await db.storage.from('imagenes').remove([decodeURIComponent(oldPath)]);
+              }
+            } catch (delErr) {
+              console.warn('No se pudo eliminar imagen anterior:', delErr);
+            }
+          }
+        } else if (st.editRemoveCover) {
+          updateData.imagen_url = '';
+
+          /* Intentar eliminar del storage */
+          if (st.editOriginal && st.editOriginal.imagen_url) {
+            try {
+              var oldPath2 = st.editOriginal.imagen_url.split('/imagenes/')[1];
+              if (oldPath2) {
+                await db.storage.from('imagenes').remove([decodeURIComponent(oldPath2)]);
+              }
+            } catch (delErr2) {
+              console.warn('No se pudo eliminar imagen:', delErr2);
+            }
+          }
+        }
+
+        /* Actualizar en la base de datos */
+        var result = await db.from('albumes').update(updateData).eq('id', albumId);
+        if (result.error) throw result.error;
+
+        /* También actualizar imagen_url en las canciones si cambió la portada */
+        if (updateData.imagen_url !== undefined) {
+          var songsUpdate = await db.from('canciones').update({
+            imagen_url: updateData.imagen_url
+          }).eq('album_id', albumId);
+          if (songsUpdate.error) console.warn('Error actualizando portada en canciones:', songsUpdate.error);
+        }
+
+        /* Limpiar state */
+        st.editNewCoverFile = null;
+        st.editRemoveCover = false;
+        st.editOriginal = null;
+
+        /* Limpiar cache de colores para la nueva imagen */
+        if (updateData.imagen_url) {
+          delete st.colorCache[updateData.imagen_url];
+        }
+
+        K.showToast('✅ Álbum actualizado correctamente', 'success');
+        K.closeModal('modalEditAlbum');
+
+        /* Recargar datos */
+        await K.loadAlbumes();
+
+        /* Si estamos viendo el detalle de este álbum, actualizarlo */
+        if (K.currentAlbumId === albumId) {
+          var dv = document.getElementById('albumDetailView');
+          if (dv && dv.classList.contains('show')) {
+            await window._openAlbum(albumId);
+          }
+        }
+
+        if (K.loadStats) K.loadStats();
+
+      } catch (e2) {
+        console.error('Error updating album:', e2);
+        K.showToast('Error: ' + e2.message, 'error');
+      }
+
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    });
+  }
+
+  /* ═══ FIN EDICIÓN ═══ */
 
   window._deleteAlbum = async function (aid) {
     if (!confirm('¿Eliminar este álbum y todas sus canciones?')) return;
@@ -1061,8 +1383,11 @@
       case 'share':
         K.showToast('Enlace copiado', 'success');
         break;
+      case 'edit':
+        if (type === 'album' || type === 'album-locked') window._editAlbum(id);
+        break;
       case 'delete':
-        if (type === 'album') window._deleteAlbum(id);
+        if (type === 'album' || type === 'album-locked') window._deleteAlbum(id);
         else if (type === 'track') window._deleteTrack(id);
         break;
     }
@@ -1095,6 +1420,13 @@
         break;
       case 'ArrowLeft':
         if (isDetail && K.isPlaying) { e.preventDefault(); var prev = document.getElementById('playerPrev'); if (prev) prev.click(); }
+        break;
+      case 'e':
+        /* Atajo: E para editar álbum actual (solo admin en detalle) */
+        if (isDetail && K.isAdmin && K.currentAlbumId) {
+          e.preventDefault();
+          window._editAlbum(K.currentAlbumId);
+        }
         break;
     }
   });
@@ -1149,7 +1481,6 @@
     var sv = localStorage.getItem('kxon_alb_view');
     if (sv === 'list') {
       st.view = 'list';
-      /* Will be applied when panel activates and renders */
     }
   } catch (e) { }
 

@@ -3,6 +3,7 @@
    Namespace: kx-prf-*
    Event delegation · escapeHtml · A11y
    CON EMAIL DE CUENTA ELIMINADA
+   FIX: Avatar upload corregido
    ============================================ */
 (function () {
 
@@ -82,6 +83,7 @@
 
     setText('perfilProviderText', provider.charAt(0).toUpperCase() + provider.slice(1));
 
+    // ═══ AVATAR DISPLAY ═══
     var avatarImg = $('perfilAvatarImg');
     var avatarLetter = $('perfilAvatarLetter');
     if (avatar && avatarImg) {
@@ -129,6 +131,9 @@
     }
 
     _loadProfileKPIs();
+    
+    // ═══ RE-BIND AVATAR FILE INPUT (FIX) ═══
+    _bindAvatarUpload();
   };
 
   async function _loadProfileKPIs() {
@@ -151,12 +156,194 @@
   }
 
   /* ══════════════════════════════════════════
+     📷 AVATAR UPLOAD — FIX COMPLETO
+     ══════════════════════════════════════════ */
+  var _avatarBound = false;
+  
+  function _bindAvatarUpload() {
+    var avatarFile = $('perfilAvatarFile');
+    if (!avatarFile || _avatarBound) return;
+    _avatarBound = true;
+    
+    avatarFile.addEventListener('change', async function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      
+      console.log('📷 Avatar file selected:', file.name, file.size, file.type);
+      
+      // Validar tipo de archivo
+      var allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (allowedTypes.indexOf(file.type) === -1) {
+        K.showToast('Formato no soportado. Usa JPG, PNG o WebP', 'error');
+        avatarFile.value = '';
+        return;
+      }
+      
+      // Validar tamaño
+      if (file.size > 5 * 1024 * 1024) {
+        K.showToast('La imagen debe ser menor a 5MB', 'error');
+        avatarFile.value = '';
+        return;
+      }
+
+      K.showToast('Subiendo foto de perfil...', 'success');
+
+      try {
+        var ext = file.name.split('.').pop().toLowerCase();
+        var fileName = K.currentUser.id + '_avatar_' + Date.now() + '.' + ext;
+        var filePath = 'avatars/' + fileName;
+
+        console.log('📤 Uploading to:', filePath);
+
+        // ═══ PASO 1: Eliminar avatar anterior si existe ═══
+        if (K.currentProfile.avatar_url) {
+          try {
+            var oldUrl = K.currentProfile.avatar_url;
+            // Extraer el path del archivo de la URL
+            var urlParts = oldUrl.split('/imagenes/');
+            if (urlParts.length > 1) {
+              var oldPath = decodeURIComponent(urlParts[1]);
+              console.log('🗑️ Deleting old avatar:', oldPath);
+              await db.storage.from('imagenes').remove([oldPath]);
+            }
+          } catch (delErr) {
+            console.warn('No se pudo eliminar avatar anterior:', delErr);
+            // No es crítico, continuamos
+          }
+        }
+
+        // ═══ PASO 2: Subir nuevo avatar ═══
+        var uploadResult = await db.storage.from('imagenes').upload(filePath, file, {
+          contentType: file.type,
+          upsert: true,
+          cacheControl: '3600'
+        });
+        
+        if (uploadResult.error) {
+          console.error('❌ Upload error:', uploadResult.error);
+          throw uploadResult.error;
+        }
+        
+        console.log('✅ Upload success:', uploadResult.data);
+
+        // ═══ PASO 3: Obtener URL pública ═══
+        var publicUrlResult = db.storage.from('imagenes').getPublicUrl(filePath);
+        var avatarUrl = publicUrlResult.data.publicUrl;
+        
+        if (!avatarUrl) {
+          throw new Error('No se pudo obtener la URL pública del avatar');
+        }
+        
+        // Agregar cache buster para forzar recarga
+        avatarUrl = avatarUrl + '?t=' + Date.now();
+        
+        console.log('🔗 Public URL:', avatarUrl);
+
+        // ═══ PASO 4: Actualizar perfil en base de datos ═══
+        var updateResult = await db.from('profiles').update({
+          avatar_url: avatarUrl.split('?')[0], // Guardar sin cache buster
+          updated_at: new Date().toISOString()
+        }).eq('id', K.currentUser.id);
+        
+        if (updateResult.error) {
+          console.error('❌ Profile update error:', updateResult.error);
+          throw updateResult.error;
+        }
+
+        // ═══ PASO 5: Actualizar estado local ═══
+        K.currentProfile.avatar_url = avatarUrl.split('?')[0];
+
+        // ═══ PASO 6: Actualizar UI — Avatar en perfil ═══
+        var img = $('perfilAvatarImg');
+        var letter = $('perfilAvatarLetter');
+        if (img) {
+          img.src = avatarUrl;
+          img.style.display = 'block';
+          // Manejar error de carga de imagen
+          img.onerror = function() {
+            console.warn('⚠️ Error loading avatar image, retrying...');
+            setTimeout(function() {
+              img.src = avatarUrl.split('?')[0] + '?t=' + Date.now();
+            }, 1000);
+          };
+        }
+        if (letter) letter.style.display = 'none';
+
+        // ═══ PASO 7: Actualizar UI — Avatar en sidebar ═══
+        var sidebarAv = $('sidebarAvatar');
+        if (sidebarAv) {
+          // Limpiar contenido anterior
+          sidebarAv.textContent = '';
+          sidebarAv.innerHTML = '';
+          var sidebarImg = document.createElement('img');
+          sidebarImg.src = avatarUrl;
+          sidebarImg.alt = 'Avatar';
+          sidebarImg.style.width = '100%';
+          sidebarImg.style.height = '100%';
+          sidebarImg.style.objectFit = 'cover';
+          sidebarImg.style.borderRadius = '50%';
+          sidebarImg.onerror = function() {
+            sidebarAv.textContent = K.currentProfile.full_name ? 
+              K.currentProfile.full_name.charAt(0).toUpperCase() : 'K';
+          };
+          sidebarAv.appendChild(sidebarImg);
+        }
+
+        // ═══ PASO 8: Actualizar cualquier otro avatar visible ═══
+        _updateAllAvatarInstances(avatarUrl);
+
+        K.showToast('¡Foto de perfil actualizada! 📸', 'success');
+        console.log('✅ Avatar updated successfully');
+
+      } catch (err) {
+        console.error('❌ Error completo subiendo avatar:', err);
+        
+        var errorMsg = 'Error al subir foto';
+        if (err.message) {
+          if (err.message.indexOf('Bucket not found') >= 0) {
+            errorMsg = 'Error: El almacenamiento no está configurado. Contacta al administrador.';
+          } else if (err.message.indexOf('new row violates') >= 0) {
+            errorMsg = 'Error de permisos en almacenamiento. Contacta al administrador.';
+          } else if (err.message.indexOf('Permission') >= 0 || err.message.indexOf('policy') >= 0) {
+            errorMsg = 'Sin permisos para subir archivos. Verifica la configuración de Storage.';
+          } else if (err.message.indexOf('payload too large') >= 0) {
+            errorMsg = 'Archivo demasiado grande. Máximo 5MB.';
+          } else {
+            errorMsg = 'Error al subir foto: ' + esc(err.message);
+          }
+        }
+        
+        K.showToast(errorMsg, 'error');
+      }
+
+      // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
+      avatarFile.value = '';
+    });
+    
+    console.log('✅ Avatar upload handler bound');
+  }
+  
+  // Actualizar todos los avatares visibles en la página
+  function _updateAllAvatarInstances(avatarUrl) {
+    // Buscar otros elementos que muestren el avatar del usuario
+    var allAvatarImgs = document.querySelectorAll('[data-user-avatar]');
+    allAvatarImgs.forEach(function(img) {
+      img.src = avatarUrl;
+    });
+  }
+
+  /* ══════════════════════════════════════════
      📑 TABS — EVENT DELEGATION
      ══════════════════════════════════════════ */
   var panelPerfil = $('panel-perfil');
   if (!panelPerfil) return;
 
   panelPerfil.addEventListener('click', function (e) {
+    
+    // ═══ IMPORTANTE: Ignorar clicks en el input file ═══
+    if (e.target.id === 'perfilAvatarFile' || e.target.type === 'file') {
+      return;
+    }
 
     var tab = e.target.closest('.kx-prf-tab');
     if (tab) {
@@ -186,11 +373,24 @@
       return;
     }
 
+    // ═══ AVATAR CLICK — MEJORADO ═══
     var avatarWrap = e.target.closest('.kx-prf-avatar-wrap');
     if (avatarWrap) {
+      // No prevenir default si ya es el input file
+      if (e.target.type === 'file') return;
+      
       e.preventDefault();
+      e.stopPropagation();
+      
       var fileInput = $('perfilAvatarFile');
-      if (fileInput) fileInput.click();
+      if (fileInput) {
+        // Reset para permitir re-selección del mismo archivo
+        fileInput.value = '';
+        // Usar setTimeout para evitar conflictos de eventos
+        setTimeout(function() {
+          fileInput.click();
+        }, 50);
+      }
       return;
     }
 
@@ -260,7 +460,12 @@
       if (avatarWrap) {
         e.preventDefault();
         var fileInput = $('perfilAvatarFile');
-        if (fileInput) fileInput.click();
+        if (fileInput) {
+          fileInput.value = '';
+          setTimeout(function() {
+            fileInput.click();
+          }, 50);
+        }
       }
     }
   });
@@ -359,64 +564,6 @@
       matchEl.className = 'kx-prf-pass-match no-match';
       matchEl.querySelector('span').textContent = 'Las contraseñas no coinciden';
     }
-  }
-
-  /* ══════════════════════════════════════════
-     📷 SUBIR AVATAR
-     ══════════════════════════════════════════ */
-  var avatarFile = $('perfilAvatarFile');
-  if (avatarFile) {
-    avatarFile.addEventListener('change', async function (e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      if (file.size > 5 * 1024 * 1024) {
-        K.showToast('La imagen debe ser menor a 5MB', 'error');
-        return;
-      }
-
-      K.showToast('Subiendo foto...', 'success');
-
-      try {
-        var ext = file.name.split('.').pop();
-        var fileName = K.currentUser.id + '_avatar_' + Date.now() + '.' + ext;
-
-        var up = await db.storage.from('imagenes').upload('avatars/' + fileName, file, {
-          contentType: file.type, upsert: true
-        });
-        if (up.error) throw up.error;
-
-        var avatarUrl = db.storage.from('imagenes').getPublicUrl('avatars/' + fileName).data.publicUrl;
-
-        var upd = await db.from('profiles').update({
-          avatar_url: avatarUrl,
-          updated_at: new Date().toISOString()
-        }).eq('id', K.currentUser.id);
-        if (upd.error) throw upd.error;
-
-        K.currentProfile.avatar_url = avatarUrl;
-
-        var img = $('perfilAvatarImg');
-        var letter = $('perfilAvatarLetter');
-        if (img) { img.src = avatarUrl; img.style.display = 'block'; }
-        if (letter) letter.style.display = 'none';
-
-        var sidebarAv = $('sidebarAvatar');
-        if (sidebarAv) {
-          sidebarAv.textContent = '';
-          var sidebarImg = document.createElement('img');
-          sidebarImg.src = avatarUrl;
-          sidebarImg.alt = 'Avatar';
-          sidebarAv.appendChild(sidebarImg);
-        }
-
-        K.showToast('¡Foto actualizada!', 'success');
-      } catch (err) {
-        console.error('Error subiendo avatar:', err);
-        K.showToast('Error al subir foto: ' + esc(err.message), 'error');
-      }
-
-      avatarFile.value = '';
-    });
   }
 
   /* ══════════════════════════════════════════
@@ -546,7 +693,6 @@
 
   async function _executeDelete() {
     try {
-      // Guardar datos antes de eliminar para el email
       var userEmail = K.currentUser.email;
       var userName = K.currentProfile.full_name || K.currentUser.email.split('@')[0];
 
@@ -557,7 +703,6 @@
       await db.from('solicitudes_compra').delete().eq('comprador_id', K.currentUser.id);
       await db.from('profiles').delete().eq('id', K.currentUser.id);
 
-      // Enviar email de despedida ANTES de cerrar sesión
       sendDeleteEmail(userEmail, userName);
 
       await db.auth.signOut();
@@ -583,5 +728,10 @@
       }
     }
   });
+
+  /* ══════════════════════════════════════════
+     🔧 INITIAL BIND (si el panel ya está visible)
+     ══════════════════════════════════════════ */
+  _bindAvatarUpload();
 
 })();
