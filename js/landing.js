@@ -1,13 +1,11 @@
 /* ============================================
    🏠 LANDING JS — KXON MUSIC PLATFORM
-   Rediseño ULTRA PREMIUM 2026 — v8.0
-   Level: 20/10
-   "Donde el Sonido Cobra Vida" Edition
-   NEW: Hero 3D tilt, waveform animation,
-   metrics dashboard, enhanced reveals,
-   smooth scroll, scroll-driven animations,
-   comparison section, steps section,
-   improved counters, magnetic buttons
+   Rediseño ULTRA PREMIUM 2026 — v9.0
+   "La Frecuencia que te Define" Edition
+   ★ NEW: Canvas soundwave, frequency rings,
+   circular equalizer, immersive album gallery,
+   magazine news, glassmorphism metrics,
+   hero 3D tilt, enhanced animations
    ============================================ */
 
 (function () {
@@ -33,7 +31,7 @@
     const isMobile = () => window.innerWidth < 768;
 
     // ═══════════════════════════════════════
-    //  🔃 PAGE LOADER — ENHANCED
+    //  🔃 PAGE LOADER
     // ═══════════════════════════════════════
     function initPageLoader() {
         const loader = $('#pageLoader');
@@ -72,7 +70,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🖱️ CUSTOM CURSOR WITH TRAIL
+    //  🖱️ CUSTOM CURSOR
     // ═══════════════════════════════════════
     function initCustomCursor() {
         if (isTouchDevice() || prefersReducedMotion()) return;
@@ -110,7 +108,7 @@
         }
         updateRing();
 
-        const hoverTargets = 'a, button, [data-magnetic], .kx-landing-news__card, .kx-landing-carousel__item--main, .kx-landing-faq__question, [data-tilt-card], .kx-landing-compare__row';
+        const hoverTargets = 'a, button, [data-magnetic], .kx-news-magazine__card, .kx-album-gallery__item--main, .kx-landing-faq__question, [data-tilt-card], .kx-landing-compare__row';
 
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest(hoverTargets)) cursor.classList.add('is-hovering');
@@ -130,7 +128,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🧲 MAGNETIC BUTTONS — ENHANCED v2
+    //  🧲 MAGNETIC BUTTONS
     // ═══════════════════════════════════════
     function initMagneticButtons() {
         if (isTouchDevice() || prefersReducedMotion()) return;
@@ -177,7 +175,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  💡 SPOTLIGHT + TILT — ENHANCED
+    //  💡 SPOTLIGHT + TILT
     // ═══════════════════════════════════════
     function initSpotlightCards() {
         if (isTouchDevice() || prefersReducedMotion()) return;
@@ -371,7 +369,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  ✨ SCROLL REVEAL — ENHANCED v2
+    //  ✨ SCROLL REVEAL
     // ═══════════════════════════════════════
     let revealObserver = null;
 
@@ -402,7 +400,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🔢 COUNTER ANIMATION — ENHANCED
+    //  🔢 COUNTER ANIMATION
     // ═══════════════════════════════════════
     const animatedCounters = new WeakSet();
 
@@ -446,7 +444,7 @@
             if (progress < 1) requestAnimationFrame(update);
         }
 
-        // Decode effect first
+        // Decode scramble effect
         const chars = '0123456789!@#$%&';
         let decodeFrame = 0;
         const decodeInterval = setInterval(() => {
@@ -465,7 +463,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  ✨ PARTICLES — MOBILE OPTIMIZED
+    //  ✨ PARTICLES
     // ═══════════════════════════════════════
     function initHeroParticles() {
         const container = $('#heroParticles');
@@ -539,7 +537,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🔗 SMOOTH SCROLL — ENHANCED
+    //  🔗 SMOOTH SCROLL
     // ═══════════════════════════════════════
     function initSmoothScroll() {
         document.addEventListener('click', (e) => {
@@ -573,7 +571,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  📜 SCROLL HANDLER — OPTIMIZED
+    //  📜 SCROLL HANDLER
     // ═══════════════════════════════════════
     let scrollTicking = false;
     function onScroll() {
@@ -589,7 +587,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🎬 PARALLAX — DESKTOP ONLY
+    //  🎬 PARALLAX
     // ═══════════════════════════════════════
     function initParallax() {
         if (prefersReducedMotion() || isTouchDevice()) return;
@@ -642,7 +640,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  📰 NEWS
+    //  📰 NEWS — Magazine Layout
     // ═══════════════════════════════════════
     async function loadNews() {
         const grid = $('#newsGrid');
@@ -676,7 +674,7 @@
         let html = '';
         for (let i = start; i < end; i++) html += buildNewsCard(landingNoticias[i], i);
         grid.innerHTML = html;
-        grid.querySelectorAll('.kx-landing-news__card').forEach((card, idx) => {
+        grid.querySelectorAll('.kx-news-magazine__card').forEach((card, idx) => {
             card.classList.add('kx-reveal', 'is-visible');
             card.style.animationDelay = idx * 100 + 'ms';
         });
@@ -688,7 +686,7 @@
             .toUpperCase();
         const img = n.imagen_url || 'https://placehold.co/600x400/0e0e0e/333?text=KXON';
         return `
-            <article class="kx-landing-news__card" data-news-idx="${idx}">
+            <article class="kx-news-magazine__card" data-news-idx="${idx}">
                 <div class="kx-landing-news__img">
                     <img src="${img}" alt="${n.titulo || ''}" loading="lazy" onerror="this.src='https://placehold.co/600x400/0e0e0e/333?text=KXON'">
                     <span class="kx-landing-news__date">${fecha}</span>
@@ -706,7 +704,7 @@
         if (!dotsContainer) return;
         const totalPages = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
         dotsContainer.innerHTML = Array.from({ length: totalPages }, (_, i) =>
-            `<span class="kx-landing-news__dot${i === currentNewsPage ? ' is-active' : ''}" data-page="${i}"></span>`
+            `<span class="kx-news-magazine__dot${i === currentNewsPage ? ' is-active' : ''}" data-page="${i}"></span>`
         ).join('');
     }
 
@@ -732,7 +730,7 @@
         });
 
         if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
-            const dot = e.target.closest('.kx-landing-news__dot');
+            const dot = e.target.closest('.kx-news-magazine__dot');
             if (!dot) return;
             currentNewsPage = parseInt(dot.dataset.page);
             renderNewsPage();
@@ -741,7 +739,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  💿 ALBUMS CAROUSEL
+    //  💿 ALBUM GALLERY — Immersive v9
     // ═══════════════════════════════════════
     async function loadAlbums() {
         if (!db) return;
@@ -767,7 +765,7 @@
     function hideCarousel() {
         const stage = $('#carouselStage');
         const hud = $('#carouselHud');
-        const controls = $('.kx-landing-carousel__controls');
+        const controls = $('.kx-album-gallery__controls');
         if (stage) stage.innerHTML = buildEmpty('💿', 'Sin álbumes aún');
         if (hud) hud.style.display = 'none';
         if (controls) controls.style.display = 'none';
@@ -833,7 +831,7 @@
         const container = $('#carouselDots');
         if (!container) return;
         container.innerHTML = landingAlbumes.map((_, i) =>
-            `<div class="kx-landing-carousel__dot${i === currentAlbumIndex ? ' is-active' : ''}" data-idx="${i}"></div>`
+            `<div class="kx-album-gallery__dot${i === currentAlbumIndex ? ' is-active' : ''}" data-idx="${i}"></div>`
         ).join('');
     }
 
@@ -846,7 +844,7 @@
         if (prevBtn) prevBtn.addEventListener('click', () => navigateCarousel('prev'));
         if (nextBtn) nextBtn.addEventListener('click', () => navigateCarousel('next'));
         if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
-            const dot = e.target.closest('.kx-landing-carousel__dot');
+            const dot = e.target.closest('.kx-album-gallery__dot');
             if (!dot) return;
             const idx = parseInt(dot.dataset.idx);
             if (idx !== currentAlbumIndex) {
@@ -977,7 +975,8 @@
             const backdrop = e.target.closest('.kx-landing-modal__backdrop');
             if (backdrop) { closeModal(backdrop.closest('.kx-landing-modal')); return; }
 
-            const newsCard = e.target.closest('.kx-landing-news__card');
+            // News card click — use new class
+            const newsCard = e.target.closest('.kx-news-magazine__card');
             if (newsCard) { openNewsModal(parseInt(newsCard.dataset.newsIdx)); return; }
 
             const playBtn = e.target.closest('.kx-landing-track__play');
@@ -1069,10 +1068,16 @@
     }
 
     // ═══════════════════════════════════════
-    //  🔢 HERO COUNTER OBSERVER
+    //  🔢 HERO COUNTERS + METRICS
     // ═══════════════════════════════════════
     function initHeroCounters() {
-        [$('.kx-landing-hero__proof'), $('#heroStats'), $('.kx-landing-hero__metrics')].forEach(el => {
+        const targets = [
+            $('.kx-landing-hero__proof'),
+            $('#heroMetrics'),
+            $('.kx-hero-metrics')
+        ];
+
+        targets.forEach(el => {
             if (!el) return;
             const observer = new IntersectionObserver(([entry]) => {
                 if (entry.isIntersecting) {
@@ -1111,7 +1116,7 @@
     // ═══════════════════════════════════════
     function initCarouselKeyboard() {
         document.addEventListener('keydown', (e) => {
-            const carousel = $('.kx-landing-carousel');
+            const carousel = $('.kx-album-gallery');
             if (!carousel) return;
             const rect = carousel.getBoundingClientRect();
             if (rect.top > window.innerHeight || rect.bottom < 0) return;
@@ -1121,7 +1126,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  📊 COMPARISON TABLE — Row highlight
+    //  📊 COMPARE TABLE ANIMATION
     // ═══════════════════════════════════════
     function initCompareTable() {
         const rows = $$('.kx-landing-compare__row');
@@ -1154,7 +1159,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🔧 STEPS — Connection line animation
+    //  🔧 STEPS ANIMATION
     // ═══════════════════════════════════════
     function initStepsAnimation() {
         const stepsContainer = $('.kx-landing-steps');
@@ -1171,62 +1176,115 @@
     }
 
     // ═══════════════════════════════════════
-    //  🌊 HERO WAVEFORM — Animated SVG path
-    //  ★ NEW v8: Generates organic waveform
+    //  ★ NEW: CANVAS SOUNDWAVE ANIMATION
+    //  Organic sound wave drawn on canvas
     // ═══════════════════════════════════════
-    function initHeroWaveform() {
-        const path = document.querySelector('.kx-landing-hero__waveform-path');
-        if (!path) return;
+    function initSoundwaveCanvas() {
+        const canvas = $('#soundwaveCanvas');
+        if (!canvas || prefersReducedMotion()) return;
 
-        function generateWaveformPath() {
-            const width = 200;
-            const height = 40;
-            const centerY = height / 2;
-            const segments = 50;
-            const segWidth = width / segments;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-            let d = `M 0 ${centerY}`;
+        // Set canvas resolution
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
 
-            for (let i = 1; i <= segments; i++) {
-                const x = i * segWidth;
-                const t = i / segments;
-
-                // Create organic waveform shape
-                const envelope = Math.sin(t * Math.PI); // fade in/out
-                const wave1 = Math.sin(t * Math.PI * 6) * 8;
-                const wave2 = Math.sin(t * Math.PI * 10 + 1.2) * 4;
-                const wave3 = Math.sin(t * Math.PI * 14 + 2.5) * 2;
-                const noise = (Math.random() - 0.5) * 3;
-
-                const y = centerY + (wave1 + wave2 + wave3 + noise) * envelope;
-                d += ` L ${x.toFixed(1)} ${Math.max(2, Math.min(height - 2, y)).toFixed(1)}`;
-            }
-
-            return d;
+        function resize() {
+            const r = canvas.parentElement?.getBoundingClientRect();
+            if (!r) return;
+            canvas.width = r.width * dpr;
+            canvas.height = r.height * dpr;
+            canvas.style.width = r.width + 'px';
+            canvas.style.height = r.height + 'px';
+            ctx.scale(dpr, dpr);
         }
 
-        // Set initial path
-        path.setAttribute('d', generateWaveformPath());
+        resize();
+        window.addEventListener('resize', resize, { passive: true });
 
-        // Animate waveform periodically
-        if (!prefersReducedMotion()) {
-            let frameCount = 0;
-            function animateWaveform() {
-                frameCount++;
-                if (frameCount % 8 === 0) { // ~5fps for performance
-                    path.setAttribute('d', generateWaveformPath());
+        let time = 0;
+        let animId = null;
+
+        function draw() {
+            const w = canvas.width / dpr;
+            const h = canvas.height / dpr;
+            const centerY = h / 2;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw multiple waves with different parameters
+            const waves = [
+                { amplitude: 18, frequency: 0.015, speed: 0.03, color: 'rgba(139, 92, 246, 0.6)', width: 2 },
+                { amplitude: 12, frequency: 0.022, speed: 0.04, color: 'rgba(59, 130, 246, 0.4)', width: 1.5 },
+                { amplitude: 8,  frequency: 0.03,  speed: 0.05, color: 'rgba(6, 182, 212, 0.25)', width: 1 },
+            ];
+
+            waves.forEach(wave => {
+                ctx.beginPath();
+                ctx.strokeStyle = wave.color;
+                ctx.lineWidth = wave.width;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                for (let x = 0; x <= w; x++) {
+                    const t = x / w;
+                    // Envelope — fade edges
+                    const envelope = Math.sin(t * Math.PI);
+                    // Multiple sine combinations for organic feel
+                    const y = centerY +
+                        Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude * envelope +
+                        Math.sin(x * wave.frequency * 2.3 + time * wave.speed * 1.5 + 1.2) * (wave.amplitude * 0.4) * envelope +
+                        Math.sin(x * wave.frequency * 0.7 + time * wave.speed * 0.8 + 2.5) * (wave.amplitude * 0.2) * envelope;
+
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
                 }
-                requestAnimationFrame(animateWaveform);
-            }
 
-            // Start after loader finishes
-            setTimeout(animateWaveform, 3000);
+                ctx.stroke();
+            });
+
+            // Center glow dot
+            const pulseSize = 3 + Math.sin(time * 0.05) * 1.5;
+            const gradient = ctx.createRadialGradient(w / 2, centerY, 0, w / 2, centerY, pulseSize * 4);
+            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.8)');
+            gradient.addColorStop(1, 'rgba(139, 92, 246, 0)');
+            ctx.beginPath();
+            ctx.fillStyle = gradient;
+            ctx.arc(w / 2, centerY, pulseSize * 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(139, 92, 246, 0.9)';
+            ctx.arc(w / 2, centerY, pulseSize, 0, Math.PI * 2);
+            ctx.fill();
+
+            time++;
+            animId = requestAnimationFrame(draw);
+        }
+
+        // Start after loader
+        setTimeout(() => {
+            draw();
+        }, 3000);
+
+        // Pause when not visible
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                if (!animId) draw();
+            } else {
+                if (animId) { cancelAnimationFrame(animId); animId = null; }
+            }
+        }, { threshold: 0.1 });
+
+        if (canvas.parentElement) {
+            observer.observe(canvas.parentElement);
         }
     }
 
     // ═══════════════════════════════════════
-    //  🎯 HERO 3D TILT — Mouse-driven parallax
-    //  ★ NEW v8: Interactive 3D on hero title
+    //  ★ NEW: HERO 3D TILT
+    //  Mouse-driven parallax on hero title
     // ═══════════════════════════════════════
     function initHero3DTilt() {
         if (isTouchDevice() || prefersReducedMotion()) return;
@@ -1287,11 +1345,38 @@
     }
 
     // ═══════════════════════════════════════
-    //  📊 METRICS RING ANIMATION
-    //  ★ NEW v8: Animate SVG ring on scroll
+    //  ★ NEW: FREQUENCY RINGS — Interactive
+    //  Rings react subtly to mouse position
+    // ═══════════════════════════════════════
+    function initFrequencyRings() {
+        if (isTouchDevice() || prefersReducedMotion()) return;
+
+        const container = document.getElementById('heroFrequency');
+        if (!container) return;
+
+        const hero = document.getElementById('hero');
+        if (!hero) return;
+
+        hero.addEventListener('mousemove', (e) => {
+            const rect = hero.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
+            const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
+            container.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        }, { passive: true });
+
+        hero.addEventListener('mouseleave', () => {
+            container.style.transform = 'translate(-50%, -50%)';
+            container.style.transition = 'transform 0.5s var(--kx-ease-spring)';
+            setTimeout(() => { container.style.transition = ''; }, 500);
+        });
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ NEW: METRICS ANIMATION
+    //  Animate SVG ring + counters on view
     // ═══════════════════════════════════════
     function initMetricsAnimation() {
-        const metricsEl = document.querySelector('.kx-landing-hero__metrics');
+        const metricsEl = document.querySelector('.kx-hero-metrics');
         if (!metricsEl) return;
 
         const observer = new IntersectionObserver(([entry]) => {
@@ -1309,9 +1394,9 @@
     // ═══════════════════════════════════════
     function buildSkeletons(count) {
         return Array.from({ length: count }, () => `
-            <article class="kx-landing-news__card">
-                <div class="kx-landing-news__skeleton" style="width:100%;aspect-ratio:16/9"></div>
-                <div style="padding-top:var(--kx-space-5)">
+            <article class="kx-news-magazine__card">
+                <div class="kx-landing-news__skeleton" style="width:100%;aspect-ratio:16/9;border-radius:var(--kx-radius-lg)"></div>
+                <div style="padding:var(--kx-space-5)">
                     <div class="kx-landing-news__skeleton" style="height:18px;width:75%;margin-bottom:var(--kx-space-3)"></div>
                     <div class="kx-landing-news__skeleton" style="height:14px;width:100%;margin-bottom:var(--kx-space-2)"></div>
                     <div class="kx-landing-news__skeleton" style="height:14px;width:55%"></div>
@@ -1331,6 +1416,7 @@
     //  🚀 INIT — ALL MODULES
     // ═══════════════════════════════════════
     function init() {
+        // Core
         initPageLoader();
         preview.init();
         initCustomCursor();
@@ -1356,13 +1442,14 @@
         initActiveNav();
         initCarouselKeyboard();
 
-        // v7 modules
+        // v7+ modules
         initCompareTable();
         initStepsAnimation();
 
-        // ★ NEW v8 modules — 3D Hero + Waveform + Metrics
-        initHeroWaveform();
+        // ★ NEW v9 modules
+        initSoundwaveCanvas();
         initHero3DTilt();
+        initFrequencyRings();
         initMetricsAnimation();
 
         // Scroll handler
@@ -1375,7 +1462,7 @@
         loadNews();
         loadAlbums();
 
-        console.log('🎵 KXON Landing v8.0 — ULTRA PREMIUM 2026 · "Donde el Sonido Cobra Vida" Edition');
+        console.log('🎵 KXON Landing v9.0 — ULTRA PREMIUM 2026 · "La Frecuencia que te Define" Edition');
     }
 
     if (document.readyState === 'loading') {
