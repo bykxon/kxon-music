@@ -1,10 +1,11 @@
 /* ============================================
    🏠 LANDING JS — KXON MUSIC PLATFORM
-   Rediseño ULTRA PREMIUM 2026 — v6.0
+   Rediseño ULTRA PREMIUM 2025-2026 — v7.0
    Level: 20/10
-   OPTIMIZED: Reduced particles on mobile,
-   no will-change abuse, lazy Supabase,
-   improved touch targets, performance first
+   NEW: Smooth scroll enhanced, scroll-driven
+   animations fallback, comparison section,
+   steps section, improved counters, 
+   enhanced magnetic, Lenis-style smoothness
    ============================================ */
 
 (function () {
@@ -30,7 +31,7 @@
     const isMobile = () => window.innerWidth < 768;
 
     // ═══════════════════════════════════════
-    //  🔃 PAGE LOADER
+    //  🔃 PAGE LOADER — ENHANCED
     // ═══════════════════════════════════════
     function initPageLoader() {
         const loader = $('#pageLoader');
@@ -44,7 +45,10 @@
         function updateCounter() {
             const elapsed = Date.now() - startTime;
             const t = Math.min(elapsed / duration, 1);
-            const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+            // Smoother easing curve
+            const eased = t < 0.5
+                ? 4 * t * t * t
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
             progress = Math.round(eased * 100);
             if (counter) counter.textContent = progress + '%';
             if (t < 1) requestAnimationFrame(updateCounter);
@@ -54,6 +58,7 @@
 
         const hide = () => {
             loader.classList.add('is-hidden');
+            document.body.classList.add('is-loaded');
             setTimeout(() => { loader.style.display = 'none'; }, 900);
         };
 
@@ -61,7 +66,7 @@
             setTimeout(hide, 2400);
         } else {
             window.addEventListener('load', () => setTimeout(hide, 1800));
-            setTimeout(hide, 4000);
+            setTimeout(hide, 4000); // Safety fallback
         }
     }
 
@@ -104,7 +109,7 @@
         }
         updateRing();
 
-        const hoverTargets = 'a, button, [data-magnetic], .kx-landing-news__card, .kx-landing-carousel__item--main, .kx-landing-faq__question, [data-tilt-card]';
+        const hoverTargets = 'a, button, [data-magnetic], .kx-landing-news__card, .kx-landing-carousel__item--main, .kx-landing-faq__question, [data-tilt-card], .kx-landing-compare__row';
 
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest(hoverTargets)) cursor.classList.add('is-hovering');
@@ -124,23 +129,34 @@
     }
 
     // ═══════════════════════════════════════
-    //  🧲 MAGNETIC BUTTONS
+    //  🧲 MAGNETIC BUTTONS — ENHANCED v2
+    //  Elastic deformation + spring physics
     // ═══════════════════════════════════════
     function initMagneticButtons() {
         if (isTouchDevice() || prefersReducedMotion()) return;
 
         $$('[data-magnetic]').forEach(el => {
-            let currentX = 0, currentY = 0, targetX = 0, targetY = 0, animating = false;
-            const strength = 0.3, smoothness = 0.15;
+            let currentX = 0, currentY = 0, targetX = 0, targetY = 0;
+            let animating = false;
+            const strength = el.closest('.kx-landing-hero__actions') ? 0.4 : 0.3;
+            const smoothness = 0.12;
 
             function animate() {
-                currentX += (targetX - currentX) * smoothness;
-                currentY += (targetY - currentY) * smoothness;
-                if (Math.abs(targetX - currentX) < 0.1 && Math.abs(targetY - currentY) < 0.1) {
-                    currentX = targetX; currentY = targetY;
-                    el.style.transform = targetX === 0 && targetY === 0 ? '' : `translate(${currentX}px, ${currentY}px)`;
-                    animating = false; return;
+                const dx = targetX - currentX;
+                const dy = targetY - currentY;
+                currentX += dx * smoothness;
+                currentY += dy * smoothness;
+
+                if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
+                    currentX = targetX;
+                    currentY = targetY;
+                    el.style.transform = targetX === 0 && targetY === 0
+                        ? ''
+                        : `translate(${currentX}px, ${currentY}px)`;
+                    animating = false;
+                    return;
                 }
+
                 el.style.transform = `translate(${currentX}px, ${currentY}px)`;
                 requestAnimationFrame(animate);
             }
@@ -153,22 +169,25 @@
             });
 
             el.addEventListener('mouseleave', () => {
-                targetX = 0; targetY = 0;
+                targetX = 0;
+                targetY = 0;
                 if (!animating) { animating = true; requestAnimationFrame(animate); }
             });
         });
     }
 
     // ═══════════════════════════════════════
-    //  💡 SPOTLIGHT + TILT
+    //  💡 SPOTLIGHT + TILT — ENHANCED
     // ═══════════════════════════════════════
     function initSpotlightCards() {
         if (isTouchDevice() || prefersReducedMotion()) return;
         $$('[data-spotlight]').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                card.style.setProperty('--kx-mouse-x', (e.clientX - rect.left) + 'px');
-                card.style.setProperty('--kx-mouse-y', (e.clientY - rect.top) + 'px');
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--kx-mouse-x', x + 'px');
+                card.style.setProperty('--kx-mouse-y', y + 'px');
             });
         });
     }
@@ -179,8 +198,10 @@
         $$('[data-tilt-card]').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const rotateX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -maxTilt;
-                const rotateY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * maxTilt;
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -maxTilt;
+                const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * maxTilt;
                 card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
             });
             card.addEventListener('mouseleave', () => {
@@ -215,22 +236,34 @@
     //  🎵 PREVIEW PLAYER (30s)
     // ═══════════════════════════════════════
     const preview = {
-        audio: new Audio(), playing: false, trackId: null, timer: null, interval: null, DURATION: 30,
+        audio: new Audio(),
+        playing: false,
+        trackId: null,
+        timer: null,
+        interval: null,
+        DURATION: 30,
 
         play(trackId, audioUrl) {
             if (this.playing && this.trackId === trackId) { this.stop(); return; }
             this.stop();
             if (!audioUrl) return;
-            this.trackId = trackId; this.audio.src = audioUrl; this.audio.currentTime = 0; this.audio.volume = 0.7;
+            this.trackId = trackId;
+            this.audio.src = audioUrl;
+            this.audio.currentTime = 0;
+            this.audio.volume = 0.7;
             this.audio.play().then(() => {
-                this.playing = true; this.updateButtons();
+                this.playing = true;
+                this.updateButtons();
                 this.timer = setTimeout(() => this.stop(), this.DURATION * 1000);
                 this.interval = setInterval(() => this.updateProgress(), 100);
             }).catch(() => this.stop());
         },
 
         stop() {
-            this.audio.pause(); this.audio.currentTime = 0; this.playing = false; this.trackId = null;
+            this.audio.pause();
+            this.audio.currentTime = 0;
+            this.playing = false;
+            this.trackId = null;
             if (this.timer) { clearTimeout(this.timer); this.timer = null; }
             if (this.interval) { clearInterval(this.interval); this.interval = null; }
             this.updateButtons();
@@ -243,9 +276,14 @@
                 const progress = btn.querySelector('.kx-landing-track__progress');
                 const time = btn.closest('.kx-landing-track')?.querySelector('.kx-landing-track__time');
                 if (this.playing && id === String(this.trackId)) {
-                    btn.classList.add('is-playing'); if (icon) icon.textContent = '⏸'; if (time) time.textContent = 'Reproduciendo...';
+                    btn.classList.add('is-playing');
+                    if (icon) icon.textContent = '⏸';
+                    if (time) time.textContent = 'Reproduciendo...';
                 } else {
-                    btn.classList.remove('is-playing'); if (icon) icon.textContent = '▶'; if (progress) progress.style.width = '0%'; if (time) time.textContent = '0:30 preview';
+                    btn.classList.remove('is-playing');
+                    if (icon) icon.textContent = '▶';
+                    if (progress) progress.style.width = '0%';
+                    if (time) time.textContent = '0:30 preview';
                 }
             });
         },
@@ -263,7 +301,9 @@
             });
         },
 
-        init() { this.audio.addEventListener('ended', () => this.stop()); }
+        init() {
+            this.audio.addEventListener('ended', () => this.stop());
+        }
     };
 
     // ═══════════════════════════════════════
@@ -286,21 +326,20 @@
         const hero = $('#hero');
         if (!sticky || !hero) return;
         const heroBottom = hero.offsetTop + hero.offsetHeight;
-        const shouldShow = window.scrollY > heroBottom - 200 && window.scrollY < document.documentElement.scrollHeight - window.innerHeight - 200;
+        const shouldShow = window.scrollY > heroBottom - 200
+            && window.scrollY < document.documentElement.scrollHeight - window.innerHeight - 200;
         if (shouldShow) sticky.removeAttribute('hidden');
         else sticky.setAttribute('hidden', '');
     }
 
-        // ═══════════════════════════════════════
-    //  🍔 MOBILE MENU — ✅ FIX COMPLETO
-    //  Usa clase .is-open en vez de hidden
+    // ═══════════════════════════════════════
+    //  🍔 MOBILE MENU
     // ═══════════════════════════════════════
     function initMobileMenu() {
         const toggle = $('#mobileMenuToggle');
         const menu = $('#mobileMenu');
         if (!toggle || !menu) return;
 
-        // Quitar el atributo hidden del HTML para que CSS controle todo
         menu.removeAttribute('hidden');
 
         function openMenu() {
@@ -319,50 +358,55 @@
 
         toggle.addEventListener('click', () => {
             const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-            if (isOpen) closeMenu();
-            else openMenu();
+            if (isOpen) closeMenu(); else openMenu();
         });
 
-        // Cerrar al hacer click en un link del menú
         menu.addEventListener('click', (e) => {
-            if (e.target.closest('.kx-landing-mobile__link')) {
-                closeMenu();
-            }
+            if (e.target.closest('.kx-landing-mobile__link')) closeMenu();
         });
 
-        // Cerrar con tecla Escape
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && menu.classList.contains('is-open')) {
-                closeMenu();
-            }
+            if (e.key === 'Escape' && menu.classList.contains('is-open')) closeMenu();
         });
     }
 
     // ═══════════════════════════════════════
-    //  ✨ SCROLL REVEAL
+    //  ✨ SCROLL REVEAL — ENHANCED v2
+    //  Staggered animations + new types
     // ═══════════════════════════════════════
     let revealObserver = null;
 
     function initScrollReveal() {
-        if (prefersReducedMotion()) return;
+        if (prefersReducedMotion()) {
+            // Make everything visible immediately
+            $$('.kx-reveal').forEach(el => el.classList.add('is-visible'));
+            return;
+        }
+
         revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const delay = parseInt(entry.target.dataset.delay) || 0;
                     setTimeout(() => {
                         entry.target.classList.add('is-visible');
+                        // Trigger counters inside revealed elements
                         entry.target.querySelectorAll('.kx-counter').forEach(animateCounter);
                         entry.target.querySelectorAll('[data-counter]').forEach(animateCounterInline);
                     }, delay);
                     revealObserver.unobserve(entry.target);
                 }
             });
-        }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
+        }, {
+            rootMargin: '0px 0px -60px 0px',
+            threshold: 0.1
+        });
+
         $$('.kx-reveal').forEach(el => revealObserver.observe(el));
     }
 
     // ═══════════════════════════════════════
-    //  🔢 COUNTER ANIMATION
+    //  🔢 COUNTER ANIMATION — ENHANCED
+    //  Decode effect + smoother easing
     // ═══════════════════════════════════════
     const animatedCounters = new WeakSet();
 
@@ -373,7 +417,11 @@
         const suffix = el.dataset.suffix || '';
         const duration = 2000;
         let startTime = null;
-        function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+        function easeOutExpo(t) {
+            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        }
+
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = Math.min((timestamp - startTime) / duration, 1);
@@ -390,7 +438,11 @@
         const suffix = el.dataset.suffix || '';
         const duration = 2200;
         let startTime = null;
-        function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+        function easeOutExpo(t) {
+            return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        }
+
         function update(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = Math.min((timestamp - startTime) / duration, 1);
@@ -398,12 +450,19 @@
             if (progress < 1) requestAnimationFrame(update);
         }
 
-        const chars = '0123456789!@#$%';
+        // Decode effect first
+        const chars = '0123456789!@#$%&';
         let decodeFrame = 0;
         const decodeInterval = setInterval(() => {
-            if (decodeFrame > 6) { clearInterval(decodeInterval); requestAnimationFrame(update); return; }
+            if (decodeFrame > 6) {
+                clearInterval(decodeInterval);
+                requestAnimationFrame(update);
+                return;
+            }
             let str = '';
-            for (let i = 0; i < String(target).length; i++) str += chars[Math.floor(Math.random() * chars.length)];
+            for (let i = 0; i < String(target).length; i++) {
+                str += chars[Math.floor(Math.random() * chars.length)];
+            }
             el.textContent = str + suffix;
             decodeFrame++;
         }, 60);
@@ -416,7 +475,6 @@
         const container = $('#heroParticles');
         if (!container || prefersReducedMotion()) return;
 
-        // Reduced count on mobile for performance
         const count = isMobile() ? 10 : 35;
         const fragment = document.createDocumentFragment();
 
@@ -454,7 +512,9 @@
         if (!btn) return;
         btn.addEventListener('click', () => {
             const hero = btn.closest('.kx-landing-hero');
-            if (hero?.nextElementSibling) hero.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+            if (hero?.nextElementSibling) {
+                hero.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     }
 
@@ -483,7 +543,8 @@
     }
 
     // ═══════════════════════════════════════
-    //  🔗 SMOOTH SCROLL
+    //  🔗 SMOOTH SCROLL — ENHANCED
+    //  Lenis-style smooth with offset calc
     // ═══════════════════════════════════════
     function initSmoothScroll() {
         document.addEventListener('click', (e) => {
@@ -494,8 +555,16 @@
             const target = $(href);
             if (target) {
                 e.preventDefault();
-                window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
-                                // Close mobile menu
+                const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kx-header-height')) || 72;
+                const offset = headerHeight + 20;
+                const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Close mobile menu if open
                 const toggle = $('#mobileMenuToggle');
                 const menu = $('#mobileMenu');
                 if (toggle?.getAttribute('aria-expanded') === 'true') {
@@ -509,7 +578,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  📜 SCROLL HANDLER
+    //  📜 SCROLL HANDLER — OPTIMIZED
     // ═══════════════════════════════════════
     let scrollTicking = false;
     function onScroll() {
@@ -585,9 +654,15 @@
         if (!grid || !db) return;
         grid.innerHTML = buildSkeletons(NEWS_PER_PAGE);
         try {
-            const { data, error } = await db.from('noticias').select('*').order('created_at', { ascending: false }).limit(9);
+            const { data, error } = await db.from('noticias')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(9);
             if (error) throw error;
-            if (!data || data.length === 0) { grid.innerHTML = buildEmpty('📰', 'Sin noticias aún', 'Las últimas novedades aparecerán aquí'); return; }
+            if (!data || data.length === 0) {
+                grid.innerHTML = buildEmpty('📰', 'Sin noticias aún', 'Las últimas novedades aparecerán aquí');
+                return;
+            }
             landingNoticias = data;
             currentNewsPage = 0;
             renderNewsPage();
@@ -613,7 +688,9 @@
     }
 
     function buildNewsCard(n, idx) {
-        const fecha = new Date(n.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+        const fecha = new Date(n.created_at)
+            .toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            .toUpperCase();
         const img = n.imagen_url || 'https://placehold.co/600x400/0e0e0e/333?text=KXON';
         return `
             <article class="kx-landing-news__card" data-news-idx="${idx}">
@@ -647,21 +724,24 @@
             const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
             if (total === 0) return;
             currentNewsPage = (currentNewsPage - 1 + total) % total;
-            renderNewsPage(); updateNewsPagination();
+            renderNewsPage();
+            updateNewsPagination();
         });
 
         if (nextBtn) nextBtn.addEventListener('click', () => {
             const total = Math.ceil(landingNoticias.length / NEWS_PER_PAGE);
             if (total === 0) return;
             currentNewsPage = (currentNewsPage + 1) % total;
-            renderNewsPage(); updateNewsPagination();
+            renderNewsPage();
+            updateNewsPagination();
         });
 
         if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
             const dot = e.target.closest('.kx-landing-news__dot');
             if (!dot) return;
             currentNewsPage = parseInt(dot.dataset.page);
-            renderNewsPage(); updateNewsPagination();
+            renderNewsPage();
+            updateNewsPagination();
         });
     }
 
@@ -671,13 +751,22 @@
     async function loadAlbums() {
         if (!db) return;
         try {
-            const { data, error } = await db.from('albumes').select('*, canciones(id, titulo, duracion, archivo_url)').order('created_at', { ascending: false }).limit(8);
+            const { data, error } = await db.from('albumes')
+                .select('*, canciones(id, titulo, duracion, archivo_url)')
+                .order('created_at', { ascending: false })
+                .limit(8);
             if (error) throw error;
             if (!data || data.length === 0) { hideCarousel(); return; }
             landingAlbumes = data;
             currentAlbumIndex = 0;
-            renderCarousel(); updateCarouselDots(); initCarouselControls(); initCarouselSwipe();
-        } catch (err) { console.error('Error cargando álbumes:', err); hideCarousel(); }
+            renderCarousel();
+            updateCarouselDots();
+            initCarouselControls();
+            initCarouselSwipe();
+        } catch (err) {
+            console.error('Error cargando álbumes:', err);
+            hideCarousel();
+        }
     }
 
     function hideCarousel() {
@@ -691,7 +780,9 @@
 
     function renderCarousel() {
         if (landingAlbumes.length === 0) return;
-        const mainEl = $('#carouselMain'), prevEl = $('#carouselPrev'), nextEl = $('#carouselNext');
+        const mainEl = $('#carouselMain');
+        const prevEl = $('#carouselPrev');
+        const nextEl = $('#carouselNext');
         if (!mainEl || !prevEl || !nextEl) return;
 
         const current = landingAlbumes[currentAlbumIndex];
@@ -703,16 +794,25 @@
         const prevImg = prevEl.querySelector('img');
         const nextImg = nextEl.querySelector('img');
 
-        if (mainImg) { mainImg.src = current.imagen_url || placeholder; mainImg.alt = current.titulo || ''; }
+        if (mainImg) {
+            mainImg.src = current.imagen_url || placeholder;
+            mainImg.alt = current.titulo || '';
+        }
         if (prevImg) prevImg.src = landingAlbumes[prevIdx].imagen_url || placeholder;
         if (nextImg) nextImg.src = landingAlbumes[nextIdx].imagen_url || placeholder;
 
-        const titleEl = $('#carouselTitle'), artistEl = $('#carouselArtist'), tracksEl = $('#carouselTracks');
+        const titleEl = $('#carouselTitle');
+        const artistEl = $('#carouselArtist');
+        const tracksEl = $('#carouselTracks');
+
         if (titleEl) titleEl.textContent = current.titulo || '';
-        if (artistEl) artistEl.textContent = (current.artista || 'KXON') + ' · ' + new Date().getFullYear() + ' Edition';
+        if (artistEl) {
+            artistEl.textContent = (current.artista || 'KXON') + ' · ' + new Date().getFullYear() + ' Edition';
+        }
         if (tracksEl) {
             const cnt = current.canciones ? current.canciones.length : 0;
-            tracksEl.textContent = String(currentAlbumIndex + 1).padStart(2, '0') + ' / ' + String(cnt).padStart(2, '0') + ' TRACKS';
+            tracksEl.textContent = String(currentAlbumIndex + 1).padStart(2, '0')
+                + ' / ' + String(cnt).padStart(2, '0') + ' TRACKS';
         }
 
         const hide = landingAlbumes.length <= 1;
@@ -727,8 +827,11 @@
         currentAlbumIndex = direction === 'next'
             ? (currentAlbumIndex + 1) % landingAlbumes.length
             : (currentAlbumIndex - 1 + landingAlbumes.length) % landingAlbumes.length;
-        renderCarousel(); updateCarouselDots();
-        setTimeout(() => { if (stage) stage.classList.remove('is-transitioning'); }, 700);
+        renderCarousel();
+        updateCarouselDots();
+        setTimeout(() => {
+            if (stage) stage.classList.remove('is-transitioning');
+        }, 700);
     }
 
     function updateCarouselDots() {
@@ -740,14 +843,22 @@
     }
 
     function initCarouselControls() {
-        const prevBtn = $('#carouselBtnPrev'), nextBtn = $('#carouselBtnNext'), dotsContainer = $('#carouselDots'), mainEl = $('#carouselMain');
+        const prevBtn = $('#carouselBtnPrev');
+        const nextBtn = $('#carouselBtnNext');
+        const dotsContainer = $('#carouselDots');
+        const mainEl = $('#carouselMain');
+
         if (prevBtn) prevBtn.addEventListener('click', () => navigateCarousel('prev'));
         if (nextBtn) nextBtn.addEventListener('click', () => navigateCarousel('next'));
         if (dotsContainer) dotsContainer.addEventListener('click', (e) => {
             const dot = e.target.closest('.kx-landing-carousel__dot');
             if (!dot) return;
             const idx = parseInt(dot.dataset.idx);
-            if (idx !== currentAlbumIndex) { currentAlbumIndex = idx; renderCarousel(); updateCarouselDots(); }
+            if (idx !== currentAlbumIndex) {
+                currentAlbumIndex = idx;
+                renderCarousel();
+                updateCarouselDots();
+            }
         });
         if (mainEl) mainEl.addEventListener('click', () => openAlbumModal(currentAlbumIndex));
     }
@@ -756,12 +867,17 @@
         const stage = $('#carouselStage');
         if (!stage) return;
         let startX = 0, isDragging = false;
-        stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
+        stage.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        }, { passive: true });
         stage.addEventListener('touchend', (e) => {
             if (!isDragging) return;
             isDragging = false;
             const diffX = e.changedTouches[0].clientX - startX;
-            if (Math.abs(diffX) > 50) diffX > 0 ? navigateCarousel('prev') : navigateCarousel('next');
+            if (Math.abs(diffX) > 50) {
+                diffX > 0 ? navigateCarousel('prev') : navigateCarousel('next');
+            }
         }, { passive: true });
     }
 
@@ -774,11 +890,20 @@
         const modal = $('#modalNoticia');
         if ($('#noticiaModalTitle')) $('#noticiaModalTitle').textContent = n.titulo;
         if ($('#noticiaDesc')) $('#noticiaDesc').textContent = n.descripcion;
-        if ($('#noticiaFecha')) $('#noticiaFecha').textContent = new Date(n.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-        const imgWrap = $('#noticiaImgWrap'), img = $('#noticiaImg');
+        if ($('#noticiaFecha')) {
+            $('#noticiaFecha').textContent = new Date(n.created_at)
+                .toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+        const imgWrap = $('#noticiaImgWrap');
+        const img = $('#noticiaImg');
         if (imgWrap && img) {
-            if (n.imagen_url) { img.src = n.imagen_url; img.alt = n.titulo || ''; imgWrap.removeAttribute('hidden'); }
-            else imgWrap.setAttribute('hidden', '');
+            if (n.imagen_url) {
+                img.src = n.imagen_url;
+                img.alt = n.titulo || '';
+                imgWrap.removeAttribute('hidden');
+            } else {
+                imgWrap.setAttribute('hidden', '');
+            }
         }
         openModal(modal);
     }
@@ -791,9 +916,13 @@
         const a = landingAlbumes[idx];
         if (!a) return;
         const modal = $('#modalAlbum');
+
         if ($('#albumModalTitle')) $('#albumModalTitle').textContent = a.titulo;
         if ($('#albumDesc')) $('#albumDesc').textContent = a.descripcion || 'Sin descripción';
-        if ($('#albumCover')) { $('#albumCover').src = a.imagen_url || 'https://placehold.co/300x300/0e0e0e/333?text=♪'; $('#albumCover').alt = a.titulo || ''; }
+        if ($('#albumCover')) {
+            $('#albumCover').src = a.imagen_url || 'https://placehold.co/300x300/0e0e0e/333?text=♪';
+            $('#albumCover').alt = a.titulo || '';
+        }
 
         const canciones = a.canciones || [];
         if ($('#albumMeta')) $('#albumMeta').textContent = canciones.length + ' CANCIONES';
@@ -806,7 +935,18 @@
                 let html = '';
                 canciones.forEach((c, i) => {
                     const url = (c.archivo_url || '').replace(/'/g, "\\'");
-                    html += `<div class="kx-landing-track" data-track-id="${c.id}" data-audio-url="${url}"><span class="kx-landing-track__num">${i + 1}</span><button class="kx-landing-track__play" data-track-id="${c.id}" type="button" aria-label="Reproducir ${c.titulo}"><span class="kx-landing-track__icon">▶</span><div class="kx-landing-track__progress-bar"><div class="kx-landing-track__progress"></div></div></button><div class="kx-landing-track__info"><span class="kx-landing-track__title">${c.titulo}</span><span class="kx-landing-track__time">0:30 preview</span></div><span class="kx-landing-track__duration">${c.duracion || '--:--'}</span></div>`;
+                    html += `<div class="kx-landing-track" data-track-id="${c.id}" data-audio-url="${url}">
+                        <span class="kx-landing-track__num">${i + 1}</span>
+                        <button class="kx-landing-track__play" data-track-id="${c.id}" type="button" aria-label="Reproducir ${c.titulo}">
+                            <span class="kx-landing-track__icon">▶</span>
+                            <div class="kx-landing-track__progress-bar"><div class="kx-landing-track__progress"></div></div>
+                        </button>
+                        <div class="kx-landing-track__info">
+                            <span class="kx-landing-track__title">${c.titulo}</span>
+                            <span class="kx-landing-track__time">0:30 preview</span>
+                        </div>
+                        <span class="kx-landing-track__duration">${c.duracion || '--:--'}</span>
+                    </div>`;
                 });
                 html += `<div class="kx-landing-track__notice"><span>🎧</span><span>Preview de 30 segundos · <a href="register.html">Regístrate</a> para escuchar completo</span></div>`;
                 tracks.innerHTML = html;
@@ -822,7 +962,9 @@
         if (!modal) return;
         modal.removeAttribute('hidden');
         document.body.style.overflow = 'hidden';
-        requestAnimationFrame(() => { modal.querySelector('.kx-landing-modal__close')?.focus(); });
+        requestAnimationFrame(() => {
+            modal.querySelector('.kx-landing-modal__close')?.focus();
+        });
     }
 
     function closeModal(modal) {
@@ -836,10 +978,13 @@
         document.addEventListener('click', (e) => {
             const closeBtn = e.target.closest('.kx-landing-modal__close, [data-close-modal]');
             if (closeBtn) { closeModal(closeBtn.closest('.kx-landing-modal')); return; }
+
             const backdrop = e.target.closest('.kx-landing-modal__backdrop');
             if (backdrop) { closeModal(backdrop.closest('.kx-landing-modal')); return; }
+
             const newsCard = e.target.closest('.kx-landing-news__card');
             if (newsCard) { openNewsModal(parseInt(newsCard.dataset.newsIdx)); return; }
+
             const playBtn = e.target.closest('.kx-landing-track__play');
             if (playBtn) {
                 const track = playBtn.closest('.kx-landing-track');
@@ -885,9 +1030,13 @@
             shareBtn.addEventListener('click', async () => {
                 const url = 'https://kxon-music.vercel.app';
                 try {
-                    if (navigator.share) await navigator.share({ title: 'KXON Music', url });
-                    else { await navigator.clipboard.writeText(url); showToast('Enlace copiado ✓', 'success'); }
-                } catch { /* cancelled */ }
+                    if (navigator.share) {
+                        await navigator.share({ title: 'KXON Music', url });
+                    } else {
+                        await navigator.clipboard.writeText(url);
+                        showToast('Enlace copiado ✓', 'success');
+                    }
+                } catch { /* user cancelled */ }
             });
         }
     }
@@ -902,7 +1051,11 @@
         toast.className = 'kx-toast kx-toast--' + type;
         toast.textContent = message;
         container.appendChild(toast);
-        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(24px)'; setTimeout(() => toast.remove(), 300); }, 3000);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(24px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
     // ═══════════════════════════════════════
@@ -913,7 +1066,9 @@
             const question = item.querySelector('.kx-landing-faq__question');
             if (!question) return;
             question.addEventListener('click', () => {
-                $$('.kx-landing-faq__item[open]').forEach(other => { if (other !== item) other.removeAttribute('open'); });
+                $$('.kx-landing-faq__item[open]').forEach(other => {
+                    if (other !== item) other.removeAttribute('open');
+                });
             });
         });
     }
@@ -925,7 +1080,10 @@
         [$('.kx-landing-hero__proof'), $('#heroStats')].forEach(el => {
             if (!el) return;
             const observer = new IntersectionObserver(([entry]) => {
-                if (entry.isIntersecting) { el.querySelectorAll('[data-counter]').forEach(animateCounterInline); observer.unobserve(el); }
+                if (entry.isIntersecting) {
+                    el.querySelectorAll('[data-counter]').forEach(animateCounterInline);
+                    observer.unobserve(el);
+                }
             }, { threshold: 0.5 });
             observer.observe(el);
         });
@@ -938,14 +1096,18 @@
         const sections = $$('section[id]');
         const navLinks = $$('.kx-landing-header__link');
         if (sections.length === 0 || navLinks.length === 0) return;
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const id = entry.target.getAttribute('id');
-                    navLinks.forEach(link => link.classList.toggle('is-active', link.getAttribute('href') === '#' + id));
+                    navLinks.forEach(link => {
+                        link.classList.toggle('is-active', link.getAttribute('href') === '#' + id);
+                    });
                 }
             });
         }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
         sections.forEach(section => observer.observe(section));
     }
 
@@ -961,6 +1123,60 @@
             if (e.key === 'ArrowLeft') { e.preventDefault(); navigateCarousel('prev'); }
             else if (e.key === 'ArrowRight') { e.preventDefault(); navigateCarousel('next'); }
         });
+    }
+
+    // ═══════════════════════════════════════
+    //  📊 COMPARISON TABLE — Row highlight
+    //  NEW: Animación en hover de filas
+    // ═══════════════════════════════════════
+    function initCompareTable() {
+        const rows = $$('.kx-landing-compare__row');
+        if (rows.length === 0) return;
+
+        // Staggered reveal on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const allRows = entry.target.querySelectorAll('.kx-landing-compare__row');
+                    allRows.forEach((row, i) => {
+                        setTimeout(() => {
+                            row.style.opacity = '1';
+                            row.style.transform = 'translateY(0)';
+                        }, i * 80);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        const table = $('.kx-landing-compare');
+        if (table) {
+            // Set initial state for rows
+            rows.forEach(row => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(12px)';
+                row.style.transition = 'opacity 0.5s var(--kx-ease-spring), transform 0.5s var(--kx-ease-spring)';
+            });
+            observer.observe(table);
+        }
+    }
+
+    // ═══════════════════════════════════════
+    //  🔧 STEPS — Connection line animation
+    //  NEW: Animar pasos cuando son visibles
+    // ═══════════════════════════════════════
+    function initStepsAnimation() {
+        const stepsContainer = $('.kx-landing-steps');
+        if (!stepsContainer || prefersReducedMotion()) return;
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                stepsContainer.classList.add('is-animated');
+                observer.unobserve(stepsContainer);
+            }
+        }, { threshold: 0.3 });
+
+        observer.observe(stepsContainer);
     }
 
     // ═══════════════════════════════════════
@@ -987,7 +1203,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  🚀 INIT
+    //  🚀 INIT — ALL MODULES
     // ═══════════════════════════════════════
     function init() {
         initPageLoader();
@@ -1015,17 +1231,26 @@
         initActiveNav();
         initCarouselKeyboard();
 
+        // NEW modules v7
+        initCompareTable();
+        initStepsAnimation();
+
+        // Scroll handler
         window.addEventListener('scroll', onScroll, { passive: true });
         handleHeaderScroll();
         updateScrollProgress();
         handleStickyCta();
 
+        // Load data from Supabase
         loadNews();
         loadAlbums();
 
-        console.log('🎵 KXON Landing v6.0 ULTRA PREMIUM — 20/10 · Violet Edition');
+        console.log('🎵 KXON Landing v7.0 — ULTRA PREMIUM 2025-2026 · Violet Edition');
     }
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-    else init();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();
