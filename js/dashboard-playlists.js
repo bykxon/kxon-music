@@ -1,20 +1,18 @@
 /* ═══════════════════════════════════════════════════
-   🎶 KXON PLAYLISTS — FIXED v2.0
-   Compatible con dashboard-init.js v4.3
+   🎶 KXON PLAYLISTS — FIXED v3.0
+   Columnas DB: titulo, usuario_id, descripcion, 
+   imagen_url, publica, created_at, updated_at
+   playlist_canciones: added_at (no created_at)
    ═══════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* ── Usar cliente Supabase global ── */
   var db = window.db;
   if (!db) {
     console.error('[Playlists] window.db no disponible');
     return;
   }
 
-  /* ══════════════════════════════════
-     HELPERS
-     ══════════════════════════════════ */
   function $(id) { return document.getElementById(id); }
 
   function escapeHtml(str) {
@@ -144,7 +142,7 @@
     if (searchQuery) {
       var q = searchQuery.toLowerCase();
       result = result.filter(function (p) {
-        return (p.nombre || '').toLowerCase().indexOf(q) >= 0 ||
+        return (p.titulo || '').toLowerCase().indexOf(q) >= 0 ||
                (p.descripcion || '').toLowerCase().indexOf(q) >= 0;
       });
     }
@@ -154,8 +152,8 @@
       var bDate = b.updated_at || b.created_at;
       if (currentSort === 'recent') return new Date(bDate) - new Date(aDate);
       if (currentSort === 'oldest') return new Date(aDate) - new Date(bDate);
-      if (currentSort === 'name-az') return (a.nombre || '').localeCompare(b.nombre || '');
-      if (currentSort === 'name-za') return (b.nombre || '').localeCompare(a.nombre || '');
+      if (currentSort === 'name-az') return (a.titulo || '').localeCompare(b.titulo || '');
+      if (currentSort === 'name-za') return (b.titulo || '').localeCompare(a.titulo || '');
       if (currentSort === 'most-songs') {
         var ac = a.playlist_canciones ? a.playlist_canciones.length : 0;
         var bc = b.playlist_canciones ? b.playlist_canciones.length : 0;
@@ -187,13 +185,12 @@
       var pl = filteredPlaylists[i];
       var img = pl.imagen_url || '';
       var numSongs = pl.playlist_canciones ? pl.playlist_canciones.length : 0;
-      var name = escapeHtml(pl.nombre);
+      var name = escapeHtml(pl.titulo);
       var dateStr = pl.updated_at || pl.created_at;
 
       h += '<div class="kx-pl-card kx-observed" style="--i:' + i + '" role="listitem" tabindex="0"' +
            ' data-id="' + pl.id + '" aria-label="Playlist: ' + name + '">';
 
-      /* Visual */
       h += '<div class="kx-pl-card-visual">';
       if (img) {
         h += '<img class="kx-pl-card-img" src="' + escapeHtml(img) + '" alt="" loading="lazy">';
@@ -204,7 +201,6 @@
              '<span class="kx-pl-card-fallback-text">PLAYLIST</span></div>';
       }
 
-      /* Badge */
       if (pl.publica) {
         h += '<span class="kx-pl-card-badge kx-pl-card-badge--public">' +
              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">' +
@@ -213,20 +209,17 @@
              '</svg>Pública</span>';
       }
 
-      /* Overlay */
       h += '<div class="kx-pl-card-overlay">' +
            '<button class="kx-pl-card-play" data-action="play-playlist" data-id="' + pl.id + '" aria-label="Reproducir">' +
            '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>' +
            '<span class="kx-pl-card-count">' + numSongs + ' cancion' + (numSongs !== 1 ? 'es' : '') + '</span></div>';
 
-      /* Delete */
       h += '<button class="kx-pl-card-delete" data-action="delete-playlist" data-id="' + pl.id + '" aria-label="Eliminar">' +
            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">' +
            '<path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>';
 
-      h += '</div>'; /* /card-visual */
+      h += '</div>';
 
-      /* Body */
       h += '<div class="kx-pl-card-body">' +
            '<div class="kx-pl-card-title">' + name + '</div>' +
            '<div class="kx-pl-card-sub">' +
@@ -234,12 +227,11 @@
            '<span class="kx-pl-card-sub-dot"></span>' +
            '<span>' + timeAgo(dateStr) + '</span></div></div>';
 
-      h += '</div>'; /* /card */
+      h += '</div>';
     }
 
     grid.innerHTML = h;
 
-    /* Broken images */
     var imgs = grid.querySelectorAll('.kx-pl-card-img');
     for (var j = 0; j < imgs.length; j++) {
       imgs[j].addEventListener('error', function () {
@@ -328,7 +320,7 @@
       currentPlaylistData = r.data;
 
       var title = $('plDetailTitle');
-      if (title) title.textContent = r.data.nombre;
+      if (title) title.textContent = r.data.titulo;
 
       var desc = $('plDetailDesc');
       if (desc) desc.textContent = r.data.descripcion || 'Sin descripción';
@@ -486,7 +478,6 @@
 
     var idx = index >= tracks.length ? 0 : index;
 
-    /* Use KXON's built-in playTrack */
     if (K.playTrackList) {
       K.playTrackList(tracks, idx);
     } else if (K.playTrack) {
@@ -494,7 +485,6 @@
       K.currentAlbumCover = tracks[idx].imagen_url;
       K.playTrack(idx);
     } else {
-      /* Absolute fallback */
       var audioEl = $('audioPlayer');
       var t = tracks[idx];
       if (!t || !audioEl) return;
@@ -502,8 +492,8 @@
       audioEl.play().catch(function (e) { console.error(e); });
       var pt = $('playerTitle');
       if (pt) pt.textContent = t.titulo;
-      var pc = $('playerCover');
-      if (pc) pc.src = t.imagen_url || '';
+      var pcv = $('playerCover');
+      if (pcv) pcv.src = t.imagen_url || '';
       var pb = $('playerBar');
       if (pb) pb.classList.add('show');
     }
@@ -519,7 +509,7 @@
   };
 
   /* ══════════════════════════════════
-     CREATE / EDIT
+     CREATE / EDIT — USES 'titulo'
      ══════════════════════════════════ */
   window._openCreatePlaylist = function () {
     var modal = $('modalPlaylist');
@@ -550,7 +540,7 @@
     var t = $('plModalTitle');
     if (t) t.textContent = 'Editar Playlist';
     var n = $('plNombre');
-    if (n) n.value = currentPlaylistData.nombre || '';
+    if (n) n.value = currentPlaylistData.titulo || '';
     var d = $('plDesc');
     if (d) d.value = currentPlaylistData.descripcion || '';
     var p = $('plPublica');
@@ -576,12 +566,12 @@
     var publicaEl = $('plPublica');
     var editIdEl = $('plModalEditId');
 
-    var nombre = nombreEl ? nombreEl.value.trim() : '';
+    var titulo = nombreEl ? nombreEl.value.trim() : '';
     var desc = descEl ? descEl.value.trim() : '';
     var publica = publicaEl ? publicaEl.checked : false;
     var editId = editIdEl ? editIdEl.value : '';
 
-    if (!nombre) {
+    if (!titulo) {
       toast('Ingresa un nombre para la playlist', 'error');
       return;
     }
@@ -595,7 +585,7 @@
       if (editId) {
         /* UPDATE */
         var r = await db.from('playlists').update({
-          nombre: nombre,
+          titulo: titulo,
           descripcion: desc,
           publica: publica,
           updated_at: now
@@ -605,11 +595,11 @@
         toast('Playlist actualizada ✓', 'success');
 
         if (currentPlaylistData && currentPlaylistData.id === editId) {
-          currentPlaylistData.nombre = nombre;
+          currentPlaylistData.titulo = titulo;
           currentPlaylistData.descripcion = desc;
           currentPlaylistData.publica = publica;
           var dt = $('plDetailTitle');
-          if (dt) dt.textContent = nombre;
+          if (dt) dt.textContent = titulo;
           var dd = $('plDetailDesc');
           if (dd) dd.textContent = desc || 'Sin descripción';
         }
@@ -617,7 +607,7 @@
         /* INSERT */
         var r2 = await db.from('playlists').insert({
           usuario_id: user.id,
-          nombre: nombre,
+          titulo: titulo,
           descripcion: desc,
           publica: publica,
           created_at: now,
@@ -669,7 +659,7 @@
     for (var i = 0; i < allPlaylists.length; i++) {
       if (allPlaylists[i].id === plId) { pl = allPlaylists[i]; break; }
     }
-    var name = pl ? pl.nombre : 'esta playlist';
+    var name = pl ? pl.titulo : 'esta playlist';
 
     showConfirm(
       '¿Eliminar playlist?',
@@ -769,7 +759,7 @@
 
     try {
       var r = await db.from('playlists')
-        .select('id, nombre, playlist_canciones(cancion_id)')
+        .select('id, titulo, playlist_canciones(cancion_id)')
         .eq('usuario_id', user.id)
         .order('updated_at', { ascending: false });
 
@@ -799,7 +789,7 @@
              (already ? '' : ' data-action="add-to-pl" data-plid="' + pl.id + '"') +
              ' role="button" tabindex="0">';
         h += '<span class="kx-atp-icon">' + (already ? '✅' : '🎶') + '</span>';
-        h += '<span class="kx-atp-name">' + escapeHtml(pl.nombre) + '</span>';
+        h += '<span class="kx-atp-name">' + escapeHtml(pl.titulo) + '</span>';
         if (already) h += '<span class="kx-atp-badge">Ya agregada</span>';
         h += '</div>';
       }
@@ -863,7 +853,6 @@
     panel.addEventListener('click', function (e) {
       var target = e.target;
 
-      /* Card → detail */
       var card = target.closest('.kx-pl-card');
       if (card && !target.closest('[data-action]')) {
         var id = card.getAttribute('data-id');
@@ -871,7 +860,6 @@
         return;
       }
 
-      /* Play from card */
       var playBtn = target.closest('[data-action="play-playlist"]');
       if (playBtn) {
         e.stopPropagation();
@@ -885,7 +873,6 @@
         return;
       }
 
-      /* Delete from card */
       var delBtn = target.closest('[data-action="delete-playlist"]');
       if (delBtn) {
         e.stopPropagation();
@@ -893,7 +880,6 @@
         return;
       }
 
-      /* Play track */
       var track = target.closest('[data-action="play-track"]');
       if (track && !target.closest('[data-action="remove-track"]')) {
         var idx = parseInt(track.getAttribute('data-index'));
@@ -901,7 +887,6 @@
         return;
       }
 
-      /* Remove track */
       var removeBtn = target.closest('[data-action="remove-track"]');
       if (removeBtn) {
         e.stopPropagation();
@@ -909,34 +894,22 @@
         return;
       }
 
-      /* Create */
       if (target.closest('[data-action="create-playlist"]')) {
         window._openCreatePlaylist();
         return;
       }
 
-      /* Back */
       if (target.closest('#plBtnBack')) { window._backToPlaylists(); return; }
-
-      /* Create new btn */
       if (target.closest('#plBtnCreate')) { window._openCreatePlaylist(); return; }
-
-      /* Play all */
       if (target.closest('#plBtnPlayAll')) { window._playAllPlaylist(); return; }
-
-      /* Shuffle */
       if (target.closest('#plBtnShuffle')) { window._shufflePlaylist(); return; }
-
-      /* Edit */
       if (target.closest('#plBtnEdit')) { window._openEditPlaylist(); return; }
 
-      /* Delete from detail */
       if (target.closest('#plBtnDeleteDetail') && currentPlaylistId) {
         window._deletePlaylist(currentPlaylistId);
         return;
       }
 
-      /* Filters */
       var filterBtn = target.closest('.kx-pl-filter');
       if (filterBtn) {
         panel.querySelectorAll('.kx-pl-filter').forEach(function (f) {
@@ -950,14 +923,12 @@
         return;
       }
 
-      /* Sort trigger */
       if (target.closest('#plSortBtn')) {
         var dd = $('plSortDropdown');
         if (dd) dd.classList.toggle('show');
         return;
       }
 
-      /* Sort option */
       var sortOpt = target.closest('.kx-pl-sort-option');
       if (sortOpt) {
         panel.querySelectorAll('.kx-pl-sort-option').forEach(function (s) {
@@ -975,7 +946,6 @@
         return;
       }
 
-      /* Search clear */
       if (target.closest('#plSearchClear')) {
         var input = $('plSearchInput');
         if (input) { input.value = ''; input.focus(); }
@@ -985,23 +955,19 @@
         return;
       }
 
-      /* Confirm cancel */
       if (target.closest('#plConfirmCancel')) { hideConfirm(); return; }
 
-      /* Confirm accept */
       if (target.closest('#plConfirmAccept') && confirmCallback) {
         confirmCallback();
         return;
       }
 
-      /* Close sort dropdown */
       if (!target.closest('.kx-pl-sort-wrap')) {
         var dd3 = $('plSortDropdown');
         if (dd3) dd3.classList.remove('show');
       }
     });
 
-    /* Keyboard */
     panel.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') {
         var card = e.target.closest('.kx-pl-card');
@@ -1019,7 +985,6 @@
       }
     });
 
-    /* Search */
     var searchInput = $('plSearchInput');
     if (searchInput) {
       var searchTimeout;
@@ -1035,7 +1000,6 @@
       });
     }
 
-    /* Confirm overlay click */
     var confirmOverlay = $('plConfirmOverlay');
     if (confirmOverlay) {
       confirmOverlay.addEventListener('click', function (e) {
@@ -1046,31 +1010,26 @@
 
   /* ══════════════════════════════════
      EVENT DELEGATION — DOCUMENT LEVEL
-     (for modals that live outside the panel)
      ══════════════════════════════════ */
   document.addEventListener('click', function (e) {
     var target = e.target;
 
-    /* Submit playlist form */
     if (target.closest('#plBtnSubmit')) {
       e.preventDefault();
       window._submitPlaylist(e);
       return;
     }
 
-    /* Close playlist modal */
     if (target.closest('[data-action="close-playlist-modal"]')) {
       window._closePlaylistModal();
       return;
     }
 
-    /* Close add-to-playlist modal */
     if (target.closest('[data-action="close-add-to-playlist"]')) {
       window._closeAddToPlaylist();
       return;
     }
 
-    /* Click overlay to close modals */
     if (target.id === 'modalPlaylist') {
       window._closePlaylistModal();
       return;
@@ -1080,7 +1039,6 @@
       return;
     }
 
-    /* Add to playlist item */
     var addItem = target.closest('[data-action="add-to-pl"]');
     if (addItem) {
       var plid = addItem.getAttribute('data-plid');
@@ -1088,7 +1046,6 @@
       return;
     }
 
-    /* Create from modal link */
     var createLink = target.closest('[data-action="create-from-modal"]');
     if (createLink) {
       e.preventDefault();
@@ -1097,7 +1054,6 @@
       return;
     }
 
-    /* Close sort dropdown */
     if (!target.closest('.kx-pl-sort-wrap')) {
       var dd = $('plSortDropdown');
       if (dd) dd.classList.remove('show');
