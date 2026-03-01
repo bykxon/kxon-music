@@ -353,7 +353,6 @@ p { text-wrap: pretty; max-width: 75ch; }
 .kx-btn:hover::after { translate: 100% 0; }
 .kx-btn:active { transform: scale(0.97); }
 
-/* ── Solid — NOW VIOLET ── */
 .kx-btn--solid {
     background: var(--kx-grad-btn-solid);
     color: var(--kx-white);
@@ -368,7 +367,6 @@ p { text-wrap: pretty; max-width: 75ch; }
     border-color: rgba(139, 92, 246, 0.5);
 }
 
-/* ── Silver variant ── */
 .kx-btn--silver {
     background: var(--kx-grad-btn-silver);
     color: var(--kx-text-inverse);
@@ -381,7 +379,6 @@ p { text-wrap: pretty; max-width: 75ch; }
     transform: translateY(-2px);
 }
 
-/* ── Ghost ── */
 .kx-btn--ghost {
     background: transparent;
     color: var(--kx-silver-300);
@@ -396,7 +393,6 @@ p { text-wrap: pretty; max-width: 75ch; }
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.08);
 }
 
-/* ── Glass ── */
 .kx-btn--glass {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(12px);
@@ -411,7 +407,6 @@ p { text-wrap: pretty; max-width: 75ch; }
     color: var(--kx-white);
 }
 
-/* Tamaños */
 .kx-btn--sm { padding: var(--kx-space-2) var(--kx-space-4); font-size: 0.7rem; }
 .kx-btn--lg { padding: var(--kx-space-4) var(--kx-space-8); font-size: var(--kx-text-sm); }
 .kx-btn--full { width: 100%; }
@@ -423,7 +418,6 @@ p { text-wrap: pretty; max-width: 75ch; }
     letter-spacing: 0.12em;
 }
 
-/* Glow — NOW VIOLET */
 .kx-btn--glow {
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.15),
                 0 0 6px rgba(139, 92, 246, 0.08);
@@ -435,7 +429,6 @@ p { text-wrap: pretty; max-width: 75ch; }
                 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* Shine */
 .kx-btn__shine {
     position: absolute;
     top: 0;
@@ -451,7 +444,6 @@ p { text-wrap: pretty; max-width: 75ch; }
 
 @keyframes kx-btn-shine { 0% { left: -100%; } 100% { left: 150%; } }
 
-/* Ripple */
 .kx-btn__ripple {
     position: absolute;
     inset: 0;
@@ -467,7 +459,6 @@ p { text-wrap: pretty; max-width: 75ch; }
     100% { transform: scale(2.5); opacity: 0; }
 }
 
-/* Pulse dot */
 .kx-btn__pulse-dot {
     width: 6px;
     height: 6px;
@@ -478,7 +469,7 @@ p { text-wrap: pretty; max-width: 75ch; }
 }
 
 /* ──────────────────────────────────
-   🏷️ BADGES — ENHANCED
+   🏷️ BADGES
    ────────────────────────────────── */
 .kx-badge {
     display: inline-flex;
@@ -564,7 +555,7 @@ p { text-wrap: pretty; max-width: 75ch; }
 .kx-skip-link:focus { top: 0; }
 
 /* ──────────────────────────────────
-   🎬 ANIMACIONES GLOBALES — ENHANCED
+   🎬 ANIMACIONES GLOBALES
    ────────────────────────────────── */
 @keyframes kx-shimmer {
     0% { background-position: -200% center; }
@@ -634,13 +625,11 @@ p { text-wrap: pretty; max-width: 75ch; }
     100% { opacity: 0; transform: translateY(-100%) rotateX(80deg); filter: blur(4px); }
 }
 
-/* NEW: Color pulse */
 @keyframes kx-color-pulse {
     0%, 100% { filter: hue-rotate(0deg); }
     50% { filter: hue-rotate(30deg); }
 }
 
-/* NEW: Border glow animation */
 @keyframes kx-border-glow {
     0%, 100% { border-color: rgba(139, 92, 246, 0.15); }
     50% { border-color: rgba(139, 92, 246, 0.4); }
