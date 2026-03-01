@@ -18,17 +18,14 @@
         }
     }
 
-    // Medición inicial
     sync();
     window.addEventListener('load', sync);
 
-    // Cuando cambia el tamaño del header (responsive, scroll class toggle)
     if (typeof ResizeObserver !== 'undefined') {
         const ro = new ResizeObserver(sync);
         ro.observe(header);
     }
 
-    // Fallback: en scroll (el header cambia padding con .is-scrolled)
     let ticking = false;
     window.addEventListener('scroll', () => {
         if (!ticking) {
@@ -42,16 +39,9 @@
 })();
 
 
-
-
-
 /* ============================================
    🏠 LANDING JS — KXON MUSIC PLATFORM
-   Rediseño ULTRA PREMIUM 2026 — v10.0
-   "SINTONIZA TU UNIVERSO" Edition
-   ★ Star field, DNA waveform canvas, orbital tilt,
-   spectrum analyzer, holographic albums,
-   editorial news grid, kinetic chars
+   v11.0 — ARENA BATTLE EDITION
    ============================================ */
 
 (function () {
@@ -151,7 +141,7 @@
         }
         updateRing();
 
-        const hoverTargets = 'a, button, [data-magnetic], .kx-news-v10__card, .kx-news-magazine__card, .kx-albums-v10__disc, .kx-landing-faq__question, [data-tilt-card], .kx-landing-compare__row';
+        const hoverTargets = 'a, button, [data-magnetic], .kx-news-v10__card, .kx-news-magazine__card, .kx-albums-v10__disc, .kx-landing-faq__question, [data-tilt-card], .kx-arena__round';
 
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest(hoverTargets)) cursor.classList.add('is-hovering');
@@ -471,7 +461,6 @@
             if (progress < 1) requestAnimationFrame(update);
         }
 
-        // Decode scramble
         const chars = '0123456789!@#$%&';
         let decodeFrame = 0;
         const decodeInterval = setInterval(() => {
@@ -490,7 +479,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  ★ STAR FIELD — Twinkling Stars
+    //  ★ STAR FIELD
     // ═══════════════════════════════════════
     function initStarField() {
         const container = $('#starField');
@@ -571,7 +560,6 @@
 
     // ═══════════════════════════════════════
     //  ★ DNA WAVEFORM CANVAS
-    //  Dual helix waveform behind hero
     // ═══════════════════════════════════════
     function initDNAWaveform() {
         const canvas = $('#heroWaveCanvas');
@@ -606,7 +594,6 @@
 
             ctx.clearRect(0, 0, w, h);
 
-            // DNA Helix strand 1
             ctx.beginPath();
             ctx.strokeStyle = 'rgba(139, 92, 246, 0.35)';
             ctx.lineWidth = 1.5;
@@ -621,7 +608,6 @@
             }
             ctx.stroke();
 
-            // DNA Helix strand 2 (mirrored)
             ctx.beginPath();
             ctx.strokeStyle = 'rgba(59, 130, 246, 0.25)';
             ctx.lineWidth = 1;
@@ -635,7 +621,6 @@
             }
             ctx.stroke();
 
-            // Cross-links (DNA rungs)
             ctx.strokeStyle = 'rgba(139, 92, 246, 0.06)';
             ctx.lineWidth = 0.5;
             for (let x = 0; x <= w; x += 30) {
@@ -649,7 +634,6 @@
                 ctx.stroke();
             }
 
-            // Third subtle wave
             ctx.beginPath();
             ctx.strokeStyle = 'rgba(6, 182, 212, 0.12)';
             ctx.lineWidth = 0.8;
@@ -666,10 +650,8 @@
             animId = requestAnimationFrame(draw);
         }
 
-        // Start after loader
         setTimeout(() => { draw(); }, 3000);
 
-        // Pause when not visible
         const observer = new IntersectionObserver(([entry]) => {
             if (entry.isIntersecting) {
                 if (!animId) draw();
@@ -682,7 +664,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  ★ ORBITAL SYSTEM — Mouse Reactive
+    //  ★ ORBITAL SYSTEM
     // ═══════════════════════════════════════
     function initOrbitalSystem() {
         if (isTouchDevice() || prefersReducedMotion()) return;
@@ -706,7 +688,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  ★ HERO COUNTERS + RIBBON
+    //  ★ HERO COUNTERS
     // ═══════════════════════════════════════
     function initHeroCounters() {
         const ribbon = $('#heroRibbon');
@@ -851,7 +833,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  📰 NEWS — Editorial Grid v10
+    //  📰 NEWS
     // ═══════════════════════════════════════
     async function loadNews() {
         const grid = $('#newsGrid');
@@ -947,7 +929,7 @@
     }
 
     // ═══════════════════════════════════════
-    //  💿 ALBUM GALLERY — Holographic v10
+    //  💿 ALBUM GALLERY
     // ═══════════════════════════════════════
     async function loadAlbums() {
         if (!db) return;
@@ -1181,7 +1163,6 @@
             const backdrop = e.target.closest('.kx-landing-modal__backdrop');
             if (backdrop) { closeModal(backdrop.closest('.kx-landing-modal')); return; }
 
-            // News card click — v10 class
             const newsCard = e.target.closest('.kx-news-v10__card, .kx-news-magazine__card');
             if (newsCard) { openNewsModal(parseInt(newsCard.dataset.newsIdx)); return; }
 
@@ -1310,39 +1291,6 @@
     }
 
     // ═══════════════════════════════════════
-    //  📊 COMPARE TABLE ANIMATION
-    // ═══════════════════════════════════════
-    function initCompareTable() {
-        const rows = $$('.kx-landing-compare__row');
-        if (rows.length === 0) return;
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const allRows = entry.target.querySelectorAll('.kx-landing-compare__row');
-                    allRows.forEach((row, i) => {
-                        setTimeout(() => {
-                            row.style.opacity = '1';
-                            row.style.transform = 'translateY(0)';
-                        }, i * 80);
-                    });
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.2 });
-
-        const table = $('.kx-landing-compare');
-        if (table) {
-            rows.forEach(row => {
-                row.style.opacity = '0';
-                row.style.transform = 'translateY(12px)';
-                row.style.transition = 'opacity 0.5s var(--kx-ease-spring), transform 0.5s var(--kx-ease-spring)';
-            });
-            observer.observe(table);
-        }
-    }
-
-    // ═══════════════════════════════════════
     //  🔧 STEPS ANIMATION
     // ═══════════════════════════════════════
     function initStepsAnimation() {
@@ -1357,6 +1305,81 @@
         }, { threshold: 0.3 });
 
         observer.observe(stepsContainer);
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ ARENA BATTLE — Animated Rounds
+    // ═══════════════════════════════════════
+    function initArenaBattle() {
+        const rounds = $$('.kx-arena__round');
+        if (rounds.length === 0) return;
+
+        if (prefersReducedMotion()) {
+            rounds.forEach(r => r.classList.add('is-visible'));
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const round = entry.target;
+                    const idx = Array.from(rounds).indexOf(round);
+                    setTimeout(() => {
+                        round.classList.add('is-visible');
+                    }, idx * 180);
+                    observer.unobserve(round);
+                }
+            });
+        }, { rootMargin: '0px 0px -40px 0px', threshold: 0.15 });
+
+        rounds.forEach(r => observer.observe(r));
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ ARENA SPARKS
+    // ═══════════════════════════════════════
+    function initArenaSparks() {
+        const container = $('#arenaSparks');
+        if (!container || prefersReducedMotion() || isMobile()) return;
+
+        const count = 15;
+        const fragment = document.createDocumentFragment();
+
+        for (let i = 0; i < count; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'kx-arena__spark';
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const sx = (Math.random() - 0.5) * 120;
+            const sy = (Math.random() - 0.5) * 120;
+            spark.style.cssText = `
+                left: ${x}%;
+                top: ${y}%;
+                --sx: ${sx}px;
+                --sy: ${sy}px;
+                animation-delay: ${Math.random() * 5}s;
+                animation-duration: ${Math.random() * 3 + 2}s;
+            `;
+            fragment.appendChild(spark);
+        }
+        container.appendChild(fragment);
+    }
+
+    // ═══════════════════════════════════════
+    //  ★ ARENA COUNTER ANIMATION
+    // ═══════════════════════════════════════
+    function initArenaCounters() {
+        const arenaSection = $('#compare');
+        if (!arenaSection) return;
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                arenaSection.querySelectorAll('[data-counter]').forEach(animateCounterInline);
+                observer.unobserve(arenaSection);
+            }
+        }, { threshold: 0.3 });
+
+        observer.observe(arenaSection);
     }
 
     // ═══════════════════════════════════════
@@ -1409,15 +1432,19 @@
         initPhoneTilt();
         initActiveNav();
         initCarouselKeyboard();
-        initCompareTable();
         initStepsAnimation();
 
-        // ★ v10 NEW modules
+        // ★ v10 modules
         initStarField();
         initHeroParticlesV10();
         initCtaParticles();
         initDNAWaveform();
         initOrbitalSystem();
+
+        // ★ v11 Arena Battle
+        initArenaBattle();
+        initArenaSparks();
+        initArenaCounters();
 
         // Scroll
         window.addEventListener('scroll', onScroll, { passive: true });
@@ -1429,7 +1456,7 @@
         loadNews();
         loadAlbums();
 
-        console.log('🎵 KXON Landing v10.0 — ULTRA PREMIUM 2026 · "SINTONIZA TU UNIVERSO" Edition');
+        console.log('🎵 KXON Landing v11.0 — ARENA BATTLE EDITION');
     }
 
     if (document.readyState === 'loading') {
