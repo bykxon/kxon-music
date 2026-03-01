@@ -1,3 +1,50 @@
+// ═══════════════════════════════════════════
+// 🔧 Dynamic Header Height — Offset Tracking
+// ═══════════════════════════════════════════
+(function initHeaderOffset() {
+    const header = document.querySelector('.kx-landing-header');
+    if (!header) return;
+
+    let lastHeight = 0;
+
+    function sync() {
+        const h = header.offsetHeight;
+        if (h !== lastHeight) {
+            lastHeight = h;
+            document.documentElement.style.setProperty(
+                '--kx-header-height',
+                `${h}px`
+            );
+        }
+    }
+
+    // Medición inicial
+    sync();
+    window.addEventListener('load', sync);
+
+    // Cuando cambia el tamaño del header (responsive, scroll class toggle)
+    if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(sync);
+        ro.observe(header);
+    }
+
+    // Fallback: en scroll (el header cambia padding con .is-scrolled)
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                sync();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+})();
+
+
+
+
+
 /* ============================================
    🏠 LANDING JS — KXON MUSIC PLATFORM
    Rediseño ULTRA PREMIUM 2026 — v10.0
