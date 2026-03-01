@@ -1937,8 +1937,7 @@
 
 
 /* ══════════════════════════════════════════
-   🔥 COMPARE TABLE — v10.2 FULLY FIXED
-   Reemplaza TODA la sección de COMPARE en landing.css
+   🔥 COMPARE TABLE — v10.3 DEFINITIVE FIX
    ══════════════════════════════════════════ */
 .kx-landing-compare {
     max-width: 900px;
@@ -1949,12 +1948,11 @@
     background: rgba(139, 92, 246, 0.01);
 }
 
-/* ── Desktop header (3 columns) ── */
 .kx-landing-compare__header {
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
-    padding: 16px 20px;
+    padding: 16px 24px;
     background: rgba(139, 92, 246, 0.04);
     border-bottom: 1px solid rgba(139, 92, 246, 0.1);
     position: sticky;
@@ -1975,6 +1973,7 @@
     align-items: center;
     min-width: 0;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .kx-landing-compare__brand {
@@ -1992,6 +1991,9 @@
     line-height: 1.3;
     font-size: 0.75rem;
     letter-spacing: 0.06em;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .kx-landing-compare__brand--kxon {
@@ -2007,19 +2009,19 @@
 
 .kx-landing-compare__brand--other {
     color: var(--kx-silver-600);
-    font-size: 0.6rem;
-    line-height: 1.25;
+    font-size: 0.62rem;
+    line-height: 1.3;
     white-space: normal;
     word-break: break-word;
     overflow-wrap: break-word;
+    hyphens: auto;
 }
 
-/* ── Desktop rows (3 columns) ── */
 .kx-landing-compare__row {
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
-    padding: 16px 20px;
+    padding: 16px 24px;
     border-bottom: 1px solid rgba(139, 92, 246, 0.04);
     transition: background var(--kx-transition-base);
     align-items: center;
@@ -2047,11 +2049,14 @@
 .kx-landing-compare__feature svg {
     color: var(--kx-silver-700);
     flex-shrink: 0;
+    min-width: 18px;
 }
 
 .kx-landing-compare__feature span {
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .kx-landing-compare__value {
@@ -2059,7 +2064,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    font-size: var(--kx-text-sm);
+    font-size: 0.8rem;
     font-weight: var(--kx-weight-medium);
     text-align: center;
     padding: 8px 6px;
@@ -2067,10 +2072,11 @@
     min-height: 40px;
     min-width: 0;
     overflow: hidden;
-    overflow-wrap: break-word;
     word-break: break-word;
+    overflow-wrap: break-word;
     line-height: 1.3;
     flex-wrap: wrap;
+    white-space: nowrap;
 }
 
 .kx-landing-compare__value--kxon {
@@ -2092,13 +2098,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
     background: rgba(52, 211, 153, 0.12);
     color: var(--kx-success);
     border-radius: 50%;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: var(--kx-weight-bold);
     flex-shrink: 0;
 }
@@ -2107,13 +2113,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
     background: rgba(248, 113, 113, 0.08);
     color: var(--kx-error);
     border-radius: 50%;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: var(--kx-weight-bold);
     flex-shrink: 0;
 }
@@ -2122,13 +2128,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
     background: rgba(255, 255, 255, 0.04);
     color: var(--kx-silver-700);
     border-radius: 50%;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     flex-shrink: 0;
 }
 
