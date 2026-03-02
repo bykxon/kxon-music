@@ -1,15 +1,10 @@
 /* ============================================
-   🎫 DASHBOARD-PLANES.JS — KXON 2026 REBUILD
+   🎫 DASHBOARD-PLANES.JS — KXON 2026
    Panel de planes, suscripción, admin gestión
-   Namespace: kx-plan-*
-   escapeHtml + event delegation + ARIA
-   FIX: Robust dependency resolution
    ============================================ */
 (function () {
     'use strict';
 
-    /* ═══ DEPENDENCY RESOLUTION ═══ */
-    // No capturamos db/K al inicio — los resolvemos dinámicamente
     function getDB() { return window.db; }
     function getK() { return window.KXON; }
 
@@ -29,132 +24,93 @@
     function formatDate(dateStr, opts) {
         if (!dateStr) return '—';
         try {
-            return new Date(dateStr).toLocaleDateString('es-ES', opts || {
-                day: 'numeric', month: 'short'
-            });
+            return new Date(dateStr).toLocaleDateString('es-ES', opts || { day: 'numeric', month: 'short' });
         } catch (e) { return '—'; }
     }
 
     function formatDateLong(dateStr) {
-        return formatDate(dateStr, {
-            day: 'numeric', month: 'long', year: 'numeric'
-        });
+        return formatDate(dateStr, { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
     function formatDateFull(dateStr) {
-        return formatDate(dateStr, {
-            day: 'numeric', month: 'long', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        });
+        return formatDate(dateStr, { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
 
     function daysRemaining(dateStr) {
         if (!dateStr) return 0;
-        var now = new Date();
-        var end = new Date(dateStr);
-        var diff = end - now;
-        return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+        return Math.max(0, Math.ceil((new Date(dateStr) - new Date()) / 86400000));
     }
 
     function safeFormatPrice(precio) {
         var K = getK();
-        if (K && typeof K.formatPrice === 'function') {
-            return K.formatPrice(precio);
-        }
-        if (precio == null) return '$0';
-        return '$' + Number(precio).toLocaleString('es-CO');
+        if (K && typeof K.formatPrice === 'function') return K.formatPrice(precio);
+        return '$' + Number(precio || 0).toLocaleString('es-CO');
     }
 
     function safeShowToast(msg, type) {
         var K = getK();
-        if (K && typeof K.showToast === 'function') {
-            K.showToast(msg, type);
-        } else {
-            console.log('[Toast ' + type + ']:', msg);
-        }
+        if (K && typeof K.showToast === 'function') K.showToast(msg, type);
+        else console.log('[Toast ' + type + ']:', msg);
     }
 
-    /* ═══ HELPER: ENVIAR EMAIL AL EMBAJADOR ═══ */
+    /* ═══ FEATURES CONFIG ═══ */
+    var allFeatures = [
+        { key: 'albumes', label: 'Álbumes completos', icon: '💿' },
+        { key: 'canciones', label: 'Todas las canciones', icon: '🎵' },
+        { key: 'radio', label: 'Radio KXON', icon: '📻' },
+        { key: 'videos', label: 'Videos exclusivos', icon: '🎬' },
+        { key: 'documentales', label: 'Documentales', icon: '🎞️' },
+        { key: 'playlists', label: 'Playlists', icon: '🎶' },
+        { key: 'envivo', label: 'En Vivo', icon: '🔴' },
+        { key: 'chat', label: 'Chat', icon: '💬' },
+        { key: 'solicitar-beat', label: 'Solicitar Beat', icon: '📋' },
+        { key: 'historial', label: 'Historial', icon: '📊' },
+        { key: 'favoritos', label: 'Favoritos', icon: '❤️' },
+        { key: 'marketplace', label: 'Marketplace', icon: '🛒' }
+    ];
+
+    var allAccesosConfig = [
+        { id: 'editAccAlbumes', key: 'albumes' },
+        { id: 'editAccCanciones', key: 'canciones' },
+        { id: 'editAccRadio', key: 'radio' },
+        { id: 'editAccVideos', key: 'videos' },
+        { id: 'editAccDocumentales', key: 'documentales' },
+        { id: 'editAccPlaylists', key: 'playlists' },
+        { id: 'editAccEnvivo', key: 'envivo' },
+        { id: 'editAccChat', key: 'chat' },
+        { id: 'editAccSolicitarBeat', key: 'solicitar-beat' },
+        { id: 'editAccHistorial', key: 'historial' },
+        { id: 'editAccFavoritos', key: 'favoritos' },
+        { id: 'editAccMarketplace', key: 'marketplace' }
+    ];
+
+    /* ═══ EMAIL HELPER ═══ */
     async function sendEmbajadorEmail(refCode, userId, subId, planNombre) {
         var db = getDB();
         var K = getK();
         if (!db || !K) return;
-
         try {
-            var embForEmail = await db.from('embajadores')
-                .select('usuario_email, usuario_nombre, nivel, total_suscritos')
-                .eq('codigo', refCode)
-                .single();
-
+            var embForEmail = await db.from('embajadores').select('usuario_email, usuario_nombre, nivel, total_suscritos').eq('codigo', refCode).single();
             if (embForEmail.data && typeof K.sendReferidoEmail === 'function') {
-                var userProfile = await db.from('profiles')
-                    .select('full_name')
-                    .eq('id', userId)
-                    .single();
-
+                var userProfile = await db.from('profiles').select('full_name').eq('id', userId).single();
                 var refNombre = userProfile.data ? userProfile.data.full_name : 'Usuario';
                 var refEmail = '';
-
-                var subData = await db.from('suscripciones')
-                    .select('usuario_email')
-                    .eq('id', subId)
-                    .single();
+                var subData = await db.from('suscripciones').select('usuario_email').eq('id', subId).single();
                 if (subData.data) refEmail = subData.data.usuario_email;
-
-                K.sendReferidoEmail(
-                    embForEmail.data.usuario_email,
-                    embForEmail.data.usuario_nombre,
-                    refNombre,
-                    refEmail,
-                    planNombre,
-                    embForEmail.data.nivel,
-                    embForEmail.data.total_suscritos
-                );
+                K.sendReferidoEmail(embForEmail.data.usuario_email, embForEmail.data.usuario_nombre, refNombre, refEmail, planNombre, embForEmail.data.nivel, embForEmail.data.total_suscritos);
             }
-        } catch (emailErr) {
-            console.warn('Error sending referral email:', emailErr);
+        } catch (e) {
+            console.warn('Error sending referral email:', e);
         }
     }
 
-    /* ═══ ALL FEATURES CONFIG ═══ */
-    var allFeatures = [
-        { key: 'albumes',        label: 'Álbumes completos',  icon: '💿' },
-        { key: 'canciones',      label: 'Todas las canciones', icon: '🎵' },
-        { key: 'radio',          label: 'Radio KXON',         icon: '📻' },
-        { key: 'videos',         label: 'Videos exclusivos',  icon: '🎬' },
-        { key: 'documentales',   label: 'Documentales',       icon: '🎞️' },
-        { key: 'playlists',      label: 'Playlists',          icon: '🎶' },
-        { key: 'envivo',         label: 'En Vivo',            icon: '🔴' },
-        { key: 'chat',           label: 'Chat',               icon: '💬' },
-        { key: 'solicitar-beat', label: 'Solicitar Beat',     icon: '📋' },
-        { key: 'historial',      label: 'Historial',          icon: '📊' },
-        { key: 'favoritos',      label: 'Favoritos',          icon: '❤️' },
-        { key: 'marketplace',    label: 'Marketplace',        icon: '🛒' }
-    ];
-
-    /* ═══ ACCESOS CONFIG ═══ */
-    var allAccesosConfig = [
-        { id: 'editAccAlbumes',       key: 'albumes' },
-        { id: 'editAccCanciones',     key: 'canciones' },
-        { id: 'editAccRadio',         key: 'radio' },
-        { id: 'editAccVideos',        key: 'videos' },
-        { id: 'editAccDocumentales',  key: 'documentales' },
-        { id: 'editAccPlaylists',     key: 'playlists' },
-        { id: 'editAccEnvivo',        key: 'envivo' },
-        { id: 'editAccChat',          key: 'chat' },
-        { id: 'editAccSolicitarBeat', key: 'solicitar-beat' },
-        { id: 'editAccHistorial',     key: 'historial' },
-        { id: 'editAccFavoritos',     key: 'favoritos' },
-        { id: 'editAccMarketplace',   key: 'marketplace' }
-    ];
-
     /* ══════════════════════════════════════════
-       🎫 LOAD PLANES — Con validación robusta
+       🎫 LOAD PLANES
        ══════════════════════════════════════════ */
     function defineLoadPlanes() {
         var K = getK();
         if (!K) {
-            console.warn('[Planes] KXON not ready, retrying in 200ms...');
+            console.warn('[Planes] Esperando KXON... reintentando');
             setTimeout(defineLoadPlanes, 200);
             return;
         }
@@ -163,19 +119,13 @@
             var db = getDB();
             var K = getK();
 
-            if (!db) {
-                console.error('[Planes] Supabase (window.db) not available');
+            if (!db || !K || !K.currentUser) {
+                console.error('[Planes] Dependencias no disponibles');
                 renderError();
                 return;
             }
 
-            if (!K || !K.currentUser) {
-                console.error('[Planes] KXON or currentUser not available');
-                renderError();
-                return;
-            }
-
-            console.log('[Planes] ✅ Loading planes... User:', K.currentUser.email, 'Admin:', K.isAdmin);
+            console.log('[Planes] Cargando planes...');
 
             try {
                 var r = await db.from('planes')
@@ -184,16 +134,12 @@
                     .order('orden', { ascending: true });
 
                 if (r.error) {
-                    console.error('[Planes] Supabase error:', r.error);
+                    console.error('[Planes] Error Supabase:', r.error);
                     throw r.error;
                 }
 
                 allPlanes = r.data || [];
-                console.log('[Planes] Found', allPlanes.length, 'active plans:', allPlanes.map(function(p) { return p.nombre; }));
-
-                if (allPlanes.length === 0) {
-                    console.warn('[Planes] ⚠️ No active plans found in database. Check "planes" table has rows with activo=true');
-                }
+                console.log('[Planes] Encontrados:', allPlanes.length, 'planes');
 
                 var pendingSub = null;
                 if (!K.isAdmin) {
@@ -204,8 +150,8 @@
                             .eq('estado', 'pendiente')
                             .limit(1);
                         if (ps.data && ps.data.length > 0) pendingSub = ps.data[0];
-                    } catch (psErr) {
-                        console.warn('[Planes] Error checking pending subs:', psErr);
+                    } catch (e) {
+                        console.warn('[Planes] Error checking pending:', e);
                     }
                 }
 
@@ -216,12 +162,12 @@
                 if (K.isAdmin) loadSubSolicitudes();
 
             } catch (e) {
-                console.error('[Planes] Error cargando planes:', e);
+                console.error('[Planes] Error cargando:', e);
                 renderError();
             }
         };
 
-        console.log('[Planes] ✅ K.loadPlanes defined successfully');
+        console.log('[Planes] ✅ K.loadPlanes registrado');
     }
 
     /* ═══ RENDER KPIs ═══ */
@@ -236,16 +182,15 @@
             if (el2) el2.textContent = 'Admin';
             if (el3) el3.textContent = '∞';
         } else if (K.userSubscription) {
-            var planName = '—';
+            var pn = '—';
             for (var i = 0; i < allPlanes.length; i++) {
                 if (allPlanes[i].id === K.userSubscription.plan_id) {
-                    planName = allPlanes[i].nombre;
+                    pn = allPlanes[i].nombre;
                     break;
                 }
             }
-            if (el2) el2.textContent = planName;
-            var days = daysRemaining(K.userSubscription.fecha_fin);
-            if (el3) el3.textContent = days + 'd';
+            if (el2) el2.textContent = pn;
+            if (el3) el3.textContent = daysRemaining(K.userSubscription.fecha_fin) + 'd';
         } else if (pendingSub) {
             if (el2) el2.textContent = 'Pendiente';
             if (el3) el3.textContent = '—';
@@ -263,10 +208,7 @@
         var textEl = document.getElementById('planStatusText');
         var badgeEl = document.getElementById('planStatusBadge');
 
-        if (!banner || !iconEl || !titleEl || !textEl || !badgeEl) {
-            console.warn('[Planes] Status banner elements not found');
-            return;
-        }
+        if (!banner || !iconEl || !titleEl || !textEl || !badgeEl) return;
 
         banner.className = 'kx-plan-status-banner';
         badgeEl.className = 'kx-plan-status-badge';
@@ -276,23 +218,23 @@
             banner.classList.add('kx-plan-status-banner--admin');
             iconEl.textContent = '👑';
             titleEl.textContent = 'Acceso Administrativo';
-            textEl.textContent = 'Tienes acceso total a toda la plataforma como administrador.';
+            textEl.textContent = 'Tienes acceso total a toda la plataforma.';
             badgeEl.textContent = 'ADMIN';
             badgeEl.classList.add('kx-plan-status-badge--admin');
         } else if (K.userSubscription) {
             banner.style.display = 'flex';
             banner.classList.add('kx-plan-status-banner--active');
             iconEl.textContent = '✅';
-            var planName = '—';
+            var pn = '—';
             for (var i = 0; i < allPlanes.length; i++) {
                 if (allPlanes[i].id === K.userSubscription.plan_id) {
-                    planName = allPlanes[i].nombre;
+                    pn = allPlanes[i].nombre;
                     break;
                 }
             }
             var days = daysRemaining(K.userSubscription.fecha_fin);
-            titleEl.textContent = planName + ' — Activo';
-            textEl.textContent = 'Tu suscripción vence el ' + formatDateLong(K.userSubscription.fecha_fin) + ' (' + days + ' días restantes).';
+            titleEl.textContent = pn + ' — Activo';
+            textEl.textContent = 'Vence el ' + formatDateLong(K.userSubscription.fecha_fin) + ' (' + days + ' días restantes).';
             badgeEl.textContent = 'ACTIVO';
             badgeEl.classList.add('kx-plan-status-badge--active');
         } else if (pendingSub) {
@@ -301,7 +243,7 @@
             iconEl.textContent = '⏳';
             var pName = pendingSub.planes ? pendingSub.planes.nombre : 'Plan';
             titleEl.textContent = 'Solicitud Pendiente';
-            textEl.textContent = 'Tu solicitud para el ' + esc(pName) + ' está siendo revisada por el administrador.';
+            textEl.textContent = 'Tu solicitud para el ' + pName + ' está siendo revisada.';
             badgeEl.textContent = 'PENDIENTE';
             badgeEl.classList.add('kx-plan-status-badge--pending');
         } else {
@@ -313,18 +255,18 @@
     function renderPlanes(K, pendingSub) {
         var c = document.getElementById('planesGrid');
         if (!c) {
-            console.error('[Planes] #planesGrid element not found!');
+            console.error('[Planes] #planesGrid no encontrado');
             return;
         }
 
         if (!allPlanes.length) {
             c.innerHTML =
                 '<div class="kx-plan-empty">' +
-                    '<div class="kx-plan-empty-icon">' +
-                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>' +
-                    '</div>' +
-                    '<div class="kx-plan-empty-title">Sin planes disponibles</div>' +
-                    '<div class="kx-plan-empty-text">No hay planes de suscripción configurados aún.</div>' +
+                '<div class="kx-plan-empty-icon">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>' +
+                '</div>' +
+                '<div class="kx-plan-empty-title">Sin planes disponibles</div>' +
+                '<div class="kx-plan-empty-text">No hay planes de suscripción configurados aún.</div>' +
                 '</div>';
             return;
         }
@@ -343,15 +285,16 @@
             cardClass += ' kx-observed';
 
             h += '<article class="' + cardClass + '" role="listitem" style="--i:' + i + ';" data-plan-id="' + esc(plan.id) + '">';
-
             h += '<div class="kx-plan-card-ambient" aria-hidden="true"></div>';
 
+            // Admin edit button
             if (K.isAdmin) {
-                h += '<button class="kx-plan-edit-btn" data-action="edit-plan" data-plan-id="' + esc(plan.id) + '" title="Editar plan" aria-label="Editar plan">' +
-                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
-                     '</button>';
+                h += '<button class="kx-plan-edit-btn" data-action="edit-plan" data-plan-id="' + esc(plan.id) + '" title="Editar plan">';
+                h += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+                h += '</button>';
             }
 
+            // Badge
             if (isActivePlan) {
                 h += '<span class="kx-plan-badge kx-plan-badge--active">✓ Activo</span>';
             } else if (isPremium) {
@@ -360,41 +303,45 @@
                 h += '<span class="kx-plan-badge kx-plan-badge--basic">Básico</span>';
             }
 
+            // Name
             h += '<h3 class="kx-plan-name">' + esc(plan.nombre) + '</h3>';
 
+            // Price
             h += '<div class="kx-plan-price-wrap">';
             h += '<span class="kx-plan-price">' + esc(safeFormatPrice(plan.precio)) + '</span>';
             h += '<span class="kx-plan-price-period">/ ' + esc(String(plan.duracion_dias)) + ' días</span>';
             h += '</div>';
 
-            h += '<div class="kx-plan-features" role="list" aria-label="Características del plan">';
+            // Features
+            h += '<div class="kx-plan-features" role="list">';
             for (var f = 0; f < allFeatures.length; f++) {
                 var feat = allFeatures[f];
                 var hasAccess = accesos.indexOf(feat.key) >= 0;
                 var featClass = 'kx-plan-feature' + (hasAccess ? '' : ' kx-plan-feature--disabled');
+
                 h += '<div class="' + featClass + '" role="listitem">';
                 if (hasAccess) {
-                    h += '<span class="kx-plan-feature-check kx-plan-feature-check--yes" aria-hidden="true">' +
-                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>' +
-                         '</span>';
+                    h += '<span class="kx-plan-feature-check kx-plan-feature-check--yes" aria-hidden="true">';
+                    h += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+                    h += '</span>';
                 } else {
-                    h += '<span class="kx-plan-feature-check kx-plan-feature-check--no" aria-hidden="true">' +
-                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>' +
-                         '</span>';
+                    h += '<span class="kx-plan-feature-check kx-plan-feature-check--no" aria-hidden="true">';
+                    h += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+                    h += '</span>';
                 }
                 h += '<span class="kx-plan-feature-text">' + esc(feat.icon + ' ' + feat.label) + '</span>';
                 h += '</div>';
             }
             h += '</div>';
 
+            // CTA Button
             if (K.isAdmin) {
-                h += '<button class="kx-plan-cta kx-plan-cta--admin" disabled aria-disabled="true">👑 Admin — Acceso Total</button>';
+                h += '<button class="kx-plan-cta kx-plan-cta--admin" disabled>👑 Admin — Acceso Total</button>';
             } else if (isActivePlan) {
-                h += '<button class="kx-plan-cta kx-plan-cta--active" disabled aria-disabled="true">✓ Plan Activo</button>';
-                var fechaFin = formatDateLong(K.userSubscription.fecha_fin);
-                h += '<div class="kx-plan-expiry">Vence: ' + esc(fechaFin) + '</div>';
+                h += '<button class="kx-plan-cta kx-plan-cta--active" disabled>✓ Plan Activo</button>';
+                h += '<div class="kx-plan-expiry">Vence: ' + esc(formatDateLong(K.userSubscription.fecha_fin)) + '</div>';
             } else if (isPending) {
-                h += '<button class="kx-plan-cta kx-plan-cta--pending" disabled aria-disabled="true">⏳ Solicitud Pendiente</button>';
+                h += '<button class="kx-plan-cta kx-plan-cta--pending" disabled>⏳ Solicitud Pendiente</button>';
             } else {
                 var ctaClass = isPremium ? 'kx-plan-cta kx-plan-cta--premium' : 'kx-plan-cta kx-plan-cta--subscribe';
                 h += '<button class="' + ctaClass + '" data-action="subscribe" data-plan-id="' + esc(plan.id) + '">🎫 Suscribirse</button>';
@@ -404,7 +351,7 @@
         }
 
         c.innerHTML = h;
-        console.log('[Planes] ✅ Rendered', allPlanes.length, 'plan cards');
+        console.log('[Planes] ✅ Renderizados', allPlanes.length, 'planes');
     }
 
     /* ═══ RENDER ERROR ═══ */
@@ -413,11 +360,11 @@
         if (!c) return;
         c.innerHTML =
             '<div class="kx-plan-empty">' +
-                '<div class="kx-plan-empty-icon">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>' +
-                '</div>' +
-                '<div class="kx-plan-empty-title">Error al cargar planes</div>' +
-                '<div class="kx-plan-empty-text">Intenta recargar la página.</div>' +
+            '<div class="kx-plan-empty-icon">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>' +
+            '</div>' +
+            '<div class="kx-plan-empty-title">Error al cargar planes</div>' +
+            '<div class="kx-plan-empty-text">Intenta recargar la página.</div>' +
             '</div>';
     }
 
@@ -427,37 +374,33 @@
     var panelEl = document.getElementById('panel-planes');
     if (panelEl) {
         panelEl.addEventListener('click', function (e) {
-            var target = e.target;
-
-            var subBtn = target.closest('[data-action="subscribe"]');
+            var subBtn = e.target.closest('[data-action="subscribe"]');
             if (subBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-                var planId = subBtn.getAttribute('data-plan-id');
-                if (planId) handleSubscribe(planId);
+                var pid = subBtn.getAttribute('data-plan-id');
+                if (pid) handleSubscribe(pid);
                 return;
             }
 
-            var editBtn = target.closest('[data-action="edit-plan"]');
+            var editBtn = e.target.closest('[data-action="edit-plan"]');
             if (editBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-                var planId2 = editBtn.getAttribute('data-plan-id');
-                if (planId2) handleEditPlan(planId2);
+                var pid2 = editBtn.getAttribute('data-plan-id');
+                if (pid2) handleEditPlan(pid2);
                 return;
             }
 
-            var viewBtn = target.closest('[data-action="view-sol"]');
+            var viewBtn = e.target.closest('[data-action="view-sol"]');
             if (viewBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-                var solIdx = parseInt(viewBtn.getAttribute('data-sol-index'), 10);
-                if (!isNaN(solIdx)) viewSubDetail(solIdx);
+                var idx = parseInt(viewBtn.getAttribute('data-sol-index'), 10);
+                if (!isNaN(idx)) viewSubDetail(idx);
                 return;
             }
         });
-    } else {
-        console.error('[Planes] ❌ #panel-planes element not found in DOM!');
     }
 
     /* ══════════════════════════════════════════
@@ -472,33 +415,37 @@
 
         var plan = null;
         for (var i = 0; i < allPlanes.length; i++) {
-            if (allPlanes[i].id === planId) { plan = allPlanes[i]; break; }
+            if (allPlanes[i].id === planId) {
+                plan = allPlanes[i];
+                break;
+            }
         }
         if (!plan) return;
         currentSubPlan = plan;
 
-        var subUser = document.getElementById('subUser');
-        if (subUser) subUser.textContent = K.currentUser.email;
+        var el;
+        el = document.getElementById('subUser');
+        if (el) el.textContent = K.currentUser.email;
 
-        var subPlanName = document.getElementById('subPlanName');
-        if (subPlanName) subPlanName.textContent = plan.nombre;
+        el = document.getElementById('subPlanName');
+        if (el) el.textContent = plan.nombre;
 
-        var subPlanPrice = document.getElementById('subPlanPrice');
-        if (subPlanPrice) subPlanPrice.textContent = safeFormatPrice(plan.precio);
+        el = document.getElementById('subPlanPrice');
+        if (el) el.textContent = safeFormatPrice(plan.precio);
 
-        var subPlanDur = document.getElementById('subPlanDuration');
-        if (subPlanDur) subPlanDur.textContent = plan.duracion_dias + ' días';
+        el = document.getElementById('subPlanDuration');
+        if (el) el.textContent = plan.duracion_dias + ' días';
 
         var waMsg = 'Hola KXON, quiero suscribirme al: ' + plan.nombre + ' (' + safeFormatPrice(plan.precio) + ') - Mi email: ' + K.currentUser.email;
-        var subBtnWa = document.getElementById('subBtnWhatsapp');
-        if (subBtnWa) subBtnWa.href = 'https://wa.me/573184530020?text=' + encodeURIComponent(waMsg);
+        el = document.getElementById('subBtnWhatsapp');
+        if (el) el.href = 'https://wa.me/573184530020?text=' + encodeURIComponent(waMsg);
 
         selectedSubCompFile = null;
         var areaEl = document.getElementById('subCompArea');
         if (areaEl) {
             areaEl.classList.remove('has-file');
-            var textEl = areaEl.querySelector('.file-upload-text');
-            if (textEl) textEl.textContent = 'Click para subir comprobante';
+            var t = areaEl.querySelector('.file-upload-text');
+            if (t) t.textContent = 'Click para subir comprobante';
         }
         var prevEl = document.getElementById('subCompPreview');
         if (prevEl) prevEl.classList.remove('show');
@@ -538,8 +485,14 @@
         var db = getDB();
         var K = getK();
 
-        if (!K || !currentSubPlan) { safeShowToast('Error: plan no seleccionado', 'error'); return; }
-        if (!selectedSubCompFile) { safeShowToast('Sube el comprobante de pago', 'error'); return; }
+        if (!K || !currentSubPlan) {
+            safeShowToast('Error: plan no seleccionado', 'error');
+            return;
+        }
+        if (!selectedSubCompFile) {
+            safeShowToast('Sube el comprobante de pago', 'error');
+            return;
+        }
 
         var btn = document.getElementById('btnSendSub');
         if (btn) {
@@ -549,11 +502,14 @@
 
         try {
             var fn = Date.now() + '_sub_' + selectedSubCompFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
-            var up = await db.storage.from('imagenes').upload('suscripciones/' + fn, selectedSubCompFile, { contentType: selectedSubCompFile.type });
+            var up = await db.storage.from('imagenes').upload('suscripciones/' + fn, selectedSubCompFile, {
+                contentType: selectedSubCompFile.type
+            });
             if (up.error) throw up.error;
-            var compUrl = db.storage.from('imagenes').getPublicUrl('suscripciones/' + fn).data.publicUrl;
 
+            var compUrl = db.storage.from('imagenes').getPublicUrl('suscripciones/' + fn).data.publicUrl;
             var nombre = (K.currentProfile && K.currentProfile.full_name) || K.currentUser.email.split('@')[0];
+
             var ins = await db.from('suscripciones').insert({
                 usuario_id: K.currentUser.id,
                 usuario_email: K.currentUser.email,
@@ -591,27 +547,23 @@
     }
 
     /* ══════════════════════════════════════════
-       🔧 ADMIN: EDIT PLAN
+       ✏️ ADMIN: EDIT PLAN
        ══════════════════════════════════════════ */
     function handleEditPlan(planId) {
         var plan = null;
         for (var i = 0; i < allPlanes.length; i++) {
-            if (allPlanes[i].id === planId) { plan = allPlanes[i]; break; }
+            if (allPlanes[i].id === planId) {
+                plan = allPlanes[i];
+                break;
+            }
         }
         if (!plan) return;
 
-        var fields = {
-            'editPlanId': plan.id,
-            'editPlanNombre': plan.nombre || '',
-            'editPlanPrecio': plan.precio || 0,
-            'editPlanDuracion': plan.duracion_dias || 30,
-            'editPlanOrden': plan.orden || 1
-        };
-
-        for (var fid in fields) {
-            var el = document.getElementById(fid);
-            if (el) el.value = fields[fid];
-        }
+        document.getElementById('editPlanId').value = plan.id;
+        document.getElementById('editPlanNombre').value = plan.nombre || '';
+        document.getElementById('editPlanPrecio').value = plan.precio || 0;
+        document.getElementById('editPlanDuracion').value = plan.duracion_dias || 30;
+        document.getElementById('editPlanOrden').value = plan.orden || 1;
 
         var accesos = plan.accesos || [];
         for (var i2 = 0; i2 < allAccesosConfig.length; i2++) {
@@ -619,15 +571,13 @@
             if (cb) cb.checked = accesos.indexOf(allAccesosConfig[i2].key) >= 0;
         }
 
-        var modal = document.getElementById('modalEditPlan');
-        if (modal) modal.classList.add('show');
+        document.getElementById('modalEditPlan').classList.add('show');
     }
 
     window._editPlan = handleEditPlan;
 
     window._closeEditPlan = function () {
-        var modal = document.getElementById('modalEditPlan');
-        if (modal) modal.classList.remove('show');
+        document.getElementById('modalEditPlan').classList.remove('show');
     };
 
     var modalEditEl = document.getElementById('modalEditPlan');
@@ -651,7 +601,10 @@
             var duracion = parseInt(document.getElementById('editPlanDuracion').value) || 30;
             var orden = parseInt(document.getElementById('editPlanOrden').value) || 1;
 
-            if (!nombre) { safeShowToast('Ingresa un nombre', 'error'); return; }
+            if (!nombre) {
+                safeShowToast('Ingresa un nombre', 'error');
+                return;
+            }
 
             var accesos = [];
             for (var i = 0; i < allAccesosConfig.length; i++) {
@@ -677,9 +630,9 @@
 
                 if (upd.error) throw upd.error;
 
-                safeShowToast('¡Plan actualizado correctamente!', 'success');
+                safeShowToast('¡Plan actualizado!', 'success');
                 window._closeEditPlan();
-                if (K.loadPlanes) K.loadPlanes();
+                K.loadPlanes();
             } catch (err) {
                 console.error('Error actualizando plan:', err);
                 safeShowToast('Error: ' + err.message, 'error');
@@ -711,19 +664,18 @@
 
             if (r.error) throw r.error;
             allSubSolicitudes = r.data || [];
+
             var c = document.getElementById('subSolicitudesList');
             var countEl = document.getElementById('planSolCount');
-
             if (countEl) countEl.textContent = allSubSolicitudes.length + ' pendientes';
-
             if (!c) return;
 
             if (!allSubSolicitudes.length) {
                 c.innerHTML =
                     '<div class="kx-plan-sol-empty">' +
-                        '<div class="kx-plan-sol-empty-icon">✅</div>' +
-                        '<div class="kx-plan-sol-empty-title">Sin solicitudes pendientes</div>' +
-                        '<div class="kx-plan-sol-empty-text">Todas las solicitudes han sido procesadas.</div>' +
+                    '<div class="kx-plan-sol-empty-icon">✅</div>' +
+                    '<div class="kx-plan-sol-empty-title">Sin solicitudes pendientes</div>' +
+                    '<div class="kx-plan-sol-empty-text">Todas las solicitudes han sido procesadas.</div>' +
                     '</div>';
                 return;
             }
@@ -746,7 +698,7 @@
                 h += '<span>' + esc(s.usuario_email || '') + '</span>';
                 h += '</div></div>';
                 h += '<span class="kx-plan-sol-date">' + esc(fecha) + '</span>';
-                h += '<button class="kx-plan-sol-view" data-action="view-sol" data-sol-index="' + i + '" title="Ver detalle" aria-label="Ver detalle de solicitud de ' + esc(nombre) + '">';
+                h += '<button class="kx-plan-sol-view" data-action="view-sol" data-sol-index="' + i + '" title="Ver detalle">';
                 h += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
                 h += '</button>';
                 h += '</div>';
@@ -754,15 +706,12 @@
 
             c.innerHTML = h;
         } catch (e) {
-            console.error('Error cargando solicitudes sub:', e);
+            console.error('Error cargando solicitudes:', e);
         }
     }
 
-    /* ══════════════════════════════════════════
-       👁 VIEW SOLICITUD DETAIL
-       ══════════════════════════════════════════ */
+    /* ═══ VIEW SOLICITUD DETAIL ═══ */
     function viewSubDetail(idx) {
-        var K = getK();
         var s = allSubSolicitudes[idx];
         if (!s) return;
 
@@ -773,32 +722,31 @@
             overlay.id = 'subDetailOverlay';
             overlay.innerHTML =
                 '<div class="sub-detail-modal">' +
-                    '<div class="sub-detail-header">' +
-                        '<h3 class="sub-detail-title">Solicitud de Suscripción</h3>' +
-                        '<button class="sub-detail-close" id="subDetailCloseBtn" aria-label="Cerrar">✕</button>' +
-                    '</div>' +
-                    '<div class="sub-detail-body" id="subDetailBody"></div>' +
+                '<div class="sub-detail-header">' +
+                '<h3 class="sub-detail-title">Solicitud de Suscripción</h3>' +
+                '<button class="sub-detail-close" id="subDetailCloseBtn" aria-label="Cerrar">✕</button>' +
+                '</div>' +
+                '<div class="sub-detail-body" id="subDetailBody"></div>' +
                 '</div>';
             document.body.appendChild(overlay);
 
             overlay.addEventListener('click', function (e) {
-                if (e.target === overlay) closeSubDetail();
-                if (e.target.closest('#subDetailCloseBtn')) closeSubDetail();
-
+                if (e.target === overlay || e.target.closest('#subDetailCloseBtn')) {
+                    closeSubDetail();
+                }
                 var confirmBtn = e.target.closest('[data-action="confirm-sub"]');
                 if (confirmBtn) {
-                    var subId = confirmBtn.getAttribute('data-sub-id');
-                    var userId = confirmBtn.getAttribute('data-user-id');
-                    var planId = confirmBtn.getAttribute('data-plan-id');
-                    var dur = parseInt(confirmBtn.getAttribute('data-dur'), 10);
-                    confirmSub(subId, userId, planId, dur);
+                    confirmSub(
+                        confirmBtn.getAttribute('data-sub-id'),
+                        confirmBtn.getAttribute('data-user-id'),
+                        confirmBtn.getAttribute('data-plan-id'),
+                        parseInt(confirmBtn.getAttribute('data-dur'), 10)
+                    );
                     return;
                 }
                 var rejectBtn = e.target.closest('[data-action="reject-sub"]');
                 if (rejectBtn) {
-                    var subId2 = rejectBtn.getAttribute('data-sub-id');
-                    rejectSub(subId2);
-                    return;
+                    rejectSub(rejectBtn.getAttribute('data-sub-id'));
                 }
             });
         }
@@ -824,14 +772,14 @@
         h += '<div class="sub-detail-info-grid">';
         h += '<div class="sub-detail-info-item"><div class="sub-detail-info-label">Plan</div><div class="sub-detail-info-value">' + esc(planName) + '</div></div>';
         h += '<div class="sub-detail-info-item"><div class="sub-detail-info-label">Precio</div><div class="sub-detail-info-value">' + esc(planPrecio) + '</div></div>';
-        h += '<div class="sub-detail-info-item"><div class="sub-detail-info-label">Duración</div><div class="sub-detail-info-value">' + esc(String(duracion)) + ' días</div></div>';
-        h += '<div class="sub-detail-info-item"><div class="sub-detail-info-label">Fecha solicitud</div><div class="sub-detail-info-value" style="font-size:.78rem;">' + esc(fecha) + '</div></div>';
+        h += '<div class="sub-detail-info-item"><div class="sub-detail-info-label">Duración</div><div class="sub-detail-info-value">' + duracion + ' días</div></div>';
+        h += '<div class="sub-detail-info-item"><div class="sub-detail-info-label">Fecha</div><div class="sub-detail-info-value" style="font-size:.78rem;">' + esc(fecha) + '</div></div>';
         h += '</div>';
 
         if (s.comprobante_url) {
             h += '<div class="sub-detail-comprobante">';
             h += '<div class="sub-detail-comprobante-label">Comprobante de pago</div>';
-            h += '<img class="sub-detail-comprobante-img" src="' + esc(s.comprobante_url) + '" alt="Comprobante de pago" loading="lazy" style="cursor:pointer;">';
+            h += '<img class="sub-detail-comprobante-img" src="' + esc(s.comprobante_url) + '" alt="Comprobante" loading="lazy" style="cursor:pointer;">';
             h += '</div>';
         }
 
@@ -842,6 +790,7 @@
 
         body.innerHTML = h;
 
+        // Open comprobante in new tab on click
         var compImg = body.querySelector('.sub-detail-comprobante-img');
         if (compImg) {
             compImg.addEventListener('click', function () {
@@ -860,9 +809,7 @@
     window._viewSubDetail = viewSubDetail;
     window._closeSubDetail = closeSubDetail;
 
-    /* ══════════════════════════════════════════
-       ✅ CONFIRM SUBSCRIPTION
-       ══════════════════════════════════════════ */
+    /* ═══ CONFIRM SUBSCRIPTION ═══ */
     async function confirmSub(subId, userId, planId, duracion) {
         var db = getDB();
         var K = getK();
@@ -872,7 +819,7 @@
 
         try {
             var ahora = new Date();
-            var fin = new Date(ahora.getTime() + duracion * 24 * 60 * 60 * 1000);
+            var fin = new Date(ahora.getTime() + duracion * 86400000);
 
             var upd = await db.from('suscripciones').update({
                 estado: 'activa',
@@ -884,40 +831,28 @@
 
             // Process referral
             try {
-                var profileResult = await db.from('profiles')
-                    .select('referido_por')
-                    .eq('id', userId)
-                    .single();
+                var pr = await db.from('profiles').select('referido_por').eq('id', userId).single();
+                if (pr.data && pr.data.referido_por) {
+                    var refCode = pr.data.referido_por;
+                    var plr = await db.from('planes').select('nombre').eq('id', planId).single();
+                    var planNombre = plr.data ? plr.data.nombre : 'Plan';
 
-                if (profileResult.data && profileResult.data.referido_por) {
-                    var refCode = profileResult.data.referido_por;
-
-                    var planResult = await db.from('planes')
-                        .select('nombre')
-                        .eq('id', planId)
-                        .single();
-
-                    var planNombre = planResult.data ? planResult.data.nombre : 'Plan';
-
-                    var rpcResult = await db.rpc('procesar_referido_suscripcion', {
+                    var rpc = await db.rpc('procesar_referido_suscripcion', {
                         p_user_id: userId,
                         p_suscripcion_id: subId,
                         p_plan_nombre: planNombre
                     });
 
-                    if (rpcResult.error) {
-                        console.warn('RPC failed, processing manually:', rpcResult.error);
-
-                        var embResult = await db.from('embajadores')
+                    if (rpc.error) {
+                        console.warn('RPC failed, processing manually:', rpc.error);
+                        var emb = await db.from('embajadores')
                             .select('id, nivel, total_suscritos, comision_acumulada')
                             .eq('codigo', refCode)
                             .eq('estado', 'activo')
                             .single();
 
-                        if (embResult.data) {
-                            var emb = embResult.data;
+                        if (emb.data) {
                             var comision = 3000;
-
                             await db.from('referidos').update({
                                 estado: 'suscrito',
                                 suscripcion_id: subId,
@@ -929,28 +864,24 @@
                             .eq('referido_user_id', userId)
                             .eq('estado', 'registrado');
 
-                            var newTotal = (emb.total_suscritos || 0) + 1;
-                            var newComision = (emb.comision_acumulada || 0) + comision;
-                            var nuevoNivel = 'activador';
-                            if (newTotal >= 15) nuevoNivel = 'lider';
-                            else if (newTotal >= 6) nuevoNivel = 'constructor';
+                            var newTotal = (emb.data.total_suscritos || 0) + 1;
+                            var nuevoNivel = newTotal >= 15 ? 'lider' : newTotal >= 6 ? 'constructor' : 'activador';
 
                             await db.from('embajadores').update({
                                 total_suscritos: newTotal,
-                                comision_acumulada: newComision,
+                                comision_acumulada: (emb.data.comision_acumulada || 0) + comision,
                                 nivel: nuevoNivel,
                                 updated_at: ahora.toISOString()
-                            }).eq('id', emb.id);
+                            }).eq('id', emb.data.id);
 
                             await sendEmbajadorEmail(refCode, userId, subId, planNombre);
                         }
                     } else {
-                        console.log('✅ Referral processed via RPC for code:', refCode);
                         await sendEmbajadorEmail(refCode, userId, subId, planNombre);
                     }
                 }
-            } catch (refError) {
-                console.error('Error processing referral (non-critical):', refError);
+            } catch (refErr) {
+                console.error('Referral error (non-critical):', refErr);
             }
 
             safeShowToast('¡Suscripción confirmada! El usuario ya tiene acceso', 'success');
@@ -961,11 +892,7 @@
         }
     }
 
-    window._confirmSub = confirmSub;
-
-    /* ══════════════════════════════════════════
-       ❌ REJECT SUBSCRIPTION
-       ══════════════════════════════════════════ */
+    /* ═══ REJECT SUBSCRIPTION ═══ */
     async function rejectSub(subId) {
         var db = getDB();
         if (!db) return;
@@ -987,11 +914,10 @@
         }
     }
 
+    window._confirmSub = confirmSub;
     window._rejectSub = rejectSub;
 
-    /* ══════════════════════════════════════════
-       🚀 INITIALIZE — Define K.loadPlanes when ready
-       ══════════════════════════════════════════ */
+    /* ═══ INIT ═══ */
     defineLoadPlanes();
 
 })();
