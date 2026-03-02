@@ -143,7 +143,10 @@
         db.from('videos').select('visualizaciones'),
         db.from('episodios').select('visualizaciones'),
         db.from('favoritos').select('id', { count: 'exact', head: true }).gte('created_at', dateFrom),
-        db.from('suscripciones').select('id', { count: 'exact', head: true }).eq('estado', 'activa')
+        db.from('suscripciones').select('id', { count: 'exact', head: true }).eq('estado', 'activa'),
+        db.from('suscripciones').select('id', { count: 'exact', head: true }).eq('estado', 'pendiente'),
+        db.from('solicitudes_compra').select('id', { count: 'exact', head: true }).eq('estado', 'pendiente'),
+        db.from('embajadores').select('id', { count: 'exact', head: true }).eq('activo', true)
       ]);
 
       var totalUsers = results[0].count || 0;
@@ -179,6 +182,9 @@
 
       var totalFavs = results[6].count || 0;
       var totalSubs = results[7].count || 0;
+      var suscPendientes = results[8].count || 0;
+      var comprasPendientes = results[9].count || 0;
+      var totalEmbajadores = results[10].count || 0;
 
       var stats = [
         {
@@ -196,6 +202,12 @@
           label: totalSales + ' VENTAS', detail: '', trend: null
         },
         {
+          cls: 'subs', icon: '🎫', value: totalSubs,
+          label: 'SUSCRIPCIONES ACTIVAS',
+          detail: suscPendientes > 0 ? '⏳ ' + suscPendientes + ' pendiente' + (suscPendientes > 1 ? 's' : '') : '',
+          trend: null
+        },
+        {
           cls: 'views', icon: '👁', value: (totalViews + totalEpViews).toLocaleString(),
           label: 'VISTAS TOTALES',
           detail: totalViews + ' videos · ' + totalEpViews + ' episodios',
@@ -206,8 +218,14 @@
           label: 'FAVORITOS', detail: '', trend: null
         },
         {
-          cls: 'subs', icon: '🎫', value: totalSubs,
-          label: 'SUSCRIPCIONES ACTIVAS', detail: '', trend: null
+          cls: 'sales', icon: '🛒', value: comprasPendientes,
+          label: 'COMPRAS PENDIENTES',
+          detail: comprasPendientes > 0 ? 'Requieren revisión' : 'Todo atendido ✓',
+          trend: null
+        },
+        {
+          cls: 'users', icon: '🤝', value: totalEmbajadores,
+          label: 'EMBAJADORES ACTIVOS', detail: '', trend: null
         }
       ];
 

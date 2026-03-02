@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Bienvenido a KXON!</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#030303">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #030303;
+            color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        /* Background */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .bg__grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(139,92,246,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139,92,246,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .bg__orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+        }
+        .bg__orb--1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%); top: -100px; left: -100px; }
+        .bg__orb--2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(59,130,246,0.1), transparent 70%); bottom: -80px; right: -80px; }
+
+        /* Card */
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            background: rgba(10,10,20,0.9);
+            border: 1px solid rgba(139,92,246,0.15);
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Logo */
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            letter-spacing: 0.4em;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 32px;
+            display: block;
+            text-decoration: none;
+        }
+
+        /* Check icon */
+        .check {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.05));
+            border: 1px solid rgba(52,211,153,0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: popIn 0.5s 0.2s ease both;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .check svg { color: #34d399; }
+
+        /* Texts */
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #f0f0f0;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .subtitle strong {
+            color: #a78bfa;
+        }
+
+        /* Steps */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 36px;
+            text-align: left;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: rgba(139,92,246,0.04);
+            border: 1px solid rgba(139,92,246,0.08);
+            border-radius: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .step:hover { border-color: rgba(139,92,246,0.2); }
+
+        .step__num {
+            width: 28px;
+            height: 28px;
+            background: rgba(139,92,246,0.12);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #a78bfa;
+            flex-shrink: 0;
+        }
+
+        .step__body { flex: 1; min-width: 0; }
+
+        .step__title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #e0e0e0;
+            margin-bottom: 2px;
+        }
+
+        .step__desc {
+            font-size: 0.75rem;
+            color: #555;
+        }
+
+        .step__icon { font-size: 1.2rem; flex-shrink: 0; }
+
+        /* Plans */
+        .plans {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .plan {
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(139,92,246,0.1);
+            background: rgba(139,92,246,0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .plan:hover {
+            border-color: rgba(139,92,246,0.3);
+            background: rgba(139,92,246,0.07);
+            transform: translateY(-2px);
+        }
+
+        .plan--pro {
+            border-color: rgba(139,92,246,0.25);
+            background: rgba(139,92,246,0.06);
+            position: relative;
+        }
+
+        .plan--pro::before {
+            content: 'Recomendado';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .plan__name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #a78bfa;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .plan__price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #f0f0f0;
+        }
+
+        .plan__price span {
+            font-size: 0.7rem;
+            color: #555;
+            font-weight: 400;
+        }
+
+        .plan__features {
+            margin-top: 8px;
+            font-size: 0.68rem;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s, transform 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .btn-ghost {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #555;
+            font-size: 0.82rem;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .btn-ghost:hover { color: #a78bfa; border-color: rgba(139,92,246,0.2); }
+
+        /* Name display */
+        #userName { color: #a78bfa; }
+
+        @media (max-width: 480px) {
+            .card { padding: 36px 24px; }
+            .title { font-size: 1.4rem; }
+            .plans { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg" aria-hidden="true">
+        <div class="bg__grid"></div>
+        <div class="bg__orb bg__orb--1"></div>
+        <div class="bg__orb bg__orb--2"></div>
+    </div>
+
+    <div class="card">
+
+        <a href="index.html" class="logo">KXON</a>
+
+        <div class="check">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+        </div>
+
+        <h1 class="title">¡Bienvenido, <span id="userName">Fan</span>!</h1>
+        <p class="subtitle">Tu cuenta fue creada. Ahora elige tu plan para<br><strong>acceder a todo el contenido exclusivo de KXON.</strong></p>
+
+        <!-- Steps -->
+        <div class="steps">
+            <div class="step">
+                <div class="step__num">1</div>
+                <div class="step__body">
+                    <div class="step__title">Elige tu plan</div>
+                    <div class="step__desc">Básico $8.000/mes · Pro $15.000/mes</div>
+                </div>
+                <div class="step__icon">🎵</div>
+            </div>
+            <div class="step">
+                <div class="step__num">2</div>
+                <div class="step__body">
+                    <div class="step__title">Paga por Nequi, Daviplata o transferencia</div>
+                    <div class="step__desc">Al número 318 453 0020</div>
+                </div>
+                <div class="step__icon">💳</div>
+            </div>
+            <div class="step">
+                <div class="step__num">3</div>
+                <div class="step__body">
+                    <div class="step__title">Sube tu comprobante</div>
+                    <div class="step__desc">Se activa en minutos automáticamente</div>
+                </div>
+                <div class="step__icon">⚡</div>
+            </div>
+        </div>
+
+        <!-- Plans -->
+        <div class="plans">
+            <a href="dashboard.html" class="plan" id="btnBasico">
+                <div class="plan__name">BÁSICO</div>
+                <div class="plan__price">$8.000 <span>/mes</span></div>
+                <div class="plan__features">Streaming · Radio · Playlists</div>
+            </a>
+            <a href="dashboard.html" class="plan plan--pro" id="btnPro">
+                <div class="plan__name">PRO</div>
+                <div class="plan__price">$15.000 <span>/mes</span></div>
+                <div class="plan__features">Todo + Videos 4K · Beats · Lives</div>
+            </a>
+        </div>
+
+        <a href="dashboard.html" class="btn-primary" id="btnEntrar">
+            Ir al Dashboard →
+        </a>
+        <a href="dashboard.html" class="btn-ghost">
+            Explorar primero sin plan
+        </a>
+
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+
+    <script>
+    (function () {
+        // Mostrar nombre del usuario
+        async function loadName() {
+            try {
+                var sb = window.supabaseClient || window.db;
+                if (!sb) return;
+                var { data: { user } } = await sb.auth.getUser();
+                if (!user) return;
+
+                var name = '';
+                if (user.user_metadata && user.user_metadata.full_name) {
+                    name = user.user_metadata.full_name.split(' ')[0];
+                } else if (user.email) {
+                    name = user.email.split('@')[0];
+                }
+
+                if (name) {
+                    var el = document.getElementById('userName');
+                    if (el) el.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+                }
+            } catch (e) { /* silent */ }
+        }
+
+        // Redirigir a planes al hacer click en plan
+        document.getElementById('btnBasico').addEventListener('click', function (e) {
+            e.preventDefault();
+            sessionStorage.setItem('kxon_goto_plan', 'basico');
+            window.location.href = 'dashboard.html#planes';
+        });
+
+        document.getElementById('btnPro').addEventListener('click', function (e) {
+            e.preventDefault();
+            sessionStorage.setItem('kxon_goto_plan', 'pro');
+            window.location.href = 'dashboard.html#planes';
+        });
+
+        document.getElementById('btnEntrar').addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = 'dashboard.html#planes';
+        });
+
+        loadName();
+    })();
+    </script>
+
+</body>
+</html>

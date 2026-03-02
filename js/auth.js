@@ -626,7 +626,7 @@
                         showMessage('¡Cuenta creada! Redirigiendo...', 'success');
 
                         setTimeout(() => {
-                            window.location.href = 'dashboard.html';
+                            window.location.href = 'bienvenida.html';
                         }, 1200);
 
                     } else if (data.user && !data.session) {
