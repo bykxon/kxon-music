@@ -1517,6 +1517,75 @@ html, body { overflow-x: hidden; }
     .kx-arena__result-trophy svg { width: 24px; height: 24px; }
 }
 
+/* ══════════════════════════════════════════
+   ARENA RESPONSIVE FIXES
+   ══════════════════════════════════════════ */
+
+/* Desktop — más espacio y mejor legibilidad */
+@media (min-width: 768px) {
+    .kx-arena__round-battle { gap: var(--kx-space-5); }
+    .kx-arena__round-value { font-size: 1rem; }
+    .kx-arena__round-detail { font-size: 0.75rem; }
+    .kx-arena__round-topic { font-size: 0.9rem; }
+    .kx-arena__round { padding: var(--kx-space-5) var(--kx-space-6); }
+    .kx-arena__round-header { margin-bottom: var(--kx-space-5); }
+    .kx-arena__fighter-name { letter-spacing: 0.2em; }
+    .kx-arena__vs-badge { width: 68px; height: 68px; }
+    .kx-arena__vs-text { font-size: 1rem; }
+    .kx-arena__round-data { gap: var(--kx-space-3); }
+}
+
+/* Tablet — layout intermedio */
+@media (min-width: 480px) and (max-width: 767px) {
+    .kx-arena__versus { gap: var(--kx-space-3); padding: var(--kx-space-6) var(--kx-space-4) var(--kx-space-5); }
+    .kx-arena__round { padding: var(--kx-space-4); }
+    .kx-arena__round-value { font-size: 0.9rem; }
+    .kx-arena__round-detail { font-size: 0.65rem; }
+    .kx-arena__fighter-tag { font-size: 0.55rem; }
+    .kx-arena__result { gap: var(--kx-space-4); padding: var(--kx-space-5); }
+}
+
+/* Móvil — layout vertical para rounds */
+@media (max-width: 479px) {
+    .kx-arena__versus {
+        gap: var(--kx-space-2);
+        padding: var(--kx-space-5) var(--kx-space-3) var(--kx-space-4);
+    }
+    .kx-arena__fighter { padding: var(--kx-space-3); }
+    .kx-arena__fighter-tag { font-size: 0.5rem; letter-spacing: 0.08em; }
+    .kx-arena__round { padding: var(--kx-space-3) var(--kx-space-4); }
+    .kx-arena__round-header { margin-bottom: var(--kx-space-3); flex-wrap: wrap; gap: var(--kx-space-2); }
+    .kx-arena__round-battle { flex-direction: column; gap: var(--kx-space-3); }
+    .kx-arena__round-divider { display: none; }
+    .kx-arena__round-side {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--kx-space-3);
+        padding: var(--kx-space-2) var(--kx-space-3);
+        border-radius: var(--kx-radius-lg);
+    }
+    .kx-arena__round-side--kxon {
+        background: rgba(139, 92, 246, 0.05);
+        border: 1px solid rgba(139, 92, 246, 0.1);
+    }
+    .kx-arena__round-side--other {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .kx-arena__round-bar {
+        width: 60px;
+        height: 5px;
+        flex-shrink: 0;
+    }
+    .kx-arena__round-data { flex: 1; flex-direction: column; gap: 1px; align-items: flex-start; }
+    .kx-arena__round-value { font-size: 0.82rem; }
+    .kx-arena__round-detail { font-size: 0.6rem; white-space: normal; }
+    .kx-arena__winner-badge { position: static; margin-left: auto; flex-shrink: 0; }
+    .kx-arena__result { flex-direction: column; text-align: center; gap: var(--kx-space-3); padding: var(--kx-space-5) var(--kx-space-4); }
+    .kx-arena__result-score { justify-content: center; }
+    .kx-arena__rounds { padding: var(--kx-space-1); gap: var(--kx-space-1); }
+}
+
 @media (max-width: 480px) {
     .kx-landing-phone__notif { display: none; }
     .kx-landing-header__logo-text { font-size: 1.2rem; letter-spacing: 0.3em; }
