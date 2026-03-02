@@ -838,13 +838,13 @@ html {
 }
 
 .kx-arena__round-battle {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr;
+    align-items: start;
     gap: var(--kx-space-3);
 }
 
 .kx-arena__round-side {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: var(--kx-space-2);
