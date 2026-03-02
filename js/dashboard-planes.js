@@ -3,12 +3,15 @@
    Panel de planes, suscripción, admin gestión
    Namespace: kx-plan-*
    escapeHtml + event delegation + ARIA
+   FIX: Robust dependency resolution
    ============================================ */
 (function () {
     'use strict';
 
-    var db = window.db;
-    var K = window.KXON;
+    /* ═══ DEPENDENCY RESOLUTION ═══ */
+    // No capturamos db/K al inicio — los resolvemos dinámicamente
+    function getDB() { return window.db; }
+    function getK() { return window.KXON; }
 
     var allPlanes = [];
     var allSubSolicitudes = [];
@@ -53,8 +56,30 @@
         return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
     }
 
+    function safeFormatPrice(precio) {
+        var K = getK();
+        if (K && typeof K.formatPrice === 'function') {
+            return K.formatPrice(precio);
+        }
+        if (precio == null) return '$0';
+        return '$' + Number(precio).toLocaleString('es-CO');
+    }
+
+    function safeShowToast(msg, type) {
+        var K = getK();
+        if (K && typeof K.showToast === 'function') {
+            K.showToast(msg, type);
+        } else {
+            console.log('[Toast ' + type + ']:', msg);
+        }
+    }
+
     /* ═══ HELPER: ENVIAR EMAIL AL EMBAJADOR ═══ */
     async function sendEmbajadorEmail(refCode, userId, subId, planNombre) {
+        var db = getDB();
+        var K = getK();
+        if (!db || !K) return;
+
         try {
             var embForEmail = await db.from('embajadores')
                 .select('usuario_email, usuario_nombre, nivel, total_suscritos')
@@ -70,7 +95,6 @@
                 var refNombre = userProfile.data ? userProfile.data.full_name : 'Usuario';
                 var refEmail = '';
 
-                // Get email from suscripcion
                 var subData = await db.from('suscripciones')
                     .select('usuario_email')
                     .eq('id', subId)
@@ -108,7 +132,7 @@
         { key: 'marketplace',    label: 'Marketplace',        icon: '🛒' }
     ];
 
-    /* ═══ ACCESOS CONFIG (for admin edit) ═══ */
+    /* ═══ ACCESOS CONFIG ═══ */
     var allAccesosConfig = [
         { id: 'editAccAlbumes',       key: 'albumes' },
         { id: 'editAccCanciones',     key: 'canciones' },
@@ -125,46 +149,92 @@
     ];
 
     /* ══════════════════════════════════════════
-       🎫 LOAD PLANES
+       🎫 LOAD PLANES — Con validación robusta
        ══════════════════════════════════════════ */
-    K.loadPlanes = async function () {
-        try {
-            var r = await db.from('planes')
-                .select('*')
-                .eq('activo', true)
-                .order('orden', { ascending: true });
+    function defineLoadPlanes() {
+        var K = getK();
+        if (!K) {
+            console.warn('[Planes] KXON not ready, retrying in 200ms...');
+            setTimeout(defineLoadPlanes, 200);
+            return;
+        }
 
-            if (r.error) throw r.error;
-            allPlanes = r.data || [];
+        K.loadPlanes = async function () {
+            var db = getDB();
+            var K = getK();
 
-            var pendingSub = null;
-            if (!K.isAdmin) {
-                var ps = await db.from('suscripciones')
-                    .select('*, planes(nombre)')
-                    .eq('usuario_id', K.currentUser.id)
-                    .eq('estado', 'pendiente')
-                    .limit(1);
-                if (ps.data && ps.data.length > 0) pendingSub = ps.data[0];
+            if (!db) {
+                console.error('[Planes] Supabase (window.db) not available');
+                renderError();
+                return;
             }
 
-            renderKPIs(pendingSub);
-            renderStatusBanner(pendingSub);
-            renderPlanes(pendingSub);
+            if (!K || !K.currentUser) {
+                console.error('[Planes] KXON or currentUser not available');
+                renderError();
+                return;
+            }
 
-            if (K.isAdmin) loadSubSolicitudes();
-        } catch (e) {
-            console.error('Error cargando planes:', e);
-            renderError();
-        }
-    };
+            console.log('[Planes] ✅ Loading planes... User:', K.currentUser.email, 'Admin:', K.isAdmin);
+
+            try {
+                var r = await db.from('planes')
+                    .select('*')
+                    .eq('activo', true)
+                    .order('orden', { ascending: true });
+
+                if (r.error) {
+                    console.error('[Planes] Supabase error:', r.error);
+                    throw r.error;
+                }
+
+                allPlanes = r.data || [];
+                console.log('[Planes] Found', allPlanes.length, 'active plans:', allPlanes.map(function(p) { return p.nombre; }));
+
+                if (allPlanes.length === 0) {
+                    console.warn('[Planes] ⚠️ No active plans found in database. Check "planes" table has rows with activo=true');
+                }
+
+                var pendingSub = null;
+                if (!K.isAdmin) {
+                    try {
+                        var ps = await db.from('suscripciones')
+                            .select('*, planes(nombre)')
+                            .eq('usuario_id', K.currentUser.id)
+                            .eq('estado', 'pendiente')
+                            .limit(1);
+                        if (ps.data && ps.data.length > 0) pendingSub = ps.data[0];
+                    } catch (psErr) {
+                        console.warn('[Planes] Error checking pending subs:', psErr);
+                    }
+                }
+
+                renderKPIs(K, pendingSub);
+                renderStatusBanner(K, pendingSub);
+                renderPlanes(K, pendingSub);
+
+                if (K.isAdmin) loadSubSolicitudes();
+
+            } catch (e) {
+                console.error('[Planes] Error cargando planes:', e);
+                renderError();
+            }
+        };
+
+        console.log('[Planes] ✅ K.loadPlanes defined successfully');
+    }
 
     /* ═══ RENDER KPIs ═══ */
-    function renderKPIs(pendingSub) {
-        document.getElementById('planStatTotal').textContent = allPlanes.length;
+    function renderKPIs(K, pendingSub) {
+        var el1 = document.getElementById('planStatTotal');
+        var el2 = document.getElementById('planStatActive');
+        var el3 = document.getElementById('planStatDays');
+
+        if (el1) el1.textContent = allPlanes.length;
 
         if (K.isAdmin) {
-            document.getElementById('planStatActive').textContent = 'Admin';
-            document.getElementById('planStatDays').textContent = '∞';
+            if (el2) el2.textContent = 'Admin';
+            if (el3) el3.textContent = '∞';
         } else if (K.userSubscription) {
             var planName = '—';
             for (var i = 0; i < allPlanes.length; i++) {
@@ -173,27 +243,31 @@
                     break;
                 }
             }
-            document.getElementById('planStatActive').textContent = planName;
+            if (el2) el2.textContent = planName;
             var days = daysRemaining(K.userSubscription.fecha_fin);
-            document.getElementById('planStatDays').textContent = days + 'd';
+            if (el3) el3.textContent = days + 'd';
         } else if (pendingSub) {
-            document.getElementById('planStatActive').textContent = 'Pendiente';
-            document.getElementById('planStatDays').textContent = '—';
+            if (el2) el2.textContent = 'Pendiente';
+            if (el3) el3.textContent = '—';
         } else {
-            document.getElementById('planStatActive').textContent = 'Ninguno';
-            document.getElementById('planStatDays').textContent = '—';
+            if (el2) el2.textContent = 'Ninguno';
+            if (el3) el3.textContent = '—';
         }
     }
 
     /* ═══ RENDER STATUS BANNER ═══ */
-    function renderStatusBanner(pendingSub) {
+    function renderStatusBanner(K, pendingSub) {
         var banner = document.getElementById('planStatusBanner');
         var iconEl = document.getElementById('planStatusIcon');
         var titleEl = document.getElementById('planStatusTitle');
         var textEl = document.getElementById('planStatusText');
         var badgeEl = document.getElementById('planStatusBadge');
 
-        // Reset classes
+        if (!banner || !iconEl || !titleEl || !textEl || !badgeEl) {
+            console.warn('[Planes] Status banner elements not found');
+            return;
+        }
+
         banner.className = 'kx-plan-status-banner';
         badgeEl.className = 'kx-plan-status-badge';
 
@@ -217,7 +291,7 @@
                 }
             }
             var days = daysRemaining(K.userSubscription.fecha_fin);
-            titleEl.textContent = esc(planName) + ' — Activo';
+            titleEl.textContent = planName + ' — Activo';
             textEl.textContent = 'Tu suscripción vence el ' + formatDateLong(K.userSubscription.fecha_fin) + ' (' + days + ' días restantes).';
             badgeEl.textContent = 'ACTIVO';
             badgeEl.classList.add('kx-plan-status-badge--active');
@@ -236,8 +310,12 @@
     }
 
     /* ═══ RENDER PLANES ═══ */
-    function renderPlanes(pendingSub) {
+    function renderPlanes(K, pendingSub) {
         var c = document.getElementById('planesGrid');
+        if (!c) {
+            console.error('[Planes] #planesGrid element not found!');
+            return;
+        }
 
         if (!allPlanes.length) {
             c.innerHTML =
@@ -259,7 +337,6 @@
             var isPending = pendingSub && pendingSub.plan_id === plan.id;
             var accesos = plan.accesos || [];
 
-            // Card classes
             var cardClass = 'kx-plan-card';
             if (isPremium) cardClass += ' kx-plan-card--premium';
             if (isActivePlan) cardClass += ' kx-plan-card--active';
@@ -267,17 +344,14 @@
 
             h += '<article class="' + cardClass + '" role="listitem" style="--i:' + i + ';" data-plan-id="' + esc(plan.id) + '">';
 
-            // Ambient bg
             h += '<div class="kx-plan-card-ambient" aria-hidden="true"></div>';
 
-            // Admin edit button
             if (K.isAdmin) {
                 h += '<button class="kx-plan-edit-btn" data-action="edit-plan" data-plan-id="' + esc(plan.id) + '" title="Editar plan" aria-label="Editar plan">' +
                         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
                      '</button>';
             }
 
-            // Badge
             if (isActivePlan) {
                 h += '<span class="kx-plan-badge kx-plan-badge--active">✓ Activo</span>';
             } else if (isPremium) {
@@ -286,16 +360,13 @@
                 h += '<span class="kx-plan-badge kx-plan-badge--basic">Básico</span>';
             }
 
-            // Name
             h += '<h3 class="kx-plan-name">' + esc(plan.nombre) + '</h3>';
 
-            // Price
             h += '<div class="kx-plan-price-wrap">';
-            h += '<span class="kx-plan-price">' + esc(K.formatPrice(plan.precio)) + '</span>';
+            h += '<span class="kx-plan-price">' + esc(safeFormatPrice(plan.precio)) + '</span>';
             h += '<span class="kx-plan-price-period">/ ' + esc(String(plan.duracion_dias)) + ' días</span>';
             h += '</div>';
 
-            // Features
             h += '<div class="kx-plan-features" role="list" aria-label="Características del plan">';
             for (var f = 0; f < allFeatures.length; f++) {
                 var feat = allFeatures[f];
@@ -316,7 +387,6 @@
             }
             h += '</div>';
 
-            // CTA
             if (K.isAdmin) {
                 h += '<button class="kx-plan-cta kx-plan-cta--admin" disabled aria-disabled="true">👑 Admin — Acceso Total</button>';
             } else if (isActivePlan) {
@@ -334,11 +404,13 @@
         }
 
         c.innerHTML = h;
+        console.log('[Planes] ✅ Rendered', allPlanes.length, 'plan cards');
     }
 
     /* ═══ RENDER ERROR ═══ */
     function renderError() {
         var c = document.getElementById('planesGrid');
+        if (!c) return;
         c.innerHTML =
             '<div class="kx-plan-empty">' +
                 '<div class="kx-plan-empty-icon">' +
@@ -357,7 +429,6 @@
         panelEl.addEventListener('click', function (e) {
             var target = e.target;
 
-            // Subscribe button
             var subBtn = target.closest('[data-action="subscribe"]');
             if (subBtn) {
                 e.preventDefault();
@@ -367,7 +438,6 @@
                 return;
             }
 
-            // Admin edit button
             var editBtn = target.closest('[data-action="edit-plan"]');
             if (editBtn) {
                 e.preventDefault();
@@ -377,7 +447,6 @@
                 return;
             }
 
-            // View solicitud detail
             var viewBtn = target.closest('[data-action="view-sol"]');
             if (viewBtn) {
                 e.preventDefault();
@@ -387,12 +456,20 @@
                 return;
             }
         });
+    } else {
+        console.error('[Planes] ❌ #panel-planes element not found in DOM!');
     }
 
     /* ══════════════════════════════════════════
        🎫 SUBSCRIBE
        ══════════════════════════════════════════ */
     function handleSubscribe(planId) {
+        var K = getK();
+        if (!K || !K.currentUser) {
+            safeShowToast('Error: sesión no disponible', 'error');
+            return;
+        }
+
         var plan = null;
         for (var i = 0; i < allPlanes.length; i++) {
             if (allPlanes[i].id === planId) { plan = allPlanes[i]; break; }
@@ -400,13 +477,21 @@
         if (!plan) return;
         currentSubPlan = plan;
 
-        document.getElementById('subUser').textContent = K.currentUser.email;
-        document.getElementById('subPlanName').textContent = plan.nombre;
-        document.getElementById('subPlanPrice').textContent = K.formatPrice(plan.precio);
-        document.getElementById('subPlanDuration').textContent = plan.duracion_dias + ' días';
+        var subUser = document.getElementById('subUser');
+        if (subUser) subUser.textContent = K.currentUser.email;
 
-        var waMsg = 'Hola KXON, quiero suscribirme al: ' + plan.nombre + ' (' + K.formatPrice(plan.precio) + ') - Mi email: ' + K.currentUser.email;
-        document.getElementById('subBtnWhatsapp').href = 'https://wa.me/573184530020?text=' + encodeURIComponent(waMsg);
+        var subPlanName = document.getElementById('subPlanName');
+        if (subPlanName) subPlanName.textContent = plan.nombre;
+
+        var subPlanPrice = document.getElementById('subPlanPrice');
+        if (subPlanPrice) subPlanPrice.textContent = safeFormatPrice(plan.precio);
+
+        var subPlanDur = document.getElementById('subPlanDuration');
+        if (subPlanDur) subPlanDur.textContent = plan.duracion_dias + ' días';
+
+        var waMsg = 'Hola KXON, quiero suscribirme al: ' + plan.nombre + ' (' + safeFormatPrice(plan.precio) + ') - Mi email: ' + K.currentUser.email;
+        var subBtnWa = document.getElementById('subBtnWhatsapp');
+        if (subBtnWa) subBtnWa.href = 'https://wa.me/573184530020?text=' + encodeURIComponent(waMsg);
 
         selectedSubCompFile = null;
         var areaEl = document.getElementById('subCompArea');
@@ -420,7 +505,8 @@
         var fileEl = document.getElementById('subCompFile');
         if (fileEl) fileEl.value = '';
 
-        document.getElementById('subOverlay').classList.add('show');
+        var overlay = document.getElementById('subOverlay');
+        if (overlay) overlay.classList.add('show');
     }
 
     /* ── Comprobante file ── */
@@ -449,12 +535,17 @@
 
     /* ── Send subscription ── */
     window._sendSubscription = async function () {
-        if (!currentSubPlan) { K.showToast('Error: plan no seleccionado', 'error'); return; }
-        if (!selectedSubCompFile) { K.showToast('Sube el comprobante de pago', 'error'); return; }
+        var db = getDB();
+        var K = getK();
+
+        if (!K || !currentSubPlan) { safeShowToast('Error: plan no seleccionado', 'error'); return; }
+        if (!selectedSubCompFile) { safeShowToast('Sube el comprobante de pago', 'error'); return; }
 
         var btn = document.getElementById('btnSendSub');
-        btn.classList.add('loading');
-        btn.disabled = true;
+        if (btn) {
+            btn.classList.add('loading');
+            btn.disabled = true;
+        }
 
         try {
             var fn = Date.now() + '_sub_' + selectedSubCompFile.name.replace(/[^a-zA-Z0-9._-]/g, '');
@@ -462,7 +553,7 @@
             if (up.error) throw up.error;
             var compUrl = db.storage.from('imagenes').getPublicUrl('suscripciones/' + fn).data.publicUrl;
 
-            var nombre = K.currentProfile.full_name || K.currentUser.email.split('@')[0];
+            var nombre = (K.currentProfile && K.currentProfile.full_name) || K.currentUser.email.split('@')[0];
             var ins = await db.from('suscripciones').insert({
                 usuario_id: K.currentUser.id,
                 usuario_email: K.currentUser.email,
@@ -473,20 +564,23 @@
             });
             if (ins.error) throw ins.error;
 
-            K.showToast('¡Solicitud enviada! Espera confirmación del admin', 'success');
+            safeShowToast('¡Solicitud enviada! Espera confirmación del admin', 'success');
             window._closeSubModal();
-            K.loadPlanes();
+            if (K.loadPlanes) K.loadPlanes();
         } catch (e) {
             console.error(e);
-            K.showToast('Error: ' + e.message, 'error');
+            safeShowToast('Error: ' + e.message, 'error');
         }
 
-        btn.classList.remove('loading');
-        btn.disabled = false;
+        if (btn) {
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
     };
 
     window._closeSubModal = function () {
-        document.getElementById('subOverlay').classList.remove('show');
+        var overlay = document.getElementById('subOverlay');
+        if (overlay) overlay.classList.remove('show');
     };
 
     var subOverlayEl = document.getElementById('subOverlay');
@@ -506,11 +600,18 @@
         }
         if (!plan) return;
 
-        document.getElementById('editPlanId').value = plan.id;
-        document.getElementById('editPlanNombre').value = plan.nombre || '';
-        document.getElementById('editPlanPrecio').value = plan.precio || 0;
-        document.getElementById('editPlanDuracion').value = plan.duracion_dias || 30;
-        document.getElementById('editPlanOrden').value = plan.orden || 1;
+        var fields = {
+            'editPlanId': plan.id,
+            'editPlanNombre': plan.nombre || '',
+            'editPlanPrecio': plan.precio || 0,
+            'editPlanDuracion': plan.duracion_dias || 30,
+            'editPlanOrden': plan.orden || 1
+        };
+
+        for (var fid in fields) {
+            var el = document.getElementById(fid);
+            if (el) el.value = fields[fid];
+        }
 
         var accesos = plan.accesos || [];
         for (var i2 = 0; i2 < allAccesosConfig.length; i2++) {
@@ -518,14 +619,15 @@
             if (cb) cb.checked = accesos.indexOf(allAccesosConfig[i2].key) >= 0;
         }
 
-        document.getElementById('modalEditPlan').classList.add('show');
+        var modal = document.getElementById('modalEditPlan');
+        if (modal) modal.classList.add('show');
     }
 
-    // Keep these as window globals for the modal buttons
     window._editPlan = handleEditPlan;
 
     window._closeEditPlan = function () {
-        document.getElementById('modalEditPlan').classList.remove('show');
+        var modal = document.getElementById('modalEditPlan');
+        if (modal) modal.classList.remove('show');
     };
 
     var modalEditEl = document.getElementById('modalEditPlan');
@@ -539,14 +641,17 @@
     if (formEditEl) {
         formEditEl.addEventListener('submit', async function (e) {
             e.preventDefault();
+            var db = getDB();
+            var K = getK();
+            if (!db || !K) return;
 
             var planId = document.getElementById('editPlanId').value;
-            var nombre = document.getElementById('editPlanNombre').value.trim();
+            var nombre = (document.getElementById('editPlanNombre').value || '').trim();
             var precio = parseInt(document.getElementById('editPlanPrecio').value) || 0;
             var duracion = parseInt(document.getElementById('editPlanDuracion').value) || 30;
             var orden = parseInt(document.getElementById('editPlanOrden').value) || 1;
 
-            if (!nombre) { K.showToast('Ingresa un nombre', 'error'); return; }
+            if (!nombre) { safeShowToast('Ingresa un nombre', 'error'); return; }
 
             var accesos = [];
             for (var i = 0; i < allAccesosConfig.length; i++) {
@@ -555,8 +660,10 @@
             }
 
             var btn = document.getElementById('btnEditPlanSubmit');
-            btn.classList.add('loading');
-            btn.disabled = true;
+            if (btn) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            }
 
             try {
                 var upd = await db.from('planes').update({
@@ -570,16 +677,18 @@
 
                 if (upd.error) throw upd.error;
 
-                K.showToast('¡Plan actualizado correctamente!', 'success');
+                safeShowToast('¡Plan actualizado correctamente!', 'success');
                 window._closeEditPlan();
-                K.loadPlanes();
+                if (K.loadPlanes) K.loadPlanes();
             } catch (err) {
                 console.error('Error actualizando plan:', err);
-                K.showToast('Error: ' + err.message, 'error');
+                safeShowToast('Error: ' + err.message, 'error');
             }
 
-            btn.classList.remove('loading');
-            btn.disabled = false;
+            if (btn) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
         });
     }
 
@@ -587,9 +696,12 @@
        📋 ADMIN: SOLICITUDES
        ══════════════════════════════════════════ */
     async function loadSubSolicitudes() {
-        if (!K.isAdmin) return;
+        var db = getDB();
+        var K = getK();
+        if (!db || !K || !K.isAdmin) return;
 
-        document.getElementById('subSolicitudesSection').style.display = 'block';
+        var section = document.getElementById('subSolicitudesSection');
+        if (section) section.style.display = 'block';
 
         try {
             var r = await db.from('suscripciones')
@@ -603,6 +715,8 @@
             var countEl = document.getElementById('planSolCount');
 
             if (countEl) countEl.textContent = allSubSolicitudes.length + ' pendientes';
+
+            if (!c) return;
 
             if (!allSubSolicitudes.length) {
                 c.innerHTML =
@@ -645,9 +759,10 @@
     }
 
     /* ══════════════════════════════════════════
-       👁 VIEW SOLICITUD DETAIL (MODAL)
+       👁 VIEW SOLICITUD DETAIL
        ══════════════════════════════════════════ */
     function viewSubDetail(idx) {
+        var K = getK();
         var s = allSubSolicitudes[idx];
         if (!s) return;
 
@@ -668,15 +783,8 @@
 
             overlay.addEventListener('click', function (e) {
                 if (e.target === overlay) closeSubDetail();
-            });
-
-            // Delegate close button
-            overlay.addEventListener('click', function (e) {
                 if (e.target.closest('#subDetailCloseBtn')) closeSubDetail();
-            });
 
-            // Delegate confirm/reject
-            overlay.addEventListener('click', function (e) {
                 var confirmBtn = e.target.closest('[data-action="confirm-sub"]');
                 if (confirmBtn) {
                     var subId = confirmBtn.getAttribute('data-sub-id');
@@ -698,13 +806,14 @@
         var nombre = s.usuario_nombre || 'Sin nombre';
         var inicial = esc(nombre.charAt(0).toUpperCase());
         var planName = s.planes ? s.planes.nombre : 'Plan eliminado';
-        var planPrecio = s.planes ? K.formatPrice(s.planes.precio) : '$0';
+        var planPrecio = s.planes ? safeFormatPrice(s.planes.precio) : '$0';
         var duracion = s.planes ? s.planes.duracion_dias : 30;
         var fecha = formatDateFull(s.created_at);
 
         var body = document.getElementById('subDetailBody');
-        var h = '';
+        if (!body) return;
 
+        var h = '';
         h += '<div class="sub-detail-user">';
         h += '<div class="sub-detail-avatar">' + inicial + '</div>';
         h += '<div class="sub-detail-user-info">';
@@ -722,7 +831,7 @@
         if (s.comprobante_url) {
             h += '<div class="sub-detail-comprobante">';
             h += '<div class="sub-detail-comprobante-label">Comprobante de pago</div>';
-            h += '<img class="sub-detail-comprobante-img" src="' + esc(s.comprobante_url) + '" alt="Comprobante de pago" loading="lazy">';
+            h += '<img class="sub-detail-comprobante-img" src="' + esc(s.comprobante_url) + '" alt="Comprobante de pago" loading="lazy" style="cursor:pointer;">';
             h += '</div>';
         }
 
@@ -733,10 +842,8 @@
 
         body.innerHTML = h;
 
-        // Comprobante click to open in new tab
         var compImg = body.querySelector('.sub-detail-comprobante-img');
         if (compImg) {
-            compImg.style.cursor = 'pointer';
             compImg.addEventListener('click', function () {
                 window.open(s.comprobante_url, '_blank');
             });
@@ -750,14 +857,17 @@
         if (overlay) overlay.classList.remove('show');
     }
 
-    // Keep as window global for backward compat
     window._viewSubDetail = viewSubDetail;
     window._closeSubDetail = closeSubDetail;
 
     /* ══════════════════════════════════════════
-       ✅ CONFIRM SUBSCRIPTION — WITH REFERRAL PROCESSING
+       ✅ CONFIRM SUBSCRIPTION
        ══════════════════════════════════════════ */
     async function confirmSub(subId, userId, planId, duracion) {
+        var db = getDB();
+        var K = getK();
+        if (!db || !K) return;
+
         if (!confirm('¿Confirmar esta suscripción? El usuario tendrá acceso por ' + duracion + ' días.')) return;
 
         try {
@@ -772,9 +882,8 @@
 
             if (upd.error) throw upd.error;
 
-            // ═══ PROCESS REFERRAL ═══
+            // Process referral
             try {
-                // Get user's profile to check if they were referred
                 var profileResult = await db.from('profiles')
                     .select('referido_por')
                     .eq('id', userId)
@@ -783,7 +892,6 @@
                 if (profileResult.data && profileResult.data.referido_por) {
                     var refCode = profileResult.data.referido_por;
 
-                    // Get plan name for the referral record
                     var planResult = await db.from('planes')
                         .select('nombre')
                         .eq('id', planId)
@@ -791,7 +899,6 @@
 
                     var planNombre = planResult.data ? planResult.data.nombre : 'Plan';
 
-                    // Try using the DB function first
                     var rpcResult = await db.rpc('procesar_referido_suscripcion', {
                         p_user_id: userId,
                         p_suscripcion_id: subId,
@@ -799,10 +906,8 @@
                     });
 
                     if (rpcResult.error) {
-                        // Fallback: process manually
                         console.warn('RPC failed, processing manually:', rpcResult.error);
 
-                        // Find ambassador
                         var embResult = await db.from('embajadores')
                             .select('id, nivel, total_suscritos, comision_acumulada')
                             .eq('codigo', refCode)
@@ -811,10 +916,8 @@
 
                         if (embResult.data) {
                             var emb = embResult.data;
-                            var nivelInfo = { activador: 3000, constructor: 0, lider: 0 };
-                            var comision = nivelInfo[emb.nivel] || 1000;
+                            var comision = 3000;
 
-                            // Update referido record
                             await db.from('referidos').update({
                                 estado: 'suscrito',
                                 suscripcion_id: subId,
@@ -826,11 +929,8 @@
                             .eq('referido_user_id', userId)
                             .eq('estado', 'registrado');
 
-                            // Update ambassador counters
                             var newTotal = (emb.total_suscritos || 0) + 1;
                             var newComision = (emb.comision_acumulada || 0) + comision;
-
-                            // Calculate new level
                             var nuevoNivel = 'activador';
                             if (newTotal >= 15) nuevoNivel = 'lider';
                             else if (newTotal >= 6) nuevoNivel = 'constructor';
@@ -842,28 +942,22 @@
                                 updated_at: ahora.toISOString()
                             }).eq('id', emb.id);
 
-                            console.log('✅ Referral processed (manual): ambassador ' + refCode + ' gets ' + comision + ' COP');
-
-                            // Enviar email al embajador (fallback manual)
                             await sendEmbajadorEmail(refCode, userId, subId, planNombre);
                         }
                     } else {
                         console.log('✅ Referral processed via RPC for code:', refCode);
-
-                        // Enviar email al embajador (RPC exitoso)
                         await sendEmbajadorEmail(refCode, userId, subId, planNombre);
                     }
                 }
             } catch (refError) {
-                // Don't fail the whole subscription just because referral processing failed
                 console.error('Error processing referral (non-critical):', refError);
             }
 
-            K.showToast('¡Suscripción confirmada! El usuario ya tiene acceso', 'success');
+            safeShowToast('¡Suscripción confirmada! El usuario ya tiene acceso', 'success');
             closeSubDetail();
             loadSubSolicitudes();
         } catch (e) {
-            K.showToast('Error: ' + e.message, 'error');
+            safeShowToast('Error: ' + e.message, 'error');
         }
     }
 
@@ -873,6 +967,9 @@
        ❌ REJECT SUBSCRIPTION
        ══════════════════════════════════════════ */
     async function rejectSub(subId) {
+        var db = getDB();
+        if (!db) return;
+
         if (!confirm('¿Rechazar esta solicitud?')) return;
 
         try {
@@ -882,14 +979,19 @@
 
             if (upd.error) throw upd.error;
 
-            K.showToast('Solicitud rechazada', 'success');
+            safeShowToast('Solicitud rechazada', 'success');
             closeSubDetail();
             loadSubSolicitudes();
         } catch (e) {
-            K.showToast('Error: ' + e.message, 'error');
+            safeShowToast('Error: ' + e.message, 'error');
         }
     }
 
     window._rejectSub = rejectSub;
+
+    /* ══════════════════════════════════════════
+       🚀 INITIALIZE — Define K.loadPlanes when ready
+       ══════════════════════════════════════════ */
+    defineLoadPlanes();
 
 })();

@@ -2,22 +2,12 @@
    👤 DASHBOARD-PERFIL.JS — KXON 2026 REBUILD
    Namespace: kx-prf-*
    Event delegation · escapeHtml · A11y
-   CON EMAIL DE CUENTA ELIMINADA
    FIX: Avatar upload corregido
    ============================================ */
 (function () {
 
   var db = window.db;
   var K = window.KXON;
-
-  /* ═══ EMAILJS CONFIG ═══ */
-  var EMAILJS_PUBLIC_KEY = 'BJECVrT1UmA4CHVrK';
-  var EMAILJS_SERVICE_ID = 'service_uv1v71r';
-  var EMAILJS_TEMPLATE_DELETE = 'template_yfn2m2v';
-
-  if (window.emailjs) {
-    window.emailjs.init(EMAILJS_PUBLIC_KEY);
-  }
 
   /* ══════════════════════════════════════════
      🛡️ UTILIDADES
@@ -35,26 +25,6 @@
   function setText(id, text) {
     var el = $(id);
     if (el) el.textContent = text;
-  }
-
-  /* ══════════════════════════════════════════
-     📧 EMAIL: CUENTA ELIMINADA
-     ══════════════════════════════════════════ */
-  function sendDeleteEmail(email, nombre) {
-    if (!window.emailjs) {
-      console.warn('EmailJS no disponible');
-      return;
-    }
-
-    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_DELETE, {
-      to_email: email,
-      nombre: nombre,
-      register_link: window.location.origin + '/register.html'
-    }).then(function () {
-      console.log('✅ Email de cuenta eliminada enviado a', email);
-    }).catch(function (err) {
-      console.warn('⚠️ Error enviando email de eliminación:', err);
-    });
   }
 
   /* ══════════════════════════════════════════
@@ -199,7 +169,6 @@
         if (K.currentProfile.avatar_url) {
           try {
             var oldUrl = K.currentProfile.avatar_url;
-            // Extraer el path del archivo de la URL
             var urlParts = oldUrl.split('/imagenes/');
             if (urlParts.length > 1) {
               var oldPath = decodeURIComponent(urlParts[1]);
@@ -208,7 +177,6 @@
             }
           } catch (delErr) {
             console.warn('No se pudo eliminar avatar anterior:', delErr);
-            // No es crítico, continuamos
           }
         }
 
@@ -234,14 +202,13 @@
           throw new Error('No se pudo obtener la URL pública del avatar');
         }
         
-        // Agregar cache buster para forzar recarga
         avatarUrl = avatarUrl + '?t=' + Date.now();
         
         console.log('🔗 Public URL:', avatarUrl);
 
         // ═══ PASO 4: Actualizar perfil en base de datos ═══
         var updateResult = await db.from('profiles').update({
-          avatar_url: avatarUrl.split('?')[0], // Guardar sin cache buster
+          avatar_url: avatarUrl.split('?')[0],
           updated_at: new Date().toISOString()
         }).eq('id', K.currentUser.id);
         
@@ -259,7 +226,6 @@
         if (img) {
           img.src = avatarUrl;
           img.style.display = 'block';
-          // Manejar error de carga de imagen
           img.onerror = function() {
             console.warn('⚠️ Error loading avatar image, retrying...');
             setTimeout(function() {
@@ -272,7 +238,6 @@
         // ═══ PASO 7: Actualizar UI — Avatar en sidebar ═══
         var sidebarAv = $('sidebarAvatar');
         if (sidebarAv) {
-          // Limpiar contenido anterior
           sidebarAv.textContent = '';
           sidebarAv.innerHTML = '';
           var sidebarImg = document.createElement('img');
@@ -316,16 +281,13 @@
         K.showToast(errorMsg, 'error');
       }
 
-      // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
       avatarFile.value = '';
     });
     
     console.log('✅ Avatar upload handler bound');
   }
   
-  // Actualizar todos los avatares visibles en la página
   function _updateAllAvatarInstances(avatarUrl) {
-    // Buscar otros elementos que muestren el avatar del usuario
     var allAvatarImgs = document.querySelectorAll('[data-user-avatar]');
     allAvatarImgs.forEach(function(img) {
       img.src = avatarUrl;
@@ -340,7 +302,6 @@
 
   panelPerfil.addEventListener('click', function (e) {
     
-    // ═══ IMPORTANTE: Ignorar clicks en el input file ═══
     if (e.target.id === 'perfilAvatarFile' || e.target.type === 'file') {
       return;
     }
@@ -373,10 +334,8 @@
       return;
     }
 
-    // ═══ AVATAR CLICK — MEJORADO ═══
     var avatarWrap = e.target.closest('.kx-prf-avatar-wrap');
     if (avatarWrap) {
-      // No prevenir default si ya es el input file
       if (e.target.type === 'file') return;
       
       e.preventDefault();
@@ -384,9 +343,7 @@
       
       var fileInput = $('perfilAvatarFile');
       if (fileInput) {
-        // Reset para permitir re-selección del mismo archivo
         fileInput.value = '';
-        // Usar setTimeout para evitar conflictos de eventos
         setTimeout(function() {
           fileInput.click();
         }, 50);
@@ -675,7 +632,7 @@
   }
 
   /* ══════════════════════════════════════════
-     🗑️ ELIMINAR CUENTA — CON EMAIL
+     🗑️ ELIMINAR CUENTA
      ══════════════════════════════════════════ */
   function _openDeleteConfirm() {
     var overlay = $('kxPrfConfirmOverlay');
@@ -693,9 +650,6 @@
 
   async function _executeDelete() {
     try {
-      var userEmail = K.currentUser.email;
-      var userName = K.currentProfile.full_name || K.currentUser.email.split('@')[0];
-
       K.showToast('Eliminando cuenta...', 'error');
 
       await db.from('favoritos').delete().eq('user_id', K.currentUser.id);
@@ -703,7 +657,7 @@
       await db.from('solicitudes_compra').delete().eq('comprador_id', K.currentUser.id);
       await db.from('profiles').delete().eq('id', K.currentUser.id);
 
-      sendDeleteEmail(userEmail, userName);
+      // Email de cuenta eliminada ahora lo maneja n8n via trigger en profiles DELETE
 
       await db.auth.signOut();
 
@@ -730,8 +684,10 @@
   });
 
   /* ══════════════════════════════════════════
-     🔧 INITIAL BIND (si el panel ya está visible)
+     🔧 INITIAL BIND
      ══════════════════════════════════════════ */
   _bindAvatarUpload();
+
+  console.log('✅ dashboard-perfil.js (sin EmailJS — n8n ready) cargado');
 
 })();

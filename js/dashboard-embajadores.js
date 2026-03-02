@@ -16,14 +16,6 @@
         };
     }
 
-    /* ═══ EMAILJS ═══ */
-    var EMAILJS_PUBLIC_KEY = 'JgRyKiNEcoF5oOEjV';
-    var EMAILJS_SERVICE_ID = 'service_rdsr8wb';
-    var EMAILJS_TEMPLATE_WELCOME = 'template_76gbiq7';
-    var EMAILJS_TEMPLATE_REFERIDO = 'template_9b3995p';
-
-    if (window.emailjs) { window.emailjs.init(EMAILJS_PUBLIC_KEY); }
-
     var myEmbajador = null;
     var myReferidos = [];
     var allEmbajadores = [];
@@ -449,7 +441,7 @@
             previousNivel = 'activador';
             launchConfetti();
             K.showToast('🏆 ¡Ya eres Embajador KXON! Gana $1,500 por cada suscrito', 'success');
-            sendWelcomeEmail(K.currentUser.email, nombre, codigo);
+            // Email de bienvenida ahora lo maneja n8n automáticamente via trigger
             showDashboardView(); initShareButtons(); renderWeeklyChart(); renderBonoMeta();
             await loadRanking(); requestNotificationPermission();
         } catch (e) {
@@ -686,32 +678,7 @@
         } catch (e) { K.showToast('Error: ' + e.message, 'error'); }
     }
 
-    /* ═══ EMAILS ═══ */
-    function sendWelcomeEmail(email, nombre, codigo) {
-        if (!window.emailjs) return;
-        window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_WELCOME, {
-            to_email: email, nombre: nombre, codigo: codigo,
-            link: window.location.origin + '/register.html?ref=' + encodeURIComponent(codigo)
-        }).then(function () { console.log('✅ Welcome email sent'); }).catch(function (err) { console.warn('⚠️ Email error:', err); });
-    }
-
-    K.sendReferidoEmail = function (embajadorEmail, embajadorNombre, referidoNombre, referidoEmail, planNombre, nivelActual, totalSuscritos) {
-        if (!window.emailjs) return;
-        var info = getNivelInfo(nivelActual);
-        var rewardDesc = 'Comisión de +$' + info.comision.toLocaleString('es-CO') + ' COP';
-        if (info.tieneRifa) rewardDesc += ' + Cuenta para rifa del ' + info.rifaPorcentaje + '%';
-
-        window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_REFERIDO, {
-            to_email: embajadorEmail, embajador_nombre: embajadorNombre,
-            referido_nombre: referidoNombre, referido_email: referidoEmail, plan_nombre: planNombre,
-            reward_type: 'Comisión Ganada', reward_color: '#34c759',
-            reward_value: '+$' + info.comision.toLocaleString('es-CO') + ' COP',
-            reward_desc: rewardDesc, total_suscritos: String(totalSuscritos),
-            nivel_badge: info.badge, nivel_name: info.name, nivel_color: info.color,
-            dashboard_link: window.location.origin + '/dashboard.html'
-        }).then(function () { console.log('✅ Referido email sent'); }).catch(function (err) { console.warn('⚠️ Email error:', err); });
-    };
-
+    /* ═══ NOTIFICACIONES (sin email, solo in-app) ═══ */
     K.notifyReferidoSuscrito = function (embajadorId, referidoNombre, planNombre) {
         if (myEmbajador && myEmbajador.id === embajadorId) {
             var info = getNivelInfo(myEmbajador.nivel);
@@ -721,5 +688,7 @@
             try { new Notification('¡Nuevo suscrito! 🎉', { body: referidoNombre + ' — ' + planNombre, icon: '/icons/icon-192.png', tag: 'ref-' + Date.now() }); } catch (e) { }
         }
     };
+
+    console.log('✅ dashboard-embajadores.js (sin EmailJS — n8n ready) cargado');
 
 })();

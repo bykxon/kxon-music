@@ -1,20 +1,10 @@
 /* ═══════════════════════════════════════════════════
    🛒 KXON MARKETPLACE — PREMIUM REDESIGN 2026
-   CON EMAIL DE COMPRA CONFIRMADA
    ═══════════════════════════════════════════════════ */
 (function () {
 
   var db = window.db;
   var K = window.KXON;
-
-  /* ═══ EMAILJS CONFIG ═══ */
-  var EMAILJS_PUBLIC_KEY = 'BJECVrT1UmA4CHVrK';
-  var EMAILJS_SERVICE_ID = 'service_uv1v71r';
-  var EMAILJS_TEMPLATE_COMPRA = 'template_7srz4ms';
-
-  if (window.emailjs) {
-    window.emailjs.init(EMAILJS_PUBLIC_KEY);
-  }
 
   if (!K.currentMarketTab) K.currentMarketTab = 'beat';
 
@@ -37,37 +27,6 @@
   var currentSearch = '';
   var currentView = 'grid';
   var allSolicitudesData = [];
-
-  /* ══════════════════════════════════════════
-     📧 EMAIL: COMPRA CONFIRMADA
-     ══════════════════════════════════════════ */
-  function sendPurchaseEmail(email, nombre, productoNombre, productoTipo, productoPrecio) {
-    if (!window.emailjs) {
-      console.warn('EmailJS no disponible');
-      return;
-    }
-
-    var fecha = new Date().toLocaleDateString('es-ES', {
-      day: 'numeric', month: 'long', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
-
-    var tipoLabel = productoTipo === 'cancion' ? 'Canción' : 'Beat';
-
-    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_COMPRA, {
-      to_email: email,
-      nombre: nombre,
-      producto_nombre: productoNombre,
-      producto_tipo: tipoLabel,
-      producto_precio: productoPrecio,
-      fecha: fecha,
-      dashboard_link: window.location.origin + '/dashboard.html'
-    }).then(function () {
-      console.log('✅ Email de compra enviado a', email);
-    }).catch(function (err) {
-      console.warn('⚠️ Error enviando email de compra:', err);
-    });
-  }
 
   /* ══════════════════════════════════════════
      📊 KPIs
@@ -612,7 +571,7 @@
   window._closePurchase = function () { var po = $('purchaseOverlay'); if (po) po.classList.remove('show'); K.marketPreviewAudio.pause(); };
 
   /* ══════════════════════════════════════════
-     ✅❌ CONFIRM / REJECT — CON EMAIL
+     ✅❌ CONFIRM / REJECT
      ══════════════════════════════════════════ */
   window._openSolicitudDetail = function (idx) {
     var s = allSolicitudesData[idx]; if (!s) return;
@@ -646,18 +605,7 @@
 
       if (typeof K.sendNotification === 'function') K.sendNotification(compradorId, 'compra_confirmada', '¡Compra confirmada!', 'Ya puedes descargar desde Mi Archivo.', { beat_id: beatId });
 
-      // ═══ ENVIAR EMAIL DE COMPRA CONFIRMADA ═══
-      var productoNombre = beatData ? beatData.titulo : 'Producto';
-      var productoTipo = beatData ? beatData.tipo : 'beat';
-      var productoPrecio = K.formatPrice(precio);
-
-      sendPurchaseEmail(
-        compradorEmail,
-        compradorNombre,
-        productoNombre,
-        productoTipo,
-        productoPrecio
-      );
+      // Email de compra confirmada ahora lo maneja n8n via trigger en compras INSERT
 
       K.showToast('¡Compra confirmada!', 'success');
       loadSolicitudes(); K.loadMarketplace();
@@ -824,6 +772,6 @@
     else { K.marketPreviewAudio.src = url; K.marketPreviewAudio.volume = 0.7; K.marketPreviewAudio.play(); }
   };
 
-  console.log('✅ dashboard-marketplace.js (v4 — con emails) cargado');
+  console.log('✅ dashboard-marketplace.js (sin EmailJS — n8n ready) cargado');
 
 })();
